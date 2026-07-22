@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 42 42" role="img" aria-label="Play Streamers PS logo">
+  <g transform="translate(0 2.2) skewY(-6)">
+    <path d="M11 .5h20A10.5 10.5 0 0 1 41.5 11v20A10.5 10.5 0 0 1 31 41.5H3.5A3 3 0 0 1 .5 38.5V11A10.5 10.5 0 0 1 11 .5Z" fill="#050a08" stroke="#53fc18" stroke-opacity=".68" stroke-width="1"/>
+    <text x="21" y="30.6" text-anchor="middle" fill="#53fc18" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="26" font-weight="900" letter-spacing="-2.1">PS</text>
+  </g>
+</svg>

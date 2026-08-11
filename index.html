@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="icon" type="image/svg+xml" sizes="any" href="play-streamers-ps-logo.svg">
+<link rel="shortcut icon" type="image/svg+xml" href="play-streamers-ps-logo.svg">
+<meta name="play-streamers-build" content="2026-07-23-interface-single-layer">
+<title>Play Streamers</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://api.pstreamers.com" crossorigin>
+<link rel="preconnect" href="https://challenges.cloudflare.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<script src="session-bootstrap.js"></script>
+<link rel="stylesheet" href="styles.css?v=4.1">
+
+
+</head>
+<body>
+<!-- Session-aware first paint: signed-in users do not briefly see the public home. -->
+
+<style id="ps53-session-watchdog-style" data-bundled-style></style>
+<meta id="ps53-session-watchdog" data-bundled-script="true">
+<!-- Request governor: legacy interface layers still run, but they share one
+     browser-side API result instead of sending duplicate Worker requests. -->
+<meta id="ps-request-governor" data-bundled-script="true">
+<main class="app">
+  <header class="topbar"><div class="brand"><span class="brand-logo">PS</span><span class="brand-name">PLAY STREAMERS</span><button class="updates" id="updatesBtn">i</button></div><div class="actions"><button class="icon-btn" id="connectionBtn" title="Bağlantı durumu">📶</button><button class="clear" id="clearBtn">Sıfırla</button></div></header>
+  <nav class="workspace-tabs"><button class="active" data-view="panel">Yayıncı Paneli</button><button data-view="stats">Yayıncı İstatistikleri</button></nav>
+  <section class="view" id="panelView"><div class="ticker"><b>SON OLAYLAR</b><div id="ticker">Henüz olay yok — veri kaynağı bağlandığında burada akacak.</div></div><div class="grid" id="panelGrid"></div></section>
+  <section class="view" id="statsView" hidden><div class="grid" id="statsGrid"></div></section>
+  <p class="foot">Developed by <strong>Switly</strong></p>
+</main>
+<aside class="popover" id="connections" hidden><div id="connectionList"></div></aside>
+<div class="notice-layer" id="notices"></div>
+<div class="overlay" id="modal" hidden></div><div class="overlay" id="updatesOverlay" hidden></div>
+<script src="app.js?v=4.0"></script>
+
+
+<style id="play-streamers-second-home" data-bundled-style></style>
+<style id="ps-release-controls-style" data-bundled-style></style>
+<meta id="ps-release-controls" data-bundled-script="true">
+<style id="ps-11-style" data-bundled-style></style>
+<meta id="ps-11-controls" data-bundled-script="true">
+<style id="ps-12-style" data-bundled-style></style>
+<meta id="ps-12-controls" data-bundled-script="true">
+<style id="ps-13-style" data-bundled-style></style>
+<meta id="ps-13-controls" data-bundled-script="true">
+<style id="ps-14-style" data-bundled-style></style>
+<meta id="ps-14-controls" data-bundled-script="true">
+<style id="ps-15-style" data-bundled-style></style>
+<meta id="ps-15-controls" data-bundled-script="true">
+<style id="ps-16-style" data-bundled-style></style>
+<meta id="ps-16-controls" data-bundled-script="true">
+<style id="ps-17-style" data-bundled-style></style>
+<meta id="ps-17-controls" data-bundled-script="true">
+<style id="ps-18-style" data-bundled-style></style>
+<meta id="ps-18-controls" data-bundled-script="true">
+<style id="ps-23-style" data-bundled-style></style>
+<style id="ps26-about-preview-style" data-bundled-style></style>
+<meta id="ps-23-controls" data-bundled-script="true">
+<!-- Stable shell: keeps the public page and account flow independent from older visual layers. -->
+<style id="ps-1-1-polish-style" data-bundled-style></style>
+<meta id="ps-1-1-polish" data-bundled-script="true">
+<style id="ps-12-user-home-style" data-bundled-style></style>
+<style id="ps-13-dashboard-style" data-bundled-style></style>
+<style id="ps-13-dashboard-mobile-fix" data-bundled-style></style>
+<meta id="ps-13-dashboard" data-bundled-script="true">
+<style id="ps-13-dashboard-extra-style" data-bundled-style></style>
+<meta id="ps-13-dashboard-extra" data-bundled-script="true">
+<style id="ps-13-dashboard-copy-style" data-bundled-style></style>
+<meta id="ps-13-dashboard-copy" data-bundled-script="true">
+<!-- First-home interaction recovery: keeps inactive full-screen layers from intercepting taps. -->
+<style id="ps-first-home-click-recovery-style" data-bundled-style></style>
+<meta id="ps-first-home-click-recovery" data-bundled-script="true">
+<!-- 1.3 dashboard refinement: connection lifecycle and shared card icons. -->
+<style id="ps-13-dashboard-refinement-style" data-bundled-style></style>
+<meta id="ps-13-dashboard-refinement" data-bundled-script="true">
+<!-- 1.3 dashboard final pass: coherent symbols, safe menus and animated card close. -->
+<style id="ps-13-dashboard-final-style" data-bundled-style></style>
+<meta id="ps-13-dashboard-final" data-bundled-script="true">
+<style id="ps-email-verification-style" data-bundled-style></style>
+<meta id="ps-email-verification-controls" data-bundled-script="true">
+<!-- 1.4 hata ve gereklilik: this final layer owns the fragile account/navigation edges. -->
+<style id="ps14-stability-style" data-bundled-style></style>
+<meta id="ps14-stability-controls" data-bundled-script="true">
+<!-- 1.4 ek: active language, verification and dashboard repair layer. -->
+<style id="ps15-active-repair-style" data-bundled-style></style>
+<meta id="ps15-active-repair-controls" data-bundled-script="true">
+<!-- 1.4 ek: ikinci ana sayfa ayırma, parola gözleri ve eski beta izlerini temizleme. -->
+<style id="ps16-layout-and-accessibility-repair" data-bundled-style></style>
+<meta id="ps16-layout-and-accessibility-controls" data-bundled-script="true">
+<!-- 1.4 ek: eski, sade kullanıcı ana sayfasının kararlı geri dönüşü. -->
+<style id="ps17-classic-member-home-style" data-bundled-style></style>
+<!-- Son katman: ikinci ana sayfa, önceki genel stillerden bağımsız ve kararlı kalır. -->
+<style id="ps18-member-home-layout-repair" data-bundled-style></style>
+<!-- 2. ana sayfa: bağımsız, dengeli kullanıcı alanı tasarımı. -->
+<style id="ps19-member-home-visual-rebuild" data-bundled-style></style>
+<!-- İkinci ana sayfanın tek ve bağımsız aktif tasarımı. -->
+<style id="ps20-member-home-system" data-bundled-style></style>
+<meta id="ps20-member-home-controls" data-bundled-script="true">
+<!-- 1.4 · Kullanıcı ana sayfası hizalama, bağlantı kartları ve ortak yükleme markası -->
+<style id="ps21-member-home-polish" data-bundled-style></style>
+<meta id="ps21-member-home-interactions" data-bundled-script="true">
+<!-- 1.4 · Son görsel öncelikler -->
+<style id="ps25-final-member-home-priorities" data-bundled-style></style>
+<!-- 1.4 · Oturum dayanıklılığı, ikinci ana sayfa geçişleri ve video yükleme katmanı -->
+<style id="ps22-session-and-video-layer" data-bundled-style></style>
+<!-- 1.4 · Şeffaf yükleme videosu ve ikinci ana sayfa etkileşim düzeltmesi -->
+<!-- 1.4 · Tek sürüm bandı, ilk tıklama etkileşimleri ve WebM yükleme videosu -->
+<!-- 1.4 · En son uygulanacak ikinci ana sayfa görsel katmanı -->
+<style id="ps26-final-member-home-priorities" data-bundled-style></style>
+<!-- 1.4 · Hesap güvenliği, doğrulama kodu ve ikinci ana sayfa son düzeltmeleri -->
+<style id="ps27-account-and-interaction-fixes" data-bundled-style></style>
+<meta id="ps27-account-and-interaction-fixes" data-bundled-script="true">
+<!-- 1.4.1 · Tekil menü, yükleme ve Dashboard etkileşim katmanı -->
+<style id="ps28-stability-and-navigation" data-bundled-style></style>
+<meta id="ps28-stability-and-navigation" data-bundled-script="true">
+<!-- Ortak PS işareti: ikinci ana sayfadaki eğik, sol altı sivri kimlik -->
+<style id="ps29-unified-ps-logo" data-bundled-style></style>
+<!-- KV koruması: oturum bilgisi arayüz içinde tekrar tekrar istense bile
+     aynı oturum için kısa süreli tek bir güvenli okuma kullanılır. -->
+<!-- Only the current PS20 user home may be painted. This prevents legacy
+     renderers from flashing during member-home restoration. -->
+<style id="ps34-member-home-render-guard" data-bundled-style></style>
+<meta id="ps31-kv-write-protection" data-bundled-script="true">
+<!-- Turnstile koruması: anahtarlar Worker'a eklendiğinde kayıt, giriş ve
+     e-posta kodu isteklerine tek kullanımlık bot doğrulaması ekler. -->
+<meta id="ps32-turnstile-security" data-bundled-script="true">
+<!-- 1.8: Özel API alan adına geçiş ve imzalı Kick canlı olay eşitlemesi. -->
+<meta id="ps33-kick-live-events" data-bundled-script="true">
+<meta id="ps-donate-connector-live-sync" data-bundled-script="true">
+<meta id="ps35-first-party-session-security" data-bundled-script="true">
+<!-- Ücretsiz dayanıklılık katmanı: yalnızca güvenli API okumaları kısa süreli
+     ağ hatasında bir kez tekrar edilir. Giriş, kayıt ve kod işlemlerini
+     tekrar etmez; böylece aynı işlem iki defa çalışmaz. -->
+<meta id="ps36-free-performance-layer" data-bundled-script="true">
+<meta id="ps37-session-home-and-loader-unifier" data-bundled-script="true">
+<style id="ps38-completion-panel-style" data-bundled-style></style>
+<meta id="ps38-completion-account-exit" data-bundled-script="true">
+<style id="ps39-auth-cooldown-style" data-bundled-style></style>
+<meta id="ps39-auth-cooldown-notice" data-bundled-script="true">
+<!-- 1.8.3 · giriş geçişi ve zaman aşımı bildirimi -->
+<style id="ps40-login-flow-style" data-bundled-style></style>
+<meta id="ps40-login-flow" data-bundled-script="true">
+<!-- 1.9.4 · kullanıcı adı giriş doğrulaması ve panel kurtarma -->
+<style id="ps41-auth-verify-style" data-bundled-style></style>
+<meta id="ps41-auth-verification-and-dashboard-repair" data-bundled-script="true">
+<style id="ps42-interface-fixes" data-bundled-style></style>
+<meta id="ps42-interface-fixes" data-bundled-script="true">
+<style id="ps43-brand-logo-unification" data-bundled-style></style>
+<style id="ps44-final-interface-repair" data-bundled-style></style>
+<script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js" integrity="sha384-lQXOAyZwHXE55JFyrOMB7nY2Wv+m5ZWNtJcHrd1rceRQXAYNLak8ukN5TjBTcIwz" crossorigin="anonymous"></script>
+<script src="app-final.js?v=4.1"></script><meta id="ps44-final-interface-repair" data-bundled-script="true">
+<style id="ps66-hybrid-donate-styles" data-bundled-style></style>
+</body>
+</html>

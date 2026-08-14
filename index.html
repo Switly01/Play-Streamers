@@ -35,7 +35,7 @@
 <aside class="popover" id="connections" hidden><div id="connectionList"></div></aside>
 <div class="notice-layer" id="notices"></div>
 <div class="overlay" id="modal" hidden></div><div class="overlay" id="updatesOverlay" hidden></div>
-<script src="app.js?v=4.22"></script>
+  <script src="app.js?v=4.23"></script>
 
 
 <style id="play-streamers-second-home" data-bundled-style></style>
@@ -154,5 +154,21 @@
 <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js" integrity="sha384-lQXOAyZwHXE55JFyrOMB7nY2Wv+m5ZWNtJcHrd1rceRQXAYNLak8ukN5TjBTcIwz" crossorigin="anonymous"></script>
   <script src="app-final.js?v=4.22"></script><meta id="ps44-final-interface-repair-script" data-bundled-script="true">
 <style id="ps66-hybrid-donate-styles" data-bundled-style></style>
+<script id="sw-product-activity-pulse">
+(() => {
+  const storageKey = "sw-product-visitor";
+  const endpoint = "https://api.swcreate.com/api/activity/pulse";
+  const visitor = localStorage.getItem(storageKey) || crypto.randomUUID();
+  localStorage.setItem(storageKey, visitor);
+  const pulse = () => fetch(endpoint, {
+    method: "POST",
+    credentials: "omit",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify({ product: "play-streamers", visitor }),
+  }).catch(() => {});
+  pulse();
+  window.setInterval(pulse, 60_000);
+})();
+</script>
 </body>
 </html>

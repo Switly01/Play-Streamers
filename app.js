@@ -2137,7 +2137,7 @@
       if (!host) {
         host = document.createElement('div');
         host.id = 'ps32-turnstile-host';
-        host.style.cssText = 'position:fixed;right:12px;bottom:12px;z-index:2147483647;min-height:65px';
+        host.style.cssText = 'position:fixed;right:12px;bottom:12px;z-index:2147483647;width:300px;min-height:65px';
         document.body.append(host);
       }
       state.widgetId = window.turnstile.render(host, {
@@ -2147,7 +2147,7 @@
         // not a valid client-side size.  Modern Turnstile only accepts
         // normal, compact or flexible here.  The challenge is still rendered
         // on demand and stays hidden unless visitor interaction is required.
-        size: 'flexible',
+        size: 'normal',
         appearance: 'interaction-only',
         execution: 'execute',
         callback(token) { if (state.pending) state.pending.resolve(token); state.pending = null; },

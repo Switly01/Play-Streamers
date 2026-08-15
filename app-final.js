@@ -7,6 +7,15 @@
   const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
   const esc = value => { const node = document.createElement('span'); node.textContent = String(value ?? ''); return node.innerHTML; };
   const state = () => { try { return JSON.parse(localStorage.getItem(STORE) || '{}'); } catch (_) { return {}; } };
+  const INFO_ROUTE_PATHS = Object.freeze({ about: '/about', products: '/products', how: '/how-it-works' });
+  const ACCOUNT_ROUTE_PATHS = Object.freeze({ data: '/account/data', profile: '/account/profile', account: '/account/security', devices: '/account/devices', connections: '/account/connections', support: '/account/support' });
+  function syncCleanRoute(path, replace = false) {
+    window.psNavigatePath?.(path, { replace, apply: false });
+  }
+  function visibleMemberRoute() {
+    const app = $('.app');
+    return app && !app.hidden && getComputedStyle(app).display !== 'none' ? '/dashboard' : '/home';
+  }
   const kick = () => { const data = state().settings || {}, user = data.user || {}; const connected = Boolean(user.kickConnected || user.kick_connected || user.kickId || user.kick_id || user.kickUserId || user.kick_user_id || data.kickSession || data.kickAccount?.id || data.kickAccount?.username); return { connected, copy: connected ? (data.kickAccount?.username ? `@${data.kickAccount.username}` : 'Kick hesabın bağlı') : 'Henüz Kick bağlantısı yok' }; };
   const connectionHealth = () => { const data = state().settings || {}, user = data.user || {}; const gmail = Boolean(user.googleConnected || user.google_connected || user.googleId || user.google_id || user.emailLinked || user.emailVerified || user.email_verified || user.provider === 'google' || user.authProvider === 'google'); const kickConnected = kick().connected; return { gmail, kick: kickConnected, allConnected: gmail && kickConnected }; };
   const wifiIcon = connected => connected ? '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3.5 9.5a13 13 0 0 1 17 0M6.7 13a8.4 8.4 0 0 1 10.6 0M10 16.5a3.4 3.4 0 0 1 4 0M12 20h.01" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>' : '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4.8 8.4a13 13 0 0 1 15.7 1.1M7.5 12.2a8.4 8.4 0 0 1 8.8.1M10.5 16.1a3.4 3.4 0 0 1 3.1.2M12 20h.01M3 3l18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>';
@@ -136,8 +145,17 @@
     }).catch(() => {});
   }
   function showDialog(id, body) { let layer = document.getElementById(id); if (!layer) { layer = document.createElement('section'); layer.id = id; document.body.append(layer); } window.clearTimeout(layer.ps48CloseTimer); layer.classList.remove('ps44-modal-closing'); layer.innerHTML = `<article class="ps44-dialog">${body}</article>`; layer.hidden = false; layer.onclick = event => { if (event.target === layer) closeDialog(layer); }; return layer; }
+  let updatesReturnPath = '';
+  function closeUpdates() {
+    closeDialog($('#ps44UpdatesDialog'));
+    const fallback = state().settings?.userSession ? visibleMemberRoute() : '/';
+    syncCleanRoute(updatesReturnPath || fallback, true);
+  }
   function showUpdates() {
     closeLocaleMenus(); closeHomePanels(); closeStatus(); closeNotifications();
+    if (location.pathname !== '/updates') updatesReturnPath = state().settings?.userSession ? visibleMemberRoute() : '/';
+    else if (!updatesReturnPath) updatesReturnPath = state().settings?.userSession ? visibleMemberRoute() : '/';
+    syncCleanRoute('/updates');
     const history = [
       ['4.4','11 Ağustos 2026',['Genel arayüz onarımının canlı sayaçlarda tekrar tekrar çalışarak oluşturduğu titreme ve yeniden çizim döngüsü kaldırıldı; Google girişi, dil menüsü ve ikinci ana sayfa tekil etkileşim katmanına alındı.','Play Bot; görünür Google düğmesi, dil bayrakları, güncelleme akordeonu, DAB logosu, aktif abone alanı ve Dashboard sıfırlama denetimini kullanıcı akışı gibi sınayan açık hata mesajlarıyla genişletildi.','Kick grafiklerinde tarih etiketleri on beş günlük aralıklara sadeleştirildi, bu ay takip eden verisi günlük değişime çevrildi ve sütun ayrıntıları ile 24 saatlik görünüm güçlendirildi.','TipeeeStream DAB logosu gömülü güvenli kaynağa sabitlendi; Play Connect DAB görünümünün sayfa yüksekliğini bozması engellendi.']],
       ['4.3','11 Ağustos 2026',['Play Bot yalnızca gerçek sorunları madde madde gösteren sürekli çalışma zamanı denetimine geçirildi; yinelenen arayüz kimlikleri ve açılır pencere çakışmaları kaldırıldı.','Kick ölçümleri saatlik olarak saklanmaya başladı; 90 günlük sütunlarda her günün tarihi, ayrıntısı ve tıklanınca açılan 24 saatlik görünümü eklendi.','Dil bayrakları, Google düğmesi, TipeeeStream DAB logosu, Play Connect DAB sayfa yüksekliği ve ikinci ana sayfanın tekil yenileme akışı sağlamlaştırıldı.']],
@@ -177,7 +195,7 @@
     const notes = history.map(([version,date,items], index) => `<article class="ps48-update-version${index === 0 ? ' is-latest ps51-update-expanded' : ''}" data-expanded="${index === 0 ? 'true' : 'false'}"><header><span class="ps50-version-heading"><b>${esc(version)}</b>${index === 0 ? '<span class="ps50-latest-badge">SON SÜRÜM</span>' : ''}</span><span class="ps51-update-meta"><time>${esc(date)}</time><button class="ps51-update-expand" type="button" aria-expanded="${index === 0}" aria-label="${esc(version)} sürüm ayrıntılarını ${index === 0 ? 'daralt' : 'büyüt'}">${index === 0 ? '&#8722;' : '+'}</button></span></header><ul${index === 0 ? '' : ' hidden'}>${items.map(item => `<li>${esc(item)}</li>`).join('')}</ul></article>`).join('');
     const layer = showDialog('ps44UpdatesDialog', `<button class="ps47-dialog-close" type="button" aria-label="Güncelleme notlarını kapat">×</button><span class="ps44-panel-title">GÜNCELLEME NOTLARI</span><h2>Tüm güncellemeler</h2><p class="ps47-lead">En yeni sürümden başlayarak bütün yayın notlarını aşağı kaydırarak inceleyebilirsin.</p><div class="ps48-update-history">${notes}</div><div class="ps44-dialog-actions"><button class="ps44-confirm" type="button">Tamam</button></div>`);
     $('.ps44-dialog', layer)?.classList.add('ps47-rich-dialog');
-    $$('.ps47-dialog-close,.ps44-confirm', layer).forEach(button => button.onclick = () => closeDialog(layer));
+    $$('.ps47-dialog-close,.ps44-confirm', layer).forEach(button => button.onclick = closeUpdates);
     const timeline = $('.ps48-update-history', layer);
     const syncTimeline = () => { if (timeline) timeline.style.setProperty('--ps52-timeline-height', `${Math.max(timeline.clientHeight, timeline.scrollHeight)}px`); };
     window.requestAnimationFrame(syncTimeline);
@@ -395,6 +413,7 @@
       return;
     }
     restorePublicLandingSurface();
+    syncCleanRoute('/', true);
     if (layer.classList.contains('ps49-info-closing')) return;
     layer.classList.add('ps49-info-closing');
     window.clearTimeout(layer.ps49CloseTimer);
@@ -487,7 +506,7 @@
       actions.append(...[globe, status, login, signup].filter(Boolean));
     }
     const brand = $('.landing-brand', nav); if (brand) { brand.setAttribute('role', 'button'); brand.setAttribute('tabindex', '0'); brand.setAttribute('aria-label', 'Birinci ana sayfaya dön'); brand.onclick = () => closeInfoPage(); brand.onkeydown = event => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); closeInfoPage(); } }; }
-    $$('.ps14-nav-links button', nav).forEach(button => { const infoKey = button.dataset.info || (/ürün/i.test(button.textContent) ? 'products' : /nasıl/i.test(button.textContent) ? 'how' : 'about'); button.dataset.ps49Info = infoKey; button.onclick = event => { event.preventDefault(); event.stopPropagation(); renderInfoContent(layer, infoKey, true); }; });
+    $$('.ps14-nav-links button', nav).forEach(button => { const infoKey = button.dataset.info || (/ürün/i.test(button.textContent) ? 'products' : /nasıl/i.test(button.textContent) ? 'how' : 'about'); button.dataset.ps49Info = infoKey; button.onclick = event => { event.preventDefault(); event.stopPropagation(); renderInfoContent(layer, infoKey, true); syncCleanRoute(INFO_ROUTE_PATHS[infoKey] || '/about'); }; });
     $$('[data-ps52-source-id]', nav).forEach(control => {
       const sourceId = control.dataset.ps52SourceId;
       if (control.matches('.ps41-locale-button,.ps15-locale-button')) { control.onclick = event => { event.preventDefault(); event.stopPropagation(); openInfoLocale(control); }; return; }
@@ -497,9 +516,7 @@
         event.stopPropagation();
         closeAllFloatingSurfaces();
         if (sourceId === 'landingLogin' || sourceId === 'landingSignup') {
-          const mode = sourceId === 'landingLogin' ? 'login' : 'register';
-          if (typeof window.psOpenLandingAuth === 'function') window.psOpenLandingAuth(mode);
-          else document.getElementById(sourceId)?.click();
+          openPublicAuth(control);
           return;
         }
         document.getElementById(sourceId)?.click();
@@ -520,9 +537,10 @@
     window.clearTimeout(layer.ps49CloseTimer); layer.classList.remove('ps49-info-closing');
     renderInfoContent(layer, key, !layer.hidden && layer.dataset.current !== key);
     layer.hidden = false;
+    syncCleanRoute(INFO_ROUTE_PATHS[key] || '/about');
     ensureSupport(); normalizeSwCreate();
   }
-  function showMemberHome(useLoader = true) {
+  function showMemberHome(useLoader = true, updateRoute = true) {
     closeAllFloatingSurfaces(); closeDashboardCardCopy();
     const reveal = () => {
       const layer = $('#ps49InfoPage'), app = $('.app'), overlay = $('#authOverlay');
@@ -543,6 +561,7 @@
       if (home) { home.hidden = false; home.style.removeProperty('display'); home.scrollTo?.({ top: 0 }); }
       sessionStorage.removeItem('ps-second-dashboard');
       document.body.classList.remove('auth-locked');
+      if (updateRoute) syncCleanRoute('/home');
       queueRepair();
     };
     if (useLoader && typeof window.psUnifiedLoad === 'function') window.psUnifiedLoad(reveal);
@@ -561,22 +580,18 @@
     else showMemberHome(false);
   }
   function goMemberProductsHome() {
-    if (history.state?.psMemberProducts) {
-      const nextState = { ...history.state }; delete nextState.psMemberProducts; delete nextState.psMemberProductsOrigin;
-      history.replaceState(nextState, '', location.href);
-    }
     hideMemberProductsLayer();
     showMemberHome(false);
   }
   function goBackFromMemberProducts() {
-    if (history.state?.psMemberProducts) history.back();
+    if (location.pathname === '/products' && history.length > 1) history.back();
     else restoreMemberProductsOrigin();
   }
   function showMemberProducts() {
     closeAllFloatingSurfaces(); closeDashboardCardCopy();
     const dashboard = $('.app.ps13-dashboard') || $('.app');
     memberProductsOrigin = dashboard && !dashboard.hidden && getComputedStyle(dashboard).display !== 'none' ? 'dashboard' : 'member';
-    if (!history.state?.psMemberProducts) history.pushState({ ...history.state, psMemberProducts: true, psMemberProductsOrigin: memberProductsOrigin }, '', location.href);
+    syncCleanRoute('/products');
     let layer = $('#ps49InfoPage');
     if (!layer) { layer = document.createElement('section'); layer.id = 'ps49InfoPage'; document.body.append(layer); }
     window.clearTimeout(layer.ps49CloseTimer);
@@ -589,11 +604,6 @@
     if (back) { back.onpointerdown = event => { event.preventDefault(); event.stopImmediatePropagation(); goBackFromMemberProducts(); }; back.onclick = event => { event.preventDefault(); event.stopImmediatePropagation(); }; }
     normalizeSwCreate();
   }
-  window.addEventListener('popstate', event => {
-    const layer = $('#ps49InfoPage');
-    if (!layer?.classList.contains('ps53-products-copy') || layer.hidden) return;
-    restoreMemberProductsOrigin(event.state?.psMemberProductsOrigin || memberProductsOrigin);
-  });
   const accountAvatars = [
     ['avatar:male-1','👨🏻','Erkek profil 1'],['avatar:male-2','🧔🏻','Erkek profil 2'],['avatar:male-3','👨🏽','Erkek profil 3'],
     ['avatar:female-1','👩🏻','Kadın profil 1'],['avatar:female-2','👩🏽','Kadın profil 2'],['avatar:female-3','👩🏾','Kadın profil 3']
@@ -912,7 +922,7 @@
     if (result.user || result.sessionId) { const next = state(); next.settings ||= {}; if (result.user) next.settings.user = result.user; if (result.sessionId) next.settings.userSession = result.sessionId; saveAccountState(next); }
     return result;
   }
-  const DONATE_EXTENSION_DOWNLOAD_URL = './play-connect.zip?v=1.10.3';
+  const DONATE_EXTENSION_DOWNLOAD_URL = './play-connect-v1.10.3.zip?v=1.10.3';
   const DONATE_PROVIDER_ICON_DATA = Object.freeze({
     "boosty": "data:image/png;base64,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",
     "buymeacoffee": "data:image/png;base64,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",
@@ -1635,6 +1645,7 @@
     window.clearTimeout(layer.ps53CloseTimer);
     layer.classList.add('ps53-account-closing');
     layer.ps53CloseTimer = window.setTimeout(() => layer.remove(), 230);
+    syncCleanRoute(visibleMemberRoute(), true);
   }
   function bindAccountPane(layer, activeTab) {
     window.clearTimeout(layer.ps65DeviceTimer);
@@ -2155,6 +2166,7 @@
       support: `<span class="ps51-account-kicker">HESAP MERKEZİ · DESTEK TALEPLERİ</span><h2>Destek konuşmaların</h2><p class="ps51-account-lead">Gönderdiğin talepler ve destek ekibinden gelen cevaplar burada aynı konuşma içinde görünür.</p>${supportPaneHtml()}`
     };
     const safeTab = panes[tab] ? tab : 'data';
+    syncCleanRoute(ACCOUNT_ROUTE_PATHS[safeTab] || ACCOUNT_ROUTE_PATHS.data);
     if (existing) {
       const requestVersion = accountCenterViewVersion;
       existing.dataset.requestedTab = safeTab;
@@ -3072,7 +3084,7 @@
       try { if (token) await fetch('https://api.pstreamers.com/api/auth/logout', { method: 'POST', headers: { Authorization: `Bearer ${token}` } }); } catch (_) { /* Local session is still safely closed. */ }
       current.settings ||= {}; delete current.settings.userSession; delete current.settings.user; current.settings.rememberUser = false; localStorage.setItem(STORE, JSON.stringify(current));
       Object.keys(sessionStorage).filter(key => key.startsWith('ps-') || key.startsWith('play-streamers')).forEach(key => sessionStorage.removeItem(key));
-      close(layer); closeHomePanels(); const finish = () => location.replace(location.pathname + location.search); if (typeof window.ps28Load === 'function') window.ps28Load(finish); else finish();
+      close(layer); closeHomePanels(); const finish = () => location.replace('/'); if (typeof window.ps28Load === 'function') window.ps28Load(finish); else finish();
     };
   }
   window.ps44RequestLogout = requestLogout;
@@ -3331,12 +3343,17 @@
   let lastLocalePress = 0;
   let lastProductPress = 0;
   let lastKickPress = 0;
+  let publicAuthReturnPath = '/';
   function publicAuthTrigger(target) {
     return target?.closest('#landingLogin,#landingSignup,[data-ps52-source-id="landingLogin"],[data-ps52-source-id="landingSignup"],[data-auth="login"],[data-auth="register"]') || null;
   }
   function openPublicAuth(trigger) {
     const sourceId = trigger?.dataset.ps52SourceId || trigger?.id || '';
     const mode = sourceId === 'landingSignup' || trigger?.dataset.auth === 'register' ? 'register' : 'login';
+    if (location.pathname !== '/account' && location.pathname !== '/login' && location.pathname !== '/register') {
+      publicAuthReturnPath = `${location.pathname}${location.search}${location.hash}`;
+    }
+    syncCleanRoute(`/account?mode=${mode}`);
     closeAllFloatingSurfaces();
     hideTooltip();
     if (!trigger?.closest('#ps49InfoPage')) restorePublicLandingSurface();
@@ -3597,6 +3614,40 @@
     }, 450);
   }
   handleDonateOAuthReturn();
+  function hasStoredUserSession() {
+    const current = state();
+    return Boolean(current.settings?.userSession || current.userSession);
+  }
+  function showPublicHomeRoute() {
+    closeAllFloatingSurfaces();
+    closeDialog($('#ps44UpdatesDialog'));
+    const info = $('#ps49InfoPage');
+    if (info) { window.clearTimeout(info.ps49CloseTimer); info.hidden = true; info.className = ''; }
+    const account = $('#ps51AccountCenter');
+    if (account) account.hidden = true;
+    restorePublicLandingSurface();
+    syncCleanRoute('/', true);
+  }
+  window.psCleanRouteApi = Object.freeze({
+    hasSession: hasStoredUserSession,
+    publicHome: showPublicHomeRoute,
+    publicInfo: key => { restorePublicLandingSurface(); showPublicInfo(key); },
+    auth: mode => {
+      restorePublicLandingSurface();
+      const trigger = document.getElementById(mode === 'register' ? 'landingSignup' : 'landingLogin');
+      openPublicAuth(trigger || { dataset: { auth: mode }, closest: () => null });
+    },
+    memberHome: () => showMemberHome(false, false),
+    memberProducts: showMemberProducts,
+    dashboard: () => window.ps66RestoreDashboardSurface?.(),
+    updates: () => {
+      if (hasStoredUserSession()) showMemberHome(false, false);
+      else restorePublicLandingSurface();
+      showUpdates();
+    },
+    account: tab => { showMemberHome(false, false); showAccountCenter(tab); }
+  });
+  window.psGetPublicAuthReturnPath = () => publicAuthReturnPath || '/';
   repair();
 })();
 (() => {
@@ -3619,6 +3670,7 @@
     if (home) { home.hidden = true; home.style.setProperty('display', 'none', 'important'); }
     if (overlay) { overlay.hidden = true; overlay.style.setProperty('display', 'none', 'important'); }
     if (app) { app.hidden = false; app.style.removeProperty('display'); app.classList.add('ps13-dashboard'); }
+    window.psNavigatePath?.('/dashboard', { apply: false });
   }
   window.ps66RestoreDashboardSurface = restoreDashboardSurface;
 

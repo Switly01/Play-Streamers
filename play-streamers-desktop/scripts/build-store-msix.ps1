@@ -1,8 +1,8 @@
 [CmdletBinding()]
 param(
-    [string]$IdentityName = 'SWCREATE.PlayStreamers.Dev',
-    [string]$Publisher = 'CN=SW CREATE',
-    [string]$PublisherDisplayName = 'SW CREATE',
+    [string]$IdentityName = 'Switly.PlayStreamers',
+    [string]$Publisher = 'CN=C7E10994-8739-4CF7-9F8C-2F23700A5BDC',
+    [string]$PublisherDisplayName = 'Switly',
     [string]$OutputPath
 )
 

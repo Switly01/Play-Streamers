@@ -90,6 +90,10 @@ tutulmaz.
   ve Publisher değerleriyle imzasız x64 MSIX üretir. Store sertifikasyon sonrası
   MSIX'i ücretsiz Microsoft sertifikasıyla yeniden imzalar; NSIS doğrudan indirme
   kanalı mevcut minisign güncelleme zincirini kullanmaya devam eder.
+- Play Streamers Partner Center ürünü `Switly.PlayStreamers` paket kimliği ve
+  `9NWZ0TF5K999` Store ID değeriyle 22 Ağustos 2026'da oluşturuldu. Publisher
+  değeri `CN=C7E10994-8739-4CF7-9F8C-2F23700A5BDC`, görünen yayıncı adı
+  `Switly` olarak kullanılır.
 
 Sürüm 4.20: Saatlik Kick takipçi/abone ölçümü bütün hesapları kilitleyen tek
 cron işaretinden çıkarıldı. Worker artık her hesabın ilgili saat satırını ayrı

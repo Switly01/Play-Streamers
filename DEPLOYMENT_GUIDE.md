@@ -7,8 +7,8 @@ Bu sürüm iki açık dağıtım klasörü, masaüstü uygulaması ve bir eklent
 - `cloudflare-worker-latest`: Cloudflare Worker ve D1 migration dosyaları.
 - `downloads/Play-Streamers-Setup.exe`: Play Streamers 0.4.0 Windows kurucusu.
 - `release/microsoft-store/Play-Streamers-0.4.0.0-x64.msix`: Partner Center
-  kimliği verilmeden önce oluşturulan doğrulama paketi. Mağazaya yüklemeden önce
-  ürünün gerçek Identity Name ve Publisher değerleriyle yeniden üretilmelidir.
+  kimliği `Switly.PlayStreamers` ile oluşturulan Microsoft Store paketi.
+  Store ID: `9NWZ0TF5K999`.
 
 ## GitHub Pages
 

@@ -94,12 +94,15 @@ tutulmaz.
   `9NWZ0TF5K999` Store ID değeriyle 22 Ağustos 2026'da oluşturuldu. Publisher
   değeri `CN=C7E10994-8739-4CF7-9F8C-2F23700A5BDC`, görünen yayıncı adı
   `Switly` olarak kullanılır.
-- Store dağıtımı x64 için iki sıralı paket kullanır. `0.4.0.1` paketi Windows
+- Store dağıtımı x64 için iki sıralı paket kullanır. `0.4.1.0` paketi Windows
   10 2004 (`10.0.19041`) ve sonrasında Studio, yayın ve kayıt özelliklerini
-  sunar ancak Windows 11'e özel COM sanal kamera kaydını içermez. `0.4.0.2`
+  sunar ancak Windows 11'e özel COM sanal kamera kaydını içermez. `0.4.2.0`
   paketi Windows 11 (`10.0.22000`) ve sonrasında aynı uygulamayı sanal kamera
   kaydıyla sunar. Uygulama ayrıca işletim sistemi derlemesini yerelde denetler;
   Windows 10'da sanal kamera yöneticisini çalıştırmaz.
+  Kullanıcıya gösterilen ürün sürümü her iki pakette de `0.4.0` olarak kalır;
+  farklı MSIX numaraları aynı x64 mimarisindeki iki paketin Store tarafından
+  ayırt edilmesi ve doğru işletim sistemine sıralanması içindir.
 
 Sürüm 4.20: Saatlik Kick takipçi/abone ölçümü bütün hesapları kilitleyen tek
 cron işaretinden çıkarıldı. Worker artık her hesabın ilgili saat satırını ayrı

@@ -4,6 +4,12 @@ param(
     [string]$Publisher = 'CN=C7E10994-8739-4CF7-9F8C-2F23700A5BDC',
     [string]$PublisherDisplayName = 'Switly',
     [ValidatePattern('^\d+\.\d+\.\d+\.\d+$')]
+    [ValidateScript({
+        if (($_ -split '\.')[3] -ne '0') {
+            throw 'Microsoft Store MSIX sürümünün son hanesi 0 olmalıdır (ör. 0.4.1.0).'
+        }
+        $true
+    })]
     [string]$PackageVersion,
     [ValidateSet('10.0.19041.0', '10.0.22000.0')]
     [string]$MinimumWindowsVersion = '10.0.22000.0',

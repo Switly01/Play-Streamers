@@ -1,0 +1,10 @@
+{
+  "version": "0.3.0",
+  "channel": "preview",
+  "platform": "windows-x86_64",
+  "file": "Play-Streamers-Setup.exe",
+  "size": 30206172,
+  "sha256": "53B4ED200BFCF2794495E00CF99CA4BD1BE85010B9D3A31ED35D7F99AEA56761",
+  "signed": false,
+  "publishedAt": "2026-08-22T18:19:04+03:00"
+}

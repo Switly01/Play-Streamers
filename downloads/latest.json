@@ -1,10 +1,11 @@
 {
-  "version": "0.3.0",
-  "channel": "preview",
-  "platform": "windows-x86_64",
-  "file": "Play-Streamers-Setup.exe",
-  "size": 30206172,
-  "sha256": "53B4ED200BFCF2794495E00CF99CA4BD1BE85010B9D3A31ED35D7F99AEA56761",
-  "signed": false,
-  "publishedAt": "2026-08-22T18:19:04+03:00"
+  "version": "0.3.1",
+  "notes": "Play Streamers Desktop 0.3.1: imzalı otomatik güncelleme altyapısı ve Studio iyileştirmeleri.",
+  "pub_date": "2026-08-22T15:52:54.1770296+00:00",
+  "platforms": {
+    "windows-x86_64": {
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVRcWlCbnhDNnc4UE1jQ0xrSjUvSlg3OGVoY0w4OGdNaHhUbE03eXU0N1o4cnNXcGdrZDlScDErSzdlcGNuT0p0aUdKKzR2WXFNemRvVTRlSGhuK1BIamZjUG5UYmEvcHdnPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzg3NDEzOTQ1CWZpbGU6UGxheSBTdHJlYW1lcnNfMC4zLjFfeDY0LXNldHVwLmV4ZQp2NUVTTHdmeC9hWGxuMjBIVXBSaXN3WGpEckpSRHUxZnpLZGNRS0dKSzE4UllEQ3oxZDEwMmtBQVhLVnFLbWFDSFM4UUxFM3RtTXJMMW5jNjVodUtDUT09Cg==",
+      "url": "https://pstreamers.com/downloads/Play-Streamers-Setup.exe"
+    }
+  }
 }

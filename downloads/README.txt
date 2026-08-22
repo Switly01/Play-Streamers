@@ -1,8 +1,11 @@
-Play Streamers 0.3.0 Windows önizlemesi
+Play Streamers 0.3.1 Windows önizlemesi
 
 Dosya: Play-Streamers-Setup.exe
-Boyut: 30.206.172 bayt
-SHA-256: 53B4ED200BFCF2794495E00CF99CA4BD1BE85010B9D3A31ED35D7F99AEA56761
+Boyut: 31.209.090 bayt
+SHA-256: 5FE82B1E0AADA97560D99ECA92BD82A3AB780F8C1707B849DD72FA3629DAAC9E
+
+Uygulama içi güncellemeler ayrı Tauri imzasıyla doğrulanır. İmza dosyası:
+Play-Streamers-Setup.exe.sig
 
 Bu önizleme kurucusu henüz bir Windows kod imzalama sertifikasıyla
 imzalanmamıştır. Dosyayı yalnız pstreamers.com veya projenin doğrulanmış sürüm

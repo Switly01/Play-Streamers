@@ -6,9 +6,12 @@ Bu sürüm iki açık dağıtım klasörü, masaüstü uygulaması ve bir eklent
 - `release/github-pages-latest`: GitHub Pages / `pstreamers.com` ön yüzü.
 - `cloudflare-worker-latest`: Cloudflare Worker ve D1 migration dosyaları.
 - `downloads/Play-Streamers-Setup.exe`: Play Streamers 0.4.0 Windows kurucusu.
-- `release/microsoft-store/Play-Streamers-0.4.0.0-x64.msix`: Partner Center
-  kimliği `Switly.PlayStreamers` ile oluşturulan Microsoft Store paketi.
-  Store ID: `9NWZ0TF5K999`.
+- `release/microsoft-store/Play-Streamers-0.4.0.1-win10-x64.msix`: Windows 10
+  2004 ve sonrası için sanal kamera kaydı içermeyen temel Store paketi.
+- `release/microsoft-store/Play-Streamers-0.4.0.2-win11-x64.msix`: Windows 11
+  için daha yüksek sürümlü, Play Streamers Camera kayıtlı Store paketi.
+  İki paketin kimliği `Switly.PlayStreamers`, Store ID değeri
+  `9NWZ0TF5K999`'dir.
 
 ## GitHub Pages
 

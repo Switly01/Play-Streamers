@@ -14,7 +14,7 @@
     <Description>Yayın, kayıt ve yayıncı çalışma alanı.</Description>
   </Properties>
   <Dependencies>
-    <TargetDeviceFamily Name="Windows.Desktop" MinVersion="10.0.22000.0" MaxVersionTested="10.0.26100.0" />
+    <TargetDeviceFamily Name="Windows.Desktop" MinVersion="__MIN_WINDOWS_VERSION__" MaxVersionTested="10.0.26100.0" />
   </Dependencies>
   <Resources>
     <Resource Language="tr-TR" />
@@ -34,13 +34,7 @@
         <uap:Extension Category="windows.protocol">
           <uap:Protocol Name="playstreamers" />
         </uap:Extension>
-        <com4:Extension Category="windows.comServer">
-          <com4:ComServer>
-            <com5:InProcessServer Path="binaries\vcam\PlayStreamersVirtualCamera.dll">
-              <com5:Class Id="7F293AB7-BE5C-4E3F-97D1-C10D938637E1" ThreadingModel="Both" />
-            </com5:InProcessServer>
-          </com4:ComServer>
-        </com4:Extension>
+__VIRTUAL_CAMERA_EXTENSION__
       </Extensions>
     </Application>
   </Applications>

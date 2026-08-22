@@ -31,6 +31,7 @@ wasapi = "0.23"
 tokio = { version = "1", features = ["rt", "time"] }
 zeromq = "0.6"
 windows-sys = { version = "0.61", features = ["Win32_Foundation", "Win32_Security", "Win32_System_Memory", "Win32_UI_WindowsAndMessaging"] }
+windows-version = "0.1"
 
 [dev-dependencies]
 base64 = "0.22"

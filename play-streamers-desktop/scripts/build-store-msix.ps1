@@ -3,6 +3,11 @@ param(
     [string]$IdentityName = 'Switly.PlayStreamers',
     [string]$Publisher = 'CN=C7E10994-8739-4CF7-9F8C-2F23700A5BDC',
     [string]$PublisherDisplayName = 'Switly',
+    [ValidatePattern('^\d+\.\d+\.\d+\.\d+$')]
+    [string]$PackageVersion,
+    [ValidateSet('10.0.19041.0', '10.0.22000.0')]
+    [string]$MinimumWindowsVersion = '10.0.22000.0',
+    [switch]$WithoutVirtualCameraRegistration,
     [string]$OutputPath
 )
 
@@ -17,9 +22,12 @@ $storeRelease = Join-Path $desktopRoot '..\release\microsoft-store'
 $config = Get-Content -Raw -LiteralPath (Join-Path $tauriRoot 'tauri.conf.json') | ConvertFrom-Json
 $versionParts = @($config.version.Split('.'))
 while ($versionParts.Count -lt 4) { $versionParts += '0' }
-$packageVersion = ($versionParts | Select-Object -First 4) -join '.'
+if (-not $PackageVersion) {
+    $PackageVersion = ($versionParts | Select-Object -First 4) -join '.'
+}
 if (-not $OutputPath) {
-    $OutputPath = Join-Path $storeRelease "Play-Streamers-$packageVersion-x64.msix"
+    $flavor = if ($WithoutVirtualCameraRegistration) { 'win10' } else { 'win11' }
+    $OutputPath = Join-Path $storeRelease "Play-Streamers-$PackageVersion-$flavor-x64.msix"
 }
 
 $requiredFiles = @(
@@ -62,7 +70,22 @@ $manifest = Get-Content -Raw -LiteralPath (Join-Path $desktopRoot 'store\AppxMan
 $manifest = $manifest.Replace('__IDENTITY_NAME__', [Security.SecurityElement]::Escape($IdentityName))
 $manifest = $manifest.Replace('__PUBLISHER__', [Security.SecurityElement]::Escape($Publisher))
 $manifest = $manifest.Replace('__PUBLISHER_DISPLAY_NAME__', [Security.SecurityElement]::Escape($PublisherDisplayName))
-$manifest = $manifest.Replace('__VERSION__', $packageVersion)
+$manifest = $manifest.Replace('__VERSION__', $PackageVersion)
+$manifest = $manifest.Replace('__MIN_WINDOWS_VERSION__', $MinimumWindowsVersion)
+$virtualCameraExtension = if ($WithoutVirtualCameraRegistration) {
+    ''
+} else {
+@'
+        <com4:Extension Category="windows.comServer">
+          <com4:ComServer>
+            <com5:InProcessServer Path="binaries\vcam\PlayStreamersVirtualCamera.dll">
+              <com5:Class Id="7F293AB7-BE5C-4E3F-97D1-C10D938637E1" ThreadingModel="Both" />
+            </com5:InProcessServer>
+          </com4:ComServer>
+        </com4:Extension>
+'@
+}
+$manifest = $manifest.Replace('__VIRTUAL_CAMERA_EXTENSION__', $virtualCameraExtension)
 Set-Content -LiteralPath (Join-Path $stageRoot 'AppxManifest.xml') -Value $manifest -Encoding UTF8
 
 $makeAppx = Get-ChildItem -LiteralPath 'C:\Program Files (x86)\Windows Kits\10\bin' -Filter makeappx.exe -Recurse |
@@ -77,7 +100,9 @@ if ($LASTEXITCODE -ne 0) { throw 'Microsoft Store MSIX paketi oluşturulamadı.'
 $hash = (Get-FileHash -Algorithm SHA256 -LiteralPath $OutputPath).Hash
 [pscustomobject]@{
     Path = (Resolve-Path -LiteralPath $OutputPath).Path
-    Version = $packageVersion
+    Version = $PackageVersion
+    MinimumWindowsVersion = $MinimumWindowsVersion
+    VirtualCameraRegistration = -not $WithoutVirtualCameraRegistration
     IdentityName = $IdentityName
     Publisher = $Publisher
     Sha256 = $hash

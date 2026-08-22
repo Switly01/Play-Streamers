@@ -48,8 +48,11 @@ Files konumuna alınır, Store/MSIX sürümünde COM kaydı paket manifestiyle y
 ```
 
 MSIX için sertifika satın almak gerekmez; Microsoft Store sertifikasyon sonrası
-paketi Microsoft sertifikasıyla imzalar. Windows 10 sanal kamera bu projede
-bilinçli olarak desteklenmez.
+paketi Microsoft sertifikasıyla imzalar. Store dağıtımı iki x64 paket kullanır:
+Windows 10 2004 ve sonrası için temel paket, Windows 11 için daha yüksek sürümlü
+sanal kamera paketi. Store uyumlu cihaza en yüksek uygulanabilir paketi verir.
+Windows 10'da Studio, yayın ve kayıt çalışır; sanal kamera bilinçli olarak
+desteklenmez ve arayüz bunu açıkça belirtir.
 
 ## FFmpeg paketini hazırlama
 

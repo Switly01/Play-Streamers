@@ -1055,8 +1055,11 @@ fn refresh_virtual_camera(engine: &mut StudioEngine) {
 }
 
 fn query_virtual_camera_component(app: &AppHandle) -> Result<(bool, bool), String> {
+    if !virtual_camera_supported_on_this_os() {
+        return Ok((false, false));
+    }
     let Some(helper) = resolve_virtual_camera_binary(app, "PlayStreamersVirtualCameraManager.exe") else {
-        return Ok((cfg!(windows), false));
+        return Ok((true, false));
     };
     let output = hidden_command(&helper)
         .arg("status")
@@ -1071,6 +1074,20 @@ fn query_virtual_camera_component(app: &AppHandle) -> Result<(bool, bool), Strin
         value.get("supported").and_then(serde_json::Value::as_bool).unwrap_or(false),
         value.get("installed").and_then(serde_json::Value::as_bool).unwrap_or(false),
     ))
+}
+
+fn virtual_camera_supported_build(build: u32) -> bool {
+    build >= 22_000
+}
+
+#[cfg(windows)]
+fn virtual_camera_supported_on_this_os() -> bool {
+    virtual_camera_supported_build(windows_version::OsVersion::current().build)
+}
+
+#[cfg(not(windows))]
+fn virtual_camera_supported_on_this_os() -> bool {
+    false
 }
 
 fn resolve_virtual_camera_binary(app: &AppHandle, file_name: &str) -> Option<PathBuf> {
@@ -1624,6 +1641,14 @@ mod tests {
         assert!(args.iter().any(|value| value.contains("[system_track]")));
         assert!(args.iter().any(|value| value.contains("[microphone_track]")));
         assert!(args.iter().any(|value| value == "title=Yayın miksi"));
+    }
+
+    #[test]
+    fn virtual_camera_is_only_supported_on_windows_11_builds() {
+        assert!(!virtual_camera_supported_build(19_045));
+        assert!(!virtual_camera_supported_build(21_999));
+        assert!(virtual_camera_supported_build(22_000));
+        assert!(virtual_camera_supported_build(26_100));
     }
 
     #[test]

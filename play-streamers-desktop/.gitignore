@@ -1,0 +1,12 @@
+node_modules/
+dist/
+src-tauri/target/
+src-tauri/binaries/*.exe
+src-tauri/binaries/vcam/
+native/virtual-camera/packages/
+native/virtual-camera/x64/
+native/virtual-camera/obj/
+native/virtual-camera/artifacts/
+native/virtual-camera/media-source/x64/
+.vs/
+*.log

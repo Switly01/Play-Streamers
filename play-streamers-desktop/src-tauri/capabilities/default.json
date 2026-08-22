@@ -1,0 +1,13 @@
+{
+  "$schema": "../gen/schemas/desktop-schema.json",
+  "identifier": "default",
+  "description": "Play Streamers ana penceresinin gerekli en küçük yetkileri",
+  "windows": ["main"],
+  "permissions": [
+    "core:default",
+    "deep-link:default",
+    "opener:default",
+    "process:allow-restart",
+    "updater:default"
+  ]
+}

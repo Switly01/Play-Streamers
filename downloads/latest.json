@@ -1,10 +1,10 @@
 {
-  "version": "0.3.1",
-  "notes": "Play Streamers Desktop 0.3.1: imzalı otomatik güncelleme altyapısı ve Studio iyileştirmeleri.",
-  "pub_date": "2026-08-22T15:52:54.1770296+00:00",
+  "version": "0.4.0",
+  "notes": "Play Streamers Desktop 0.4.0: Windows 11 sanal kamera, Studio yayın/kayıt iyileştirmeleri ve imzalı otomatik güncelleme altyapısı.",
+  "pub_date": "2026-08-22T16:55:54.4751053+00:00",
   "platforms": {
     "windows-x86_64": {
-      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVRcWlCbnhDNnc4UE1jQ0xrSjUvSlg3OGVoY0w4OGdNaHhUbE03eXU0N1o4cnNXcGdrZDlScDErSzdlcGNuT0p0aUdKKzR2WXFNemRvVTRlSGhuK1BIamZjUG5UYmEvcHdnPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzg3NDEzOTQ1CWZpbGU6UGxheSBTdHJlYW1lcnNfMC4zLjFfeDY0LXNldHVwLmV4ZQp2NUVTTHdmeC9hWGxuMjBIVXBSaXN3WGpEckpSRHUxZnpLZGNRS0dKSzE4UllEQ3oxZDEwMmtBQVhLVnFLbWFDSFM4UUxFM3RtTXJMMW5jNjVodUtDUT09Cg==",
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVRcWlCbnhDNnc4UEYrMXVmQVRqMks1bkpVczA5N3lBeGNFK1p6cFBla1pFb2NHS0t5bjBFd3hHMjQrZUQ0NW9XQUVFc1Erek5EV0N3MGV5RjMzZXFxT2gvUDJmNXVKSFEwPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzg3NDE3NzI2CWZpbGU6UGxheSBTdHJlYW1lcnNfMC40LjBfeDY0LXNldHVwLmV4ZQpQOGNwc09yejJHK2oxdEkwdjNVbmpXNWkvUEZqQkd3MGZISXRBZ3EzOFB4eFhmeG9zY1BjbExneVEzZVMwZ0g2S3RTSHlVWFF0Q1drMzZvZFNNbjlDZz09Cg==",
       "url": "https://pstreamers.com/downloads/Play-Streamers-Setup.exe"
     }
   }

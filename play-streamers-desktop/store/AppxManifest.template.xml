@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Package
+  xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10"
+  xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10"
+  xmlns:rescap="http://schemas.microsoft.com/appx/manifest/foundation/windows10/restrictedcapabilities"
+  xmlns:com4="http://schemas.microsoft.com/appx/manifest/com/windows10/4"
+  xmlns:com5="http://schemas.microsoft.com/appx/manifest/com/windows10/5"
+  IgnorableNamespaces="uap rescap com4 com5">
+  <Identity Name="__IDENTITY_NAME__" Publisher="__PUBLISHER__" Version="__VERSION__" ProcessorArchitecture="x64" />
+  <Properties>
+    <DisplayName>Play Streamers</DisplayName>
+    <PublisherDisplayName>__PUBLISHER_DISPLAY_NAME__</PublisherDisplayName>
+    <Logo>Assets\StoreLogo.png</Logo>
+    <Description>Yayın, kayıt ve yayıncı çalışma alanı.</Description>
+  </Properties>
+  <Dependencies>
+    <TargetDeviceFamily Name="Windows.Desktop" MinVersion="10.0.22000.0" MaxVersionTested="10.0.26100.0" />
+  </Dependencies>
+  <Resources>
+    <Resource Language="tr-TR" />
+    <Resource Language="en-US" />
+  </Resources>
+  <Applications>
+    <Application Id="PlayStreamers" Executable="Play Streamers.exe" EntryPoint="Windows.FullTrustApplication">
+      <uap:VisualElements
+        AppListEntry="default"
+        DisplayName="Play Streamers"
+        Description="Yayın, kayıt ve yayıncı çalışma alanı"
+        BackgroundColor="#07100C"
+        Square44x44Logo="Assets\Square44x44Logo.png"
+        Square150x150Logo="Assets\Square150x150Logo.png">
+      </uap:VisualElements>
+      <Extensions>
+        <uap:Extension Category="windows.protocol">
+          <uap:Protocol Name="playstreamers" />
+        </uap:Extension>
+        <com4:Extension Category="windows.comServer">
+          <com4:ComServer>
+            <com5:InProcessServer Path="binaries\vcam\PlayStreamersVirtualCamera.dll">
+              <com5:Class Id="7F293AB7-BE5C-4E3F-97D1-C10D938637E1" ThreadingModel="Both" />
+            </com5:InProcessServer>
+          </com4:ComServer>
+        </com4:Extension>
+      </Extensions>
+    </Application>
+  </Applications>
+  <Capabilities>
+    <Capability Name="internetClient" />
+    <rescap:Capability Name="runFullTrust" />
+    <DeviceCapability Name="webcam" />
+    <DeviceCapability Name="microphone" />
+  </Capabilities>
+</Package>

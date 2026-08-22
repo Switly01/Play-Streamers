@@ -1,0 +1,305 @@
+import { useEffect, useMemo, useState } from "react";
+import { relaunch } from "@tauri-apps/plugin-process";
+import { check } from "@tauri-apps/plugin-updater";
+import { FEATURES, canUseFeature, featuresForSection, planLabels, sectionLabels } from "./features";
+import { FeatureWorkspace } from "./FeatureWorkspace";
+import { openExternal } from "./nativeBridge";
+import { Studio } from "./Studio";
+import type { AppSection, FeatureDefinition, PlanTier } from "./types";
+
+const NAVIGATION: Array<{ id: AppSection; icon: string }> = [
+  { id: "home", icon: "⌂" },
+  { id: "live", icon: "◉" },
+  { id: "studio", icon: "▣" },
+  { id: "analysis", icon: "↗" },
+  { id: "content", icon: "✦" },
+  { id: "community", icon: "◎" },
+  { id: "brand", icon: "◇" },
+  { id: "revenue", icon: "₺" },
+  { id: "vault", icon: "□" },
+  { id: "settings", icon: "⚙" },
+];
+
+const STATUS_LABELS = {
+  ready: "Kullanılabilir",
+  foundation: "Temeli hazır",
+  planned: "Sırada",
+} as const;
+
+const API_BASE = "https://api.pstreamers.com";
+
+function useLocalList(key: string, initial: string[]) {
+  const [items, setItems] = useState<string[]>(() => {
+    try {
+      const stored = localStorage.getItem(key);
+      return stored ? (JSON.parse(stored) as string[]) : initial;
+    } catch {
+      return initial;
+    }
+  });
+  const update = (next: string[]) => {
+    setItems(next);
+    localStorage.setItem(key, JSON.stringify(next));
+  };
+  return [items, update] as const;
+}
+
+export function App() {
+  const [section, setSection] = useState<AppSection>("home");
+  const [plan, setPlan] = useState<PlanTier>("free");
+  const [accountName, setAccountName] = useState<string | null>(null);
+  const [identityStatus, setIdentityStatus] = useState("Güvenli SW Identity");
+  const [search, setSearch] = useState("");
+  const [selectedFeature, setSelectedFeature] = useState<FeatureDefinition | null>(null);
+  const [updateState, setUpdateState] = useState<{ phase: "idle" | "checking" | "available" | "installing" | "current" | "error"; version?: string; message: string }>({ phase: "idle", message: "Güncellemeleri denetle" });
+  const [notes, setNotes] = useLocalList("ps.quick-notes", ["Yayın açılışında yeni hedefi anlat", "Mola öncesi soru kutusunu aç"]);
+  const [ideas, setIdeas] = useLocalList("ps.idea-vault", ["İzleyici seçimli oyun gecesi", "Yayın kurulumunun kamera arkası"]);
+
+  const visibleFeatures = useMemo(() => {
+    const source = search.trim() ? FEATURES : featuresForSection(section);
+    const needle = search.trim().toLocaleLowerCase("tr-TR");
+    return needle ? source.filter((feature) => `${feature.title} ${feature.description}`.toLocaleLowerCase("tr-TR").includes(needle)) : source;
+  }, [search, section]);
+
+  useEffect(() => {
+    document.documentElement.dataset.theme = localStorage.getItem("ps.theme") || "violet";
+    let disposed = false;
+    async function bootstrap() {
+      const token = window.playStreamersNative
+        ? await window.playStreamersNative.secureRead("ps.session")
+        : sessionStorage.getItem("ps.session");
+      if (!token || disposed) return;
+      const response = await fetch(`${API_BASE}/api/platform/bootstrap`, { headers: { authorization: `Bearer ${token}` } });
+      const data = await response.json().catch(() => null) as { signedIn?: boolean; user?: { name?: string }; plan?: { tier?: PlanTier } } | null;
+      if (!disposed && response.ok && data?.signedIn) {
+        setPlan(data.plan?.tier || "free");
+        setAccountName(data.user?.name || "SW hesabı");
+        setIdentityStatus("Hesap ve plan eşitlendi");
+      }
+    }
+    void bootstrap().catch(() => setIdentityStatus("Bağlantı çevrimdışı"));
+    const unsubscribe = window.playStreamersNative?.onOpenUrl((url) => void completeIdentityLogin(url));
+    return () => { disposed = true; unsubscribe?.(); };
+  }, []);
+
+  useEffect(() => {
+    if (!window.playStreamersNative) return;
+    const timer = window.setTimeout(() => void checkDesktopUpdate(true), 3500);
+    return () => window.clearTimeout(timer);
+  }, []);
+
+  async function checkDesktopUpdate(silent = false) {
+    if (!window.playStreamersNative) {
+      if (!silent) setUpdateState({ phase: "current", message: "Güncelleme denetimi masaüstü uygulamasında çalışır" });
+      return;
+    }
+    if (!silent) setUpdateState({ phase: "checking", message: "Güncelleme denetleniyor…" });
+    try {
+      const update = await check();
+      if (update) {
+        setUpdateState({ phase: "available", version: update.version, message: `${update.version} hazır · yüklemek için tıkla` });
+      } else if (!silent) {
+        setUpdateState({ phase: "current", message: "Uygulama güncel" });
+      }
+    } catch {
+      if (!silent) setUpdateState({ phase: "error", message: "Güncelleme sunucusuna ulaşılamadı" });
+    }
+  }
+
+  async function installDesktopUpdate() {
+    if (!window.playStreamersNative || updateState.phase === "installing") return;
+    setUpdateState({ ...updateState, phase: "installing", message: "Güncelleme indiriliyor ve doğrulanıyor…" });
+    try {
+      const update = await check();
+      if (!update) {
+        setUpdateState({ phase: "current", message: "Uygulama güncel" });
+        return;
+      }
+      await update.downloadAndInstall();
+      setUpdateState({ phase: "installing", version: update.version, message: "Kurulum tamamlandı · yeniden başlatılıyor…" });
+      await relaunch();
+    } catch {
+      setUpdateState({ phase: "error", message: "Güncelleme kurulamadı; mevcut sürüm korunuyor" });
+    }
+  }
+
+  async function completeIdentityLogin(callbackUrl: string) {
+    try {
+      const callback = new URL(callbackUrl);
+      if (callback.protocol !== "playstreamers:" || callback.hostname !== "identity" || callback.pathname !== "/callback") throw new Error("Geçersiz giriş dönüşü.");
+      const code = callback.searchParams.get("code") || "";
+      const state = callback.searchParams.get("state") || "";
+      const expectedState = sessionStorage.getItem("ps.identity-state") || "";
+      sessionStorage.removeItem("ps.identity-state");
+      if (!expectedState || state !== expectedState) throw new Error("Giriş isteğinin güvenlik kodu eşleşmedi.");
+      setIdentityStatus("SW Identity doğrulanıyor…");
+      const response = await fetch(`${API_BASE}/api/auth/sw/exchange`, {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ code }),
+      });
+      const data = await response.json().catch(() => null) as { error?: string; sessionId?: string; user?: { name?: string }; plan?: { tier?: PlanTier } } | null;
+      if (!response.ok || !data?.sessionId) throw new Error(data?.error || "SW Identity girişi tamamlanamadı.");
+      if (window.playStreamersNative) await window.playStreamersNative.secureStore("ps.session", data.sessionId);
+      else sessionStorage.setItem("ps.session", data.sessionId);
+      setPlan(data.plan?.tier || "free");
+      setAccountName(data.user?.name || "SW hesabı");
+      setIdentityStatus("Hesap ve plan eşitlendi");
+    } catch (error) {
+      setIdentityStatus(error instanceof Error ? error.message : "Giriş tamamlanamadı");
+    }
+  }
+
+  async function startIdentityLogin() {
+    const stateBytes = crypto.getRandomValues(new Uint8Array(24));
+    const state = Array.from(stateBytes, (byte) => byte.toString(16).padStart(2, "0")).join("");
+    sessionStorage.setItem("ps.identity-state", state);
+    setIdentityStatus("Tarayıcıda giriş bekleniyor…");
+    const authorize = new URL("https://api.swcreate.com/api/auth/product/authorize");
+    authorize.searchParams.set("client_id", "play-streamers");
+    authorize.searchParams.set("redirect_uri", "playstreamers://identity/callback");
+    authorize.searchParams.set("state", state);
+    await openExternal(authorize.toString());
+  }
+
+  return (
+    <div className="app-shell">
+      <aside className="sidebar">
+        <button className="brand" onClick={() => setSection("home")} aria-label="Play Streamers başlangıç">
+          <span className="brand-mark">PS</span>
+          <span><strong>PLAY</strong><small>STREAMERS</small></span>
+        </button>
+        <nav aria-label="Ana menü">
+          {NAVIGATION.map((item) => (
+            <button key={item.id} className={section === item.id && !search ? "active" : ""} onClick={() => { setSection(item.id); setSearch(""); }}>
+              <span className="nav-icon">{item.icon}</span><span>{sectionLabels[item.id]}</span>
+              {item.id === "studio" && <i className="nav-live-dot" />}
+            </button>
+          ))}
+        </nav>
+        <div className="sidebar-footer">
+          <div className="plan-pill"><span>{planLabels[plan]}</span><small>SW Identity ile yönetilir</small></div>
+          <button className="profile-row" onClick={() => void startIdentityLogin()}>
+            <span className="profile-avatar">{accountName?.slice(0, 1).toLocaleUpperCase("tr-TR") || "E"}</span><span><strong>{accountName || "Hesabını bağla"}</strong><small>{identityStatus}</small></span><b>›</b>
+          </button>
+        </div>
+      </aside>
+
+      <main className={`main-surface ${section === "studio" && !search ? "studio-surface" : ""}`}>
+        <header className="topbar">
+          <div className="topbar-title"><span className="mobile-mark">PS</span><div><small>PLAY STREAMERS</small><strong>{search ? "Arama sonuçları" : sectionLabels[section]}</strong></div></div>
+          <label className="search-box"><span>⌕</span><input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Bir araç veya özellik ara…" /><kbd>Ctrl K</kbd></label>
+          <div className="top-actions"><button className={`update-button ${updateState.phase}`} aria-label={updateState.message} title={updateState.message} disabled={updateState.phase === "checking" || updateState.phase === "installing"} onClick={() => void (updateState.phase === "available" ? installDesktopUpdate() : checkDesktopUpdate(false))}>{updateState.phase === "available" ? "↑" : updateState.phase === "installing" || updateState.phase === "checking" ? "…" : "↻"}</button><span className="system-ready"><i /> {updateState.phase === "available" ? `Sürüm ${updateState.version} hazır` : "Sistem hazır"}</span></div>
+        </header>
+
+        {section === "studio" && !search ? <Studio /> : section === "home" && !search ? (
+          <HomeDashboard notes={notes} setNotes={setNotes} ideas={ideas} setIdeas={setIdeas} onOpen={setSection} />
+        ) : (
+          <FeatureLibrary section={section} plan={plan} features={visibleFeatures} search={search} onSelect={setSelectedFeature} />
+        )}
+      </main>
+
+      {selectedFeature && <FeatureDrawer feature={selectedFeature} plan={plan} onClose={() => setSelectedFeature(null)} />}
+    </div>
+  );
+}
+
+function HomeDashboard({ notes, setNotes, ideas, setIdeas, onOpen }: {
+  notes: string[];
+  setNotes: (items: string[]) => void;
+  ideas: string[];
+  setIdeas: (items: string[]) => void;
+  onOpen: (section: AppSection) => void;
+}) {
+  const [noteValue, setNoteValue] = useState("");
+  const [ideaValue, setIdeaValue] = useState("");
+  const addItem = (value: string, items: string[], update: (items: string[]) => void, clear: () => void) => {
+    const clean = value.trim();
+    if (!clean) return;
+    update([clean, ...items].slice(0, 12));
+    clear();
+  };
+  return (
+    <div className="page-content home-content">
+      <section className="welcome-band">
+        <div><span className="eyebrow">BUGÜNÜN YAYIN MERKEZİ</span><h1>Yayın senin.<br /><em>Kontrol sende.</em></h1><p>Hazırlığını tamamla, Studio’yu aç ve yayın bittikten sonra neyin işe yaradığını tek yerde gör.</p></div>
+        <div className="welcome-actions"><button className="primary-button" onClick={() => onOpen("studio")}><span>▣</span> Studio’yu aç</button><button className="secondary-button" onClick={() => onOpen("content")}>Yayın akışı hazırla</button></div>
+      </section>
+
+      <section className="metric-grid">
+        <MetricCard label="Son yayın" value="2s 18dk" detail="3 gün önce" color="green" />
+        <MetricCard label="Tepe izleyici" value="—" detail="Kanal bağlanınca hazır" color="purple" />
+        <MetricCard label="Etkileşim" value="—" detail="Henüz veri yok" color="cyan" />
+        <MetricCard label="Bu ay yayın" value="0" detail="İlk yayınını bekliyor" color="amber" />
+      </section>
+
+      <div className="dashboard-grid">
+        <section className="glass-panel span-two">
+          <div className="panel-heading"><div><span className="eyebrow">YAYINA HAZIRLIK</span><h2>Üç adımda yayına çık</h2></div><span className="progress-label">1 / 3 hazır</span></div>
+          <div className="prep-list">
+            <PrepRow done title="Uygulama hazır" detail="Yerel ayarlar ve kayıt alanı kullanılabilir" />
+            <PrepRow title="Kanalını bağla" detail="Canlı olaylar ve yayın verileri için" action="Bağla" />
+            <PrepRow title="Studio sahneni hazırla" detail="Ekran, ses ve yayın kalitesini kontrol et" action="Studio" onClick={() => onOpen("studio")} />
+          </div>
+        </section>
+
+        <section className="glass-panel now-panel">
+          <div className="panel-heading"><div><span className="eyebrow">CANLI DURUM</span><h2>Şu an</h2></div><span className="offline-badge">Çevrimdışı</span></div>
+          <div className="empty-orbit"><span>◉</span><strong>Yayın kapalı</strong><small>Studio’dan başlattığında bu alan canlı veriye dönüşür.</small></div>
+        </section>
+
+        <LocalListPanel eyebrow="HIZLI NOTLAR" title="Aklından çıkmasın" items={notes} value={noteValue} onValue={setNoteValue} placeholder="Yeni bir yayın notu…" onAdd={() => addItem(noteValue, notes, setNotes, () => setNoteValue(""))} onRemove={(index) => setNotes(notes.filter((_, itemIndex) => itemIndex !== index))} />
+        <LocalListPanel eyebrow="FİKİR KASASI" title="Sıradaki yayınlar" items={ideas} value={ideaValue} onValue={setIdeaValue} placeholder="Yeni bir yayın fikri…" onAdd={() => addItem(ideaValue, ideas, setIdeas, () => setIdeaValue(""))} onRemove={(index) => setIdeas(ideas.filter((_, itemIndex) => itemIndex !== index))} />
+
+        <section className="glass-panel span-two insight-panel">
+          <div><span className="eyebrow">YAYIN ZEKÂSI</span><h2>Önce veri, sonra anlaşılır açıklama</h2><p>Play Streamers değişimleri sayılarla hesaplar. Yeterli veri oluştuğunda Product Pro, sonucu “etkileşimin yükseldi” demekle bırakmaz; hangi dakikada, ne kadar ve hangi olaylarla yükseldiğini anlatır.</p></div>
+          <div className="evidence-card"><span>Örnek kanıt</span><strong>Son 15 dakikada +%28</strong><small>12 sohbet olayı · 3 yeni destek · önceki bölüme göre</small></div>
+        </section>
+      </div>
+    </div>
+  );
+}
+
+function MetricCard({ label, value, detail, color }: { label: string; value: string; detail: string; color: string }) {
+  return <div className={`metric-card ${color}`}><span>{label}</span><strong>{value}</strong><small>{detail}</small><i /></div>;
+}
+
+function PrepRow({ done, title, detail, action, onClick }: { done?: boolean; title: string; detail: string; action?: string; onClick?: () => void }) {
+  return <div className="prep-row"><span className={done ? "check done" : "check"}>{done ? "✓" : ""}</span><span><strong>{title}</strong><small>{detail}</small></span>{action && <button onClick={onClick}>{action}</button>}</div>;
+}
+
+function LocalListPanel({ eyebrow, title, items, value, onValue, placeholder, onAdd, onRemove }: { eyebrow: string; title: string; items: string[]; value: string; onValue: (value: string) => void; placeholder: string; onAdd: () => void; onRemove: (index: number) => void }) {
+  return <section className="glass-panel"><div className="panel-heading"><div><span className="eyebrow">{eyebrow}</span><h2>{title}</h2></div><span className="local-badge">Bu cihazda</span></div><form className="quick-add" onSubmit={(event) => { event.preventDefault(); onAdd(); }}><input value={value} onChange={(event) => onValue(event.target.value)} placeholder={placeholder} maxLength={140} /><button aria-label="Ekle">+</button></form><div className="local-list">{items.slice(0, 4).map((item, index) => <div key={`${item}-${index}`}><span>{item}</span><button aria-label="Sil" onClick={() => onRemove(index)}>×</button></div>)}</div></section>;
+}
+
+function FeatureLibrary({ section, plan, features, search, onSelect }: { section: AppSection; plan: PlanTier; features: FeatureDefinition[]; search: string; onSelect: (feature: FeatureDefinition) => void }) {
+  const accessible = features.filter((feature) => canUseFeature(plan, feature)).length;
+  return <div className="page-content feature-content"><section className="feature-hero"><div><span className="eyebrow">{search ? "TÜM ARAÇLARDA" : sectionLabels[section].toLocaleUpperCase("tr-TR")}</span><h1>{search ? `“${search}” için sonuçlar` : sectionIntro(section).title}</h1><p>{search ? `${features.length} ilgili araç bulundu.` : sectionIntro(section).description}</p></div><div className="feature-count"><strong>{features.length}</strong><span>araç</span><small>{accessible} tanesi planında açık</small></div></section><div className="feature-grid">{features.map((feature) => <FeatureCard key={feature.id} feature={feature} plan={plan} onSelect={onSelect} />)}{features.length === 0 && <div className="no-results"><strong>Bir sonuç bulunamadı</strong><span>Farklı bir kelimeyle tekrar ara.</span></div>}</div></div>;
+}
+
+function FeatureCard({ feature, plan, onSelect }: { feature: FeatureDefinition; plan: PlanTier; onSelect: (feature: FeatureDefinition) => void }) {
+  const unlocked = canUseFeature(plan, feature);
+  return <button className={`feature-card ${unlocked ? "" : "locked"}`} onClick={() => onSelect(feature)}><div className="feature-card-top"><span className="feature-symbol">{feature.ai ? "AI" : feature.localFirst ? "PC" : "PS"}</span><span className={`status-tag ${feature.status}`}>{STATUS_LABELS[feature.status]}</span></div><h3>{feature.title}</h3><p>{feature.description}</p><footer><span>{feature.localFirst ? "Yerel öncelikli" : feature.ai ? "Kanıtlı AI" : sectionLabels[feature.section]}</span><b>{unlocked ? "Aç ›" : `${planLabels[feature.minimumTier]} ◇`}</b></footer></button>;
+}
+
+function FeatureDrawer({ feature, plan, onClose }: { feature: FeatureDefinition; plan: PlanTier; onClose: () => void }) {
+  const unlocked = canUseFeature(plan, feature);
+  const usable = unlocked && feature.status !== "planned";
+  return <div className="drawer-backdrop" onMouseDown={(event) => { if (event.target === event.currentTarget) onClose(); }}><aside className={`feature-drawer ${usable ? "workspace-open" : ""}`}><button className="drawer-close" onClick={onClose}>×</button><span className="eyebrow">{sectionLabels[feature.section].toLocaleUpperCase("tr-TR")}</span><div className="drawer-symbol">{feature.ai ? "AI" : feature.localFirst ? "PC" : "PS"}</div><h2>{feature.title}</h2><p>{feature.description}</p><div className="drawer-details"><div><span>Plan</span><strong>{planLabels[feature.minimumTier]}</strong></div><div><span>Durum</span><strong>{STATUS_LABELS[feature.status]}</strong></div><div><span>Veri</span><strong>{feature.localFirst ? "Önce bu cihaz" : feature.ai ? "Sayısal özet" : "Hesapla eşitlenir"}</strong></div></div>{usable ? <FeatureWorkspace feature={feature} /> : <button className="secondary-button full" disabled>{unlocked ? "Yerel motor entegrasyonu hazırlanıyor" : `${planLabels[feature.minimumTier]} ile açılır`}</button>}<small className="drawer-note">Hazır olmayan medya özellikleri çalışıyormuş gibi gösterilmez. Durum etiketi gerçek teslim seviyesini belirtir.</small></aside></div>;
+}
+
+function sectionIntro(section: AppSection) {
+  const copy: Record<AppSection, { title: string; description: string }> = {
+    home: { title: "Başlangıç", description: "Günün yayın akışı ve önemli işler." },
+    live: { title: "Yayın sırasında gerekli olan her şey", description: "Olayları, süreyi ve hedefleri kalabalık yaratmadan takip et." },
+    studio: { title: "Studio", description: "Yayın ve kayıt çalışma alanı." },
+    analysis: { title: "Rakamı göster, nedenini açıkla", description: "Yayın verilerini karşılaştır; değişimin nerede ve neden oluştuğunu gör." },
+    content: { title: "Fikirden yayına tek akış", description: "Fikirleri topla, yayın akışını hazırla ve önemli anları işaretle." },
+    community: { title: "İzleyiciyi yayının parçası yap", description: "Tekrara düşmeyen oyunlar, görevler ve topluluk ritüelleri oluştur." },
+    brand: { title: "Kanalın her yerde aynı hissetsin", description: "Görsel dilini, seslerini ve hareketli kimliğini bir merkezde yönet." },
+    revenue: { title: "Geliri okunabilir hale getir", description: "Destek kaynaklarını, kilometre taşlarını ve dönem değişimlerini gör." },
+    vault: { title: "Yayın çalışma kasan", description: "Dosya, ekipman, izin ve geri yüklenebilir çalışma alanlarını cihazında tut." },
+    settings: { title: "Uygulama senin çalışma biçimine uysun", description: "Düzen, tema, performans, kayıt ve deneysel özellikleri yönet." },
+  };
+  return copy[section];
+}

@@ -1,0 +1,57 @@
+{
+  "$schema": "../node_modules/@tauri-apps/cli/config.schema.json",
+  "productName": "Play Streamers",
+  "version": "0.4.0",
+  "identifier": "com.swcreate.playstreamers",
+  "build": {
+    "beforeDevCommand": "pnpm run dev",
+    "devUrl": "http://localhost:4178",
+    "beforeBuildCommand": "pnpm run build",
+    "frontendDist": "../dist"
+  },
+  "app": {
+    "windows": [
+      {
+        "label": "main",
+        "title": "Play Streamers",
+        "width": 1440,
+        "height": 900,
+        "minWidth": 1024,
+        "minHeight": 700,
+        "center": true,
+        "resizable": true
+      }
+    ],
+    "security": {
+      "csp": "default-src 'self'; img-src 'self' data: blob:; media-src 'self' blob:; connect-src 'self' https://api.pstreamers.com https://api.swcreate.com; style-src 'self' 'unsafe-inline'; script-src 'self'"
+    }
+  },
+  "bundle": {
+    "active": true,
+    "targets": ["nsis"],
+    "createUpdaterArtifacts": true,
+    "externalBin": ["binaries/ffmpeg"],
+    "resources": [
+      "../FFMPEG-GPL-3.0-LICENSE.txt",
+      "../FFMPEG-BUILD-README.txt",
+      "../THIRD_PARTY_NOTICES.md",
+      "binaries/vcam/PlayStreamersVirtualCamera.dll",
+      "binaries/vcam/PlayStreamersVirtualCameraManager.exe",
+      "../native/virtual-camera/MICROSOFT-WINDOWS-CAMERA-LICENSE.txt"
+    ],
+    "shortDescription": "Yayın, kayıt ve yayıncı çalışma alanı",
+    "longDescription": "Play Streamers; Studio, analiz, içerik, topluluk ve marka araçlarını tek sade masaüstü uygulamasında birleştirir."
+  },
+  "plugins": {
+    "updater": {
+      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IDNDM0NBQzBCRjExOTg4MkEKUldRcWlCbnhDNnc4UEdYcVFpaWw5Zk1LTDE5S1laaWpWUjBZY3Z6b1JKbjc1Rk5UN1RadkNLVnoK",
+      "endpoints": ["https://pstreamers.com/downloads/latest.json"],
+      "windows": { "installMode": "passive" }
+    },
+    "deep-link": {
+      "desktop": {
+        "schemes": ["playstreamers"]
+      }
+    }
+  }
+}

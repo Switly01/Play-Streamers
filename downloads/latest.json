@@ -1,7 +1,7 @@
 {
     "version":  "0.12.0",
-    "notes":  "Play Streamers Desktop 0.12.0: Studio ile yerel kayÄ±t/yayÄ±n motoru rafa kaldÄ±rÄ±ldÄ±. Uygulama artÄ±k 45 iÃ§erik, analiz, topluluk, marka, gelir, kasa ve ayar aracÄ±na odaklanÄ±r. Genel kayÄ±t/yayÄ±n kÄ±sayollarÄ± kaldÄ±rÄ±ldÄ± ve Windows Ã¼retim sÃ¼rÃ¼mÃ¼ CMD penceresi aÃ§madan baÄŸÄ±msÄ±z Ã§alÄ±ÅŸÄ±r.",
-    "pub_date":  "2026-08-23T12:19:52.7504460+00:00",
+    "notes":  "Play Streamers Desktop 0.12.0: Studio ile yerel kayıt/yayın motoru rafa kaldırıldı. Uygulama artık 45 içerik, analiz, topluluk, marka, gelir, kasa ve ayar aracına odaklanır. Genel kayıt/yayın kısayolları kaldırıldı ve Windows üretim sürümü CMD penceresi açmadan bağımsız çalışır.",
+    "pub_date":  "2026-08-23T12:29:05.0457527+00:00",
     "platforms":  {
                       "windows-x86_64":  {
                                              "signature":  "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVRcWlCbnhDNnc4UEIydER3RHp4OUpUWGdNU2xQU3RsaUdiOGV5T3h6T2NBc0pjenRGNjgrdkNVLzhES1c0Mm9MK1lqRDNPcFRvQjJSNTJVb0h4TUUwWk1sQ2NyU3VjQUFrPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzg3NDg3NTY2CWZpbGU6UGxheSBTdHJlYW1lcnNfMC4xMi4wX3g2NC1zZXR1cC5leGUKTjVsWk51NFJySFVxZXBITmdXdjl4S2hiOWVRbDJvMmhtQWgzWE40M3hicms1dlpYLytJZFRmc0VBbUVTTC9CSktlVW5jMEQvakJuejlrNW9KNjNLQ2c9PQo=",

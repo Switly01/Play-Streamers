@@ -28,6 +28,8 @@ bağlanmaz ve kurucuya eklenmez.
   Böylece üretim EXE'si CMD/konsol penceresine bağlı çalışmaz.
 - SW Identity güvenli kasa, deep link, tek örnek, güncelleme ve dış bağlantı
   altyapıları korunmuştur.
+- Worker plan yetkileri de dokuz Studio kimliğinden temizlenmiş ve sağlık sürüm
+  adı `2.3.0-creator-tools` olarak güncellenmiştir.
 - TypeScript/Vite üretim derlemesi ve Rust denetimi başarılıdır.
 - Yerel tarayıcı denetiminde dokuz menü öğesi göründü; Studio menüsü veya
   Studio açma düğmesi bulunmadı ve JavaScript hatası oluşmadı.

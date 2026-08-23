@@ -84,11 +84,8 @@ const SW_IDENTITY_ORIGIN = "https://api.swcreate.com";
 const DESKTOP_IDENTITY_REDIRECT = "playstreamers://identity/callback";
 const PLAY_STREAMERS_FEATURES = Object.freeze([
   ["home-command-center", "free"], ["quick-notes", "free"], ["stream-timer", "free"],
-  ["live-events", "free"], ["goal-board", "free"], ["studio-scenes", "free"],
-  ["studio-record", "free"], ["studio-stream", "free"], ["studio-mixer", "free"],
-  ["studio-hotkeys", "free"], ["studio-recovery", "free"], ["basic-stats", "free"],
+  ["live-events", "free"], ["goal-board", "free"], ["basic-stats", "free"],
   ["idea-vault", "free"],
-  ["studio-multitrack", "pro"], ["studio-virtual-camera", "pro"], ["studio-transition-lab", "pro"],
   ["advanced-graphs", "pro"], ["after-stream-report", "pro"], ["data-export", "pro"],
   ["channel-memory", "pro"], ["stream-script", "pro"], ["teleprompter", "pro"],
   ["clip-markers", "pro"], ["stream-challenges", "pro"], ["silence-rescuer", "pro"],
@@ -288,7 +285,7 @@ export default {
         return apiResponse(request, {
           ok: true,
           service: "Play Streamers API",
-          version: "2.2.0-studio-live-context",
+          version: "2.3.0-creator-tools",
           turnstileEnabled: isTurnstileEnabled(env),
           aiEnabled: Boolean(env.AI || env.OPENAI_API_KEY),
         });

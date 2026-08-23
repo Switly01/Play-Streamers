@@ -72,7 +72,8 @@ Copy-Item -Force -LiteralPath (Join-Path $iconRoot 'Square150x150Logo.png') -Des
 Copy-Item -Force -LiteralPath (Join-Path $iconRoot 'Square310x310Logo.png') -Destination (Join-Path $stageRoot 'Assets\Square310x310Logo.png')
 Copy-Item -Force -LiteralPath (Join-Path $iconRoot 'StoreLogo.png') -Destination (Join-Path $stageRoot 'Assets\StoreLogo.png')
 
-$manifest = Get-Content -Raw -LiteralPath (Join-Path $desktopRoot 'store\AppxManifest.template.xml')
+$utf8WithoutBom = New-Object System.Text.UTF8Encoding($false)
+$manifest = [System.IO.File]::ReadAllText((Join-Path $desktopRoot 'store\AppxManifest.template.xml'), [System.Text.Encoding]::UTF8)
 $manifest = $manifest.Replace('__IDENTITY_NAME__', [Security.SecurityElement]::Escape($IdentityName))
 $manifest = $manifest.Replace('__PUBLISHER__', [Security.SecurityElement]::Escape($Publisher))
 $manifest = $manifest.Replace('__PUBLISHER_DISPLAY_NAME__', [Security.SecurityElement]::Escape($PublisherDisplayName))
@@ -92,7 +93,7 @@ $virtualCameraExtension = if ($WithoutVirtualCameraRegistration) {
 '@
 }
 $manifest = $manifest.Replace('__VIRTUAL_CAMERA_EXTENSION__', $virtualCameraExtension)
-Set-Content -LiteralPath (Join-Path $stageRoot 'AppxManifest.xml') -Value $manifest -Encoding UTF8
+[System.IO.File]::WriteAllText((Join-Path $stageRoot 'AppxManifest.xml'), $manifest, $utf8WithoutBom)
 
 $makeAppx = Get-ChildItem -LiteralPath 'C:\Program Files (x86)\Windows Kits\10\bin' -Filter makeappx.exe -Recurse |
     Where-Object { $_.FullName -match '\\x64\\makeappx\.exe$' } |

@@ -1,0 +1,141 @@
+{
+  "manifest_version": 3,
+  "name": "Play Connect",
+  "short_name": "Play Connect",
+  "version": "1.10.3",
+  "description": "Donate platformlarını API, sunucu bildirimi ve OBS alert bağlantısıyla Play Streamers hesabına bağlar.",
+  "minimum_chrome_version": "120",
+  "permissions": [
+    "alarms",
+    "cookies",
+    "notifications",
+    "offscreen",
+    "storage",
+    "tabs",
+    "webRequest"
+  ],
+  "host_permissions": [
+    "https://api.pstreamers.com/*",
+    "https://api.swcreate.com/*",
+    "https://kick.com/*",
+    "https://*.kick.com/*",
+    "https://*.bynogame.com/*",
+    "https://*.pindirim.com/*",
+    "https://*.oyunfor.com/*",
+    "https://*.klasgame.com/*",
+    "https://*.itemsatis.com/*",
+    "https://*.oyuneks.com/*",
+    "https://*.hesap.com.tr/*",
+    "https://*.dijipin.com/*",
+    "https://*.epin.com.tr/*",
+    "https://*.inovapin.com/*",
+    "https://*.streamlabs.com/*",
+    "https://*.streamelements.com/*",
+    "https://*.ko-fi.com/*",
+    "https://*.buymeacoffee.com/*",
+    "https://*.tipeeestream.com/*",
+    "https://api.tipeeestream.com/*",
+    "https://*.donationalerts.com/*",
+    "https://*.pally.gg/*",
+    "https://*.streamloots.com/*",
+    "https://*.destream.net/*",
+    "https://*.livepix.gg/*",
+    "https://*.saweria.co/*",
+    "https://*.trakteer.id/*",
+    "https://*.sociabuzz.com/*",
+    "https://*.tipply.pl/*",
+    "https://*.toon.at/*",
+    "https://*.doneru.jp/*"
+  ],
+  "background": {
+    "service_worker": "src/background.js",
+    "type": "module"
+  },
+  "action": {
+    "default_title": "Play Connect",
+    "default_popup": "popup/popup.html"
+  },
+  "options_page": "options/options.html",
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'self'; frame-src https:"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://*.bynogame.com/*",
+        "https://*.pindirim.com/*",
+        "https://*.oyunfor.com/*",
+        "https://*.klasgame.com/*",
+        "https://*.itemsatis.com/*",
+        "https://*.oyuneks.com/*",
+        "https://*.hesap.com.tr/*",
+        "https://*.dijipin.com/*",
+        "https://*.epin.com.tr/*",
+        "https://*.inovapin.com/*",
+        "https://*.streamlabs.com/*",
+        "https://*.streamelements.com/*",
+        "https://*.ko-fi.com/*",
+        "https://*.buymeacoffee.com/*",
+        "https://*.tipeeestream.com/*",
+        "https://*.donationalerts.com/*",
+        "https://*.pally.gg/*",
+        "https://*.streamloots.com/*",
+        "https://*.destream.net/*",
+        "https://*.livepix.gg/*",
+        "https://*.saweria.co/*",
+        "https://*.trakteer.id/*",
+        "https://*.sociabuzz.com/*",
+        "https://*.tipply.pl/*",
+        "https://*.toon.at/*",
+        "https://*.doneru.jp/*"
+      ],
+      "js": [
+        "src/network-bridge.js"
+      ],
+      "run_at": "document_start",
+      "world": "MAIN",
+      "all_frames": true
+    },
+    {
+      "matches": [
+        "https://*.bynogame.com/*",
+        "https://*.pindirim.com/*",
+        "https://*.oyunfor.com/*",
+        "https://*.klasgame.com/*",
+        "https://*.itemsatis.com/*",
+        "https://*.oyuneks.com/*",
+        "https://*.hesap.com.tr/*",
+        "https://*.dijipin.com/*",
+        "https://*.epin.com.tr/*",
+        "https://*.inovapin.com/*",
+        "https://*.streamlabs.com/*",
+        "https://*.streamelements.com/*",
+        "https://*.ko-fi.com/*",
+        "https://*.buymeacoffee.com/*",
+        "https://*.tipeeestream.com/*",
+        "https://*.donationalerts.com/*",
+        "https://*.pally.gg/*",
+        "https://*.streamloots.com/*",
+        "https://*.destream.net/*",
+        "https://*.livepix.gg/*",
+        "https://*.saweria.co/*",
+        "https://*.trakteer.id/*",
+        "https://*.sociabuzz.com/*",
+        "https://*.tipply.pl/*",
+        "https://*.toon.at/*",
+        "https://*.doneru.jp/*"
+      ],
+      "js": [
+        "src/content-scanner.js"
+      ],
+      "run_at": "document_idle",
+      "all_frames": true
+    }
+  ],
+  "icons": {
+    "16": "assets/icon-16.png",
+    "32": "assets/icon-32.png",
+    "48": "assets/icon-48.png",
+    "128": "assets/icon-128.png"
+  }
+}

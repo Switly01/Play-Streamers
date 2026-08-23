@@ -40,7 +40,7 @@
   const SITE_METRICS_VISITOR_KEY = 'ps61-site-visitor';
   const SITE_METRICS_FETCH_KEY = 'ps61-site-metrics-fetch-at';
   const SITE_METRICS_LEASE_KEY = 'ps61-site-metrics-fetch-lease';
-  const SITE_METRICS_TAB_ID = crypto.randomUUID?.() || `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+  const SITE_METRICS_TAB_ID = window.crypto?.randomUUID?.() || `${Date.now()}-${Math.random().toString(36).slice(2)}`;
   let siteMetricsStarted = false;
   let siteMetricsRequest = null;
   let siteMetricsChannel = null;
@@ -157,6 +157,15 @@
     else if (!updatesReturnPath) updatesReturnPath = state().settings?.userSession ? visibleMemberRoute() : '/';
     syncCleanRoute('/updates');
     const history = [
+      ['Desktop 0.11.0','23 Ağustos 2026',['Tek kodlama akışı iki güvenli RTMPS hedefine eşzamanlı gönderilebilir; iki yayın anahtarı da Windows güvenli kasasında kalır.','Kaynaklar Önizleme tuvalinde doğrudan sürüklenerek konumlandırılabilir.','Studio 32 sahne ve sahne başına 64 ek kaynağı destekler.','FFmpeg çocuk sürecinin gerçek CPU kullanımı yayın telemetrisine eklendi.']],
+      ['Desktop 0.10.0','23 Ağustos 2026',['Yazı, görsel, yerel medya ve renk kaynakları kayıt veya yayın sürerken tek tıkla gizlenip gösterilebilir.','Kaynak opaklığı çalışan Program, bağımsız Önizleme ve Windows 11 sanal kamera grafiğine kodlayıcı yeniden başlatılmadan uygulanır.','Başlangıçta gizli geçerli yerel dosyalar, canlıya sonradan alınabilmeleri için FFmpeg grafiğinde hazır tutulur.','Gerçek FFmpeg duman testi canlı kaynak alfa komutunu crossfade, cut, fade ve ses komutlarıyla aynı çalışan grafikte doğruladı.']],
+      ['Desktop 0.9.0','23 Ağustos 2026',['Sahneler arası gerçek yumuşak crossfade geçişi Program motoruna eklendi.','Hedef sahne ikinci seçicide hazırlanır, alfa 10 adımda yükseltilir ve geçiş tamamlanınca ana Program seçicisine güvenle devredilir.','Crossfade kayıt, yayın ve Windows 11 sanal kamerada aynı gerçek FFmpeg komut akışıyla çalışır; kesme ve siyaha kararma seçenekleri korunur.','Gerçek FFmpeg duman testi crossfade, cut, fade ve canlı ses komutlarını aynı çalışan grafikte doğruladı.']],
+      ['Desktop 0.8.0','23 Ağustos 2026',['Studio sahnesi seçildiğinde artık doğrudan canlıya gitmez; önce bağımsız Önizleme alanında hazırlanır.','Programa al düğmesi seçili sahneyi kayıt, yayın ve sanal kameranın ortak Program çıkışına gönderir.','Kesme veya 150–800 ms kararma yalnız Program çıkışına uygulanır; Önizleme sahnesi bağımsız kalır.','Studio motorundaki 21 testin 20’si geçti; yalnız kurulu Windows 11 sanal kamera isteyen fiziksel test bekliyor.']],
+      ['Desktop 0.7.0','23 Ağustos 2026',['Sahne başına 12 ek kaynağa kadar sıralanabilir kaynak yığını eklendi.','Yazı, PNG/JPG/WebP görsel, döngüsel yerel video ve opak renk alanları eklenebilir, gizlenebilir, silinebilir ve yeniden sıralanabilir.','Aynı kaynak sırası kayıt, yayın, program önizlemesi ve Windows 11 sanal kamerada gerçek FFmpeg grafiğine ulaşır.','Studio motorundaki 20 testin 19’u geçti; yalnız kurulu Windows 11 sanal kamera isteyen fiziksel test bekliyor.']],
+      ['Desktop 0.6.0','23 Ağustos 2026',['Ana kaynak için dört yönlü kırpma gerçek FFmpeg sahne grafiğine eklendi.','Kayıt veya yayın sırasında 15–120 saniyelik döngüsel replay buffer çalışır; Ctrl + Alt + B son anı ayrı MKV dosyasına kaydeder.','Replay aynı kodlama akışını kullanır ve ham medya buluta gönderilmez.','Studio motorundaki 18 testin 17’si geçti; yalnız kurulu Windows 11 sanal kamera isteyen fiziksel test bekliyor.']],
+      ['Desktop 0.5.0','23 Ağustos 2026',['Studio sahnelerindeki ana kaynak, sabit metin ve sabit görsel katmanlarına ayrı konum ile ölçek denetimleri eklendi.','Sahne geçişleri anlık kesme veya 150–800 ms kararma olarak seçilebilir hale geldi; gerçek FFmpeg program grafiği geçiş sırasında siyaha kararıp yeni sahneye döner.','Mikrofon zincirine isteğe bağlı gürültü kapısı eklendi; gürültü azaltma, compressor ve limiter seçenekleri korundu.','Site ön izlemesindeki temsili değerler gerçek hesap verisinden açıkça ayrıldı; doğrulanmamış topluluk sayıları artık canlı metrik gibi gösterilmiyor.']],
+      ['4.6','22 Ağustos 2026',['Studio; sekiz sahneli kalıcı proje modeli, gerçek FFmpeg program önizlemesi, kimlik tabanlı canlı geçiş ve sahne profilleriyle yenilendi.','Gerçek FPS, bit hızı, düşen kare, masaüstü/mikrofon metreleri, mikrofon filtreleri ve beş denemeli yayın kurtarma sistemi eklendi.','Kick ve Play Connect doğrulanmış olayları açık Studio oturumuna bağlandı; 54 Free, Pro ve Product Pro çalışma alanı açıklamasındaki çalışan akışa tamamlandı.','Site ürün mimarisi; hesap ve güvenliği sitede, Studio ile üretim sistemini masaüstü uygulamasında açıkça ayıracak biçimde yeniden tasarlandı.']],
+      ['4.5','22 Ağustos 2026',['Ürün sayfası; kullanıma hazır Studio çekirdeğini, erken sürüm çalışma alanlarını ve OBS düzeyine ulaşmak için sıradaki motor işlerini açıkça ayıran yeni sürüm durumu görünümüne geçirildi.','Windows indirme alanı, güncelleme imzası ile Windows yayınevi imzası arasındaki farkı ve olası SmartScreen uyarısını doğru biçimde açıklıyor.','Sistem durumu denetiminin sağlıklı yeni API sürümlerini eski sanarak yanlış uyarı vermesi giderildi; denetim artık servis sağlık sözleşmesine dayanıyor.']],
       ['4.4','11 Ağustos 2026',['Genel arayüz onarımının canlı sayaçlarda tekrar tekrar çalışarak oluşturduğu titreme ve yeniden çizim döngüsü kaldırıldı; Google girişi, dil menüsü ve ikinci ana sayfa tekil etkileşim katmanına alındı.','Play Bot; görünür Google düğmesi, dil bayrakları, güncelleme akordeonu, DAB logosu, aktif abone alanı ve Dashboard sıfırlama denetimini kullanıcı akışı gibi sınayan açık hata mesajlarıyla genişletildi.','Kick grafiklerinde tarih etiketleri on beş günlük aralıklara sadeleştirildi, bu ay takip eden verisi günlük değişime çevrildi ve sütun ayrıntıları ile 24 saatlik görünüm güçlendirildi.','TipeeeStream DAB logosu gömülü güvenli kaynağa sabitlendi; Play Connect DAB görünümünün sayfa yüksekliğini bozması engellendi.']],
       ['4.3','11 Ağustos 2026',['Play Bot yalnızca gerçek sorunları madde madde gösteren sürekli çalışma zamanı denetimine geçirildi; yinelenen arayüz kimlikleri ve açılır pencere çakışmaları kaldırıldı.','Kick ölçümleri saatlik olarak saklanmaya başladı; 90 günlük sütunlarda her günün tarihi, ayrıntısı ve tıklanınca açılan 24 saatlik görünümü eklendi.','Dil bayrakları, Google düğmesi, TipeeeStream DAB logosu, Play Connect DAB sayfa yüksekliği ve ikinci ana sayfanın tekil yenileme akışı sağlamlaştırıldı.']],
       ['4.2','11 Ağustos 2026',['İkinci ana sayfadaki yinelenen yenileme geçişi kaldırıldı; Neler Yeni oku doğrudan güncelleme notlarını açıyor ve açılan sürüm ile + / − işareti artık aynı durum kaynağından yönetiliyor.','Ünlem, dünya, istatistik ve veri kartlarındaki konum değiştiren hover efektleri kaldırıldı; akordeonlar ve hesap sekmeleri daha hafif, ekran boyutuna uyumlu geçişlere alındı.','Kick aktif abone değeri bağlantıyı yeniden kurmadan yenileniyor ve veri bulunamazsa 0 gösteriyor; 90 günlük grafikler gün gün sütun grafiğine çevrildi, TipeeeStream ile bayrak görselleri tarayıcıdan bağımsızlaştırıldı.','Ünlem penceresine sunucu, tarayıcı, Kick ve Play Connect durumunu hafif aralıklarla denetleyen Play Bot eklendi; Play Connect merkezi DAB ekranındaki gereksiz boş bölüm ve Google sosyal düğmesindeki görüntü çakışması giderildi.']],
@@ -238,8 +247,8 @@
       button.addEventListener('click', toggleUpdate, true);
     });
   }
-  const LATEST_VERSION = '4.4';
-  const LATEST_RELEASE_AT = Date.parse('2026-08-11T18:00:00+03:00');
+  const LATEST_VERSION = '4.6';
+  const LATEST_RELEASE_AT = Date.parse('2026-08-22T21:15:00+03:00');
   let liveReleaseVersion = LATEST_VERSION;
   let liveReleaseAt = LATEST_RELEASE_AT;
   function releaseParts(value) { return String(value || '').split('.').map(part => Number(part) || 0); }
@@ -384,9 +393,37 @@
   }
   const infoContent = {
     about: { title: 'Hakkımızda', lead: 'SW CREATE; dijital dünyada güçlü kimlikler, net deneyimler ve uzun ömürlü ürünler tasarlayan bağımsız bir yaratıcı teknoloji markasıdır.', cards: [['Kimlik', 'Her projeyi kendine ait bir sesi, karakteri ve amacı olan bütünlüklü bir marka olarak ele alırız. Görsel güç ile kullanım kolaylığını aynı çizgide buluştururuz.'], ['Üretim kültürü', 'Fikirden çalışan ürüne kadar her ayrıntıyı araştırma, tasarım ve teknoloji birlikteliğiyle geliştiririz. Sade görünen ama özenle kurulmuş deneyimler üretiriz.'], ['Gelecek', 'Tek bir ürüne bağlı kalmadan; toplulukları, yaratıcıları ve dijital markaları güçlendiren yeni araçlar inşa etmeyi sürdürüyoruz.']] },
-    products: { title: 'Play Streamers', lead: 'Site hesabını ve planını yönetir; masaüstü uygulaması ise Studio dahil bütün yayıncı araçlarını tek sade çalışma alanında toplar.', productLayout: true },
+    products: { title: 'Yayınını yönet. Üretimini büyüt.', lead: 'Site hesabın, planın ve güvenli bağlantıların için sade bir merkezdir. Play Streamers Desktop ise Studio, canlı veriler ve 54 yayıncı aracını tek akışta birleştirir.', productLayout: true },
     how: { title: 'Nasıl çalışır?', lead: 'Play Streamers, tarayıcıdaki arayüz ile güvenli sunucu katmanını ayırır; hesap ve bağlantı işlemleri yalnızca doğrulanmış isteklerle yürütülür.', security: true, cards: [['1 · Güvenli giriş', 'Şifreler düz metin olarak tutulmaz. Oturum ve e-posta doğrulaması sunucu tarafında yönetilir; gizli anahtarlar tarayıcıya gönderilmez.'], ['2 · Otomatik istek koruması', 'Turnstile doğrulaması ve hız sınırları, otomatik giriş ve kayıt denemelerinin sisteme gereksiz yük bindirmesini engeller.'], ['3 · İzinli bağlantılar', 'Google ve Kick bağlantıları OAuth ile kurulur. Play Streamers yalnızca kullanıcının onayladığı kapsamları kullanır; platform parolalarını görmez.'], ['4 · Kişisel veri alanı', 'Hesaplar ve yayın olayları birbirinden ayrılarak saklanır. Dashboard yalnızca doğrulanmış kullanıcıya ait bağlantı ve olay kayıtlarını gösterir.']] }
   };
+  function refreshCreatorLanding() {
+    const overlay = $('#authOverlay');
+    const hero = $('.landing-card', overlay);
+    const product = $('.landing-product', overlay);
+    const update = $('.landing-update-card', overlay);
+    if (!overlay || !hero || !product || !update) return;
+    overlay.classList.add('ps-creator-landing');
+    product.setAttribute('aria-label', 'Play Streamers temsili masaüstü arayüz demosu');
+    const eyebrow = $('.eyebrow', hero); if (eyebrow) eyebrow.textContent = 'PLAY STREAMERS · CREATOR OPERATING SYSTEM';
+    const title = $('h1', hero); if (title) title.textContent = 'Yayın aç. Kaydet. Büyümeyi tek yerden yönet.';
+    const lead = $(':scope > p', hero); if (lead) lead.textContent = 'Site hesap, plan ve güvenlik merkezi olarak sade kalır. Windows uygulaması ise hafif Studio, doğrulanmış canlı veriler ve 54 yayıncı aracını tek bir üretim akışında birleştirir.';
+    const points = $('.landing-points', hero);
+    if (points) points.innerHTML = '<li><i>✓</i>Windows 10/11 yayın ve kayıt Studio’su</li><li><i>✓</i>Ayrı Önizleme ve canlı Program akışı</li><li><i>✓</i>Doğrulanmış Kick ve Play Connect olayları</li><li><i>✓</i>Free, Pro ve Product Pro çalışma alanları</li>';
+    const trust = $('.landing-trust', hero);
+    if (trust) trust.innerHTML = '<span>SW Identity</span><span>Yerel MKV güvenliği</span><span>Creator OS</span>';
+    const cta = $('.landing-cta', hero); if (cta) cta.textContent = 'Free ile hesabını oluştur; Studio ve bütün yayıncı sistemlerini masaüstü uygulamasından yönet.';
+    const productWindow = $('.product-window', product); if (productWindow) productWindow.setAttribute('aria-label', 'Play Streamers temsili masaüstü arayüz demosu');
+    const productTop = $('.product-top > span:first-child', product); if (productTop) productTop.textContent = 'PLAY STREAMERS DESKTOP · TEMSİLİ ARAYÜZ';
+    const previewCards = $$('.preview-card', product);
+    if (previewCards[0]) previewCards[0].innerHTML = '<span class="preview-kicker">PROGRAM DEMOSU</span><div class="preview-live"><i></i>ARAYÜZ DEMOSU</div><p class="preview-title">Studio görünümünü keşfet.</p><p class="preview-copy">Bu temsili alan canlı hesap veya yayın durumu göstermez.</p>';
+    if (previewCards[1]) previewCards[1].innerHTML = '<span class="preview-kicker">CREATOR OS</span><div class="mini-stat"><strong>54</strong><span>çalışma alanı</span></div><div class="mini-bars"><i style="height:34%"></i><i style="height:52%"></i><i style="height:76%"></i><i style="height:61%"></i><i style="height:88%"></i><i style="height:70%"></i></div>';
+    const updateEyebrow = $('.eyebrow', update); if (updateEyebrow) updateEyebrow.textContent = 'SON GÜNCELLEME';
+    const updateTitle = $('h2', update); if (updateTitle) updateTitle.textContent = '0.11.0 · Çoklu Yayın ve Tuval';
+    const updateLead = $('header p', update); if (updateLead) updateLead.textContent = 'İki RTMPS çıkışı, tuvalde sürükleme, 32 sahne ve gerçek CPU telemetrisi.';
+    const updateTime = $('time', update); if (updateTime) updateTime.textContent = '23 Ağustos 2026';
+    const updateItems = $('ul', update);
+    if (updateItems) updateItems.innerHTML = '<li>Tek kodlama akışını iki güvenli RTMPS hedefine gönder.</li><li>Kaynakları Önizleme tuvalinde sürükleyerek yerleştir.</li><li>32 sahne ve sahne başına 64 ek kaynak kullan.</li><li>FFmpeg CPU kullanımını gerçek telemetride izle.</li>';
+  }
   function restorePublicLandingSurface() {
     const overlay = $('#authOverlay'), app = $('.app'), home = $('#psSecondHome');
     if (home) home.hidden = true;
@@ -428,13 +465,15 @@
     const content = $('.ps49-info-content', layer);
     if (!content) return;
     if (data.productLayout) {
-      content.innerHTML = `<span class="ps49-info-kicker">PLAY STREAMERS · TEK UYGULAMA</span><h1>${esc(data.title)}</h1><p class="ps49-info-lead">${esc(data.lead)}</p>
+      content.innerHTML = `<span class="ps49-info-kicker">PLAY STREAMERS · CREATOR OPERATING SYSTEM</span><h1>${esc(data.title)}</h1><p class="ps49-info-lead">${esc(data.lead)}</p>
         <article class="ps54-subscription-card ps-desktop-product">
-          <div class="ps54-subscription-copy"><span>WINDOWS MASAÜSTÜ UYGULAMASI</span><h2>Bütün araçlar tek yerde. Studio da içinde.</h2><p>Canlı kontrol, içerik, analiz, topluluk, marka ve gelir çalışma alanlarına aynı uygulamadan eriş. Studio bölümünden sahneni kur, kayıt al ve RTMPS yayınını başlat. Ayrı bir yayın motoru uygulaması kurman gerekmez.</p><div class="ps-desktop-boundary"><b>Sitede</b><small>Hesap · plan · güvenlik · indirme</small><b>Uygulamada</b><small>Studio · analiz · içerik · bütün gelişmiş araçlar</small></div></div>
-          <div class="ps-desktop-download"><span>WINDOWS ÖNİZLEME · 0.4.0</span><a href="./downloads/Play-Streamers-Setup.exe" download>Windows için indir</a><small>Windows 10/11 · 64 bit · İmzalı otomatik güncelleme<br>Sanal kamera Windows 11'de kullanılabilir. Yayın anahtarı yalnız Windows güvenli kasasında tutulur.</small></div>
+          <div class="ps54-subscription-copy"><span>WINDOWS MASAÜSTÜ UYGULAMASI</span><h2>Hafif Studio. Güçlü yayıncı sistemi.</h2><p>Play Streamers Desktop yerel MKV kayıt ile iki güvenli RTMPS hedefine eşzamanlı yayını; ayrı Önizleme ve Program akışı, gerçek sahneler arası crossfade, canlı gizlenebilen kaynaklar, 32 sahne, sahne başına 64 sıralanabilir kaynak, tuvalde sürükleme, replay buffer, ses filtreleri, CPU telemetrisi ve doğrulanmış kanal olaylarıyla aynı sade çalışma alanında yürütür.</p><div class="ps-desktop-boundary"><b>Sitede</b><small>SW Identity · plan · güvenlik · Kick/Play Connect bağlantıları · indirme</small><b>Uygulamada</b><small>Studio · kayıt/yayın · canlı merkez · analiz · içerik · topluluk · marka · gelir · kasa</small></div></div>
+          <div class="ps-desktop-download"><span>WINDOWS ÖNİZLEME · 0.11.0</span><a href="./downloads/Play-Streamers-Setup.exe" download>Windows için indir</a><small>Windows 10/11 · 64 bit<br>Güncellemeler kriptografik olarak doğrulanır. Doğrudan kurulum dosyası henüz Windows yayınevi imzası taşımadığı için SmartScreen uyarısı gösterebilir.</small></div>
         </article>
-        <section class="ps-desktop-release-note" aria-label="Masaüstü sürüm durumu"><b>0.4.0 Studio</b><span>Yerel MKV kayıt, Windows masaüstü sesi, mikrofon, GPU kodlama, RTMPS yayın, canlı sahne değiştirme, kamera/pencere/oyun kaynakları, çok kanallı ses ve Windows 11 sanal kamera.</span><b>Uyumluluk notu</b><span>Yayın ve kayıt Windows 10/11'de çalışır; Play Streamers Camera yalnızca Windows 11'de sunulur.</span></section>
-        <section class="ps-plan-preview" aria-label="Play Streamers planları"><article><span>FREE</span><b>Başlamak ve yayın yapmak</b><small>Temel panel, Studio yayın/kayıt, sahneler, sayaç ve notlar.</small></article><article><span>PRO</span><b>Daha güçlü üretim akışı</b><small>Gelişmiş Studio, ayrıntılı analiz, yayın akışı, içerik ve kişiselleştirme.</small></article><article><span>PRODUCT PRO</span><b>Yayıncı çalışma sistemi</b><small>Kanıtlı yayın zekâsı, topluluk, marka, gelir ve profesyonel rapor araçları.</small></article></section><section class="ps54-sites"><span>ÜRÜN AİLESİ</span><div class="ps54-sites-grid"><a class="ps54-site-card" href="https://pstreamers.com" aria-label="Play Streamers ana sayfası"><i>PS</i><span><b>Play Streamers</b><small>Site hesap ve ürün merkezi</small></span></a><a class="ps54-site-card" href="https://swcreate.com" target="_blank" rel="noopener noreferrer"><i class="ps61-sw-site-logo"><img src="swcreate-sw-logo-transparent.png" alt=""></i><span><b>SW Identity</b><small>Ortak hesap, güvenlik ve plan yönetimi</small></span></a></div></section>`;
+        <section class="ps-product-command" aria-label="Play Streamers ana yetenekleri"><article><span>01 · STUDIO</span><b>Yayın ve kayıt motoru</b><small>Ayrı Önizleme/Program akışı, kesme/crossfade/kararma, 32 sahne, sahne başına 64 kaynak, tuvalde sürükleyerek konumlandırma, iki RTMPS hedefine eşzamanlı yayın, replay, GPU kodlama ve MKV güvenliği.</small></article><article><span>02 · CANLI ZEKA</span><b>Kanıtlı metrik, anlaşılır karar</b><small>Gerçek FPS, CPU ve ağ telemetrisi; Kick imzalı olayları ve Play Connect desteklerini aynı yayın oturumunda birleştirir.</small></article><article><span>03 · CREATOR OS</span><b>54 hazır çalışma alanı</b><small>Free, Pro ve Product Pro içinde içerik, topluluk, marka, gelir, analiz ve yerel kasa araçları.</small></article></section>
+        <section class="ps-product-proof" aria-label="Studio teknik özellikleri"><span>AYRI ÖNİZLEME + PROGRAM</span><span>İKİ RTMPS ÇIKIŞI</span><span>CANLI KAYNAK GÖRÜNÜRLÜĞÜ + OPAKLIK</span><span>GERÇEK SAHNELER ARASI CROSSFADE</span><span>TEK DÜĞMEYLE PROGRAMA AL</span><span>32 SAHNE + 64 EK KAYNAK</span><span>TUVALDE SÜRÜKLEYEREK KONUMLANDIRMA</span><span>YAZI + GÖRSEL + MEDYA + RENK</span><span>15–120 SN REPLAY BUFFER</span><span>KAYNAK KIRPMA + KONUMLANDIRMA</span><span>CANLI CPU + FPS TELEMETRİSİ</span><span>KESME + KARARMA GEÇİŞİ</span><span>CANLI SES METRELERİ</span><span>GÜRÜLTÜ AZALTMA + KAPI + COMPRESSOR</span><span>OTOMATİK YENİDEN BAĞLANMA</span><span>DOĞRULANMIŞ KICK / PLAY CONNECT</span><span>WINDOWS CREDENTIAL MANAGER</span></section>
+        <section class="ps-desktop-release-note" aria-label="Masaüstü sürüm durumu"><b>Windows uyumluluğu</b><span>Yayın ve kayıt Windows 10/11'de çalışır; Play Streamers Camera yalnızca Windows 11'de sunulur.</span><b>Kurulum durumu</b><span>Microsoft Store paketleri hazırdır ve mağaza sertifikasyonu bekler; mağaza yayını tamamlanana kadar doğrudan EXE kurulumunda Windows uyarısı görülebilir.</span></section>
+        <section class="ps-plan-preview" aria-label="Play Streamers planları"><article><span>FREE</span><b>Yayına başla</b><small>Kayıt/yayın Studio’su, çoklu sahne, canlı olaylar, sayaç, notlar, hedefler ve fikir kasası.</small></article><article><span>PRO</span><b>Üretim sistemini kur</b><small>Çok kanallı ses, Windows 11 sanal kamera, içerik akışı, teleprompter, marka ve yerel kasa araçları.</small></article><article><span>PRODUCT PRO</span><b>Veriyi avantaja çevir</b><small>Kanıtlı karşılaştırmalar, AI açıklaması, topluluk sistemleri, medya kiti ve doğrulanmış gelir görünümleri.</small></article></section><section class="ps54-sites"><span>ÜRÜN AİLESİ</span><div class="ps54-sites-grid"><a class="ps54-site-card" href="https://pstreamers.com" aria-label="Play Streamers ana sayfası"><i>PS</i><span><b>Play Streamers</b><small>Site hesap ve ürün merkezi</small></span></a><a class="ps54-site-card" href="https://swcreate.com" target="_blank" rel="noopener noreferrer"><i class="ps61-sw-site-logo"><img src="swcreate-sw-logo-transparent.png" alt=""></i><span><b>SW Identity</b><small>Ortak hesap, güvenlik ve plan yönetimi</small></span></a></div></section>`;
     } else {
       content.innerHTML = `<span class="ps49-info-kicker">PLAY STREAMERS · ${esc(data.title).toUpperCase()}</span><h1>${esc(data.title)}</h1><p class="ps49-info-lead">${esc(data.lead)}</p><div class="ps49-info-grid">${data.cards.map((card, index) => `<article class="ps49-info-card${data.security ? ' ps54-security-card' : ''}"><span>0${index + 1}</span><h2>${esc(card[0])}</h2><p>${esc(card[1])}</p></article>`).join('')}</div>`;
     }
@@ -2699,12 +2738,12 @@
     let value = '';
     try { value = localStorage.getItem(SITE_METRICS_VISITOR_KEY) || ''; } catch (_) {}
     if (/^[A-Za-z0-9_-]{20,128}$/.test(value)) return value;
-    if (crypto.randomUUID) value = crypto.randomUUID();
-    else {
+    if (window.crypto?.randomUUID) value = window.crypto.randomUUID();
+    else if (window.crypto?.getRandomValues) {
       const bytes = new Uint8Array(24);
-      crypto.getRandomValues(bytes);
+      window.crypto.getRandomValues(bytes);
       value = [...bytes].map(byte => byte.toString(16).padStart(2, '0')).join('');
-    }
+    } else value = `${Date.now().toString(36)}-${Math.random().toString(36).slice(2)}-${Math.random().toString(36).slice(2)}`;
     try { localStorage.setItem(SITE_METRICS_VISITOR_KEY, value); } catch (_) {}
     return value;
   }
@@ -3342,7 +3381,7 @@
     normalizeDashboardCardIcons(app); ensureDashboardExpanders(app); ensureStatsResetControl();
   }
   function bindPublicNavigation() { $$('#authOverlay .ps14-nav-links button').forEach(button => { const key = button.dataset.info || (/ürün/i.test(button.textContent) ? 'products' : /nasıl/i.test(button.textContent) ? 'how' : 'about'); button.onclick = event => { event.preventDefault(); event.stopImmediatePropagation(); showPublicInfo(key); }; }); }
-  function repair() { applyRememberPolicy(); installStatus(); bindLocaleControl(); normalizeLocaleFlags(); ensureRememberControls(); normalizeEyes(); normalizeProviderButtons(); decorateDialogs(); normalizeLogos(); normalizeSwCreate(); stripKickFromCompletion(); removeReleaseBanners(); removeRetiredSurfaces(); bindCurrentControls(); bindPublicNavigation(); enableMemberBrand(); ensureSupport(); ensureMemberExtras(); ensureSiteMetricsCards(); ensurePrivacyLinks(); startSiteMetrics(); ensureDashboardLayout(); ensureStatsResetControl(); ensureNotificationControls(); normalizeAccountMetricZeroes(); normalizeTipeeeStreamDabLogo(document); normalizeTooltips(); updateConnectionIcon(); memberLoadingTransition(); }
+  function repair() { applyRememberPolicy(); installStatus(); bindLocaleControl(); normalizeLocaleFlags(); ensureRememberControls(); normalizeEyes(); normalizeProviderButtons(); decorateDialogs(); normalizeLogos(); normalizeSwCreate(); stripKickFromCompletion(); removeReleaseBanners(); removeRetiredSurfaces(); refreshCreatorLanding(); bindCurrentControls(); bindPublicNavigation(); enableMemberBrand(); ensureSupport(); ensureMemberExtras(); ensureSiteMetricsCards(); ensurePrivacyLinks(); startSiteMetrics(); ensureDashboardLayout(); ensureStatsResetControl(); ensureNotificationControls(); normalizeAccountMetricZeroes(); normalizeTipeeeStreamDabLogo(document); normalizeTooltips(); updateConnectionIcon(); memberLoadingTransition(); }
   let queued = false; const queueRepair = () => { if (!queued) { queued = true; requestAnimationFrame(() => { queued = false; repair(); }); } };
   let lastStatusPress = 0;
   let lastNavPress = 0;

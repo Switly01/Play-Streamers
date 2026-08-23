@@ -1,0 +1,47 @@
+{
+  "name": "play-streamers-donate-bridge",
+  "version": "0.2.0",
+  "private": true,
+  "description": "Play Streamers için yerel ve sağlayıcıdan bağımsız donate takip köprüsü",
+  "main": "src/main.js",
+  "author": "SW CREATE",
+  "license": "UNLICENSED",
+  "scripts": {
+    "start": "electron .",
+    "test": "node --test test/*.test.js",
+    "dist:win": "electron-builder --win nsis portable"
+  },
+  "devDependencies": {
+    "electron": "^38.0.0",
+    "electron-builder": "^26.0.12"
+  },
+  "build": {
+    "appId": "com.pstreamers.donatebridge",
+    "productName": "Play Streamers Donate Bridge",
+    "asar": true,
+    "files": [
+      "src/**/*",
+      "assets/**/*",
+      "examples/**/*",
+      "package.json"
+    ],
+    "directories": {
+      "output": "dist",
+      "buildResources": "build"
+    },
+    "win": {
+      "icon": "build/icon.ico"
+    },
+    "nsis": {
+      "artifactName": "Play-Streamers-Donate-Bridge-Setup-${version}-${arch}.${ext}",
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "Play Streamers Donate Bridge"
+    },
+    "portable": {
+      "artifactName": "Play-Streamers-Donate-Bridge-Portable-${version}-${arch}.${ext}"
+    }
+  }
+}

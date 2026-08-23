@@ -44,7 +44,8 @@ pub fn run() {
                 }
                 let record = Shortcut::new(Some(Modifiers::CONTROL | Modifiers::ALT), Code::KeyR);
                 let stream = Shortcut::new(Some(Modifiers::CONTROL | Modifiers::ALT), Code::KeyL);
-                let action = if shortcut == &record { Some("record") } else if shortcut == &stream { Some("stream") } else { None };
+                let replay = Shortcut::new(Some(Modifiers::CONTROL | Modifiers::ALT), Code::KeyB);
+                let action = if shortcut == &record { Some("record") } else if shortcut == &stream { Some("stream") } else if shortcut == &replay { Some("replay") } else { None };
                 if let Some(action) = action {
                     let _ = app.emit("studio-global-shortcut", action);
                 }
@@ -75,6 +76,7 @@ pub fn run() {
             {
                 let _ = _app.global_shortcut().register(Shortcut::new(Some(Modifiers::CONTROL | Modifiers::ALT), Code::KeyR));
                 let _ = _app.global_shortcut().register(Shortcut::new(Some(Modifiers::CONTROL | Modifiers::ALT), Code::KeyL));
+                let _ = _app.global_shortcut().register(Shortcut::new(Some(Modifiers::CONTROL | Modifiers::ALT), Code::KeyB));
             }
             Ok(())
         })
@@ -91,12 +93,18 @@ pub fn run() {
             studio_engine::stop_recording,
             studio_engine::start_streaming,
             studio_engine::stop_streaming,
+            studio_engine::save_replay_buffer,
+            studio_engine::start_studio_preview,
+            studio_engine::read_studio_preview_frame,
+            studio_engine::stop_studio_preview,
             studio_engine::get_virtual_camera_status,
             studio_engine::install_virtual_camera,
             studio_engine::start_virtual_camera,
             studio_engine::stop_virtual_camera,
             studio_engine::switch_scene,
-            studio_engine::set_audio_volume
+            studio_engine::set_preview_scene,
+            studio_engine::set_audio_volume,
+            studio_engine::set_source_opacity
         ])
         .run(tauri::generate_context!())
         .expect("Play Streamers masaüstü uygulaması başlatılamadı");

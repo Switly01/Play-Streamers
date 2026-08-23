@@ -5,13 +5,13 @@ Bu sürüm iki açık dağıtım klasörü, masaüstü uygulaması ve bir eklent
 - `play-connect.zip`: Chrome eklentisi.
 - `release/github-pages-latest`: GitHub Pages / `pstreamers.com` ön yüzü.
 - `cloudflare-worker-latest`: Cloudflare Worker ve D1 migration dosyaları.
-- `downloads/Play-Streamers-Setup.exe`: Play Streamers 0.4.0 Windows kurucusu.
-- `release/microsoft-store/Play-Streamers-0.4.1.0-win10-x64.msix`: Windows 10
+- `downloads/Play-Streamers-Setup.exe`: Play Streamers 0.11.0 Windows kurucusu.
+- `release/microsoft-store/Play-Streamers-0.11.1.0-win10-x64.msix`: Windows 10
   2004 ve sonrası için sanal kamera kaydı içermeyen temel Store paketi.
-- `release/microsoft-store/Play-Streamers-0.4.2.0-win11-x64.msix`: Windows 11
+- `release/microsoft-store/Play-Streamers-0.11.2.0-win11-x64.msix`: Windows 11
   için daha yüksek sürümlü, Play Streamers Camera kayıtlı Store paketi.
-  Uygulamanın kullanıcıya gösterilen ürün sürümü iki pakette de `0.4.0`'dır;
-  `0.4.1.0` ve `0.4.2.0` yalnızca Store paket seçimi için dahili numaralardır.
+  Uygulamanın kullanıcıya gösterilen ürün sürümü iki pakette de `0.11.0`'dır;
+  `0.11.1.0` ve `0.11.2.0` yalnızca Store paket seçimi için dahili numaralardır.
   İki paketin kimliği `Switly.PlayStreamers`, Store ID değeri
   `9NWZ0TF5K999`'dir.
 
@@ -82,5 +82,5 @@ kaldırılmadan güncellenecekse paketlenmemiş uzantının klasörünü yeni
 `play-connect` klasörüyle değiştirip **Yeniden yükle** düğmesine bas.
 
 > Bu sürümde `0010_desktop_platform.sql`, Worker, GitHub Pages ön yüzü ve
-> Play Streamers 0.4.0 kurucusu birlikte güncellenmelidir. Client secret ve şifreleme
+> Play Streamers 0.11.0 kurucusu birlikte güncellenmelidir. Client secret ve şifreleme
 > anahtarı GitHub'a veya ön yüz dosyalarına kesinlikle eklenmez.

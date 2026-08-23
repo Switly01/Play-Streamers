@@ -17,12 +17,18 @@ export async function installTauriBridge() {
     stopRecording: () => invoke<{ path: string }>("stop_recording"),
     startStreaming: (options) => invoke<void>("start_streaming", { options }),
     stopStreaming: () => invoke<void>("stop_streaming"),
+    saveReplayBuffer: () => invoke<string>("save_replay_buffer"),
+    startStudioPreview: (options) => invoke<void>("start_studio_preview", { options }),
+    readStudioPreviewFrame: () => invoke<string | null>("read_studio_preview_frame"),
+    stopStudioPreview: () => invoke<void>("stop_studio_preview"),
     getVirtualCameraStatus: () => invoke<VirtualCameraStatus>("get_virtual_camera_status"),
     installVirtualCamera: () => invoke<void>("install_virtual_camera"),
     startVirtualCamera: (options) => invoke<void>("start_virtual_camera", { options }),
     stopVirtualCamera: () => invoke<void>("stop_virtual_camera"),
-    switchScene: (scene) => invoke<void>("switch_scene", { scene }),
+    switchScene: (scene, transition, durationMs) => invoke<void>("switch_scene", { scene, transition, durationMs }),
+    setPreviewScene: (scene) => invoke<void>("set_preview_scene", { scene }),
     setAudioVolume: (channel, level) => invoke<void>("set_audio_volume", { channel, level }),
+    setSourceOpacity: (scene, source, level) => invoke<void>("set_source_opacity", { scene, source, level }),
     openExternal: (url) => openUrl(url),
     secureStore: (key, value) => invoke<void>("secure_store", { key, value }),
     secureRead: (key) => invoke<string | null>("secure_read", { key }),
@@ -47,7 +53,7 @@ export async function installTauriBridge() {
       let disposed = false;
       let unlisten: (() => void) | null = null;
       void listen<string>("studio-global-shortcut", (event) => {
-        if (!disposed && (event.payload === "record" || event.payload === "stream")) handler(event.payload);
+        if (!disposed && (event.payload === "record" || event.payload === "stream" || event.payload === "replay")) handler(event.payload);
       }).then((stop) => {
         if (disposed) stop();
         else unlisten = stop;

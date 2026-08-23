@@ -1,0 +1,240 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; style-src 'self'; script-src 'self'; connect-src 'none'">
+  <title>Play Streamers Donate Bridge</title>
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <div class="ambient ambient-one"></div>
+  <div class="ambient ambient-two"></div>
+  <main class="app-shell">
+    <header class="topbar">
+      <div class="brand">
+        <span class="brand-mark" aria-hidden="true">PS</span>
+        <span>
+          <b>PLAY STREAMERS</b>
+          <small>DONATE BRIDGE</small>
+        </span>
+      </div>
+      <div class="global-status" id="globalStatus">
+        <i></i>
+        <span>Bağlantılar hazırlanıyor</span>
+      </div>
+    </header>
+
+    <section class="hero">
+      <div>
+        <span class="kicker">YEREL DONATE BAĞLANTI MERKEZİ</span>
+        <h1>Donate sayfası görünmeden<br>arka planda takip.</h1>
+        <p>İstediğin donate sitesini ekle, işlem geçmişi veya bildirim alanını bir kez seç. Uygulama Windows ile açılır ve bağlantıyı sistem tepsisinde çalıştırır.</p>
+      </div>
+      <div class="hero-metrics">
+        <article><small>AKTİF BAĞLANTI</small><b id="activeProviderCount">0</b></article>
+        <article><small>YEREL OLAY</small><b id="eventCount">0</b></article>
+        <article><small>BEKLEYEN</small><b id="queueCount">0</b></article>
+      </div>
+    </section>
+
+    <nav class="tabs" aria-label="Uygulama bölümleri">
+      <button type="button" class="active" data-tab="connections">Bağlantılar</button>
+      <button type="button" data-tab="activity">Son olaylar</button>
+      <button type="button" data-tab="settings">Ayarlar</button>
+    </nav>
+
+    <section class="tab-panel active" data-panel="connections">
+      <div class="section-head">
+        <div>
+          <span class="kicker">SAĞLAYICIDAN BAĞIMSIZ</span>
+          <h2>Donate bağlantıları</h2>
+          <p>OBS bağlantısı zorunlu değildir. İşlem geçmişi, son destekler veya alert ekranı kullanılabilir.</p>
+        </div>
+        <div class="head-actions">
+          <button type="button" class="button ghost" id="importProvider">Şablon içe aktar</button>
+          <button type="button" class="button primary" id="addProvider">+ Yeni site ekle</button>
+        </div>
+      </div>
+      <div class="provider-grid" id="providerGrid"></div>
+      <div class="empty-state" id="providerEmpty">
+        <span class="empty-icon">＋</span>
+        <h3>Henüz donate sitesi eklenmedi</h3>
+        <p>İlk siteyi ekle, giriş yap ve sayfadaki donate alanlarını görsel olarak seç.</p>
+        <button type="button" class="button primary" id="emptyAddProvider">İlk bağlantıyı oluştur</button>
+      </div>
+    </section>
+
+    <section class="tab-panel" data-panel="activity">
+      <div class="section-head">
+        <div>
+          <span class="kicker">YEREL KAYIT</span>
+          <h2>Son donate olayları</h2>
+          <p>API bağlantısı yapılana kadar algılanan olaylar bu bilgisayarda güvenli biçimde sıraya alınır.</p>
+        </div>
+        <button type="button" class="button ghost" id="retryQueue">Bekleyenleri yeniden dene</button>
+      </div>
+      <div class="event-list" id="eventList"></div>
+      <div class="empty-state compact" id="eventEmpty">
+        <span class="empty-icon">↯</span>
+        <h3>Henüz olay algılanmadı</h3>
+        <p>Bağlantı kartındaki “Test olayı” ile yerel akışı kontrol edebilirsin.</p>
+      </div>
+    </section>
+
+    <section class="tab-panel" data-panel="settings">
+      <div class="settings-grid">
+        <article class="settings-card">
+          <span class="kicker">ARKA PLAN</span>
+          <h2>Windows davranışı</h2>
+          <label class="switch-row">
+            <span><b>Windows ile başlat</b><small>Oturum açıldığında bağlantıları görünmeden başlatır.</small></span>
+            <input id="autoStart" type="checkbox"><i></i>
+          </label>
+          <label class="switch-row">
+            <span><b>Kapatınca sistem tepsisine küçült</b><small>Sağ üstteki çarpı bağlantıları durdurmaz.</small></span>
+            <input id="closeToTray" type="checkbox"><i></i>
+          </label>
+          <button type="button" class="button primary" id="saveBehavior">Davranışı kaydet</button>
+        </article>
+
+        <article class="settings-card">
+          <span class="kicker">PLAY STREAMERS API</span>
+          <h2>Play Streamers hesabı</h2>
+          <p class="card-copy">Sitede Hesabım → Bağlantılar bölümünden bir kod oluştur. Kod yalnızca bir kez kullanılır ve cihaz anahtarı Windows güvenli depolamasında saklanır.</p>
+          <div class="pairing-state" id="pairingState"></div>
+          <label class="field" id="pairingCodeField">
+            <span>10 karakterli eşleştirme kodu</span>
+            <input id="pairingCode" type="text" inputmode="text" autocomplete="off" spellcheck="false" maxlength="11" placeholder="ABCDE-23456">
+          </label>
+          <div class="row-actions">
+            <button type="button" class="button ghost" id="disconnectDelivery">Bağlantıyı kaldır</button>
+            <button type="button" class="button primary" id="pairDelivery">Hesabı bağla</button>
+          </div>
+          <details class="advanced-delivery">
+            <summary>Gelişmiş teslimat ayarları</summary>
+            <label class="field">
+              <span>API adresi</span>
+              <input id="apiEndpoint" type="url" autocomplete="off" spellcheck="false">
+            </label>
+            <label class="field">
+              <span>Cihaz anahtarı</span>
+              <input id="deliveryToken" type="password" autocomplete="off" placeholder="Güvenli depolamada kayıtlı">
+            </label>
+            <label class="switch-row">
+              <span><b>API teslimatını aç</b><small>Bağlantı geçersiz olursa otomatik kapanır.</small></span>
+              <input id="deliveryEnabled" type="checkbox"><i></i>
+            </label>
+            <button type="button" class="button ghost" id="saveDelivery">Gelişmiş ayarları kaydet</button>
+          </details>
+          <button type="button" class="button ghost" id="showDataFolder">Yerel veri klasörü</button>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <section class="modal-layer" id="providerModal" hidden>
+    <div class="modal-card">
+      <button type="button" class="modal-close" data-close-modal aria-label="Kapat">×</button>
+      <span class="kicker">YENİ DONATE KAYNAĞI</span>
+      <h2 id="providerModalTitle">Site bağlantısı oluştur</h2>
+      <p class="modal-lead">Platform adı sabit değildir. Kullandığın sitenin kendi takip sayfasını tanımlayabilirsin.</p>
+      <form id="providerForm">
+        <input type="hidden" name="id">
+        <div class="form-grid">
+          <label class="field">
+            <span>Site adı</span>
+            <input name="name" required maxlength="80" placeholder="Örn. kullandığın donate sitesi">
+          </label>
+          <label class="field">
+            <span>Takip türü</span>
+            <select name="mode">
+              <option value="history">İşlem geçmişi / son destekler</option>
+              <option value="alert">Canlı bildirim / alert alanı</option>
+            </select>
+          </label>
+          <label class="field wide">
+            <span>Takip edilecek sayfanın adresi</span>
+            <input name="watchUrl" type="url" required placeholder="https://.../donate-gecmisi">
+          </label>
+          <label class="field wide">
+            <span>Giriş sayfası <em>isteğe bağlı</em></span>
+            <input name="loginUrl" type="url" placeholder="https://.../giris">
+          </label>
+          <label class="field">
+            <span>Varsayılan para birimi</span>
+            <select name="defaultCurrency">
+              <option value="TRY">TRY · Türk lirası</option>
+              <option value="USD">USD · Dolar</option>
+              <option value="EUR">EUR · Euro</option>
+              <option value="GBP">GBP · Sterlin</option>
+            </select>
+          </label>
+          <label class="field">
+            <span>Tarama sınırı</span>
+            <input name="scanLimit" type="number" min="10" max="500" value="150">
+          </label>
+        </div>
+
+        <div class="selector-section">
+          <div>
+            <span class="kicker">GÖRSEL ALAN SEÇİMİ</span>
+            <h3>Sayfadaki alanları öğret</h3>
+            <p>Önce taslak olarak kaydet. Ardından takip sayfasını açıp aşağıdaki alanları sırayla seç.</p>
+          </div>
+          <div class="selector-list">
+            <label class="selector-row required">
+              <span><b>Donate satırı</b><small>Her donate’i çevreleyen kart veya satır</small></span>
+              <input name="selectorItem" placeholder="Henüz seçilmedi">
+              <button type="button" data-select-field="item">Sayfadan seç</button>
+            </label>
+            <label class="selector-row">
+              <span><b>İşlem numarası</b><small>Varsa tekrarları kesin engeller</small></span>
+              <input name="selectorEventId" placeholder="İsteğe bağlı">
+              <button type="button" data-select-field="eventId">Sayfadan seç</button>
+            </label>
+            <label class="selector-row">
+              <span><b>Gönderen</b><small>Destekçi adı</small></span>
+              <input name="selectorName" placeholder="İsteğe bağlı">
+              <button type="button" data-select-field="name">Sayfadan seç</button>
+            </label>
+            <label class="selector-row required">
+              <span><b>Tutar</b><small>Miktarın yazdığı alan</small></span>
+              <input name="selectorAmount" placeholder="Seçilmezse satır metninde aranır">
+              <button type="button" data-select-field="amount">Sayfadan seç</button>
+            </label>
+            <label class="selector-row">
+              <span><b>Para birimi</b><small>TL, USD veya simge</small></span>
+              <input name="selectorCurrency" placeholder="İsteğe bağlı">
+              <button type="button" data-select-field="currency">Sayfadan seç</button>
+            </label>
+            <label class="selector-row">
+              <span><b>Mesaj</b><small>Donate mesajı</small></span>
+              <input name="selectorMessage" placeholder="İsteğe bağlı">
+              <button type="button" data-select-field="message">Sayfadan seç</button>
+            </label>
+            <label class="selector-row">
+              <span><b>Tarih / saat</b><small>Gönderilme zamanı</small></span>
+              <input name="selectorTime" placeholder="İsteğe bağlı">
+              <button type="button" data-select-field="time">Sayfadan seç</button>
+            </label>
+          </div>
+        </div>
+
+        <label class="switch-row form-switch">
+          <span><b>Bağlantıyı hemen çalıştır</b><small>Donate satırı seçilmediyse taslak olarak kaydedilir.</small></span>
+          <input name="enabled" type="checkbox" checked><i></i>
+        </label>
+        <p class="form-error" id="providerFormError" aria-live="polite"></p>
+        <div class="modal-actions">
+          <button type="button" class="button ghost" data-close-modal>Vazgeç</button>
+          <button type="submit" class="button primary">Kaydet</button>
+        </div>
+      </form>
+    </div>
+  </section>
+
+  <div class="toast-stack" id="toastStack" aria-live="polite"></div>
+  <script src="./app.js"></script>
+</body>
+</html>

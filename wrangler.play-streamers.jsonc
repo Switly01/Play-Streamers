@@ -1,0 +1,35 @@
+{
+  "$schema": "swcreate-site/node_modules/wrangler/config-schema.json",
+  "name": "play-streamers-api",
+  "main": "cloudflare-worker.js",
+  "compatibility_date": "2026-08-22",
+  "workers_dev": true,
+  "routes": [
+    { "pattern": "api.pstreamers.com", "custom_domain": true }
+  ],
+  "triggers": { "crons": ["* * * * *"] },
+  "vars": {
+    "DONATIONALERTS_CLIENT_ID": "20377",
+    "GOOGLE_CLIENT_ID": "535261504819-5vngrl7njjgbi2eon0k0lrtaoqv93rci.apps.googleusercontent.com",
+    "KICK_CLIENT_ID": "01KXB0G05WYH0VVEGW74E5D6DE",
+    "RESEND_FROM_EMAIL": "Play Streamers <noreply@pstreamers.com>",
+    "STREAMLABS_CLIENT_ID": "019fe770-4184-715e-8629-ba208b2296c1",
+    "SUPPORT_INBOUND_DOMAIN": "bronourdaa.resend.app",
+    "SUPPORT_REPLY_SENDERS": "swcreate.info@gmail.com",
+    "TIPEEESTREAM_CLIENT_ID": "15443_1jepgvoekhlw0ws40koo48w4sc0koc0ksgso8csg4ssco8okgo",
+    "TURNSTILE_SITE_KEY": "0x4AAAAAAD4Mr0GZFyPQkCSj"
+  },
+  "kv_namespaces": [
+    { "binding": "SESSIONS", "id": "f6a081a28f76437f85a631abbd0b254b" }
+  ],
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "play-streamers-users",
+      "database_id": "04202e23-0168-4f4c-adb4-9140a63a18b1",
+      "migrations_dir": "migrations"
+    }
+  ],
+  "ai": { "binding": "AI" },
+  "observability": { "enabled": true }
+}

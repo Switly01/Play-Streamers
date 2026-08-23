@@ -1,11 +1,11 @@
 {
-  "version": "0.4.0",
-  "notes": "Play Streamers Desktop 0.4.0: Windows 11 sanal kamera, Studio yayın/kayıt iyileştirmeleri ve imzalı otomatik güncelleme altyapısı.",
-  "pub_date": "2026-08-22T16:55:54.4751053+00:00",
-  "platforms": {
-    "windows-x86_64": {
-      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVRcWlCbnhDNnc4UEYrMXVmQVRqMks1bkpVczA5N3lBeGNFK1p6cFBla1pFb2NHS0t5bjBFd3hHMjQrZUQ0NW9XQUVFc1Erek5EV0N3MGV5RjMzZXFxT2gvUDJmNXVKSFEwPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzg3NDE3NzI2CWZpbGU6UGxheSBTdHJlYW1lcnNfMC40LjBfeDY0LXNldHVwLmV4ZQpQOGNwc09yejJHK2oxdEkwdjNVbmpXNWkvUEZqQkd3MGZISXRBZ3EzOFB4eFhmeG9zY1BjbExneVEzZVMwZ0g2S3RTSHlVWFF0Q1drMzZvZFNNbjlDZz09Cg==",
-      "url": "https://pstreamers.com/downloads/Play-Streamers-Setup.exe"
-    }
-  }
+    "version":  "0.11.0",
+    "notes":  "Play Streamers Desktop 0.11.0: tek kodlama akışından iki güvenli RTMPS hedefine eşzamanlı yayın, Önizleme tuvalinde sürükleyerek kaynak yerleştirme, 32 sahne, sahne başına 64 kaynak ve gerçek FFmpeg CPU telemetrisi. Kaynaklar, ayrı Önizleme/Program, crossfade, replay buffer, ses filtreleri, otomatik yayın kurtarma, doğrulanmış Kick/Play Connect verileri ve 54 Creator OS çalışma alanı korunur. Yayın ve kayıt Windows 10/11\u0027de; sanal kamera Windows 11\u0027de çalışır.",
+    "pub_date":  "2026-08-22T23:50:03.2933127+00:00",
+    "platforms":  {
+                      "windows-x86_64":  {
+                                             "signature":  "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVRcWlCbnhDNnc4UENRWWNtOHJ0SmNDK3JsVUVva202RklxeU5XV2ZIRzBPVnJnR2RhbUpRSWtuN0xBclM5YmsrbEI1dFBwUTg5UWZSMnRyTUhtMEhQelpTb1hCd0FRNXc4PQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzg3NDQyNTk2CWZpbGU6UGxheSBTdHJlYW1lcnNfMC4xMS4wX3g2NC1zZXR1cC5leGUKSDRHL0FoS2U1R1ZIZFlMZjBUa1NVRUJxWW92TEpTUnM1NmZzN0pLM2Z6NlZvVG12bUFyS2xKVlRyTXJBeHYvdEdXUHNpMjhvSDdkY0kzVURHcjYvQmc9PQo=",
+                                             "url":  "https://pstreamers.com/downloads/Play-Streamers-Setup.exe"
+                                         }
+                  }
 }

@@ -1,0 +1,22 @@
+{
+  "format": "play-streamers-provider",
+  "version": 1,
+  "provider": {
+    "name": "Örnek Donate Sitesi",
+    "watchUrl": "https://example.invalid/yayinci/donate-gecmisi",
+    "loginUrl": "https://example.invalid/giris",
+    "mode": "history",
+    "enabled": false,
+    "selectors": {
+      "item": ".donate-row",
+      "eventId": "[data-donate-id]",
+      "name": ".donor-name",
+      "amount": ".donate-amount",
+      "currency": ".currency",
+      "message": ".donate-message",
+      "time": "time"
+    },
+    "defaultCurrency": "TRY",
+    "scanLimit": 150
+  }
+}

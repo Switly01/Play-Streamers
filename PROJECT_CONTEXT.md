@@ -1,5 +1,29 @@
 # Play Streamers — Kalıcı Proje Bağlamı
 
+Sürüm 4.7: Desktop 0.11.0 tek FFmpeg kodlama akışını iki güvenli RTMPS
+hedefine eşzamanlı gönderebilir; ikinci anahtar da yalnız Windows Credential
+Manager'da tutulur. Studio proje sınırı 32 sahneye, sahne başına kaynak sınırı
+64'e çıkarıldı. Kaynaklar yayın/kayıt dışındayken doğrudan Önizleme tuvalinde
+sürüklenerek konumlandırılabilir. Yayın motoru telemetrisi FFmpeg çocuk
+sürecinin gerçek CPU kullanımını da gösterir. OBS eklenti uyumluluğu,
+tarayıcı kaynağı, stinger/luma, ses izleme bus'ı ve gerçek çoklu görünüm bu
+sürümde tamamlanmış sayılmaz.
+Play Streamers API aynı sürüm için 23 Ağustos 2026'da
+`a5abc7b3-ea1b-4c9e-9621-99169a7ec123` Worker kimliğiyle canlıya dağıtıldı;
+health, Workers AI binding ve `https://pstreamers.com` CORS ön kontrolü geçti.
+
+Sürüm 4.6: Ürün sayfası masaüstü uygulamasının çoklu sahne, gerçek program
+önizlemesi, canlı ses/telemetri ve doğrulanmış olay hattını; 54 hazır çalışma
+alanıyla birlikte yeni Creator OS mimarisinde sunar. Site hesap, plan, güvenlik,
+bağlantılar ve indirme merkezi olarak kalır.
+
+Sürüm 4.5: Ürün sayfası masaüstü uygulamasının hazır yayın/kayıt çekirdeğini,
+erken sürüm çalışma alanlarını ve OBS sınıfına ulaşmak için eksik Studio
+işlerini ayrı durum kartlarında gösterir. Doğrudan EXE'nin güncelleme imzası
+ile Windows yayınevi imzası arasındaki fark açıklandı. Site sağlık kontrolü,
+API'nin eski bir sürüm numarasına eşit olmasını beklemek yerine `/health`
+sözleşmesindeki gerçek servis durumunu kullanır.
+
 Bu belge, Play Streamers üzerinde gelecekte yapılacak çalışmaların ortak
 başvuru noktasıdır. Gizli değerler burada veya başka bir proje dosyasında
 tutulmaz.
@@ -94,15 +118,70 @@ tutulmaz.
   `9NWZ0TF5K999` Store ID değeriyle 22 Ağustos 2026'da oluşturuldu. Publisher
   değeri `CN=C7E10994-8739-4CF7-9F8C-2F23700A5BDC`, görünen yayıncı adı
   `Switly` olarak kullanılır.
-- Store dağıtımı x64 için iki sıralı paket kullanır. `0.4.1.0` paketi Windows
+- Store dağıtımı x64 için iki sıralı paket kullanır. Güncel `0.11.1.0` paketi Windows
   10 2004 (`10.0.19041`) ve sonrasında Studio, yayın ve kayıt özelliklerini
-  sunar ancak Windows 11'e özel COM sanal kamera kaydını içermez. `0.4.2.0`
+  sunar ancak Windows 11'e özel COM sanal kamera kaydını içermez. `0.11.2.0`
   paketi Windows 11 (`10.0.22000`) ve sonrasında aynı uygulamayı sanal kamera
   kaydıyla sunar. Uygulama ayrıca işletim sistemi derlemesini yerelde denetler;
   Windows 10'da sanal kamera yöneticisini çalıştırmaz.
-  Kullanıcıya gösterilen ürün sürümü her iki pakette de `0.4.0` olarak kalır;
-  farklı MSIX numaraları aynı x64 mimarisindeki iki paketin Store tarafından
+  Güncel paketlerde dahili sürümler `0.11.1.0` (Windows 10) ve `0.11.2.0`
+  (Windows 11), kullanıcıya gösterilen ürün sürümü ise her ikisinde de `0.11.0`'dır.
+  Farklı MSIX numaraları aynı x64 mimarisindeki iki paketin Store tarafından
   ayırt edilmesi ve doğru işletim sistemine sıralanması içindir.
+
+Desktop 0.6.0: Ana görüntü kaynağına dört yönlü kırpma eklendi. Kayıt veya yayın
+sırasında aynı FFmpeg kodlama akışından beslenen 15, 30, 60 veya 120 saniyelik
+döngüsel replay buffer son tamamlanmış parçaları cihazda tutar; Ctrl + Alt + B
+ile ayrı MKV dosyasına kaydeder. Replay medyası buluta eşitlenmez. Rust motoru
+18 test içerir; 17 test geçer, yalnız kurulu Windows 11 sanal kamera bileşeni
+gerektiren fiziksel test CI/yerel cihaz dışı koşullarda atlanır.
+
+Desktop 0.7.0: Sabit yazı/görsel alanı, eski sahneleri otomatik dönüştüren
+sıralanabilir kaynak yığınına genişletildi. Her görüntü sahnesi 12 ek yazı,
+PNG/JPG/WebP görsel, döngüsel MP4/MKV/MOV/WebM/M4V/AVI medya veya renk alanı
+taşıyabilir. Kaynaklar eklenebilir, adlandırılabilir, gizlenebilir, silinebilir,
+yeniden sıralanabilir; boyut, konum ve opaklıkları değiştirilebilir. Aynı sıra
+kayıt, yayın, program önizlemesi ve Windows 11 sanal kamera grafiğine gider.
+Rust motorunda 20 test bulunur; gerçek yerel medya bileşimi dahil 19 test geçer,
+yalnız kurulu Windows 11 sanal kamera bileşeni gerektiren fiziksel test atlanır.
+
+Desktop 0.8.0: OBS Studio Mode yaklaşımındaki Önizleme ve Program durumları
+ayrıldı. Sahne listesinde yapılan seçim yalnız Önizleme kanalını değiştirir;
+kayıt, yayın ve sanal kameranın paylaştığı Program çıkışı tek `Programa al`
+eylemiyle güncellenir. Kesme veya 150–800 ms siyaha kararma yalnız Program
+portlarına uygulanır; FFmpeg önizleme grafiği kendi 5557 komut kanalında kalır.
+Rust motoru 21 test içerir; kaynak sırası ve gerçek medya bileşimi yanında
+Program/Önizleme komut yalıtımı da doğrulanır. 20 test geçer, yalnız kurulu
+Windows 11 sanal kamera bileşeni gerektiren fiziksel test atlanır.
+
+Desktop 0.9.0: Program grafiğine ikinci hedef sahne seçicisi ve komutla
+değiştirilen alfa katmanı eklendi. Yumuşak geçiş hedef sahneyi `scene_next`
+seçicisine alır, 10 adımda gerçek crossfade uygular, ardından ana Program
+seçicisine devredip geçiş katmanını sıfırlar. Aynı akış kayıt/yayın portu 5555
+ve sanal kamera portu 5556 üzerinde çalışır; hata halinde alfa sıfırlanarak eski
+Program görüntüsü korunur. Kesme ve siyaha kararma seçenekleri değişmeden kalır.
+Gerçek FFmpeg duman testi crossfade, cut, fade ve ses komutlarını aynı çalışan
+grafikte doğrular.
+
+Desktop 0.10.0: Her yazı, görsel, döngüsel yerel medya ve renk kaynağı FFmpeg
+grafiğinde kendine ait adlandırılmış alfa filtresiyle kalıcı tutulur. Kayıt,
+yayın, bağımsız Önizleme veya Windows 11 sanal kamera çalışırken kaynak
+görünürlüğü ve opaklığı ZMQ komutuyla değiştirilir; kodlayıcı ve yakalama
+süreçleri yeniden başlamaz. Başlangıçta gizli fakat geçerli yerel dosyalar da
+canlı açılabilmeleri için grafiğe yüklenir; kayıp gizli dosya yayını engellemez.
+Aynı kaynak komutu etkin Program, sanal kamera ve Önizleme portlarına ayrı ayrı
+uygulanır. Gerçek FFmpeg duman testi kaynak alfa komutunu crossfade, fade, cut
+ve ses komutlarıyla aynı çalışan grafikte doğrular.
+
+Desktop 0.11.0: Aynı H.264/AAC kodlama akışı birincil ve ikincil güvenli RTMPS
+hedefine FFmpeg tee çıkışıyla eşzamanlı gönderilir; hedefler ayrı doğrulanır ve
+iki yayın anahtarı da yalnız Windows Credential Manager'da saklanır. Studio
+projesi 32 sahne ve sahne başına 64 ek kaynak taşıyabilir. Yayın/kayıt
+dışındayken görünür ek kaynaklar Önizleme tuvalinde fareyle sürüklenerek
+konumlandırılır. FFmpeg çocuk sürecinin işlemci zamanı Windows süreç
+telemetrisiyle ölçülür ve Studio sağlık kartında gösterilir. Rust motorunda 22
+testin 21'i geçer; yalnız kurulu Windows 11 sanal kamera isteyen fiziksel test
+atlanır.
 
 Sürüm 4.20: Saatlik Kick takipçi/abone ölçümü bütün hesapları kilitleyen tek
 cron işaretinden çıkarıldı. Worker artık her hesabın ilgili saat satırını ayrı

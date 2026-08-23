@@ -3,7 +3,7 @@
 Bu klasör tek Play Streamers masaüstü uygulamasını içerir. `Studio` ayrı bir
 uygulama değildir; aynı kabuğun içindeki yayın ve kayıt çalışma alanıdır.
 
-## Sürüm 0.4.0
+## Sürüm 0.11.0
 
 - React/Vite arayüzü ve 54 araçlık ortak Free / Pro / Product Pro kataloğu,
 - cihazda saklanan hızlı notlar ve fikir kasası,
@@ -14,14 +14,32 @@ uygulama değildir; aynı kabuğun içindeki yayın ve kayıt çalışma alanıd
   Foundation; uygun donanım bulunamazsa x264,
 - GPU öncelikli masaüstü yakalama, WASAPI masaüstü sesi, mikrofon/DirectShow
   ses girişi ve H.264 + AAC MKV kayıt,
-- mikrofon ve masaüstü sesi için ayrı, kayıttan önce ayarlanabilen ses düzeyi,
-- güvenli RTMPS yayın ve isteğe bağlı tek kodlama akışından eş zamanlı MKV kayıt,
+- mikrofon ve masaüstü sesi için gerçek seviye metreleri ve canlı kazanç;
+  mikrofon için gürültü azaltma, noise gate, compressor ve limiter,
+- güvenli RTMPS yayın, tek kodlama akışından iki platforma eşzamanlı çıkış ve
+  isteğe bağlı eş zamanlı MKV kayıt,
 - tüm ekran, belirli oyun/uygulama/tarayıcı penceresi veya kamera kaynağı,
-- yerel görsel ve metin katmanı; kayıt/yayın sürerken ana/mola sahnesi geçişi,
+- ana kaynakta dört yönden kırpma; ana kaynak, yerel görsel ve metin katmanında
+  ayrı görünürlük, ölçek ve konum;
+- sahne başına 64 ek kaynağa kadar sıralanabilir kaynak yığını; yazı, PNG/JPG/WebP
+  görsel, döngüsel MP4/MKV/MOV/WebM/M4V/AVI medya ve opak renk alanı; ekleme,
+  silme, görünürlük, ad, boyut, konum, opaklık ve katman sırası denetimleri,
+- çalışan kayıt, yayın, Önizleme ve sanal kamera grafiğinde yazı, görsel, yerel
+  medya ve renk kaynaklarını kodlayıcıyı yeniden başlatmadan gizleme/gösterme ve
+  opaklığını canlı değiştirme,
+- canlı Program çıkışından bağımsız Önizleme sahnesi; bir sahneyi canlıyı
+  değiştirmeden hazırlama ve tek düğmeyle Programa alma,
+- kayıt/yayın/sanal kamera Program çıkışında anında kesme, gerçek sahneler arası
+  crossfade veya süreli siyaha karararak geçiş; Önizleme seçimi bu geçişlerden
+  etkilenmez,
+- aynı kodlama akışından çalışan 15, 30, 60 veya 120 saniyelik döngüsel replay
+  buffer; Ctrl + Alt + B ile son anı ayrı MKV olarak güvenle kaydetme,
 - kayıt/yayın sırasında değiştirilebilen masaüstü ve mikrofon ses düzeyi,
+- kaynakları Önizleme tuvali üzerinde doğrudan sürükleyerek konumlandırma,
+- FFmpeg kodlayıcı sürecinin gerçek CPU kullanım telemetrisi,
 - yayın miksiyle birlikte ayrı masaüstü/mikrofon MKV ses kanalları,
 - güvenli klasör doğrulamalı MKV → MP4 yeniden paketleme,
-- Studio profilleri, canlı klip işaretleri ve sistem genelinde kayıt/yayın kısayolları,
+- Studio profilleri, canlı klip işaretleri ve sistem genelinde kayıt/yayın/replay kısayolları,
 - Windows 11 Media Foundation tabanlı, sürücüsüz `Play Streamers Camera`; Studio
   sahnesini 720p/30 FPS olarak yalnız paylaşımlı bellek üzerinden diğer uygulamalara verir,
 - kayıt klasörüne güvenli erişim ve uygulama odaklı kayıt/yayın kısayolları,
@@ -34,9 +52,10 @@ uygulama değildir; aynı kabuğun içindeki yayın ve kayıt çalışma alanıd
 - Tauri minisign açık anahtarıyla doğrulanan, HTTPS manifestli otomatik
   güncelleme kontrolü ve pasif Windows kurulum akışı.
 
-Studio kaynakları ve temel katmanları gerçek FFmpeg grafiğinde işler. Serbest
-sürükle-bırak çok kaynak yerleşimi ve gerçek zamanlı ses seviye ölçümü sonraki
-motor katmanlarıdır. Windows 11 sanal kamera uygulama içinden bir kez kurulur;
+Studio 32 sahne ve sahne başına 64 ek kaynak katmanını gerçek FFmpeg grafiğinde
+işler. Önizleme ve Program ayrı komut kanallarında tutulur. Tarayıcı kaynağı,
+stinger/luma geçişleri, ses izleme bus'ı ve OBS eklenti uyumluluğu sonraki motor
+katmanlarıdır. Windows 11 sanal kamera uygulama içinden bir kez kurulur;
 doğrudan indirme sürümünde kaynak DLL Windows servislerinin okuyabildiği Program
 Files konumuna alınır, Store/MSIX sürümünde COM kaydı paket manifestiyle yapılır.
 

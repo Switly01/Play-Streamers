@@ -22,11 +22,22 @@ const NAVIGATION: Array<{ id: AppSection; icon: string }> = [
 
 const STATUS_LABELS = {
   ready: "Kullanılabilir",
-  foundation: "Temeli hazır",
+  foundation: "Erken sürüm",
   planned: "Sırada",
 } as const;
 
 const API_BASE = "https://api.pstreamers.com";
+
+interface DesktopSessionSummary {
+  id: string;
+  startedAt: number;
+  endedAt: number | null;
+  peakViewers: number;
+  interactions: number;
+  followersGained: number;
+  revenueMinor: number;
+  summary?: { durationSeconds?: number };
+}
 
 function useLocalList(key: string, initial: string[]) {
   const [items, setItems] = useState<string[]>(() => {
@@ -49,6 +60,7 @@ export function App() {
   const [plan, setPlan] = useState<PlanTier>("free");
   const [accountName, setAccountName] = useState<string | null>(null);
   const [identityStatus, setIdentityStatus] = useState("Güvenli SW Identity");
+  const [sessions, setSessions] = useState<DesktopSessionSummary[]>([]);
   const [search, setSearch] = useState("");
   const [selectedFeature, setSelectedFeature] = useState<FeatureDefinition | null>(null);
   const [updateState, setUpdateState] = useState<{ phase: "idle" | "checking" | "available" | "installing" | "current" | "error"; version?: string; message: string }>({ phase: "idle", message: "Güncellemeleri denetle" });
@@ -60,6 +72,7 @@ export function App() {
     const needle = search.trim().toLocaleLowerCase("tr-TR");
     return needle ? source.filter((feature) => `${feature.title} ${feature.description}`.toLocaleLowerCase("tr-TR").includes(needle)) : source;
   }, [search, section]);
+  const transitionFeature = FEATURES.find((feature) => feature.id === "studio-transition-lab");
 
   useEffect(() => {
     document.documentElement.dataset.theme = localStorage.getItem("ps.theme") || "violet";
@@ -70,10 +83,11 @@ export function App() {
         : sessionStorage.getItem("ps.session");
       if (!token || disposed) return;
       const response = await fetch(`${API_BASE}/api/platform/bootstrap`, { headers: { authorization: `Bearer ${token}` } });
-      const data = await response.json().catch(() => null) as { signedIn?: boolean; user?: { name?: string }; plan?: { tier?: PlanTier } } | null;
+      const data = await response.json().catch(() => null) as { signedIn?: boolean; user?: { name?: string }; plan?: { tier?: PlanTier }; recentSessions?: DesktopSessionSummary[]; sessions?: DesktopSessionSummary[] } | null;
       if (!disposed && response.ok && data?.signedIn) {
         setPlan(data.plan?.tier || "free");
         setAccountName(data.user?.name || "SW hesabı");
+        setSessions(Array.isArray(data.recentSessions) ? data.recentSessions : Array.isArray(data.sessions) ? data.sessions : []);
         setIdentityStatus("Hesap ve plan eşitlendi");
       }
     }
@@ -162,6 +176,20 @@ export function App() {
     await openExternal(authorize.toString());
   }
 
+  function openFeature(feature: FeatureDefinition) {
+    if (feature.section === "home") {
+      setSection("home");
+      setSearch("");
+      return;
+    }
+    if (feature.section === "studio" && feature.id !== "studio-transition-lab") {
+      setSection("studio");
+      setSearch("");
+      return;
+    }
+    setSelectedFeature(feature);
+  }
+
   return (
     <div className="app-shell">
       <aside className="sidebar">
@@ -192,10 +220,10 @@ export function App() {
           <div className="top-actions"><button className={`update-button ${updateState.phase}`} aria-label={updateState.message} title={updateState.message} disabled={updateState.phase === "checking" || updateState.phase === "installing"} onClick={() => void (updateState.phase === "available" ? installDesktopUpdate() : checkDesktopUpdate(false))}>{updateState.phase === "available" ? "↑" : updateState.phase === "installing" || updateState.phase === "checking" ? "…" : "↻"}</button><span className="system-ready"><i /> {updateState.phase === "available" ? `Sürüm ${updateState.version} hazır` : "Sistem hazır"}</span></div>
         </header>
 
-        {section === "studio" && !search ? <Studio /> : section === "home" && !search ? (
-          <HomeDashboard notes={notes} setNotes={setNotes} ideas={ideas} setIdeas={setIdeas} onOpen={setSection} />
+        {section === "studio" && !search ? <Studio onOpenTransitionLab={transitionFeature ? () => setSelectedFeature(transitionFeature) : undefined} /> : section === "home" && !search ? (
+          <HomeDashboard notes={notes} setNotes={setNotes} ideas={ideas} setIdeas={setIdeas} sessions={sessions} onOpen={setSection} />
         ) : (
-          <FeatureLibrary section={section} plan={plan} features={visibleFeatures} search={search} onSelect={setSelectedFeature} />
+          <FeatureLibrary section={section} plan={plan} features={visibleFeatures} search={search} onSelect={openFeature} />
         )}
       </main>
 
@@ -204,11 +232,12 @@ export function App() {
   );
 }
 
-function HomeDashboard({ notes, setNotes, ideas, setIdeas, onOpen }: {
+function HomeDashboard({ notes, setNotes, ideas, setIdeas, sessions, onOpen }: {
   notes: string[];
   setNotes: (items: string[]) => void;
   ideas: string[];
   setIdeas: (items: string[]) => void;
+  sessions: DesktopSessionSummary[];
   onOpen: (section: AppSection) => void;
 }) {
   const [noteValue, setNoteValue] = useState("");
@@ -219,6 +248,19 @@ function HomeDashboard({ notes, setNotes, ideas, setIdeas, onOpen }: {
     update([clean, ...items].slice(0, 12));
     clear();
   };
+  const completedSessions = sessions.filter((session) => Number(session.endedAt || 0) > 0);
+  const latestSession = completedSessions[0];
+  const durationSeconds = Number(latestSession?.summary?.durationSeconds || (latestSession?.endedAt && latestSession.startedAt ? (latestSession.endedAt - latestSession.startedAt) / 1000 : 0));
+  const durationLabel = durationSeconds > 0 ? `${Math.floor(durationSeconds / 3600)}s ${Math.floor((durationSeconds % 3600) / 60)}dk` : "—";
+  const latestDetail = latestSession?.endedAt ? new Date(latestSession.endedAt).toLocaleDateString("tr-TR", { day: "2-digit", month: "short" }) : "İlk yayınını bekliyor";
+  const monthStart = new Date(); monthStart.setDate(1); monthStart.setHours(0, 0, 0, 0);
+  const thisMonth = completedSessions.filter((session) => Number(session.endedAt || 0) >= monthStart.getTime()).length;
+  const addTimestampedNote = () => {
+    const clean = noteValue.trim();
+    if (!clean) return;
+    const timestamp = new Intl.DateTimeFormat("tr-TR", { hour: "2-digit", minute: "2-digit" }).format(new Date());
+    addItem(`${timestamp} · ${clean}`, notes, setNotes, () => setNoteValue(""));
+  };
   return (
     <div className="page-content home-content">
       <section className="welcome-band">
@@ -227,10 +269,10 @@ function HomeDashboard({ notes, setNotes, ideas, setIdeas, onOpen }: {
       </section>
 
       <section className="metric-grid">
-        <MetricCard label="Son yayın" value="2s 18dk" detail="3 gün önce" color="green" />
-        <MetricCard label="Tepe izleyici" value="—" detail="Kanal bağlanınca hazır" color="purple" />
-        <MetricCard label="Etkileşim" value="—" detail="Henüz veri yok" color="cyan" />
-        <MetricCard label="Bu ay yayın" value="0" detail="İlk yayınını bekliyor" color="amber" />
+        <MetricCard label="Son yayın" value={durationLabel} detail={latestDetail} color="green" />
+        <MetricCard label="Tepe izleyici" value={latestSession ? String(latestSession.peakViewers || 0) : "—"} detail={latestSession ? "Doğrulanmış oturum" : "Kanal bağlanınca hazır"} color="purple" />
+        <MetricCard label="Etkileşim" value={latestSession ? String(latestSession.interactions || 0) : "—"} detail={latestSession ? `+${latestSession.followersGained || 0} takipçi` : "Henüz veri yok"} color="cyan" />
+        <MetricCard label="Bu ay yayın" value={String(thisMonth)} detail={thisMonth ? "Tamamlanan oturum" : "İlk yayınını bekliyor"} color="amber" />
       </section>
 
       <div className="dashboard-grid">
@@ -248,12 +290,12 @@ function HomeDashboard({ notes, setNotes, ideas, setIdeas, onOpen }: {
           <div className="empty-orbit"><span>◉</span><strong>Yayın kapalı</strong><small>Studio’dan başlattığında bu alan canlı veriye dönüşür.</small></div>
         </section>
 
-        <LocalListPanel eyebrow="HIZLI NOTLAR" title="Aklından çıkmasın" items={notes} value={noteValue} onValue={setNoteValue} placeholder="Yeni bir yayın notu…" onAdd={() => addItem(noteValue, notes, setNotes, () => setNoteValue(""))} onRemove={(index) => setNotes(notes.filter((_, itemIndex) => itemIndex !== index))} />
+        <LocalListPanel eyebrow="HIZLI NOTLAR" title="Aklından çıkmasın" items={notes} value={noteValue} onValue={setNoteValue} placeholder="Yeni bir yayın notu…" onAdd={addTimestampedNote} onRemove={(index) => setNotes(notes.filter((_, itemIndex) => itemIndex !== index))} />
         <LocalListPanel eyebrow="FİKİR KASASI" title="Sıradaki yayınlar" items={ideas} value={ideaValue} onValue={setIdeaValue} placeholder="Yeni bir yayın fikri…" onAdd={() => addItem(ideaValue, ideas, setIdeas, () => setIdeaValue(""))} onRemove={(index) => setIdeas(ideas.filter((_, itemIndex) => itemIndex !== index))} />
 
         <section className="glass-panel span-two insight-panel">
-          <div><span className="eyebrow">YAYIN ZEKÂSI</span><h2>Önce veri, sonra anlaşılır açıklama</h2><p>Play Streamers değişimleri sayılarla hesaplar. Yeterli veri oluştuğunda Product Pro, sonucu “etkileşimin yükseldi” demekle bırakmaz; hangi dakikada, ne kadar ve hangi olaylarla yükseldiğini anlatır.</p></div>
-          <div className="evidence-card"><span>Örnek kanıt</span><strong>Son 15 dakikada +%28</strong><small>12 sohbet olayı · 3 yeni destek · önceki bölüme göre</small></div>
+          <div><span className="eyebrow">YAYIN ZEKÂSI</span><h2>Önce veri, sonra anlaşılır açıklama</h2><p>Play Streamers değişimleri kayıtlı oturum sayılarından hesaplar. Product Pro AI, neden uydurmadan bu karşılaştırmayı anlaşılır Türkçeye çevirir; dakika ve olaylar doğrulanmış Kick/Play Connect hattından gelir.</p></div>
+          <div className="evidence-card"><span>Doğrulanmış veri</span><strong>{latestSession ? `${latestSession.interactions || 0} etkileşim` : "Yayın oturumu bekleniyor"}</strong><small>{latestSession ? `${latestSession.peakViewers || 0} tepe izleyici · +${latestSession.followersGained || 0} takipçi` : "İlk yayın tamamlandığında burada özetlenir"}</small></div>
         </section>
       </div>
     </div>
@@ -279,13 +321,13 @@ function FeatureLibrary({ section, plan, features, search, onSelect }: { section
 
 function FeatureCard({ feature, plan, onSelect }: { feature: FeatureDefinition; plan: PlanTier; onSelect: (feature: FeatureDefinition) => void }) {
   const unlocked = canUseFeature(plan, feature);
-  return <button className={`feature-card ${unlocked ? "" : "locked"}`} onClick={() => onSelect(feature)}><div className="feature-card-top"><span className="feature-symbol">{feature.ai ? "AI" : feature.localFirst ? "PC" : "PS"}</span><span className={`status-tag ${feature.status}`}>{STATUS_LABELS[feature.status]}</span></div><h3>{feature.title}</h3><p>{feature.description}</p><footer><span>{feature.localFirst ? "Yerel öncelikli" : feature.ai ? "Kanıtlı AI" : sectionLabels[feature.section]}</span><b>{unlocked ? "Aç ›" : `${planLabels[feature.minimumTier]} ◇`}</b></footer></button>;
+  return <button className={`feature-card ${unlocked ? "" : "locked"}`} onClick={() => onSelect(feature)}><div className="feature-card-top"><span className="feature-symbol">{feature.ai ? "AI" : feature.localFirst ? "PC" : "PS"}</span><span className={`status-tag ${feature.status}`}>{STATUS_LABELS[feature.status]}</span></div><h3>{feature.title}</h3><p>{feature.description}</p><footer><span>{feature.localFirst ? "Yerel öncelikli" : feature.ai ? "Sayısal AI" : sectionLabels[feature.section]}</span><b>{unlocked ? "Aç ›" : `${planLabels[feature.minimumTier]} ◇`}</b></footer></button>;
 }
 
 function FeatureDrawer({ feature, plan, onClose }: { feature: FeatureDefinition; plan: PlanTier; onClose: () => void }) {
   const unlocked = canUseFeature(plan, feature);
   const usable = unlocked && feature.status !== "planned";
-  return <div className="drawer-backdrop" onMouseDown={(event) => { if (event.target === event.currentTarget) onClose(); }}><aside className={`feature-drawer ${usable ? "workspace-open" : ""}`}><button className="drawer-close" onClick={onClose}>×</button><span className="eyebrow">{sectionLabels[feature.section].toLocaleUpperCase("tr-TR")}</span><div className="drawer-symbol">{feature.ai ? "AI" : feature.localFirst ? "PC" : "PS"}</div><h2>{feature.title}</h2><p>{feature.description}</p><div className="drawer-details"><div><span>Plan</span><strong>{planLabels[feature.minimumTier]}</strong></div><div><span>Durum</span><strong>{STATUS_LABELS[feature.status]}</strong></div><div><span>Veri</span><strong>{feature.localFirst ? "Önce bu cihaz" : feature.ai ? "Sayısal özet" : "Hesapla eşitlenir"}</strong></div></div>{usable ? <FeatureWorkspace feature={feature} /> : <button className="secondary-button full" disabled>{unlocked ? "Yerel motor entegrasyonu hazırlanıyor" : `${planLabels[feature.minimumTier]} ile açılır`}</button>}<small className="drawer-note">Hazır olmayan medya özellikleri çalışıyormuş gibi gösterilmez. Durum etiketi gerçek teslim seviyesini belirtir.</small></aside></div>;
+  return <div className="drawer-backdrop" onMouseDown={(event) => { if (event.target === event.currentTarget) onClose(); }}><aside className={`feature-drawer ${usable ? "workspace-open" : ""}`}><button className="drawer-close" onClick={onClose}>×</button><span className="eyebrow">{sectionLabels[feature.section].toLocaleUpperCase("tr-TR")}</span><div className="drawer-symbol">{feature.ai ? "AI" : feature.localFirst ? "PC" : "PS"}</div><h2>{feature.title}</h2><p>{feature.description}</p><div className="drawer-details"><div><span>Plan</span><strong>{planLabels[feature.minimumTier]}</strong></div><div><span>Durum</span><strong>{STATUS_LABELS[feature.status]}</strong></div><div><span>Veri</span><strong>{feature.localFirst ? "Önce bu cihaz" : feature.ai ? "Sayısal özet" : "Hesapla eşitlenir"}</strong></div></div>{usable ? <FeatureWorkspace feature={feature} /> : <button className="secondary-button full" disabled>{unlocked ? "Yerel motor entegrasyonu hazırlanıyor" : `${planLabels[feature.minimumTier]} ile açılır`}</button>}<small className="drawer-note">Araçlar açıklanan kapsamda çalışır. Dış platform verileri yalnız SW Identity üzerinden doğrulanabildiğinde gösterilir; bilinmeyen değerler üretilmez.</small></aside></div>;
 }
 
 function sectionIntro(section: AppSection) {

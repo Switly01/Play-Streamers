@@ -1,7 +1,7 @@
 {
   "$schema": "../node_modules/@tauri-apps/cli/config.schema.json",
   "productName": "Play Streamers",
-  "version": "0.11.0",
+  "version": "0.12.0",
   "identifier": "com.swcreate.playstreamers",
   "build": {
     "beforeDevCommand": "pnpm run dev",
@@ -30,17 +30,8 @@
     "active": true,
     "targets": ["nsis"],
     "createUpdaterArtifacts": true,
-    "externalBin": ["binaries/ffmpeg"],
-    "resources": [
-      "../FFMPEG-GPL-3.0-LICENSE.txt",
-      "../FFMPEG-BUILD-README.txt",
-      "../THIRD_PARTY_NOTICES.md",
-      "binaries/vcam/PlayStreamersVirtualCamera.dll",
-      "binaries/vcam/PlayStreamersVirtualCameraManager.exe",
-      "../native/virtual-camera/MICROSOFT-WINDOWS-CAMERA-LICENSE.txt"
-    ],
-    "shortDescription": "Yayın, kayıt ve yayıncı çalışma alanı",
-    "longDescription": "Play Streamers; Studio, analiz, içerik, topluluk ve marka araçlarını tek sade masaüstü uygulamasında birleştirir."
+    "shortDescription": "Yayıncı çalışma alanı",
+    "longDescription": "Play Streamers; analiz, içerik, topluluk, marka, gelir ve yerel üretkenlik araçlarını tek sade masaüstü uygulamasında birleştirir."
   },
   "plugins": {
     "updater": {

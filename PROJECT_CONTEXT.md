@@ -1,5 +1,16 @@
 # Play Streamers — Kalıcı Proje Bağlamı
 
+Sürüm 4.8 / Desktop 0.12.0: Kullanıcı kararıyla Studio, yerel kayıt/yayın
+motoru, genel kayıt-yayın-replay kısayolları, FFmpeg yan uygulaması ve sanal
+kamera dağıtımı masaüstü ürününden rafa kaldırıldı. Kaynak kodu gelecekteki
+yeniden değerlendirme için depoda pasif tutulabilir ancak derlenen uygulamaya,
+menüye, Tauri komutlarına veya kurulum paketine bağlanmaz. Masaüstü uygulaması
+45 içerik, analiz, topluluk, marka, gelir, kasa ve ayar aracına odaklanır.
+Windows üretim EXE'si `windows_subsystem = "windows"` ile konsolsuz çalışır;
+uygulamayı kapatmak için bağlı bir CMD penceresine ihtiyaç duymaz. Bu karar,
+aşağıdaki 0.11.0 ve daha eski Studio kayıtlarını yalnız tarihsel bilgi haline
+getirir.
+
 Sürüm 4.7: Desktop 0.11.0 tek FFmpeg kodlama akışını iki güvenli RTMPS
 hedefine eşzamanlı gönderebilir; ikinci anahtar da yalnız Windows Credential
 Manager'da tutulur. Studio proje sınırı 32 sahneye, sahne başına kaynak sınırı
@@ -28,14 +39,14 @@ Bu belge, Play Streamers üzerinde gelecekte yapılacak çalışmaların ortak
 başvuru noktasıdır. Gizli değerler burada veya başka bir proje dosyasında
 tutulmaz.
 
-## Masaüstü ürün kararı · 22 Ağustos 2026
+## Masaüstü ürün kararı · 23 Ağustos 2026
 
 - Kullanıcıya sunulan ürün tek bir **Play Streamers masaüstü uygulamasıdır**.
 - Bütün Free, Pro ve Product Pro araçları bu uygulamada bulunur.
-- `Studio`, uygulamanın içindeki yayın ve kayıt çalışma alanıdır; kullanıcıya
-  ayrı bir yayın motoru uygulaması olarak sunulmaz.
-- Güvenilirlik için Studio motoru içeride ayrı süreçte çalışabilir ancak tek
-  kurulum, tek pencere, tek hesap ve tek güncelleme akışı korunur.
+- `Studio` ve yerel yayın/kayıt motoru 0.12.0 itibarıyla rafa kaldırılmıştır;
+  uygulamanın menüsünde, yerel köprüsünde veya dağıtım paketinde yer almaz.
+- Studio kaynakları yalnız gelecekte yeniden değerlendirme yapılabilmesi için
+  pasif kaynak olarak korunabilir; derlenen ürüne bağlanamaz.
 - Site; ürün tanıtımı, hesap, plan, güvenlik ve indirme merkezi olarak hafif
   kalır. Gelişmiş araçların tamamı siteye kopyalanmaz.
 - SW Identity kimlik ve plan otoritesidir. Paylaşılan SSO secret yalnız Worker

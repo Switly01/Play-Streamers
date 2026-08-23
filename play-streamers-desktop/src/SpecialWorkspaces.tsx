@@ -15,12 +15,12 @@ function readJson<T>(key: string, fallback: T): T {
 }
 
 export function SnapshotWorkspace() {
-  const [message, setMessage] = useState("Studio, araç ve tema ayarlarının güvenli yerel yedeğini oluştur.");
+  const [message, setMessage] = useState("Araç ve tema ayarlarının güvenli yerel yedeğini oluştur.");
   function createSnapshot() {
     const data: Record<string, string> = {};
     for (let index = 0; index < localStorage.length; index += 1) {
       const key = localStorage.key(index) || "";
-      if (key.startsWith("ps.workspace.") || key === "ps.studio.settings.v1" || key === "ps.studio.profiles.v1" || key === "ps.theme") {
+      if (key.startsWith("ps.workspace.") || key === "ps.theme") {
         const value = localStorage.getItem(key);
         if (value != null) data[key] = value;
       }
@@ -35,7 +35,7 @@ export function SnapshotWorkspace() {
       let count = 0;
       for (const [key, value] of Object.entries(payload.data)) {
         if (typeof value !== "string") continue;
-        if (key.startsWith("ps.workspace.") || key === "ps.studio.settings.v1" || key === "ps.studio.profiles.v1" || key === "ps.theme") {
+        if (key.startsWith("ps.workspace.") || key === "ps.theme") {
           localStorage.setItem(key, value);
           count += 1;
         }

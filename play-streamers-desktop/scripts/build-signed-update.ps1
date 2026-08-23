@@ -28,8 +28,6 @@ try {
 
   Push-Location $projectRoot
   try {
-    & powershell.exe -NoProfile -ExecutionPolicy Bypass -File (Join-Path $PSScriptRoot 'build-virtual-camera.ps1')
-    if ($LASTEXITCODE -ne 0) { throw "Sanal kamera üretim bileşenleri derlenemedi." }
     & pnpm.cmd run desktop:build
     if ($LASTEXITCODE -ne 0) { throw "Tauri üretim derlemesi başarısız oldu." }
   } finally {

@@ -3,7 +3,6 @@ export type PlanTier = "free" | "pro" | "product-pro";
 export type AppSection =
   | "home"
   | "live"
-  | "studio"
   | "analysis"
   | "content"
   | "community"

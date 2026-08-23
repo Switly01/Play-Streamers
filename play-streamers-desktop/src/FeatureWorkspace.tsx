@@ -123,7 +123,6 @@ export function FeatureWorkspace({ feature }: { feature: FeatureDefinition }) {
   if (feature.id === "soundboard") return <SoundboardWorkspace />;
   if (feature.id === "content-repurpose") return <RepurposeWorkspace />;
   if (feature.id === "speech-coach") return <SpeechCoachWorkspace />;
-  if (feature.id === "studio-transition-lab") return <TransitionWorkspace />;
   if (feature.id === "emote-badge-studio") return <EmoteBadgeWorkspace />;
   if (feature.id === "media-kit") return <MediaKitWorkspace />;
   if (feature.id === "insider") return <InsiderWorkspace />;
@@ -186,7 +185,7 @@ function FileVaultWorkspace() {
   return <div className="feature-workspace file-vault-workspace"><div className="vault-import"><select value={category} onChange={(event) => setCategory(event.target.value)}><option>Yayın görseli</option><option>Ses</option><option>Video</option><option>Belge</option><option>Lisans kanıtı</option></select><label className="primary-button">Dosyaları indeksle<input type="file" multiple onChange={(event) => add(event.target.files)} /></label></div><p className="workspace-privacy">Dosyalar taşınmaz veya buluta yüklenmez; yalnız ad, tür, boyut ve değiştirilme tarihi cihazındaki kasaya kaydedilir.</p><div className="vault-file-list">{files.map((file) => <article key={file.id}><span><strong>{file.name}</strong><small>{file.category} · {(file.size / 1024 / 1024).toLocaleString("tr-TR", { maximumFractionDigits: 2 })} MB</small></span><time>{new Date(file.lastModified).toLocaleDateString("tr-TR")}</time><button onClick={() => update(files.filter((entry) => entry.id !== file.id))}>×</button></article>)}</div></div>;
 }
 
-type LayoutProfile = { id: string; name: string; createdAt: number; settings: string | null; scenes: string | null; theme: string | null };
+type LayoutProfile = { id: string; name: string; createdAt: number; theme: string | null };
 
 function LayoutWorkspace() {
   const key = localKey("layouts");
@@ -196,16 +195,14 @@ function LayoutWorkspace() {
   function save() {
     const clean = name.trim();
     if (!clean) return;
-    update([{ id: itemId(), name: clean, createdAt: Date.now(), settings: localStorage.getItem("ps.studio.settings.v1"), scenes: localStorage.getItem("ps.studio.scenes.v2"), theme: localStorage.getItem("ps.theme") }, ...profiles]);
+    update([{ id: itemId(), name: clean, createdAt: Date.now(), theme: localStorage.getItem("ps.theme") }, ...profiles]);
     setName("");
   }
   function apply(profile: LayoutProfile) {
-    if (profile.settings) localStorage.setItem("ps.studio.settings.v1", profile.settings);
-    if (profile.scenes) localStorage.setItem("ps.studio.scenes.v2", profile.scenes);
     if (profile.theme) localStorage.setItem("ps.theme", profile.theme);
     window.location.reload();
   }
-  return <div className="feature-workspace layout-workspace"><form onSubmit={(event) => { event.preventDefault(); save(); }}><input value={name} maxLength={40} onChange={(event) => setName(event.target.value)} placeholder="Örn. Sohbet yayını" /><button className="primary-button">Mevcut düzeni kaydet</button></form><p className="workspace-privacy">Oturum ve yayın anahtarı kopyalanmaz; yalnız Studio görünümü, sahneler ve tema saklanır.</p><div>{profiles.map((profile) => <article key={profile.id}><button onClick={() => apply(profile)}><strong>{profile.name}</strong><small>{new Date(profile.createdAt).toLocaleString("tr-TR")}</small></button><button onClick={() => update(profiles.filter((entry) => entry.id !== profile.id))}>×</button></article>)}</div></div>;
+  return <div className="feature-workspace layout-workspace"><form onSubmit={(event) => { event.preventDefault(); save(); }}><input value={name} maxLength={40} onChange={(event) => setName(event.target.value)} placeholder="Örn. Akşam çalışma düzeni" /><button className="primary-button">Mevcut düzeni kaydet</button></form><p className="workspace-privacy">Oturum bilgisi kopyalanmaz; yalnız arayüz ve tema tercihleri saklanır.</p><div>{profiles.map((profile) => <article key={profile.id}><button onClick={() => apply(profile)}><strong>{profile.name}</strong><small>{new Date(profile.createdAt).toLocaleString("tr-TR")}</small></button><button onClick={() => update(profiles.filter((entry) => entry.id !== profile.id))}>×</button></article>)}</div></div>;
 }
 
 type UnifiedLiveEvent = { id: string; title: string; detail: string; occurredAt: number; source: string; verified: boolean };
@@ -246,7 +243,7 @@ function LiveEventsWorkspace() {
           setState(next.length ? `${next.length} doğrulanmış olay` : "Henüz doğrulanmış kanal olayı yok.");
         }
       } catch {
-        if (!disposed) setState("Olay bağlantısı çevrimdışı; Studio yayını etkilenmez.");
+        if (!disposed) setState("Olay bağlantısı çevrimdışı; diğer yerel araçlar çalışmaya devam eder.");
       }
     };
     void sync();
@@ -458,8 +455,8 @@ function AnalysisWorkspace({ feature }: { feature: FeatureDefinition }) {
       if (disposed) return;
       if (!response.ok) { setState(payload?.error || "Yayın geçmişi alınamadı."); return; }
       setSessions(payload?.sessions || []);
-      setState(payload?.sessions?.length ? "Studio tarafından kaydedilen oturumlar" : "İlk Studio yayınından sonra burada karşılaştırma oluşacak.");
-    })().catch(() => setState("Bağlantı çevrimdışı; yerel Studio çalışmaya devam eder."));
+      setState(payload?.sessions?.length ? "Doğrulanmış yayın oturumları" : "İlk doğrulanmış yayından sonra burada karşılaştırma oluşacak.");
+    })().catch(() => setState("Bağlantı çevrimdışı; yerel araçlar çalışmaya devam eder."));
     return () => { disposed = true; };
   }, []);
 

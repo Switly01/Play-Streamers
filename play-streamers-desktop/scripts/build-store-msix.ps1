@@ -12,7 +12,7 @@ param(
     })]
     [string]$PackageVersion,
     [ValidateSet('10.0.19041.0', '10.0.22000.0')]
-    [string]$MinimumWindowsVersion = '10.0.22000.0',
+    [string]$MinimumWindowsVersion = '10.0.19041.0',
     [switch]$WithoutVirtualCameraRegistration,
     [string]$OutputPath
 )
@@ -32,16 +32,10 @@ if (-not $PackageVersion) {
     $PackageVersion = ($versionParts | Select-Object -First 4) -join '.'
 }
 if (-not $OutputPath) {
-    $flavor = if ($WithoutVirtualCameraRegistration) { 'win10' } else { 'win11' }
-    $OutputPath = Join-Path $storeRelease "Play-Streamers-$PackageVersion-$flavor-x64.msix"
+    $OutputPath = Join-Path $storeRelease "Play-Streamers-$PackageVersion-windows-x64.msix"
 }
 
-$requiredFiles = @(
-    (Join-Path $releaseRoot 'play-streamers.exe'),
-    (Join-Path $tauriRoot 'binaries\ffmpeg-x86_64-pc-windows-msvc.exe'),
-    (Join-Path $tauriRoot 'binaries\vcam\PlayStreamersVirtualCamera.dll'),
-    (Join-Path $tauriRoot 'binaries\vcam\PlayStreamersVirtualCameraManager.exe')
-)
+$requiredFiles = @((Join-Path $releaseRoot 'play-streamers.exe'))
 foreach ($required in $requiredFiles) {
     if (-not (Test-Path -LiteralPath $required)) { throw "MSIX girdisi bulunamadı: $required" }
 }
@@ -55,16 +49,9 @@ if (Test-Path -LiteralPath $stageRoot) {
     Remove-Item -LiteralPath $resolvedStage -Recurse -Force
 }
 New-Item -ItemType Directory -Force -Path (Join-Path $stageRoot 'Assets') | Out-Null
-New-Item -ItemType Directory -Force -Path (Join-Path $stageRoot 'binaries\vcam') | Out-Null
 New-Item -ItemType Directory -Force -Path $storeRelease | Out-Null
 
 Copy-Item -Force -LiteralPath (Join-Path $releaseRoot 'play-streamers.exe') -Destination (Join-Path $stageRoot 'Play Streamers.exe')
-Copy-Item -Force -LiteralPath (Join-Path $tauriRoot 'binaries\ffmpeg-x86_64-pc-windows-msvc.exe') -Destination (Join-Path $stageRoot 'ffmpeg-x86_64-pc-windows-msvc.exe')
-Copy-Item -Force -LiteralPath (Join-Path $tauriRoot 'binaries\vcam\PlayStreamersVirtualCamera.dll') -Destination (Join-Path $stageRoot 'binaries\vcam\PlayStreamersVirtualCamera.dll')
-Copy-Item -Force -LiteralPath (Join-Path $tauriRoot 'binaries\vcam\PlayStreamersVirtualCameraManager.exe') -Destination (Join-Path $stageRoot 'binaries\vcam\PlayStreamersVirtualCameraManager.exe')
-Copy-Item -Force -LiteralPath (Join-Path $desktopRoot 'FFMPEG-GPL-3.0-LICENSE.txt') -Destination (Join-Path $stageRoot 'FFMPEG-GPL-3.0-LICENSE.txt')
-Copy-Item -Force -LiteralPath (Join-Path $desktopRoot 'THIRD_PARTY_NOTICES.md') -Destination (Join-Path $stageRoot 'THIRD_PARTY_NOTICES.md')
-Copy-Item -Force -LiteralPath (Join-Path $desktopRoot 'native\virtual-camera\MICROSOFT-WINDOWS-CAMERA-LICENSE.txt') -Destination (Join-Path $stageRoot 'MICROSOFT-WINDOWS-CAMERA-LICENSE.txt')
 
 $iconRoot = Join-Path $tauriRoot 'icons'
 Copy-Item -Force -LiteralPath (Join-Path $iconRoot 'Square44x44Logo.png') -Destination (Join-Path $stageRoot 'Assets\Square44x44Logo.png')
@@ -79,19 +66,7 @@ $manifest = $manifest.Replace('__PUBLISHER__', [Security.SecurityElement]::Escap
 $manifest = $manifest.Replace('__PUBLISHER_DISPLAY_NAME__', [Security.SecurityElement]::Escape($PublisherDisplayName))
 $manifest = $manifest.Replace('__VERSION__', $PackageVersion)
 $manifest = $manifest.Replace('__MIN_WINDOWS_VERSION__', $MinimumWindowsVersion)
-$virtualCameraExtension = if ($WithoutVirtualCameraRegistration) {
-    ''
-} else {
-@'
-        <com4:Extension Category="windows.comServer">
-          <com4:ComServer>
-            <com5:InProcessServer Path="binaries\vcam\PlayStreamersVirtualCamera.dll">
-              <com5:Class Id="7F293AB7-BE5C-4E3F-97D1-C10D938637E1" ThreadingModel="Both" />
-            </com5:InProcessServer>
-          </com4:ComServer>
-        </com4:Extension>
-'@
-}
+$virtualCameraExtension = ''
 $manifest = $manifest.Replace('__VIRTUAL_CAMERA_EXTENSION__', $virtualCameraExtension)
 [System.IO.File]::WriteAllText((Join-Path $stageRoot 'AppxManifest.xml'), $manifest, $utf8WithoutBom)
 
@@ -109,7 +84,7 @@ $hash = (Get-FileHash -Algorithm SHA256 -LiteralPath $OutputPath).Hash
     Path = (Resolve-Path -LiteralPath $OutputPath).Path
     Version = $PackageVersion
     MinimumWindowsVersion = $MinimumWindowsVersion
-    VirtualCameraRegistration = -not $WithoutVirtualCameraRegistration
+    VirtualCameraRegistration = $false
     IdentityName = $IdentityName
     Publisher = $Publisher
     Sha256 = $hash

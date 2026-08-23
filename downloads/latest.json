@@ -1,10 +1,10 @@
 {
-    "version":  "0.11.0",
-    "notes":  "Play Streamers Desktop 0.11.0: tek kodlama akışından iki güvenli RTMPS hedefine eşzamanlı yayın, Önizleme tuvalinde sürükleyerek kaynak yerleştirme, 32 sahne, sahne başına 64 kaynak ve gerçek FFmpeg CPU telemetrisi. Kaynaklar, ayrı Önizleme/Program, crossfade, replay buffer, ses filtreleri, otomatik yayın kurtarma, doğrulanmış Kick/Play Connect verileri ve 54 Creator OS çalışma alanı korunur. Yayın ve kayıt Windows 10/11\u0027de; sanal kamera Windows 11\u0027de çalışır.",
-    "pub_date":  "2026-08-22T23:50:03.2933127+00:00",
+    "version":  "0.12.0",
+    "notes":  "Play Streamers Desktop 0.12.0: Studio ile yerel kayÄ±t/yayÄ±n motoru rafa kaldÄ±rÄ±ldÄ±. Uygulama artÄ±k 45 iÃ§erik, analiz, topluluk, marka, gelir, kasa ve ayar aracÄ±na odaklanÄ±r. Genel kayÄ±t/yayÄ±n kÄ±sayollarÄ± kaldÄ±rÄ±ldÄ± ve Windows Ã¼retim sÃ¼rÃ¼mÃ¼ CMD penceresi aÃ§madan baÄŸÄ±msÄ±z Ã§alÄ±ÅŸÄ±r.",
+    "pub_date":  "2026-08-23T12:19:52.7504460+00:00",
     "platforms":  {
                       "windows-x86_64":  {
-                                             "signature":  "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVRcWlCbnhDNnc4UENRWWNtOHJ0SmNDK3JsVUVva202RklxeU5XV2ZIRzBPVnJnR2RhbUpRSWtuN0xBclM5YmsrbEI1dFBwUTg5UWZSMnRyTUhtMEhQelpTb1hCd0FRNXc4PQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzg3NDQyNTk2CWZpbGU6UGxheSBTdHJlYW1lcnNfMC4xMS4wX3g2NC1zZXR1cC5leGUKSDRHL0FoS2U1R1ZIZFlMZjBUa1NVRUJxWW92TEpTUnM1NmZzN0pLM2Z6NlZvVG12bUFyS2xKVlRyTXJBeHYvdEdXUHNpMjhvSDdkY0kzVURHcjYvQmc9PQo=",
+                                             "signature":  "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVRcWlCbnhDNnc4UEIydER3RHp4OUpUWGdNU2xQU3RsaUdiOGV5T3h6T2NBc0pjenRGNjgrdkNVLzhES1c0Mm9MK1lqRDNPcFRvQjJSNTJVb0h4TUUwWk1sQ2NyU3VjQUFrPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzg3NDg3NTY2CWZpbGU6UGxheSBTdHJlYW1lcnNfMC4xMi4wX3g2NC1zZXR1cC5leGUKTjVsWk51NFJySFVxZXBITmdXdjl4S2hiOWVRbDJvMmhtQWgzWE40M3hicms1dlpYLytJZFRmc0VBbUVTTC9CSktlVW5jMEQvakJuejlrNW9KNjNLQ2c9PQo=",
                                              "url":  "https://pstreamers.com/downloads/Play-Streamers-Setup.exe"
                                          }
                   }

@@ -4,13 +4,11 @@ import { check } from "@tauri-apps/plugin-updater";
 import { FEATURES, canUseFeature, featuresForSection, planLabels, sectionLabels } from "./features";
 import { FeatureWorkspace } from "./FeatureWorkspace";
 import { openExternal } from "./nativeBridge";
-import { Studio } from "./Studio";
 import type { AppSection, FeatureDefinition, PlanTier } from "./types";
 
 const NAVIGATION: Array<{ id: AppSection; icon: string }> = [
   { id: "home", icon: "⌂" },
   { id: "live", icon: "◉" },
-  { id: "studio", icon: "▣" },
   { id: "analysis", icon: "↗" },
   { id: "content", icon: "✦" },
   { id: "community", icon: "◎" },
@@ -72,8 +70,6 @@ export function App() {
     const needle = search.trim().toLocaleLowerCase("tr-TR");
     return needle ? source.filter((feature) => `${feature.title} ${feature.description}`.toLocaleLowerCase("tr-TR").includes(needle)) : source;
   }, [search, section]);
-  const transitionFeature = FEATURES.find((feature) => feature.id === "studio-transition-lab");
-
   useEffect(() => {
     document.documentElement.dataset.theme = localStorage.getItem("ps.theme") || "violet";
     let disposed = false;
@@ -182,11 +178,6 @@ export function App() {
       setSearch("");
       return;
     }
-    if (feature.section === "studio" && feature.id !== "studio-transition-lab") {
-      setSection("studio");
-      setSearch("");
-      return;
-    }
     setSelectedFeature(feature);
   }
 
@@ -201,7 +192,6 @@ export function App() {
           {NAVIGATION.map((item) => (
             <button key={item.id} className={section === item.id && !search ? "active" : ""} onClick={() => { setSection(item.id); setSearch(""); }}>
               <span className="nav-icon">{item.icon}</span><span>{sectionLabels[item.id]}</span>
-              {item.id === "studio" && <i className="nav-live-dot" />}
             </button>
           ))}
         </nav>
@@ -213,14 +203,14 @@ export function App() {
         </div>
       </aside>
 
-      <main className={`main-surface ${section === "studio" && !search ? "studio-surface" : ""}`}>
+      <main className="main-surface">
         <header className="topbar">
           <div className="topbar-title"><span className="mobile-mark">PS</span><div><small>PLAY STREAMERS</small><strong>{search ? "Arama sonuçları" : sectionLabels[section]}</strong></div></div>
           <label className="search-box"><span>⌕</span><input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Bir araç veya özellik ara…" /><kbd>Ctrl K</kbd></label>
           <div className="top-actions"><button className={`update-button ${updateState.phase}`} aria-label={updateState.message} title={updateState.message} disabled={updateState.phase === "checking" || updateState.phase === "installing"} onClick={() => void (updateState.phase === "available" ? installDesktopUpdate() : checkDesktopUpdate(false))}>{updateState.phase === "available" ? "↑" : updateState.phase === "installing" || updateState.phase === "checking" ? "…" : "↻"}</button><span className="system-ready"><i /> {updateState.phase === "available" ? `Sürüm ${updateState.version} hazır` : "Sistem hazır"}</span></div>
         </header>
 
-        {section === "studio" && !search ? <Studio onOpenTransitionLab={transitionFeature ? () => setSelectedFeature(transitionFeature) : undefined} /> : section === "home" && !search ? (
+        {section === "home" && !search ? (
           <HomeDashboard notes={notes} setNotes={setNotes} ideas={ideas} setIdeas={setIdeas} sessions={sessions} onOpen={setSection} />
         ) : (
           <FeatureLibrary section={section} plan={plan} features={visibleFeatures} search={search} onSelect={openFeature} />
@@ -264,8 +254,8 @@ function HomeDashboard({ notes, setNotes, ideas, setIdeas, sessions, onOpen }: {
   return (
     <div className="page-content home-content">
       <section className="welcome-band">
-        <div><span className="eyebrow">BUGÜNÜN YAYIN MERKEZİ</span><h1>Yayın senin.<br /><em>Kontrol sende.</em></h1><p>Hazırlığını tamamla, Studio’yu aç ve yayın bittikten sonra neyin işe yaradığını tek yerde gör.</p></div>
-        <div className="welcome-actions"><button className="primary-button" onClick={() => onOpen("studio")}><span>▣</span> Studio’yu aç</button><button className="secondary-button" onClick={() => onOpen("content")}>Yayın akışı hazırla</button></div>
+        <div><span className="eyebrow">BUGÜNÜN YAYIN MERKEZİ</span><h1>Yayın senin.<br /><em>Kontrol sende.</em></h1><p>Kanalını bağla, yayın akışını hazırla ve yayın bittikten sonra neyin işe yaradığını tek yerde gör.</p></div>
+        <div className="welcome-actions"><button className="primary-button" onClick={() => onOpen("content")}><span>✦</span> Yayın akışını hazırla</button><button className="secondary-button" onClick={() => onOpen("analysis")}>Sonuçları incele</button></div>
       </section>
 
       <section className="metric-grid">
@@ -281,13 +271,13 @@ function HomeDashboard({ notes, setNotes, ideas, setIdeas, sessions, onOpen }: {
           <div className="prep-list">
             <PrepRow done title="Uygulama hazır" detail="Yerel ayarlar ve kayıt alanı kullanılabilir" />
             <PrepRow title="Kanalını bağla" detail="Canlı olaylar ve yayın verileri için" action="Bağla" />
-            <PrepRow title="Studio sahneni hazırla" detail="Ekran, ses ve yayın kalitesini kontrol et" action="Studio" onClick={() => onOpen("studio")} />
+            <PrepRow title="Yayın akışını hazırla" detail="Açılış, bölümler, mola ve kapanışı planla" action="Planla" onClick={() => onOpen("content")} />
           </div>
         </section>
 
         <section className="glass-panel now-panel">
           <div className="panel-heading"><div><span className="eyebrow">CANLI DURUM</span><h2>Şu an</h2></div><span className="offline-badge">Çevrimdışı</span></div>
-          <div className="empty-orbit"><span>◉</span><strong>Yayın kapalı</strong><small>Studio’dan başlattığında bu alan canlı veriye dönüşür.</small></div>
+          <div className="empty-orbit"><span>◉</span><strong>Yayın kapalı</strong><small>Bağlı kanal canlı olduğunda bu alan doğrulanmış veriye dönüşür.</small></div>
         </section>
 
         <LocalListPanel eyebrow="HIZLI NOTLAR" title="Aklından çıkmasın" items={notes} value={noteValue} onValue={setNoteValue} placeholder="Yeni bir yayın notu…" onAdd={addTimestampedNote} onRemove={(index) => setNotes(notes.filter((_, itemIndex) => itemIndex !== index))} />
@@ -334,14 +324,13 @@ function sectionIntro(section: AppSection) {
   const copy: Record<AppSection, { title: string; description: string }> = {
     home: { title: "Başlangıç", description: "Günün yayın akışı ve önemli işler." },
     live: { title: "Yayın sırasında gerekli olan her şey", description: "Olayları, süreyi ve hedefleri kalabalık yaratmadan takip et." },
-    studio: { title: "Studio", description: "Yayın ve kayıt çalışma alanı." },
     analysis: { title: "Rakamı göster, nedenini açıkla", description: "Yayın verilerini karşılaştır; değişimin nerede ve neden oluştuğunu gör." },
     content: { title: "Fikirden yayına tek akış", description: "Fikirleri topla, yayın akışını hazırla ve önemli anları işaretle." },
     community: { title: "İzleyiciyi yayının parçası yap", description: "Tekrara düşmeyen oyunlar, görevler ve topluluk ritüelleri oluştur." },
     brand: { title: "Kanalın her yerde aynı hissetsin", description: "Görsel dilini, seslerini ve hareketli kimliğini bir merkezde yönet." },
     revenue: { title: "Geliri okunabilir hale getir", description: "Destek kaynaklarını, kilometre taşlarını ve dönem değişimlerini gör." },
     vault: { title: "Yayın çalışma kasan", description: "Dosya, ekipman, izin ve geri yüklenebilir çalışma alanlarını cihazında tut." },
-    settings: { title: "Uygulama senin çalışma biçimine uysun", description: "Düzen, tema, performans, kayıt ve deneysel özellikleri yönet." },
+    settings: { title: "Uygulama senin çalışma biçimine uysun", description: "Düzen, tema ve deneysel özellikleri yönet." },
   };
   return copy[section];
 }

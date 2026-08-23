@@ -78,7 +78,7 @@ const DONATE_OAUTH_PROVIDERS = Object.freeze({
     clientSecretVariable: "TIPEEESTREAM_CLIENT_SECRET",
   }),
 });
-const CURRENT_RELEASE_VERSION = "4.7";
+const CURRENT_RELEASE_VERSION = "4.8";
 const CURRENT_RELEASE_PUBLISHED_AT = "2026-08-23T23:30:00+03:00";
 const SW_IDENTITY_ORIGIN = "https://api.swcreate.com";
 const DESKTOP_IDENTITY_REDIRECT = "playstreamers://identity/callback";
@@ -773,8 +773,8 @@ async function runScheduledPlayBotAudit(env) {
   await ensurePlayBotMetadataStorage(env);
   const resources = [
     ["Ana sayfa", "https://pstreamers.com/", "document"],
-    ["Ana uygulama betiği", "https://pstreamers.com/app.js?v=4.25", "script"],
-    ["Uygulama betiği", "https://pstreamers.com/app-final.js?v=4.6", "script"],
+    ["Ana uygulama betiği", "https://pstreamers.com/app.js?v=4.33", "script"],
+    ["Uygulama betiği", "https://pstreamers.com/app-final.js?v=4.15", "script"],
     ["Stil dosyası", "https://pstreamers.com/styles.css?v=4.6", "style"],
     ["Türkçe bayrağı", "https://pstreamers.com/assets/flags/tr.svg", "image"],
     ["İngilizce bayrağı", "https://pstreamers.com/assets/flags/gb.svg", "image"],

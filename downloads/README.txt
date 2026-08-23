@@ -1,7 +1,8 @@
-Play Streamers 0.11.0 Windows önizlemesi
+Play Streamers 0.12.0 Windows uygulaması
 
-Windows 10/11 x64 yayın ve kayıt Studio; iki güvenli RTMPS çıkışı, 32 sahne,
-sahne başına 64 kaynak, tuvalde sürükleme ve CPU telemetrisi.
-Windows 11 sanal kamera desteği uygulama içinden kurulur.
+Windows 10/11 x64 yayıncı çalışma alanı. Studio, yerel kayıt/yayın motoru,
+FFmpeg yan uygulaması ve sanal kamera bu sürümde rafa kaldırılmıştır.
+Uygulama 45 içerik, analiz, topluluk, marka, gelir, kasa ve ayar aracına
+odaklanır; Windows'ta CMD penceresi açmadan çalışır.
 Kurucu updater imzasıyla doğrulanır; doğrudan EXE Authenticode imzası
 taşımadığı için SmartScreen uyarısı gösterebilir.

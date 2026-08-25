@@ -21,6 +21,11 @@ Chrome/Chromium mağaza paketi `play-connect-chromium-v1.12.0.zip`, Firefox/AMO
 paketi `play-connect-gecko-v1.12.0.zip`, site indirme paketi ise
 `play-connect-v1.12.0.zip` ve geriye uyumlu `play-connect.zip` adlarıyla tutulur.
 
+Site çalışma tercihi: Kullanıcı aksi yönde açıkça istemedikçe tamamlanan site
+değişiklikleri, yerel doğrulama ve testlerden sonra GitHub Pages üzerinden
+`pstreamers.com` alan adına yayınlanır; canlı dosya ve görünüm ayrıca kontrol
+edilir.
+
 Sürüm 4.8 / Desktop 0.12.0: Kullanıcı kararıyla Studio, yerel kayıt/yayın
 motoru, genel kayıt-yayın-replay kısayolları, FFmpeg yan uygulaması ve sanal
 kamera dağıtımı masaüstü ürününden rafa kaldırıldı. Kaynak kodu gelecekteki

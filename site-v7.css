@@ -893,7 +893,7 @@ body.ps-v8 :is(.brand-logo,.ps20-logo,.ps51-account-brand i,.ps53-products-brand
   flex-basis: 44px;
   border-radius: 0;
   color: transparent !important;
-  background: transparent url("./play-streamers-ps-logo.svg?v=8.1") center/contain no-repeat !important;
+  background: transparent url("./play-streamers-ps-logo.svg?v=8.2") center/contain no-repeat !important;
   font-size: 0 !important;
   box-shadow: none !important;
 }

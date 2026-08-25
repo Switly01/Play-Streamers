@@ -78,7 +78,7 @@ const DONATE_OAUTH_PROVIDERS = Object.freeze({
     clientSecretVariable: "TIPEEESTREAM_CLIENT_SECRET",
   }),
 });
-const CURRENT_RELEASE_VERSION = "5.0";
+const CURRENT_RELEASE_VERSION = "5.1";
 const CURRENT_RELEASE_PUBLISHED_AT = "2026-08-25T12:00:00+03:00";
 const SW_IDENTITY_ORIGIN = "https://api.swcreate.com";
 const DESKTOP_IDENTITY_REDIRECT = "playstreamers://identity/callback";
@@ -291,7 +291,7 @@ export default {
         });
       }
 
-      if (url.pathname === "/api/play-bot/status" && request.method === "GET") {
+      if (["/api/sw-bot/status", "/api/play-bot/status"].includes(url.pathname) && request.method === "GET") {
         return readGlobalPlayBotStatus(request, env);
       }
 
@@ -735,7 +735,7 @@ export default {
   },
 };
 
-const PLAY_BOT_GLOBAL_STATUS_KEY = "play-bot:global-status:v9";
+const PLAY_BOT_GLOBAL_STATUS_KEY = "sw-bot:global-status:v10";
 
 async function ensurePlayBotMetadataStorage(env) {
   if (!env.DB) throw new Error("Worker is missing the DB binding");
@@ -763,6 +763,8 @@ async function readGlobalPlayBotStatus(request, env) {
     ok: true,
     checkedAt: stored?.checkedAt || row?.updated_at || null,
     issues: Array.isArray(stored?.issues) ? stored.issues : [],
+    reports: Array.isArray(stored?.reports) ? stored.reports : [],
+    assistant: stored?.assistant || "deterministic",
     pending: !stored,
   });
 }
@@ -771,9 +773,14 @@ async function runScheduledPlayBotAudit(env) {
   await ensurePlayBotMetadataStorage(env);
   const resources = [
     ["Ana sayfa", "https://pstreamers.com/", "document"],
-    ["Ana uygulama betiği", "https://pstreamers.com/app.js?v=4.33", "script"],
-    ["Uygulama betiği", "https://pstreamers.com/app-final.js?v=4.15", "script"],
-    ["Stil dosyası", "https://pstreamers.com/styles.css?v=4.6", "style"],
+    ["Ana uygulama betiği", "https://pstreamers.com/app.js?v=5.0", "script"],
+    ["Uygulama betiği", "https://pstreamers.com/app-final.js?v=5.2", "script"],
+    ["Site davranış betiği", "https://pstreamers.com/site-v7.js?v=9.0", "script"],
+    ["Premium stil dosyası", "https://pstreamers.com/site-v7.css?v=9.0", "style"],
+    ["Gizlilik sayfası", "https://pstreamers.com/privacy.html", "document"],
+    ["Kullanım koşulları", "https://pstreamers.com/terms.html", "document"],
+    ["PS marka amblemi", "https://pstreamers.com/play-streamers-ps-logo.svg?v=9.0", "image"],
+    ["Windows kurucusu", "https://pstreamers.com/downloads/Play-Streamers-Setup.exe", "binary"],
     ["Türkçe bayrağı", "https://pstreamers.com/assets/flags/tr.svg", "image"],
     ["İngilizce bayrağı", "https://pstreamers.com/assets/flags/gb.svg", "image"],
     ["Almanca bayrağı", "https://pstreamers.com/assets/flags/de.svg", "image"],
@@ -796,7 +803,7 @@ async function runScheduledPlayBotAudit(env) {
   }
   const results = await Promise.all(resources.map(async ([label, url, type]) => {
     try {
-      const response = await fetchExternal(url, { headers: { accept: "*/*" } }, {
+      const response = await fetchExternal(url, { method: type === "binary" ? "HEAD" : "GET", headers: { accept: "*/*" } }, {
         operation: `play-bot-${type}`,
         timeoutMs: 5_000,
         retries: 1,
@@ -834,9 +841,11 @@ async function runScheduledPlayBotAudit(env) {
   const homeDocument = results.find(result => result.type === "document");
   if (homeDocument?.ok) {
     const documentContracts = [
-      ["styles.css?v=4.19", "Güncel stil dosyası"],
-      ["app.js?v=4.19", "Güncel ana uygulama betiği"],
-      ["app-final.js?v=4.19", "Güncel onarım betiği"],
+      ["site-v7.css?v=9.0", "Güncel premium stil dosyası"],
+      ["app.js?v=5.0", "Güncel ana uygulama betiği"],
+      ["app-final.js?v=5.2", "Güncel onarım betiği"],
+      ["site-v7.js?v=9.0", "Güncel site davranış betiği"],
+      ["play-streamers-build\" content=\"2026-08-26-site-9.0", "Site 9.0 sürüm işareti"],
     ];
     for (const [token, label] of documentContracts) {
       if (!homeDocument.body.includes(token)) issues.push(`${label} canlı ana sayfaya bağlanmamış.`);
@@ -873,6 +882,10 @@ async function runScheduledPlayBotAudit(env) {
       ["SITE_METRICS_LEASE_KEY", "Canlı site verilerinde sekmeler arası istek kilidi"],
       ["siteMetricsRenderedAt", "Canlı site verilerinde eski cevabı engelleme"],
       ["ps61DisplayedValue", "Canlı site sayacının ekrandaki değerden devam etmesi"],
+      ["SW BOT", "SW Bot kullanıcı arayüzü"],
+      ["/api/sw-bot/status", "SW Bot sunucu denetimi"],
+      ["SW AI AÇIKLAMASI", "SW AI anlaşılır sorun açıklaması"],
+      ["Kullanım Koşulları", "Yasal koşullar bağlantısı"],
     ];
     for (const [token, label] of contracts) {
       if (!appScript.body.includes(token)) issues.push(`${label} canlı uygulama betiğinde bulunamadı.`);
@@ -888,20 +901,36 @@ async function runScheduledPlayBotAudit(env) {
       if (!mainScript.body.includes(token)) issues.push(`${label} canlı ana uygulama betiğinde bulunamadı.`);
     }
   }
-  const styleSheet = results.find(result => result.label === "Stil dosyası");
+  const styleSheet = results.find(result => result.label === "Premium stil dosyası");
   if (styleSheet?.ok) {
     const contracts = [
-      ["v4.13 - saatlik grafik", "Saatlik grafiğin bağımsız viewport katmanı"],
-      [".ps67-oauth-icon img[hidden]", "DAB logo yedeğinin gizlenmesi"],
-      ["#ps69AccountMetricDayDialog", "24 saatlik grafiğin üst katman garantisi"],
+      ["html[data-ps-site-version=\"9\"]", "Site 9.0 ortak tasarım sistemi"],
+      ["#ps9Ambient", "Site geneli hareket katmanı"],
+      ["ps9-surface-in", "Ekran geçiş animasyonu"],
+      ["ps9-sw-ai-summary", "SW AI sorun açıklama kartı"],
     ];
     for (const [token, label] of contracts) {
       if (!styleSheet.body.includes(token)) issues.push(`${label} canlı stil dosyasında bulunamadı.`);
     }
   }
+  const uniqueIssues = [...new Set(issues)].slice(0, 20);
+  let previousStatus = null;
+  try {
+    const previousRow = await env.DB.prepare("SELECT value FROM play_streamers_metadata WHERE key = ?1 LIMIT 1")
+      .bind(PLAY_BOT_GLOBAL_STATUS_KEY).first();
+    previousStatus = previousRow?.value ? JSON.parse(previousRow.value) : null;
+  } catch { previousStatus = null; }
+  const unchanged = JSON.stringify(previousStatus?.issues || []) === JSON.stringify(uniqueIssues);
+  const cachedReports = unchanged && Array.isArray(previousStatus?.reports) ? previousStatus.reports : null;
+  const aiReports = !cachedReports && uniqueIssues.length ? await explainSwBotIssuesWithAi(uniqueIssues, env).catch(() => null) : null;
+  const reports = cachedReports || (Array.isArray(aiReports?.reports) && aiReports.reports.length
+    ? aiReports.reports
+    : uniqueIssues.map(swBotDeterministicReport));
   const status = {
     checkedAt: new Date().toISOString(),
-    issues: [...new Set(issues)].slice(0, 20),
+    issues: uniqueIssues,
+    reports,
+    assistant: cachedReports ? (previousStatus?.assistant || "deterministic") : aiReports?.model ? "sw-ai" : "deterministic",
   };
   await env.DB.prepare(`INSERT INTO play_streamers_metadata (key, value, updated_at)
     VALUES (?1, ?2, datetime('now'))
@@ -909,6 +938,89 @@ async function runScheduledPlayBotAudit(env) {
     .bind(PLAY_BOT_GLOBAL_STATUS_KEY, JSON.stringify(status))
     .run();
   return status;
+}
+
+function swBotDeterministicReport(issue) {
+  const text = String(issue || "Bilinmeyen bir sorun bulundu.").slice(0, 500);
+  let category = "interface";
+  let title = "Arayüz denetimi";
+  let action = "Sayfayı yenileyip işlemi tekrar dene. Sorun sürerse Destek bölümünden bildir.";
+  if (/API|sunucu|D1|bağlantı|yüklenemiyor/i.test(text)) {
+    category = "connection";
+    title = "Veri bağlantısı";
+    action = "Veriler silinmez. Bağlantı yeniden kurulduğunda ekran otomatik olarak güncellenir.";
+  } else if (/görsel|logo|bayrak|image/i.test(text)) {
+    category = "asset";
+    title = "Görsel kaynak";
+    action = "Temel işlevler çalışmaya devam eder. Sayfayı yenileyerek görseli yeniden yükleyebilirsin.";
+  } else if (/giriş|kayıt|doğrulama|OAuth|Google|Kick/i.test(text)) {
+    category = "account";
+    title = "Hesap erişimi";
+    action = "Açık doğrulama penceresini kapatıp işlemi yeniden başlat. Bilgilerin doğrulanmadan değiştirilmez.";
+  } else if (/stil|taşıyor|yerleşim|arayüz/i.test(text)) {
+    category = "layout";
+    title = "Ekran yerleşimi";
+    action = "Tarayıcı yakınlaştırmasını yüzde 100 yapıp sayfayı yenile. Sorun SW Bot kaydında tutulur.";
+  } else if (/kurucu|indir/i.test(text)) {
+    category = "download";
+    title = "Uygulama indirmesi";
+    action = "İndirme düğmesini kısa süre sonra yeniden dene. Hesabın ve web verilerin etkilenmez.";
+  }
+  return { issue: text, category, title, summary: text, action };
+}
+
+function validSwBotReports(value, issues) {
+  if (!value || !Array.isArray(value.reports)) return null;
+  const allowed = new Set(issues);
+  const reports = value.reports.filter(report => report
+    && allowed.has(String(report.issue || ""))
+    && typeof report.title === "string" && report.title.length <= 90
+    && typeof report.summary === "string" && report.summary.length <= 360
+    && typeof report.action === "string" && report.action.length <= 240)
+    .map(report => ({
+      issue: String(report.issue),
+      category: String(report.category || "system").slice(0, 32),
+      title: String(report.title),
+      summary: String(report.summary),
+      action: String(report.action),
+    }));
+  if (!reports.length) return null;
+  const byIssue = new Map(reports.map(report => [report.issue, report]));
+  return issues.map(issue => byIssue.get(issue) || swBotDeterministicReport(issue));
+}
+
+async function explainSwBotIssuesWithAi(issues, env) {
+  if (!env.AI || typeof env.AI.run !== "function" || !issues.length) return null;
+  const model = "@cf/meta/llama-3.1-8b-instruct-fp8";
+  const payload = await env.AI.run(model, {
+    messages: [
+      {
+        role: "system",
+        content: "Sen SW AI'sın. SW Bot'un teknik site denetimlerini son kullanıcı için sade Türkçeye çevirirsin. Sorunun nedenini kanıt yoksa uydurma. Gizli veri isteme. Her sorun için ne olduğunu, kullanıcıya etkisini ve güvenli sonraki adımı yaz. Yalnız geçerli JSON döndür.",
+      },
+      {
+        role: "user",
+        content: `Sorunlar: ${JSON.stringify(issues)}\nHer issue metnini aynen koru. Yalnız şu biçimi döndür: {"reports":[{"issue":"aynı sorun","category":"kısa kategori","title":"en fazla 90 karakter","summary":"anlaşılır açıklama, en fazla 360 karakter","action":"güvenli sonraki adım, en fazla 240 karakter"}]}`,
+      },
+    ],
+    max_tokens: 1400,
+    temperature: 0.15,
+  });
+  const text = typeof payload?.response === "string"
+    ? payload.response
+    : typeof payload?.result?.response === "string"
+      ? payload.result.response
+      : typeof payload?.choices?.[0]?.message?.content === "string"
+        ? payload.choices[0].message.content
+        : "";
+  const cleaned = text.trim().replace(/^```(?:json)?\s*/i, "").replace(/\s*```$/i, "");
+  const start = cleaned.indexOf("{");
+  const end = cleaned.lastIndexOf("}");
+  if (start < 0 || end <= start) return null;
+  let parsed = null;
+  try { parsed = JSON.parse(cleaned.slice(start, end + 1)); } catch { parsed = null; }
+  const reports = validSwBotReports(parsed, issues);
+  return reports ? { reports, model } : null;
 }
 
 // External providers occasionally respond slowly or fail temporarily.  This
@@ -1130,14 +1242,14 @@ function oauthFailurePage(message, provider = "google", mode = "register", purpo
   const safeMode = mode === "login" ? "login" : "register";
   const retryUrl = `/auth/${safeProvider}/${safePurpose === "connection" && safeProvider === "kick" ? "login" : safeProvider === "kick" ? "account-login" : "login"}?mode=${safeMode}`;
   const safeMessage = String(message || "İşlem tamamlanamadı.").replace(/[<>&"]/g, (character) => ({ "<": "&lt;", ">": "&gt;", "&": "&amp;", '"': "&quot;" }[character]));
-  return new Response(`<!doctype html><html lang="tr"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Play Streamers güvenlik kontrolü</title><body style="margin:0;display:grid;min-height:100vh;place-items:center;background:#06101b;color:#edf5ff;font-family:Arial,sans-serif"><main style="width:min(420px,calc(100vw - 40px));padding:30px;border:1px solid #ffb35c;border-radius:20px;background:#10213a;box-shadow:0 18px 55px #0008"><b style="color:#53fc18;letter-spacing:.12em;font-size:12px">PLAY STREAMERS</b><h1 style="font-size:26px;margin:14px 0 8px">Giriş bağlantısı hazırlanamadı</h1><p style="color:#d7e1ef;line-height:1.55">${safeMessage}</p><a href="${retryUrl}" style="display:inline-block;margin-top:10px;padding:12px 16px;border-radius:10px;background:#53fc18;color:#071006;font-weight:800;text-decoration:none">Tekrar dene</a></main></body></html>`, { headers: workerPageHeaders() });
+  return new Response(`<!doctype html><html lang="tr"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Play Streamers güvenlik kontrolü</title><body style="margin:0;display:grid;min-height:100vh;place-items:center;padding:20px;background:radial-gradient(circle at 80% 0,#202020,transparent 38%),#050505;color:#f5f5f2;font-family:'Segoe UI',Arial,sans-serif"><main style="width:min(440px,calc(100vw - 40px));padding:34px;border:1px solid #ffffff38;border-radius:24px;background:linear-gradient(145deg,#191919f2,#090909f5);box-shadow:0 28px 90px #000b,inset 0 1px 0 #ffffff16"><b style="color:#f5f5f2;letter-spacing:.16em;font:900 11px/1 'Courier New',monospace">PLAY STREAMERS · GÜVENLİK</b><h1 style="font-size:28px;letter-spacing:-.04em;margin:18px 0 10px">Giriş bağlantısı hazırlanamadı</h1><p style="color:#bdbdb8;line-height:1.65">${safeMessage}</p><a href="${retryUrl}" style="display:inline-block;margin-top:12px;padding:13px 17px;border:1px solid #fff;border-radius:11px;background:#f5f5f2;color:#070707;font-weight:850;text-decoration:none">Tekrar dene</a></main></body></html>`, { headers: workerPageHeaders() });
 }
 
 function legacyTurnstileOAuthPage(provider, purpose, mode, env) {
   const safeProvider = provider === "kick" ? "Kick" : "Google";
   const payload = JSON.stringify({ provider, purpose, mode });
   const siteKey = String(env.TURNSTILE_SITE_KEY || "").replace(/[<>&"']/g, "");
-  return new Response(`<!doctype html><html lang="tr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Play Streamers güvenlik kontrolü</title><script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" async defer></script></head><body style="margin:0;display:grid;min-height:100vh;place-items:center;background:#06101b;color:#edf5ff;font-family:Arial,sans-serif"><main style="width:min(420px,calc(100vw - 40px));padding:30px;border:1px solid #53fc18;border-radius:20px;background:#10213a;box-shadow:0 18px 55px #0008"><b style="color:#53fc18;letter-spacing:.12em;font-size:12px">PLAY STREAMERS</b><h1 style="font-size:26px;margin:14px 0 8px">Kısa bir güvenlik kontrolü</h1><p style="color:#b8c7d9;line-height:1.55">${safeProvider} bağlantısını başlatmadan önce gerçek bir ziyaretçi olduğunu doğruluyoruz.</p><div id="turnstile" style="min-height:65px;margin:20px 0"></div><p id="status" style="min-height:20px;color:#b8c7d9"></p></main><script>const payload=${payload};const status=document.getElementById('status');function start(token){status.textContent='Bağlantı hazırlanıyor...';fetch('/api/auth/oauth/start',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({...payload,turnstileToken:token})}).then(async r=>({ok:r.ok,data:await r.json().catch(()=>({}))})).then(({ok,data})=>{if(!ok)throw new Error(data.error||'Güvenlik doğrulaması tamamlanamadı.');location.replace(data.authorizeUrl)}).catch(e=>{status.textContent=e.message||'İşlem tamamlanamadı. Lütfen sayfayı yenile.';window.turnstile?.reset()})}let turnstileRendered=false;let turnstileAttempts=0;function renderTurnstile(){if(turnstileRendered)return;if(window.turnstile&&typeof window.turnstile.render==='function'){turnstileRendered=true;window.turnstile.render('#turnstile',{sitekey:'${siteKey}',theme:'dark',callback:start,'error-callback':()=>{status.textContent='Güvenlik kontrolü yüklenemedi. Lütfen tekrar dene.';turnstileRendered=false}});return}if(turnstileAttempts++<80){setTimeout(renderTurnstile,100)}else{status.textContent='Güvenlik kontrolü yüklenemedi. Lütfen sayfayı yenile.'}}window.addEventListener('load',renderTurnstile);setTimeout(renderTurnstile,100);</script></body></html>`, { headers: { "content-type": "text/html; charset=utf-8", "cache-control": "no-store" } });
+  return new Response(`<!doctype html><html lang="tr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Play Streamers güvenlik kontrolü</title><script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" async defer></script></head><body style="margin:0;display:grid;min-height:100vh;place-items:center;padding:20px;background:radial-gradient(circle at 80% 0,#202020,transparent 38%),#050505;color:#f5f5f2;font-family:'Segoe UI',Arial,sans-serif"><main style="width:min(440px,calc(100vw - 40px));padding:34px;border:1px solid #ffffff38;border-radius:24px;background:linear-gradient(145deg,#191919f2,#090909f5);box-shadow:0 28px 90px #000b,inset 0 1px 0 #ffffff16"><b style="color:#f5f5f2;letter-spacing:.16em;font:900 11px/1 'Courier New',monospace">PLAY STREAMERS · GÜVENLİK</b><h1 style="font-size:28px;letter-spacing:-.04em;margin:18px 0 10px">Kısa bir güvenlik kontrolü</h1><p style="color:#bdbdb8;line-height:1.65">${safeProvider} bağlantısını başlatmadan önce gerçek bir ziyaretçi olduğunu doğruluyoruz.</p><div id="turnstile" style="min-height:65px;margin:22px 0;border:1px solid #ffffff20;border-radius:15px;padding:12px;background:#ffffff08"></div><p id="status" style="min-height:20px;color:#bdbdb8"></p></main><script>const payload=${payload};const status=document.getElementById('status');function start(token){status.textContent='Bağlantı hazırlanıyor...';fetch('/api/auth/oauth/start',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({...payload,turnstileToken:token})}).then(async r=>({ok:r.ok,data:await r.json().catch(()=>({}))})).then(({ok,data})=>{if(!ok)throw new Error(data.error||'Güvenlik doğrulaması tamamlanamadı.');location.replace(data.authorizeUrl)}).catch(e=>{status.textContent=e.message||'İşlem tamamlanamadı. Lütfen sayfayı yenile.';window.turnstile?.reset()})}let turnstileRendered=false;let turnstileAttempts=0;function renderTurnstile(){if(turnstileRendered)return;if(window.turnstile&&typeof window.turnstile.render==='function'){turnstileRendered=true;window.turnstile.render('#turnstile',{sitekey:'${siteKey}',theme:'dark',callback:start,'error-callback':()=>{status.textContent='Güvenlik kontrolü yüklenemedi. Lütfen tekrar dene.';turnstileRendered=false}});return}if(turnstileAttempts++<80){setTimeout(renderTurnstile,100)}else{status.textContent='Güvenlik kontrolü yüklenemedi. Lütfen sayfayı yenile.'}}window.addEventListener('load',renderTurnstile);setTimeout(renderTurnstile,100);</script></body></html>`, { headers: { "content-type": "text/html; charset=utf-8", "cache-control": "no-store" } });
 }
 
 // OAuth doğrulama sayfası statik bir sayfa olduğu için Turnstile'ın implicit
@@ -1152,23 +1264,24 @@ function turnstileOAuthPage(provider, purpose, mode, env, remember = false) {
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Play Streamers · Güvenlik doğrulaması</title>
-  <meta name="ps-worker-build" content="1.9.3-oauth-csrf-fix">
+  <meta name="ps-worker-build" content="5.1-sw-bot-premium">
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cpath d='M12 5h40a7 7 0 0 1 7 7v40a7 7 0 0 1-7 7H19L5 48V12a7 7 0 0 1 7-7Z' fill='%23050a08' stroke='%2353fc18' stroke-width='3'/%3E%3Ctext x='32' y='41' text-anchor='middle' fill='%2353fc18' font-family='Arial,sans-serif' font-size='27' font-weight='900'%3EPS%3C/text%3E%3C/svg%3E">
   <link rel="preconnect" href="https://challenges.cloudflare.com" crossorigin>
   <link rel="dns-prefetch" href="//challenges.cloudflare.com">
   <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" defer fetchpriority="high"></script>
   <style>
-    :root{color-scheme:dark;--ink:#f4f8ff;--muted:#afc1d7;--lime:#53fc18;--line:rgba(175,211,246,.22);--panel:rgba(12,31,55,.72)}
-    *{box-sizing:border-box}html,body{min-height:100%;margin:0}body{position:relative;display:grid;min-height:100vh;place-items:center;overflow:hidden;padding:28px;color:var(--ink);background:#050c16;font-family:"Plus Jakarta Sans","Segoe UI",Arial,sans-serif}
-    body:before,body:after{position:fixed;z-index:-2;width:65vmax;height:65vmax;border-radius:50%;content:"";filter:blur(18px);opacity:.82;pointer-events:none}body:before{top:-37vmax;right:-18vmax;background:radial-gradient(circle,rgba(51,119,255,.28),transparent 63%)}body:after{bottom:-42vmax;left:-25vmax;background:radial-gradient(circle,rgba(83,252,24,.16),transparent 62%)}
-    .grid{position:fixed;z-index:-1;inset:0;opacity:.24;background-image:linear-gradient(rgba(154,192,232,.07) 1px,transparent 1px),linear-gradient(90deg,rgba(154,192,232,.07) 1px,transparent 1px);background-size:38px 38px;mask-image:radial-gradient(circle at 50% 48%,black,transparent 76%);pointer-events:none}
-    .halo{position:absolute;top:50%;left:50%;z-index:-1;width:min(720px,82vw);height:min(720px,82vw);border:1px solid rgba(83,252,24,.2);border-radius:50%;transform:translate(-50%,-50%);box-shadow:0 0 0 44px rgba(83,252,24,.025),0 0 0 90px rgba(83,252,24,.018)}
-    .card{width:min(506px,100%);overflow:hidden;border:1px solid rgba(83,252,24,.62);border-radius:29px;padding:clamp(23px,5vw,40px);background:linear-gradient(142deg,rgba(22,53,89,.88),rgba(7,18,35,.76) 57%,rgba(9,31,36,.8));box-shadow:0 32px 95px rgba(0,0,0,.55),0 0 48px rgba(83,252,24,.1),inset 0 1px 0 rgba(255,255,255,.11);backdrop-filter:blur(28px) saturate(145%);-webkit-backdrop-filter:blur(28px) saturate(145%)}
-    .top{display:flex;align-items:center;justify-content:space-between;gap:12px}.brand{display:flex;align-items:center;gap:10px;color:#f6fbff;font:900 11px/1 "Courier New",monospace;letter-spacing:.14em}.brand-mark{position:relative;display:grid;place-items:center;width:42px;height:42px;overflow:hidden;border:1px solid rgba(83,252,24,.68);border-radius:11px 11px 11px 3px;color:transparent;background:#050a08;box-shadow:none;font-size:0;transform:skewY(-6deg)}.brand-mark:after{position:absolute;inset:0;display:grid;place-items:center;color:#53fc18;content:"PS";font:900 25px/1 Inter,"Segoe UI",Arial,sans-serif;letter-spacing:-.14em;transform:skewY(6deg) translate(-1px,-1px)}.secure{display:inline-flex;align-items:center;gap:6px;border:1px solid rgba(164,202,243,.2);border-radius:999px;padding:7px 9px;color:#c6d8e9;background:rgba(4,14,27,.36);font:800 9px/1 "Courier New",monospace;letter-spacing:.1em}.secure i{display:block;width:6px;height:6px;border-radius:50%;background:var(--lime);box-shadow:0 0 11px var(--lime)}
-    .symbol{display:grid;place-items:center;width:58px;height:58px;margin:29px 0 18px;border:1px solid rgba(83,252,24,.38);border-radius:18px;color:var(--lime);background:linear-gradient(145deg,rgba(83,252,24,.16),rgba(83,252,24,.035));box-shadow:inset 0 0 24px rgba(83,252,24,.08)}.symbol svg{width:28px;height:28px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
-    .eyebrow{margin:0 0 9px;color:#a9ff88;font:900 10px/1.2 "Courier New",monospace;letter-spacing:.17em}.card h1{max-width:390px;margin:0;color:#f5f8ff;font:800 clamp(28px,5vw,38px)/1.08 "Plus Jakarta Sans","Segoe UI",sans-serif;letter-spacing:-.045em}.copy{max-width:406px;margin:15px 0 0;color:var(--muted);font:500 14px/1.65 "Plus Jakarta Sans","Segoe UI",sans-serif}
-    .challenge{margin-top:25px;border:1px solid var(--line);border-radius:17px;padding:14px;background:rgba(3,13,27,.42);box-shadow:inset 0 1px 0 rgba(255,255,255,.04)}.challenge-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:11px;color:#dce9f5;font:800 11px/1 "Plus Jakarta Sans","Segoe UI",sans-serif}.challenge-head span:first-child{display:flex;align-items:center;gap:8px}.challenge-head span:first-child:before{display:block;width:7px;height:7px;border-radius:50%;background:var(--lime);box-shadow:0 0 12px var(--lime);content:""}.challenge-label{border:1px solid rgba(83,252,24,.28);border-radius:999px;padding:5px 7px;color:#baff9f;background:rgba(83,252,24,.07);font:800 8px/1 "Courier New",monospace;letter-spacing:.09em}.cf-turnstile{display:flex;min-height:65px;justify-content:center;overflow:hidden;border-radius:10px}
-    #status{min-height:20px;margin:15px 2px 0;color:#b9cce0;font:600 12px/1.5 "Plus Jakarta Sans","Segoe UI",sans-serif}#status[data-state="working"]{color:#bcffa4}#status[data-state="error"]{color:#ffb5bc}.fine-print{margin:15px 2px 0;color:#7f97ae;font:500 10px/1.55 "Plus Jakarta Sans","Segoe UI",sans-serif}
+    :root{color-scheme:dark;--ink:#f5f5f2;--muted:#adada8;--lime:#f5f5f2;--line:rgba(255,255,255,.16);--panel:rgba(15,15,15,.84)}
+    *{box-sizing:border-box}html,body{min-height:100%;margin:0}body{position:relative;display:grid;min-height:100vh;place-items:center;overflow:hidden;padding:28px;color:var(--ink);background:#050505;font-family:"Plus Jakarta Sans","Segoe UI",Arial,sans-serif}
+    body:before,body:after{position:fixed;z-index:-2;width:65vmax;height:65vmax;border-radius:50%;content:"";filter:blur(18px);opacity:.72;pointer-events:none}body:before{top:-37vmax;right:-18vmax;background:radial-gradient(circle,rgba(255,255,255,.11),transparent 63%)}body:after{bottom:-42vmax;left:-25vmax;background:radial-gradient(circle,rgba(255,255,255,.055),transparent 62%)}
+    .grid{position:fixed;z-index:-1;inset:0;opacity:.3;background-image:radial-gradient(circle,#fff 0 1px,transparent 1.5px),linear-gradient(rgba(255,255,255,.045) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.045) 1px,transparent 1px);background-size:127px 143px,48px 48px,48px 48px;mask-image:radial-gradient(circle at 50% 48%,black,transparent 78%);pointer-events:none;animation:worker-stars 12s linear infinite}
+    @keyframes worker-stars{to{background-position:127px 143px,48px 48px,48px 48px}}
+    .halo{position:absolute;top:50%;left:50%;z-index:-1;width:min(720px,82vw);height:min(720px,82vw);border:1px solid rgba(255,255,255,.11);transform:translate(-50%,-50%) rotate(45deg);box-shadow:0 0 0 44px rgba(255,255,255,.018),0 0 0 90px rgba(255,255,255,.012);animation:worker-orbit 25s linear infinite}@keyframes worker-orbit{to{transform:translate(-50%,-50%) rotate(405deg)}}
+    .card{width:min(506px,100%);overflow:hidden;border:1px solid rgba(255,255,255,.28);border-radius:24px;padding:clamp(23px,5vw,40px);background:linear-gradient(142deg,rgba(25,25,25,.94),rgba(8,8,8,.9) 67%,rgba(17,17,17,.9));box-shadow:0 32px 95px rgba(0,0,0,.62),inset 0 1px 0 rgba(255,255,255,.1);backdrop-filter:blur(28px) saturate(125%);-webkit-backdrop-filter:blur(28px) saturate(125%)}
+    .top{display:flex;align-items:center;justify-content:space-between;gap:12px}.brand{display:flex;align-items:center;gap:10px;color:#f5f5f2;font:900 11px/1 "Courier New",monospace;letter-spacing:.14em}.brand-mark{position:relative;display:grid;place-items:center;width:42px;height:42px;overflow:hidden;clip-path:polygon(20% 0,76% 0,100% 24%,100% 76%,76% 100%,20% 100%,0 80%,0 20%);color:#050505;background:linear-gradient(145deg,#fff,#8e8e8b);box-shadow:none;font-size:0}.brand-mark:after{position:absolute;inset:3px;display:grid;place-items:center;clip-path:inherit;color:#f5f5f2;background:#080808;content:"PS";font:900 20px/1 Inter,"Segoe UI",Arial,sans-serif;letter-spacing:-.14em}.secure{display:inline-flex;align-items:center;gap:6px;border:1px solid rgba(255,255,255,.16);border-radius:999px;padding:7px 9px;color:#c8c8c4;background:rgba(255,255,255,.035);font:800 9px/1 "Courier New",monospace;letter-spacing:.1em}.secure i{display:block;width:6px;height:6px;border-radius:50%;background:var(--lime);box-shadow:0 0 11px rgba(255,255,255,.55)}
+    .symbol{display:grid;place-items:center;width:58px;height:58px;margin:29px 0 18px;border:1px solid rgba(255,255,255,.28);border-radius:16px;color:var(--lime);background:linear-gradient(145deg,rgba(255,255,255,.1),rgba(255,255,255,.025));box-shadow:inset 0 0 24px rgba(255,255,255,.045)}.symbol svg{width:28px;height:28px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+    .eyebrow{margin:0 0 9px;color:#f5f5f2;font:900 10px/1.2 "Courier New",monospace;letter-spacing:.17em}.card h1{max-width:390px;margin:0;color:#f5f5f2;font:800 clamp(28px,5vw,38px)/1.08 "Plus Jakarta Sans","Segoe UI",sans-serif;letter-spacing:-.045em}.copy{max-width:406px;margin:15px 0 0;color:var(--muted);font:500 14px/1.65 "Plus Jakarta Sans","Segoe UI",sans-serif}
+    .challenge{margin-top:25px;border:1px solid var(--line);border-radius:17px;padding:14px;background:rgba(255,255,255,.025);box-shadow:inset 0 1px 0 rgba(255,255,255,.04)}.challenge-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:11px;color:#dededa;font:800 11px/1 "Plus Jakarta Sans","Segoe UI",sans-serif}.challenge-head span:first-child{display:flex;align-items:center;gap:8px}.challenge-head span:first-child:before{display:block;width:7px;height:7px;border-radius:50%;background:var(--lime);box-shadow:0 0 12px rgba(255,255,255,.55);content:""}.challenge-label{border:1px solid rgba(255,255,255,.22);border-radius:999px;padding:5px 7px;color:#dededa;background:rgba(255,255,255,.045);font:800 8px/1 "Courier New",monospace;letter-spacing:.09em}.cf-turnstile{display:flex;min-height:65px;justify-content:center;overflow:hidden;border-radius:10px}
+    #status{min-height:20px;margin:15px 2px 0;color:#bdbdb8;font:600 12px/1.5 "Plus Jakarta Sans","Segoe UI",sans-serif}#status[data-state="working"]{color:#fff}#status[data-state="error"]{color:#ffb5bc}.fine-print{margin:15px 2px 0;color:#777774;font:500 10px/1.55 "Plus Jakarta Sans","Segoe UI",sans-serif}
     @media(max-width:480px){body{padding:16px}.card{border-radius:24px;padding:25px 22px}.secure{font-size:8px}.symbol{margin-top:24px}.card h1{font-size:30px}.copy{font-size:13px}.challenge{padding:12px 8px}.cf-turnstile{justify-content:flex-start;transform:scale(.94);transform-origin:left center;width:106.4%}}
   </style>
 </head>
@@ -7934,8 +8047,8 @@ function apiResponse(request, data, status = 200) {
 }
 
 function htmlPage(title, message, success) {
-  const color = success ? "#53fc18" : "#ff8a8a";
-  return new Response(`<!doctype html><html lang="tr"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Play Streamers</title><body style="margin:0;display:grid;min-height:100vh;place-items:center;background:#080a0c;color:#f5f7f8;font-family:Arial,sans-serif"><main style="max-width:440px;padding:32px;border:1px solid ${color};border-radius:18px;background:#11161a;box-shadow:0 0 32px ${color}33"><div style="font-weight:800;color:${color};letter-spacing:.1em">PLAY STREAMERS</div><h1 style="font-size:24px">${title}</h1><p style="line-height:1.55;color:#bac2c9">${message}</p><a style="display:inline-block;margin-top:12px;padding:12px 16px;border-radius:10px;background:${color};color:#071006;font-weight:700;text-decoration:none" href="${FRONTEND_URL}">Panele dön</a></main></body></html>`, {
+  const stateColor = success ? "#f5f5f2" : "#ffb4bb";
+  return new Response(`<!doctype html><html lang="tr"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Play Streamers</title><body style="margin:0;display:grid;min-height:100vh;place-items:center;padding:20px;background:radial-gradient(circle at 80% 0,#202020,transparent 38%),#050505;color:#f5f5f2;font-family:'Segoe UI',Arial,sans-serif"><main style="width:min(440px,calc(100vw - 40px));padding:34px;border:1px solid #ffffff38;border-radius:24px;background:linear-gradient(145deg,#191919f2,#090909f5);box-shadow:0 28px 90px #000b,inset 0 1px 0 #ffffff16"><div style="font:900 11px/1 'Courier New',monospace;color:${stateColor};letter-spacing:.16em">PLAY STREAMERS · ${success ? "TAMAMLANDI" : "BİLGİ"}</div><h1 style="font-size:28px;letter-spacing:-.04em;margin:18px 0 10px">${title}</h1><p style="line-height:1.65;color:#bdbdb8">${message}</p><a style="display:inline-block;margin-top:12px;padding:13px 17px;border:1px solid #fff;border-radius:11px;background:#f5f5f2;color:#070707;font-weight:850;text-decoration:none" href="${FRONTEND_URL}">Panele dön</a></main></body></html>`, {
     headers: {
       "content-type": "text/html; charset=utf-8",
       "cache-control": "no-store",

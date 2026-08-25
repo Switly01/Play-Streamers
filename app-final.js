@@ -157,6 +157,7 @@
     else if (!updatesReturnPath) updatesReturnPath = state().settings?.userSession ? visibleMemberRoute() : '/';
     syncCleanRoute('/updates');
     const history = [
+      ['Platform 5.1 · Site 9.0','26 Ağustos 2026',['Ana sayfa, kullanıcı evi, Dashboard, hesap merkezi, doğrulama, menüler ve yasal sayfalar tek premium monokrom tasarım dilinde birleştirildi.','Yeni karakteristik PS amblemi keskin, asimetrik gövde ve birbirine geçen harf geometrisiyle yenilendi.','Play Bot, SW Bot oldu; canlı dosyalar, arayüz kontrolleri, bağlantılar ve katman çakışmaları daha geniş kapsamda denetleniyor.','SW AI, bulunan teknik sorunları kullanıcı etkisi ve güvenli sonraki adımla anlaşılır Türkçeye çeviriyor.']],
       ['Desktop 0.13.0','25 Ağustos 2026',['Kick yayınları site, uygulama ve eklenti kapalıyken sunucuda otomatik ölçülür.','Ortalama ve tepe izleyici, takip, abonelik, bağış ve etkileşim özeti yayın kapanınca tamamlanır.','Windows 10 ve 11 aynı konsolsuz uygulama paketini kullanır.','Studio ve yerel kayıt/yayın motoru rafa kaldırılmış durumda kalır.']],
       ['Desktop 0.11.0','23 Ağustos 2026',['Tek kodlama akışı iki güvenli RTMPS hedefine eşzamanlı gönderilebilir; iki yayın anahtarı da Windows güvenli kasasında kalır.','Kaynaklar Önizleme tuvalinde doğrudan sürüklenerek konumlandırılabilir.','Studio 32 sahne ve sahne başına 64 ek kaynağı destekler.','FFmpeg çocuk sürecinin gerçek CPU kullanımı yayın telemetrisine eklendi.']],
       ['Desktop 0.10.0','23 Ağustos 2026',['Yazı, görsel, yerel medya ve renk kaynakları kayıt veya yayın sürerken tek tıkla gizlenip gösterilebilir.','Kaynak opaklığı çalışan Program, bağımsız Önizleme ve Windows 11 sanal kamera grafiğine kodlayıcı yeniden başlatılmadan uygulanır.','Başlangıçta gizli geçerli yerel dosyalar, canlıya sonradan alınabilmeleri için FFmpeg grafiğinde hazır tutulur.','Gerçek FFmpeg duman testi canlı kaynak alfa komutunu crossfade, cut, fade ve ses komutlarıyla aynı çalışan grafikte doğruladı.']],
@@ -167,9 +168,9 @@
       ['Desktop 0.5.0','23 Ağustos 2026',['Studio sahnelerindeki ana kaynak, sabit metin ve sabit görsel katmanlarına ayrı konum ile ölçek denetimleri eklendi.','Sahne geçişleri anlık kesme veya 150–800 ms kararma olarak seçilebilir hale geldi; gerçek FFmpeg program grafiği geçiş sırasında siyaha kararıp yeni sahneye döner.','Mikrofon zincirine isteğe bağlı gürültü kapısı eklendi; gürültü azaltma, compressor ve limiter seçenekleri korundu.','Site ön izlemesindeki temsili değerler gerçek hesap verisinden açıkça ayrıldı; doğrulanmamış topluluk sayıları artık canlı metrik gibi gösterilmiyor.']],
       ['4.6','22 Ağustos 2026',['Studio; sekiz sahneli kalıcı proje modeli, gerçek FFmpeg program önizlemesi, kimlik tabanlı canlı geçiş ve sahne profilleriyle yenilendi.','Gerçek FPS, bit hızı, düşen kare, masaüstü/mikrofon metreleri, mikrofon filtreleri ve beş denemeli yayın kurtarma sistemi eklendi.','Kick ve Play Connect doğrulanmış olayları açık Studio oturumuna bağlandı; 54 Free, Pro ve Product Pro çalışma alanı açıklamasındaki çalışan akışa tamamlandı.','Site ürün mimarisi; hesap ve güvenliği sitede, Studio ile üretim sistemini masaüstü uygulamasında açıkça ayıracak biçimde yeniden tasarlandı.']],
       ['4.5','22 Ağustos 2026',['Ürün sayfası; kullanıma hazır Studio çekirdeğini, erken sürüm çalışma alanlarını ve OBS düzeyine ulaşmak için sıradaki motor işlerini açıkça ayıran yeni sürüm durumu görünümüne geçirildi.','Windows indirme alanı, güncelleme imzası ile Windows yayınevi imzası arasındaki farkı ve olası SmartScreen uyarısını doğru biçimde açıklıyor.','Sistem durumu denetiminin sağlıklı yeni API sürümlerini eski sanarak yanlış uyarı vermesi giderildi; denetim artık servis sağlık sözleşmesine dayanıyor.']],
-      ['4.4','11 Ağustos 2026',['Genel arayüz onarımının canlı sayaçlarda tekrar tekrar çalışarak oluşturduğu titreme ve yeniden çizim döngüsü kaldırıldı; Google girişi, dil menüsü ve ikinci ana sayfa tekil etkileşim katmanına alındı.','Play Bot; görünür Google düğmesi, dil bayrakları, güncelleme akordeonu, DAB logosu, aktif abone alanı ve Dashboard sıfırlama denetimini kullanıcı akışı gibi sınayan açık hata mesajlarıyla genişletildi.','Kick grafiklerinde tarih etiketleri on beş günlük aralıklara sadeleştirildi, bu ay takip eden verisi günlük değişime çevrildi ve sütun ayrıntıları ile 24 saatlik görünüm güçlendirildi.','TipeeeStream DAB logosu gömülü güvenli kaynağa sabitlendi; Play Connect DAB görünümünün sayfa yüksekliğini bozması engellendi.']],
-      ['4.3','11 Ağustos 2026',['Play Bot yalnızca gerçek sorunları madde madde gösteren sürekli çalışma zamanı denetimine geçirildi; yinelenen arayüz kimlikleri ve açılır pencere çakışmaları kaldırıldı.','Kick ölçümleri saatlik olarak saklanmaya başladı; 90 günlük sütunlarda her günün tarihi, ayrıntısı ve tıklanınca açılan 24 saatlik görünümü eklendi.','Dil bayrakları, Google düğmesi, TipeeeStream DAB logosu, Play Connect DAB sayfa yüksekliği ve ikinci ana sayfanın tekil yenileme akışı sağlamlaştırıldı.']],
-      ['4.2','11 Ağustos 2026',['İkinci ana sayfadaki yinelenen yenileme geçişi kaldırıldı; Neler Yeni oku doğrudan güncelleme notlarını açıyor ve açılan sürüm ile + / − işareti artık aynı durum kaynağından yönetiliyor.','Ünlem, dünya, istatistik ve veri kartlarındaki konum değiştiren hover efektleri kaldırıldı; akordeonlar ve hesap sekmeleri daha hafif, ekran boyutuna uyumlu geçişlere alındı.','Kick aktif abone değeri bağlantıyı yeniden kurmadan yenileniyor ve veri bulunamazsa 0 gösteriyor; 90 günlük grafikler gün gün sütun grafiğine çevrildi, TipeeeStream ile bayrak görselleri tarayıcıdan bağımsızlaştırıldı.','Ünlem penceresine sunucu, tarayıcı, Kick ve Play Connect durumunu hafif aralıklarla denetleyen Play Bot eklendi; Play Connect merkezi DAB ekranındaki gereksiz boş bölüm ve Google sosyal düğmesindeki görüntü çakışması giderildi.']],
+      ['4.4','11 Ağustos 2026',['Genel arayüz onarımının canlı sayaçlarda tekrar tekrar çalışarak oluşturduğu titreme ve yeniden çizim döngüsü kaldırıldı; Google girişi, dil menüsü ve ikinci ana sayfa tekil etkileşim katmanına alındı.','SW Bot; görünür Google düğmesi, dil bayrakları, güncelleme akordeonu, DAB logosu, aktif abone alanı ve Dashboard sıfırlama denetimini kullanıcı akışı gibi sınayan açık hata mesajlarıyla genişletildi.','Kick grafiklerinde tarih etiketleri on beş günlük aralıklara sadeleştirildi, bu ay takip eden verisi günlük değişime çevrildi ve sütun ayrıntıları ile 24 saatlik görünüm güçlendirildi.','TipeeeStream DAB logosu gömülü güvenli kaynağa sabitlendi; Play Connect DAB görünümünün sayfa yüksekliğini bozması engellendi.']],
+      ['4.3','11 Ağustos 2026',['SW Bot yalnızca gerçek sorunları madde madde gösteren sürekli çalışma zamanı denetimine geçirildi; yinelenen arayüz kimlikleri ve açılır pencere çakışmaları kaldırıldı.','Kick ölçümleri saatlik olarak saklanmaya başladı; 90 günlük sütunlarda her günün tarihi, ayrıntısı ve tıklanınca açılan 24 saatlik görünümü eklendi.','Dil bayrakları, Google düğmesi, TipeeeStream DAB logosu, Play Connect DAB sayfa yüksekliği ve ikinci ana sayfanın tekil yenileme akışı sağlamlaştırıldı.']],
+      ['4.2','11 Ağustos 2026',['İkinci ana sayfadaki yinelenen yenileme geçişi kaldırıldı; Neler Yeni oku doğrudan güncelleme notlarını açıyor ve açılan sürüm ile + / − işareti artık aynı durum kaynağından yönetiliyor.','Ünlem, dünya, istatistik ve veri kartlarındaki konum değiştiren hover efektleri kaldırıldı; akordeonlar ve hesap sekmeleri daha hafif, ekran boyutuna uyumlu geçişlere alındı.','Kick aktif abone değeri bağlantıyı yeniden kurmadan yenileniyor ve veri bulunamazsa 0 gösteriyor; 90 günlük grafikler gün gün sütun grafiğine çevrildi, TipeeeStream ile bayrak görselleri tarayıcıdan bağımsızlaştırıldı.','Ünlem penceresine sunucu, tarayıcı, Kick ve Play Connect durumunu hafif aralıklarla denetleyen SW Bot eklendi; Play Connect merkezi DAB ekranındaki gereksiz boş bölüm ve Google sosyal düğmesindeki görüntü çakışması giderildi.']],
       ['4.1','11 Ağustos 2026',['Hesabım sekmelerindeki gereksiz tüm-sayfa taraması kaldırıldı; sekme geçişleri ve veri kartları tek, kararlı etkileşim katmanına alındı.','Aktif abone değeri Kick’in resmi kanal özetinden öncelikli okunuyor; üç veri grafiği daha geniş analiz ekranında açılıyor ve destek penceresi yeniden boyutlandırılabiliyor.','Bütün diller bayrak simgesi kullanıyor; SSB seçicisi ile platform işaretleri yenilendi, TipeeeStream görseli ve Play Connect DAB görünümü düzeltildi.']],
       ['4.0','11 Ağustos 2026',['Hesabım sekmelerinin eski yenileme yanıtlarıyla geri atması ve gereksiz yeniden çizimlerden oluşan takılmalar giderildi.','Aktif abone ölçümü Kick kanal özeti ve doğrulanmış abonelik olaylarıyla güçlendirildi; veri kartları ve son 90 günlük grafik ekranı büyütüldü.','SSB platform seçicisi özel açılır menüyle yenilendi, DAB ve platform logo yedekleri düzeltildi; Play Connect merkezi DAB bağlantılarını artık sade biçimde gösteriyor.']],
       ['3.9','9 Ağustos 2026',['Bağlantı durumu penceresindeki Play Connect logosunun çift çerçeve ve hizalama sorunu giderildi.','Doğrudan API Bağlantısı DAB olarak kısaltıldı ve SSB bölümünün hemen altına taşındı.','Kick toplam takipçi sayısı için resmi API sınırı gözetilerek kanal özeti denemesi ve doğrulanmış takip olaylarından güvenli yedek değer eklendi.']],
@@ -1013,7 +1014,7 @@
   });
   // Resmî TipeeeStream "tS" işareti kartın çalışması için ayrı bir GitHub
   // dosyasına bağlı değildir. Depodaki dosya yine dağıtılabilir; bu gömülü
-  // kopya eksik asset yüzünden kartın ve Play Bot'un bozulmasını önler.
+  // kopya eksik asset yüzünden kartın ve SW Bot'un bozulmasını önler.
   const TIPEEESTREAM_OFFICIAL_ICON_DATA = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH3wQKECkFnYuK6gAAA7VJREFUWMPtl19oW3UUxz/n3jTbmvTPtUrH7KwwtlTH6CqM+QeHqw8NUhRxsBlBKDgmwvRhVkXcizDQiU92IMMJImb6oAy3sTt00k0YqA92cw+2pPtju+lm1yZN0+QmuffngyH2Jve2te3Qhx24hN+fe873nvM9fwK35T8W8docjMYMYFvp2Qo8HjHj33vc+wFYu0Db0xEz3hKoUBhT8Bao+yqwNfkoaQaMBQIwAAIVm+8KtPg45pZIJQB7sQqVUqhCEW1FDXp9HQBOzsJOTSG6juj6rAAWadwhvHkjd+18jmBLS8WZTfL4N0yap7GGr5TpFyjFfn0pzst8dN8/GI2NAyjItZnxH73ovOrN3dQ9+rA320XH6I5idEcZ//IoYx997vLACWD1LB+3b2baDEZjRsSMJ12M2vaEr3GXJxyH5BGzKgTOYt1vPNXlWmcGzjF26DMcy6J2w3oaurYSbL2H6YHzFP6cQESWjgN6Y4hA053ldf7aNUZfewfRNQBSI6dJHuuHYgHdCJeNLxkACda41k4mC5o7lUUTCAZxMnnXvlb6TQE5BcrHRgHIlZ6p0rosxbEUyv4ng5evXYPxTBTk77ScdykejMYuAfdWM4cnIyfjRz1K8WWgFWBl7y7qO7e4i0o6xegb+7AuXkUp5XI9QMSMizaf3oCgzxWGGwc+wbFybm7UNdB6YD9rDvexbPVKz/e0pSpCdibLpZ5XsNOTHiQ1aD34Ps29O6tCsmQARITieJrh7S9xve+g53lD52PcvfdlFwhtKUuxiIBSJI/1M9T9PDc+PFR1J/zIg4Q3bbg1AFxAbJuJI6dIPN2DdfmK6zy0+QFfAAvqhn6pJiLYWYvrH3zs7oB3NPoCmPSxMWuprm1fR+ihdpycVQVGRNBWLHcry+d9K6HfJLJnMBpLA53ADqAjYsanyiwPh1m191XsPRmsoQTJ498y/csFlFUgtGkjzbt3uZTlhi56A1CooHhiUFtAvptrjtBDIWo72qntaPf1ljOdYfJEv3cIBDL/YnadkczzG+GUXWSk923srOXHARlYCAkzP13g9/f6yCUS3oaLeca/+Irh7S+SGx7x74YK1SfIC7N+BYrKMCkrz+Sps6TMM0hAI9DUiF5Xj3Js7FSK4s0UogcQXavqBy4PtJmHzwGv+zdFECWfemWLiKAFaxBNx55Ik//tKoXRP3DSWbRgsDwbzDUVEzHj+3/tetZEVI8g61AUEBIKdRbk67aT8eKM6z8DNxdYrzK3/xf+L+QvwaFPHw4rI8IAAAAASUVORK5CYII=';
 
   function isEmbeddedTipeeeStreamLogo(image) {
@@ -2273,7 +2274,7 @@
     const panel = homePanel('ps44HomeMenu');
     if (!panel.hidden) return closeHomePanel(panel);
     closeHomePanels(); closeLocaleMenus(); closeStatus(); closeNotifications();
-    panel.innerHTML = '<span class="ps44-panel-title">MENÜ</span><button class="ps44-menu-button" type="button" data-ps44-menu="account">Hesabım</button><button class="ps44-menu-button" type="button" data-ps44-menu="updates">Güncelleme notları</button><button class="ps44-menu-button" type="button" data-ps44-menu="products">Ürünlerimiz</button><a class="ps44-menu-button ps72-privacy-menu" href="./privacy.html">Gizlilik Politikası</a><button class="ps44-menu-button danger" type="button" data-ps44-menu="logout">Çıkış yap</button>';
+    panel.innerHTML = '<span class="ps44-panel-title">MENÜ</span><button class="ps44-menu-button" type="button" data-ps44-menu="account">Hesabım</button><button class="ps44-menu-button" type="button" data-ps44-menu="updates">Güncelleme notları</button><button class="ps44-menu-button" type="button" data-ps44-menu="products">Ürünlerimiz</button><a class="ps44-menu-button ps72-privacy-menu" href="./privacy.html">Gizlilik</a><a class="ps44-menu-button ps72-terms-menu" href="./terms.html">Kullanım Koşulları</a><button class="ps44-menu-button danger" type="button" data-ps44-menu="logout">Çıkış yap</button>';
     place(button, panel); revealHomePanel(panel); button.setAttribute('aria-expanded', 'true'); hideTooltip();
     $$('[data-ps44-menu]', panel).forEach(item => item.onclick = event => { event.preventDefault(); event.stopPropagation(); const action = item.dataset.ps44Menu; closeHomePanel(panel); if (action === 'updates') showUpdates(); else if (action === 'logout') requestLogout(); else if (action === 'account') openDetailedAccount(); else showMemberProducts(); });
   }
@@ -2287,6 +2288,7 @@
   let playBotGlobalCheckedAt = 0;
   let playBotGlobalAvailable = false;
   let playBotGlobalIssues = [];
+  let playBotGlobalReports = [];
   const playBotRuntimeIssues = new Map();
   const playBotAssetAudits = new Map();
   const playBotTemplateIssues = new Map();
@@ -2372,7 +2374,7 @@
     try {
       const controller = new AbortController();
       const timer = window.setTimeout(() => controller.abort(), 3500);
-      const response = await fetch('https://api.pstreamers.com/api/play-bot/status', { cache: 'no-store', signal: controller.signal });
+      const response = await fetch('https://api.pstreamers.com/api/sw-bot/status', { cache: 'no-store', signal: controller.signal });
       window.clearTimeout(timer);
       playBotApiHealthy = response.ok;
       if (!response.ok) return;
@@ -2386,6 +2388,9 @@
           .filter(issue => !/^Play Streamers API sunucudan yüklenemiyor \(HTTP 522\)\.?$/i.test(String(issue).trim()))
           .filter(issue => !/TipeeeStream DAB kart.n.n g.m.l. resm. logo kayna.. kullan.lam.yor/i.test(String(issue)))
           .map(issue => `Site geneli: ${String(issue)}`).slice(0, 20)
+        : [];
+      playBotGlobalReports = Array.isArray(result.reports)
+        ? result.reports.filter(report => report && typeof report === 'object').slice(0, 20)
         : [];
     } catch (_) {
       // Worker güncellemesi henüz canlı değilse kullanıcıya sahte arıza
@@ -2481,6 +2486,29 @@
     if (visibleResetButtons.length > 1) issues.push(`Dashboard bozuk: ${visibleResetButtons.length} sıfırlama düğmesi aynı anda görünüyor.`);
     const visibleMetricGraph = $('#ps59AccountDataDialog');
     if (visible(visibleMetricGraph) && $('.ps69-day-bar', visibleMetricGraph) && $('.ps59-chart', visibleMetricGraph)?.dataset.ps69DayNavigation !== 'ready') issues.push('Hesap verileri bozuk: Günlük sütunların 24 saatlik ayrıntı bağlantısı kurulamamış.');
+    const unnamedControls = $$('button,a[href],input,select,textarea').filter(node => {
+      if (!visible(node) || node.closest('[aria-hidden="true"]')) return false;
+      const label = String(node.getAttribute('aria-label') || node.getAttribute('title') || node.textContent || node.getAttribute('placeholder') || '').replace(/\s+/g, ' ').trim();
+      return !label;
+    });
+    if (unnamedControls.length) issues.push(`Erişilebilirlik sorunu: ${unnamedControls.length} görünür işlem düğmesinin anlaşılır bir adı yok.`);
+    const inertLinks = $$('a[href]').filter(node => visible(node) && /^(?:#|javascript:|\s*)$/i.test(String(node.getAttribute('href') || '')));
+    if (inertLinks.length) issues.push(`Bağlantı sorunu: ${inertLinks.length} görünür bağlantı geçerli bir hedefe gitmiyor.`);
+    const clippedControls = $$('button,a[href],input,select').filter(node => {
+      if (!visible(node)) return false;
+      const rect = node.getBoundingClientRect();
+      const fixed = getComputedStyle(node).position === 'fixed' || Boolean(node.closest('.popover,.side-menu,.overlay,.landing-auth-modal,#ps51AccountCenter'));
+      return rect.width < 20 || rect.height < 20 || (fixed && (rect.right < 0 || rect.left > innerWidth || rect.bottom < 0 || rect.top > innerHeight));
+    });
+    if (clippedControls.length) issues.push(`Yerleşim sorunu: ${clippedControls.length} işlem alanı görünmeyecek kadar küçük veya ekranın dışında.`);
+    const orphanExpanded = $$('[aria-expanded="true"]').filter(node => {
+      const id = node.getAttribute('aria-controls');
+      const target = id ? document.getElementById(id) : null;
+      return target && (!visible(target) || target.hidden);
+    });
+    if (orphanExpanded.length) issues.push(`Menü durumu bozuk: ${orphanExpanded.length} düğme kapalı bir alanı açık gösteriyor.`);
+    const visibleFloaters = $$('#ps44HomeMenu,#ps44HomeConnection,#ps44StatusPopover,#ps41LocaleMenu,#ps15LocaleMenu,#ps55Notifications').filter(visible);
+    if (visibleFloaters.length > 1) issues.push(`Katman çakışması: ${visibleFloaters.length} açılır pencere aynı anda görünür durumda.`);
     [
       ['#ps66MemberSystemStatus,#ps66DashboardSystemStatus', 'ünlem'],
       ['#ps66MemberLocale,#ps66DashboardLocale', 'dünya'],
@@ -2500,19 +2528,31 @@
     for (const issue of playBotRuntimeIssues.values()) issues.push(issue.message);
     return [...new Set(issues)].slice(0, 12);
   }
+  function explainSwBotIssue(issue) {
+    const text = String(issue || 'Bilinmeyen bir sorun bulundu.');
+    let title = 'Arayüz denetimi';
+    let action = 'Sayfayı yenileyip işlemi tekrar dene. Sorun sürerse Destek bölümünden bildir.';
+    if (/API|sunucu|bağlantı|çevrimdışı/i.test(text)) { title = 'Veri bağlantısı'; action = 'İnternet bağlantını kontrol et. Veriler sunucuda korunur ve bağlantı geldiğinde tekrar yüklenir.'; }
+    else if (/taşıyor|yerleşim|ekranın dışında|çakışma/i.test(text)) { title = 'Ekran yerleşimi'; action = 'Tarayıcı yakınlaştırmasını %100 yapıp sayfayı yenile. SW Bot bu görünümü yeniden ölçecek.'; }
+    else if (/giriş|kayıt|doğrulama|Google/i.test(text)) { title = 'Hesap erişimi'; action = 'Açık pencereyi kapatıp giriş işlemini yeniden başlat. Girilen bilgiler kaydedilmeden önce doğrulanır.'; }
+    else if (/görsel|logo|bayrak/i.test(text)) { title = 'Görsel kaynak'; action = 'Sayfayı yenile. İşlevler çalışmaya devam eder; eksik görsel yeniden yüklenecek.'; }
+    else if (/erişilebilirlik|adı yok/i.test(text)) { title = 'Kullanılabilirlik'; action = 'İşlem çalışabilir ancak açıklaması eksik. SW Bot bunu arayüz sorunu olarak kaydetti.'; }
+    return { title, summary: text, action };
+  }
   function renderPlayBot(popover, issues) {
     const body = $('.ps69-play-bot-body', popover);
     if (!body) return;
     body.dataset.busy = '0';
+    const serverByIssue = new Map(playBotGlobalReports.map(report => [String(report.issue || ''), report]));
     body.innerHTML = issues.length
-      ? `<ul>${issues.map(issue => `<li class="error"><i aria-hidden="true"></i><span><small>${esc(issue)}</small></span></li>`).join('')}</ul><time>Son kontrol: ${esc(new Date().toLocaleTimeString('tr-TR'))}</time>`
-      : `<p class="ps69-play-bot-clear">Sorun tespit edilmedi.</p><time>Son kontrol: ${esc(new Date().toLocaleTimeString('tr-TR'))}</time>`;
+      ? `<ul>${issues.map(issue => { const clean = String(issue).replace(/^Site geneli:\s*/i, ''); const report = serverByIssue.get(clean) || explainSwBotIssue(clean); return `<li class="error"><i aria-hidden="true"></i><span><b>${esc(report.title || 'SW Bot uyarısı')}</b><small>${esc(report.summary || clean)}</small><em class="ps9-sw-ai-summary"><b>SW AI AÇIKLAMASI</b>${esc(report.action || report.nextAction || 'Sorun yeniden denetlenecek.')}</em></span></li>`; }).join('')}</ul><time>Son kontrol: ${esc(new Date().toLocaleTimeString('tr-TR'))}</time>`
+      : `<p class="ps69-play-bot-clear">SW Bot tüm denetimleri tamamladı. Sorun tespit edilmedi.</p><time>Son kontrol: ${esc(new Date().toLocaleTimeString('tr-TR'))}</time>`;
   }
   async function runPlayBot(popover, force = false) {
     if (!popover?.isConnected) return;
     const body = $('.ps69-play-bot-body', popover);
     if (body && (body.dataset.busy === '1' && !force)) return;
-    if (body) { body.dataset.busy = '1'; body.innerHTML = '<p class="ps69-play-bot-checking">Tüm sayfaların arayüz kuralları, görselleri ve çalışma zamanı bağımsız olarak denetleniyor…</p>'; }
+    if (body) { body.dataset.busy = '1'; body.innerHTML = '<p class="ps69-play-bot-checking">SW Bot; sayfaları, menüleri, düğmeleri, görselleri, veri bağlantısını ve çalışma zamanı hatalarını denetliyor…</p>'; }
     runPlayBotResourceAudits();
     await refreshGlobalPlayBotAudit(force);
     if (!popover.isConnected) return;
@@ -2541,9 +2581,9 @@
     const developmentWarning = button?.dataset.ps66Development === 'true';
     popover.classList.toggle('ps66-status-warning', developmentWarning);
     popover.innerHTML = developmentWarning
-      ? '<b>Geliştirme aşamasında</b><p>Site geliştirilme aşamasında olduğu için bazı hatalar oluşabilir. Herhangi bir sorun yaşarsan Destek üzerinden bizimle iletişime geçebilirsin.</p>'
-      : '<b>Sistem normal</b><p>Teknik sorun görünmüyor. Giriş, kayıt ve panel bağlantıları kullanıma hazır.</p>';
-    popover.insertAdjacentHTML('beforeend', '<section class="ps69-play-bot"><header><span><b>PLAY BOT</b><small>Site geneli bağımsız arayüz denetimi</small></span><button class="ps69-play-bot-refresh" type="button">Yenile</button></header><div class="ps69-play-bot-body" aria-live="polite"></div></section>');
+      ? '<b>Sistem gözlemde</b><p>SW Bot; kullanıcı alanını, Dashboard’u, menüleri ve veri bağlantılarını arka planda düzenli olarak denetliyor.</p>'
+      : '<b>Sistem normal</b><p>Teknik sorun görünmüyor. Giriş, kayıt, panel ve bağlantı akışları denetleniyor.</p>';
+    popover.insertAdjacentHTML('beforeend', '<section class="ps69-play-bot"><header><span><b>SW BOT</b><small>Tüm site + veri akışı + SW AI açıklaması</small></span><button class="ps69-play-bot-refresh" type="button">Taramayı yenile</button></header><div class="ps69-play-bot-body" aria-live="polite"></div></section>');
     popover.dataset.owner = button.id || 'ps17SystemStatus'; popover.hidden = false; place(button, popover); window.requestAnimationFrame(() => place(button, popover)); button.setAttribute('aria-expanded', 'true'); hideTooltip();
     $('.ps69-play-bot-refresh', popover).onclick = () => runPlayBot(popover, true);
     const keepStatusOpen = event => {
@@ -2621,7 +2661,7 @@
           actions.append(status, locale);
         }
       }
-      status.dataset.ps66Development = 'true'; status.dataset.psTooltip = 'Geliştirme durumu'; status.removeAttribute('title'); status.setAttribute('aria-label', 'Geliştirme durumu'); status.setAttribute('aria-haspopup', 'dialog');
+      status.dataset.ps66Development = 'true'; status.dataset.psTooltip = 'SW Bot sistem denetimi'; status.removeAttribute('title'); status.setAttribute('aria-label', 'SW Bot sistem denetimi'); status.setAttribute('aria-haspopup', 'dialog');
       status.onclick = event => { event.preventDefault(); event.stopImmediatePropagation(); if (Date.now() - lastStatusPress < 800) return; openStatus(status); };
     });
   }
@@ -3064,14 +3104,15 @@
     const footerSelectors = '#authOverlay .landing-footer,#psSecondHome .ps20-footer,#psSecondFooter,.app > .foot,#ps49InfoPage .landing-footer,.ps53-products-shell .landing-footer';
     $$(footerSelectors).forEach(footer => {
       const privacy = $(':scope > .ps73-privacy-slot > .ps72-privacy-link', footer);
+      const terms = $(':scope > .ps73-privacy-slot > .ps72-terms-link', footer);
       const feature = $(':scope > .ps73-feature-slot', footer);
       const developer = $(':scope > .ps73-developer-slot > .ps73-developer-link', footer);
-      if (privacy?.textContent.trim() === 'Gizlilik Politikası' && feature?.textContent.trim() === 'Güvenli bağlantılar · Kişisel panel · Ücretsiz başlangıç' && developer?.textContent.trim() === 'SW CREATE') {
+      if (privacy?.textContent.trim() === 'Gizlilik' && terms?.textContent.trim() === 'Kullanım Koşulları' && feature?.textContent.trim() === 'Güvenli bağlantılar · Kişisel panel · Ücretsiz başlangıç' && developer?.textContent.trim() === 'SW CREATE') {
         footer.classList.add('ps73-footer-order');
         return;
       }
       footer.classList.add('ps73-footer-order');
-      footer.innerHTML = '<span class="ps73-privacy-slot"><a class="ps72-privacy-link" href="https://pstreamers.com/privacy.html" aria-label="Play Streamers Gizlilik Politikası">Gizlilik Politikası</a></span><span class="ps73-feature-slot">Güvenli bağlantılar · Kişisel panel · Ücretsiz başlangıç</span><span class="ps73-developer-slot">Developed by <a class="switly-link ps73-developer-link" href="https://guns.lol/switly" target="_blank" rel="noopener"><strong>SW CREATE</strong></a></span>';
+      footer.innerHTML = '<span class="ps73-privacy-slot"><a class="ps72-privacy-link" href="https://pstreamers.com/privacy.html" aria-label="Play Streamers Gizlilik Politikası">Gizlilik</a><a class="ps72-terms-link" href="https://pstreamers.com/terms.html" aria-label="Play Streamers Kullanım Koşulları">Kullanım Koşulları</a></span><span class="ps73-feature-slot">Güvenli bağlantılar · Kişisel panel · Ücretsiz başlangıç</span><span class="ps73-developer-slot">Developed by <a class="switly-link ps73-developer-link" href="https://guns.lol/switly" target="_blank" rel="noopener"><strong>SW CREATE</strong></a></span>';
     });
   }
 

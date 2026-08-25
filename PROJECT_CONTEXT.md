@@ -1,6 +1,6 @@
 # Play Streamers — Kalıcı Proje Bağlamı
 
-Site 8.3 / Platform 5.0 / Desktop 0.13.0 / Play Connect 1.12.0: Ana sayfa,
+Site 9.0 / Platform 5.1 / Desktop 0.13.0 / Play Connect 1.12.0: Ana sayfa,
 Klyze referansının güçlü ürün sunumu örnek alınarak ancak özgün bir Play
 Streamers kimliğiyle tamamen siyah-beyaz düzene geçirildi. Yeni PS monogramı,
 katmanlı Desktop ön izlemesi, web/uygulama görev ayrımı, masaüstü indirme
@@ -41,6 +41,29 @@ Site çalışma tercihi: Kullanıcı aksi yönde açıkça istemedikçe tamamlan
 değişiklikleri, yerel doğrulama ve testlerden sonra GitHub Pages üzerinden
 `pstreamers.com` alan adına yayınlanır; canlı dosya ve görünüm ayrıca kontrol
 edilir.
+
+Site 9.0: Monokrom premium tasarım dili yalnız genel ana sayfada kalmaz;
+kullanıcı ana sayfası, Dashboard, hesap merkezi, giriş/kayıt ve e-posta
+doğrulama pencereleri, açılır menüler, ürün/bilgi yüzeyleri, Gizlilik ve yeni
+Kullanım Koşulları sayfası aynı panel, çizgi, tipografi, logo ve hareket
+sistemini kullanır. Sayfa genelindeki hafif yıldız/meteor/işaretçi hareketi ile
+yeni yüzey girişleri `prefers-reduced-motion` tercihini korur. PS amblemi;
+keskin, asimetrik dış gövde, parçalı metal çerçeve ve birbirine geçen P/S
+geometrisiyle yenilendi; yalnız düz “PS” yazısı değildir.
+
+Play Bot kullanıcıya görünen ad olarak **SW Bot** oldu. Sunucu endpoint'i
+`/api/sw-bot/status` olup eski `/api/play-bot/status` geriye uyumlu takma ad
+olarak kalır. Denetim; canlı Site 9.0 dosyaları, ana/onarım/davranış betikleri,
+premium stil, logo, dil görselleri, Gizlilik, Kullanım Koşulları, Windows
+kurucusu ve D1 iç sağlığını kapsar. Tarayıcı tarafı ayrıca yinelenen görünür
+kimlik, boş ekran, aynı anda görünen Dashboard/üye evi, uzun yükleyici, yatay
+taşma, bozuk görsel, giriş/Google düzeni, dil menüsü, güncelleme akordeonu,
+TipeeeStream kartı, grafik bağlantısı, sıfırlama kapsamı, adsız/çok küçük
+kontroller, hedefsiz bağlantılar, bozuk `aria-expanded` ve açılır katman
+çakışmalarını denetler. Workers AI, sonuç değiştiğinde tek toplu çağrıyla SW AI
+açıklaması üretir; geçersiz/başarısız AI çıktısında deterministik Türkçe özet
+ve güvenli sonraki adım kullanılır. Aynı sorun kümesi değişmedikçe AI sonucu
+önbellekten tekrar kullanılır.
 
 Sürüm 4.8 / Desktop 0.12.0: Kullanıcı kararıyla Studio, yerel kayıt/yayın
 motoru, genel kayıt-yayın-replay kısayolları, FFmpeg yan uygulaması ve sanal

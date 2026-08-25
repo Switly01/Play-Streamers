@@ -14,6 +14,74 @@
     metrics.classList.toggle('ps83-metrics-empty', !hasValue);
   }
 
+  function ensurePremiumAmbient() {
+    let ambient = document.getElementById('ps9Ambient');
+    if (!ambient) {
+      ambient = document.createElement('div');
+      ambient.id = 'ps9Ambient';
+      ambient.setAttribute('aria-hidden', 'true');
+      ambient.innerHTML = '<i></i><i></i><i></i><span></span><span></span><b></b>';
+      document.body.prepend(ambient);
+    }
+    if (document.documentElement.dataset.ps9MotionBound === '1') return;
+    document.documentElement.dataset.ps9MotionBound = '1';
+    let pointerFrame = 0;
+    document.addEventListener('pointermove', (event) => {
+      if (!matchMedia('(pointer:fine)').matches || pointerFrame) return;
+      pointerFrame = requestAnimationFrame(() => {
+        pointerFrame = 0;
+        document.documentElement.style.setProperty('--ps9-pointer-x', `${((event.clientX / Math.max(innerWidth, 1)) * 100).toFixed(2)}%`);
+        document.documentElement.style.setProperty('--ps9-pointer-y', `${((event.clientY / Math.max(innerHeight, 1)) * 100).toFixed(2)}%`);
+        document.documentElement.style.setProperty('--ps9-drift-x', `${(((event.clientX / Math.max(innerWidth, 1)) - .5) * 18).toFixed(2)}px`);
+        document.documentElement.style.setProperty('--ps9-drift-y', `${(((event.clientY / Math.max(innerHeight, 1)) - .5) * 12).toFixed(2)}px`);
+      });
+    }, { passive: true });
+    let scrollFrame = 0;
+    window.addEventListener('scroll', () => {
+      if (scrollFrame) return;
+      scrollFrame = requestAnimationFrame(() => {
+        scrollFrame = 0;
+        document.documentElement.style.setProperty('--ps9-page-scroll', `${Math.min(120, scrollY * .055).toFixed(2)}px`);
+      });
+    }, { passive: true });
+  }
+
+  function animateNewSurfaces(root = document) {
+    root.querySelectorAll?.([
+      '#psSecondHome .ps20-hero', '#psSecondHome .ps20-card',
+      '.app .workspace-tabs', '.app .ticker', '.app .card',
+      '#ps49InfoPage .ps49-info-content > *', '#ps51AccountCenter .ps51-account-pane',
+      '.auth-dialog', '.ps27-dialog', '.ps44-dialog', '.psmail-dialog',
+      '#ps44StatusPopover', '#ps44HomeMenu', '#ps44HomeConnection'
+    ].join(',')).forEach((node) => {
+      if (node.dataset.ps9Animated === '1' || node.hidden || !node.getClientRects().length) return;
+      node.dataset.ps9Animated = '1';
+      node.classList.add('ps9-surface-enter');
+      window.setTimeout(() => node.classList.remove('ps9-surface-enter'), 520);
+    });
+  }
+
+  function normalizeLegalLinks(root = document) {
+    root.querySelectorAll?.('.ps73-privacy-slot').forEach((slot) => {
+      let privacy = slot.querySelector('.ps72-privacy-link');
+      if (privacy) privacy.textContent = 'Gizlilik';
+      else {
+        privacy = document.createElement('a');
+        privacy.className = 'ps72-privacy-link';
+        privacy.href = './privacy.html';
+        privacy.textContent = 'Gizlilik';
+        slot.append(privacy);
+      }
+      if (!slot.querySelector('.ps72-terms-link')) {
+        const terms = document.createElement('a');
+        terms.className = 'ps72-terms-link';
+        terms.href = './terms.html';
+        terms.textContent = 'Kullanım Koşulları';
+        slot.append(terms);
+      }
+    });
+  }
+
   function activatePublicMotion(home) {
     if (!home || home.dataset.ps82Motion === '1') return;
     home.dataset.ps82Motion = '1';
@@ -88,7 +156,10 @@
       navDownload.innerHTML = '<span>Windows için indir</span><i>↓</i>';
       navActions.prepend(navDownload);
     }
-    if (current.classList.contains('ps8-home')) return;
+    if (current.classList.contains('ps8-home')) {
+      activatePublicMotion(current);
+      return;
+    }
     const home = document.createElement('section');
     home.className = 'landing-main ps8-home';
     home.innerHTML = `
@@ -123,7 +194,7 @@
         <div class="ps8-app-stage" aria-label="Play Streamers masaüstü uygulaması ön izlemesi">
           <div class="ps8-app-halo" aria-hidden="true"></div>
           <article class="ps8-app-window">
-            <header><span class="ps8-window-brand"><img src="./play-streamers-ps-logo.svg?v=8.4" alt=""><b>PLAY STREAMERS</b></span><span class="ps8-window-controls">— □ ×</span></header>
+            <header><span class="ps8-window-brand"><img src="./play-streamers-ps-logo.svg?v=9.0" alt=""><b>PLAY STREAMERS</b></span><span class="ps8-window-controls">— □ ×</span></header>
             <div class="ps8-app-body">
               <aside><i class="active"></i><i></i><i></i><i></i><i></i><i></i></aside>
               <div class="ps8-app-content">
@@ -139,6 +210,8 @@
           </article>
           <span class="ps8-float ps8-float-top"><i></i> Sunucu senkronize</span>
           <span class="ps8-float ps8-float-bottom"><b>45</b> araç tek uygulamada</span>
+          <span class="ps9-float-chip ps9-chip-left"><i></i> SW Bot denetimde</span>
+          <span class="ps9-float-chip ps9-chip-right"><b>AI</b> Açıklama hazır</span>
         </div>
       </section>
 
@@ -157,7 +230,8 @@
           <article><span>02</span><h3>Anlaşılır analiz</h3><p>Ham sayılar yerine değişimin ne anlama geldiğini gösteren okunabilir yayın özetleri.</p><b class="ps8-big-number">+18<small>%</small></b></article>
           <article><span>03</span><h3>Play Connect</h3><p>Chrome ve Firefox üzerinden destek, olay ve platform bağlantıları tek hesaba ulaşır.</p><div class="ps8-connect"><i>PC</i><b>Bağlı</b></div></article>
           <article><span>04</span><h3>İçerik ve topluluk</h3><p>Fikir kasasından yayın planına, topluluk ritminden marka araçlarına kadar aynı çalışma alanı.</p><div class="ps8-tags"><i>PLAN</i><i>TOPLULUK</i><i>MARKA</i></div></article>
-          <article class="ps8-feature-wide"><span>05</span><h3>Free'den Product Pro'ya tek deneyim.</h3><p>Planın büyüdüğünde yeni bir uygulama öğrenmezsin; ihtiyaç duyduğun çalışma alanları aynı sade sistem içinde açılır.</p><button type="button" data-ps8-action="products">Planları ve ürünleri incele <i>→</i></button></article>
+          <article class="ps9-swbot-feature"><span>05</span><h3>SW Bot + SW AI</h3><p>Arayüzü, bağlantıları ve canlı dosyaları denetler; teknik sorunları anlaşılır bir Türkçe açıklamaya dönüştürür.</p><div class="ps9-scan-line"><i></i><b>SİSTEM TARAMASI</b></div></article>
+          <article class="ps8-feature-wide"><span>06</span><h3>Free'den Product Pro'ya tek deneyim.</h3><p>Planın büyüdüğünde yeni bir uygulama öğrenmezsin; ihtiyaç duyduğun çalışma alanları aynı sade sistem içinde açılır.</p><button type="button" data-ps8-action="products">Planları ve ürünleri incele <i>→</i></button></article>
         </div>
       </section>
 
@@ -167,7 +241,7 @@
       </section>
 
       <section class="ps8-final-cta" aria-labelledby="ps8-final-title">
-        <img src="./play-streamers-ps-logo.svg?v=8.4" alt="Play Streamers PS logosu">
+        <img src="./play-streamers-ps-logo.svg?v=9.0" alt="Play Streamers PS logosu">
         <span>WINDOWS 10/11 · SÜRÜM 0.13.0</span>
         <h2 id="ps8-final-title">Yayınını değil,<br>sistemini büyüt.</h2>
         <p>Hesabını ücretsiz oluştur. Play Streamers Desktop'ı indir ve üretim araçlarını tek sade merkezde kullanmaya başla.</p>
@@ -180,11 +254,14 @@
   }
 
   function normalize(root = document) {
-    document.documentElement.dataset.psSiteVersion = '8';
+    document.documentElement.dataset.psSiteVersion = '9';
     document.body.classList.remove('ps-v7');
-    document.body.classList.add('ps-v8');
+    document.body.classList.add('ps-v8', 'ps-v9');
+    ensurePremiumAmbient();
     ensurePublicHome();
     normalizePublicMetrics();
+    normalizeLegalLinks(root);
+    animateNewSurfaces(root);
     const publicSurface = document.getElementById('authOverlay');
     const infoSurface = document.getElementById('ps49InfoPage');
     const publicInfoOpen = Boolean(infoSurface && !infoSurface.hidden && getComputedStyle(infoSurface).display !== 'none' && document.body.classList.contains('auth-locked'));

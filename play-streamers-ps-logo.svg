@@ -1,22 +1,28 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Play Streamers katmanlı keskin PS monogramı">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Play Streamers karakteristik keskin PS amblemi">
   <defs>
-    <linearGradient id="frame" x1="8" y1="4" x2="56" y2="60" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#fff"/><stop offset=".48" stop-color="#8d8d8a"/><stop offset="1" stop-color="#f5f5f2"/>
+    <linearGradient id="ps9-frame" x1="5" y1="3" x2="59" y2="61" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#ffffff"/>
+      <stop offset=".45" stop-color="#8f8f8c"/>
+      <stop offset="1" stop-color="#f5f5f2"/>
     </linearGradient>
-    <linearGradient id="letter" x1="10" y1="12" x2="54" y2="52" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#fff"/><stop offset=".55" stop-color="#f1f1ed"/><stop offset="1" stop-color="#9b9b98"/>
+    <linearGradient id="ps9-face" x1="13" y1="10" x2="52" y2="54" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#ffffff"/>
+      <stop offset=".58" stop-color="#ededeb"/>
+      <stop offset="1" stop-color="#8a8a87"/>
     </linearGradient>
-    <clipPath id="oct"><path d="M10 1h44l9 9v44l-9 9H10l-9-9V10Z"/></clipPath>
+    <clipPath id="ps9-cut"><path d="M14 3h33l14 14v30L47 61H14L3 50V14Z"/></clipPath>
   </defs>
-  <path d="M10 1h44l9 9v44l-9 9H10l-9-9V10Z" fill="#050505" stroke="url(#frame)" stroke-width="1.7"/>
-  <path d="m12 5-7 7v40l7 7h40l7-7V12l-7-7H12Z" fill="none" stroke="#343434" stroke-width="1"/>
-  <g clip-path="url(#oct)" opacity=".72">
-    <path d="M-4 51 51-4h12L8 51H-4Zm15 17 57-57v8L19 68h-8Z" fill="#151515"/>
-    <path d="M8 56 56 8" stroke="#242424" stroke-width="1"/>
+  <path d="M14 3h33l14 14v30L47 61H14L3 50V14Z" fill="#050505"/>
+  <path d="M14 3h33l14 14v15h-6V20L44 9H17l-8 8v30l8 8h13v6H14L3 50V14Z" fill="url(#ps9-frame)"/>
+  <path d="M49 61H34v-6h12l9-9V35h6v12Z" fill="url(#ps9-frame)"/>
+  <g clip-path="url(#ps9-cut)">
+    <path d="m-2 55 57-57h13L11 55Z" fill="#151515"/>
+    <path d="M6 61 64 3" stroke="#30302f"/>
+    <path d="M23 8h18l10 10v12l-9 9H31v15H20V17h21l-3-3H23Zm8 15v8h7l3-3v-2l-3-3Z" fill="url(#ps9-face)" fill-rule="evenodd"/>
+    <path d="M49 16H37l-8 8v10l7 7h9v5l-3 3H28v8h18l9-9V36l-7-7h-8v-3l3-3h6Z" fill="url(#ps9-face)" stroke="#050505" stroke-width="2.4" stroke-linejoin="miter" paint-order="stroke"/>
+    <path d="M17 18h5v10h-5Zm32 24h6v8h-6Z" fill="#050505" opacity=".58"/>
   </g>
-  <path fill="url(#letter)" fill-rule="evenodd" d="M8 11h18l8 8v12l-8 8h-9v14H8V11Zm9 9v10h6l2-2v-6l-2-2h-6Z"/>
-  <path d="M53 11H40l-7 7v12l7 7h6v7H33v9h16l7-7V34l-7-7h-7v-7h11Z" fill="url(#letter)" stroke="#050505" stroke-width="2.4" stroke-linejoin="miter" paint-order="stroke"/>
-  <path d="M8 47h9v6H8v-6Zm39-36h6v6h-6v-6Z" fill="#050505" opacity=".48"/>
-  <path d="M4 18h3v8H4v-8Zm53 20h3v8h-3v-8Z" fill="#d7d7d3"/>
-  <path d="M21 7h9M34 57h9" stroke="#777" stroke-width="1"/>
+  <path d="M6 22h4v9H6Zm48 12h4v9h-4Z" fill="#d8d8d5"/>
+  <path d="M17 6h10M38 58h9" stroke="#656563"/>
+  <path d="m10 48 6 6M48 10l6 6" stroke="#ffffff" opacity=".36"/>
 </svg>

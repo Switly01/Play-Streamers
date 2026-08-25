@@ -78,8 +78,8 @@ const DONATE_OAUTH_PROVIDERS = Object.freeze({
     clientSecretVariable: "TIPEEESTREAM_CLIENT_SECRET",
   }),
 });
-const CURRENT_RELEASE_VERSION = "4.8";
-const CURRENT_RELEASE_PUBLISHED_AT = "2026-08-23T23:30:00+03:00";
+const CURRENT_RELEASE_VERSION = "5.0";
+const CURRENT_RELEASE_PUBLISHED_AT = "2026-08-25T12:00:00+03:00";
 const SW_IDENTITY_ORIGIN = "https://api.swcreate.com";
 const DESKTOP_IDENTITY_REDIRECT = "playstreamers://identity/callback";
 const PLAY_STREAMERS_FEATURES = Object.freeze([
@@ -285,7 +285,7 @@ export default {
         return apiResponse(request, {
           ok: true,
           service: "Play Streamers API",
-          version: "2.3.0-creator-tools",
+          version: CURRENT_RELEASE_VERSION,
           turnstileEnabled: isTurnstileEnabled(env),
           aiEnabled: Boolean(env.AI || env.OPENAI_API_KEY),
         });
@@ -729,6 +729,7 @@ export default {
     context.waitUntil(Promise.all([
       syncScheduledDonateOAuthConnections(env),
       syncScheduledKickMetrics(env),
+      syncScheduledLiveSessions(env),
       runScheduledPlayBotAudit(env),
     ]));
   },
@@ -1758,14 +1759,25 @@ async function desktopPlatformBootstrap(request, env) {
   const user = await getUserById(current.session.user.id, env);
   if (!user) return apiResponse(request, { signedIn: false }, 401);
   const plan = await desktopEntitlement(user.id, env);
-  const [settingsResult, sessionsResult] = await env.DB.batch([
+  const [settingsResult, sessionsResult, monitorResult] = await env.DB.batch([
     env.DB.prepare(`SELECT feature_id AS featureId, value_json AS valueJson, updated_at AS updatedAt
       FROM ps_feature_settings WHERE user_id = ?1 ORDER BY updated_at DESC LIMIT 100`).bind(user.id),
     env.DB.prepare(`SELECT id, platform, title, started_at AS startedAt, ended_at AS endedAt,
       peak_viewers AS peakViewers, interactions, followers_gained AS followersGained,
       revenue_minor AS revenueMinor, summary_json AS summaryJson
       FROM ps_stream_sessions WHERE user_id = ?1 ORDER BY started_at DESC LIMIT 12`).bind(user.id),
+    env.DB.prepare(`SELECT m.last_checked_at AS lastCheckedAt,
+      m.last_subscription_check_at AS lastSubscriptionCheckAt, m.last_error AS lastError,
+      r.status, r.session_id AS sessionId, r.last_observed_at AS lastObservedAt,
+      s.title, s.started_at AS startedAt, s.peak_viewers AS peakViewers,
+      (SELECT viewer_count FROM ps_stream_samples sm WHERE sm.session_id = r.session_id
+        ORDER BY sm.sample_minute DESC LIMIT 1) AS currentViewers
+      FROM ps_kick_monitor_state m
+      LEFT JOIN ps_stream_runtime r ON r.user_id = m.user_id
+      LEFT JOIN ps_stream_sessions s ON s.id = r.session_id
+      WHERE m.user_id = ?1 LIMIT 1`).bind(user.id),
   ]);
+  const monitor = monitorResult?.results?.[0] || null;
   return apiResponse(request, {
     signedIn: true,
     user,
@@ -1773,6 +1785,19 @@ async function desktopPlatformBootstrap(request, env) {
     features: enabledDesktopFeatures(plan.tier),
     settings: (settingsResult?.results || []).map(desktopSettingPayload),
     recentSessions: (sessionsResult?.results || []).map(desktopSessionPayload),
+    streamMonitor: monitor ? {
+      connected: true,
+      status: monitor.status || "offline",
+      sessionId: monitor.sessionId || null,
+      title: monitor.title || "",
+      startedAt: monitor.startedAt == null ? null : Number(monitor.startedAt),
+      currentViewers: Number(monitor.currentViewers || 0),
+      peakViewers: Number(monitor.peakViewers || 0),
+      lastCheckedAt: Number(monitor.lastCheckedAt || 0),
+      lastObservedAt: Number(monitor.lastObservedAt || 0),
+      lastSubscriptionCheckAt: Number(monitor.lastSubscriptionCheckAt || 0),
+      healthy: !monitor.lastError,
+    } : { connected: false, status: "not-connected", healthy: true },
   });
 }
 
@@ -1966,6 +1991,279 @@ async function desktopLiveContext(request, env) {
       donations: donateEvents.length ? "play-connect-or-provider" : "no-events",
     },
   });
+}
+
+function kickLivestreamPayloadState(payload) {
+  const livestream = payload?.livestream && typeof payload.livestream === "object" ? payload.livestream : {};
+  const rawLive = payload?.is_live ?? payload?.isLive ?? livestream?.is_live ?? livestream?.isLive;
+  const rawStatus = String(payload?.status ?? livestream?.status ?? "").trim().toLowerCase();
+  let live = null;
+  if (typeof rawLive === "boolean") live = rawLive;
+  else if (["live", "started", "online", "active"].includes(rawStatus)) live = true;
+  else if (["offline", "ended", "stopped", "inactive"].includes(rawStatus)) live = false;
+  const startedAt = Date.parse(String(payload?.started_at ?? payload?.startedAt ?? livestream?.started_at ?? livestream?.startedAt ?? ""));
+  const endedAt = Date.parse(String(payload?.ended_at ?? payload?.endedAt ?? livestream?.ended_at ?? livestream?.endedAt ?? ""));
+  const viewerCount = boundedInsightMetric(
+    payload?.viewer_count ?? payload?.viewerCount ?? payload?.viewers
+      ?? livestream?.viewer_count ?? livestream?.viewerCount ?? livestream?.viewers,
+  );
+  const title = String(payload?.title ?? payload?.session_title ?? livestream?.title ?? livestream?.session_title ?? "")
+    .replace(/[\u0000-\u001f\u007f]+/g, " ").trim().slice(0, 160);
+  return {
+    live,
+    title,
+    viewerCount,
+    startedAt: Number.isFinite(startedAt) ? startedAt : null,
+    endedAt: Number.isFinite(endedAt) ? endedAt : null,
+  };
+}
+
+function automaticStreamEventWeight(row) {
+  if (String(row?.event_type || row?.type || "") !== "channel.subscription.gifts") return 1;
+  try {
+    const payload = typeof row?.payload_json === "string" ? JSON.parse(row.payload_json) : row?.payload || {};
+    const recipients = payload?.giftees || payload?.recipients || payload?.subscriptions || payload?.gifted_subscriptions || [];
+    return Math.max(1, Math.min(1000, Array.isArray(recipients) ? recipients.length : Number(payload?.gifted_subscriptions || 1)));
+  } catch {
+    return 1;
+  }
+}
+
+async function latestKnownFollowerCount(userId, env) {
+  const row = await env.DB.prepare(`SELECT followers_count FROM kick_metric_hourly
+    WHERE user_id = ?1 AND followers_count IS NOT NULL
+    ORDER BY metric_hour DESC LIMIT 1`).bind(String(userId)).first();
+  return row?.followers_count == null ? null : Math.max(0, Number(row.followers_count));
+}
+
+async function ensureAutomaticStreamSession(env, kickSessionId, kickSession, stream, observedAt = Date.now()) {
+  if (!kickSession?.userId || !kickSession?.account?.id) return null;
+  await ensureDesktopPlatformSchema(env);
+  const userId = String(kickSession.userId);
+  const broadcasterId = String(kickSession.account.id);
+  const active = await env.DB.prepare(`SELECT r.session_id AS sessionId, s.started_at AS startedAt
+    FROM ps_stream_runtime r JOIN ps_stream_sessions s ON s.id = r.session_id
+    WHERE r.user_id = ?1 AND r.status = 'live' AND s.ended_at IS NULL LIMIT 1`).bind(userId).first();
+  let sessionId = String(active?.sessionId || "");
+  let startedAt = Number(active?.startedAt || 0);
+  if (!sessionId) {
+    sessionId = crypto.randomUUID();
+    startedAt = Math.min(observedAt, Math.max(observedAt - 12 * 60 * 60 * 1000, Number(stream?.startedAt || observedAt)));
+    const title = String(stream?.title || "Kick yayını").replace(/[\u0000-\u001f\u007f]+/g, " ").trim().slice(0, 160) || "Kick yayını";
+    await env.DB.batch([
+      env.DB.prepare(`INSERT INTO ps_stream_sessions
+        (id, user_id, platform, title, started_at, ended_at, peak_viewers, interactions, followers_gained, revenue_minor, summary_json)
+        VALUES (?1, ?2, 'Kick', ?3, ?4, NULL, 0, 0, 0, 0, ?5)`)
+        .bind(sessionId, userId, title, startedAt, JSON.stringify({ collector: "server-automatic", status: "live", broadcasterId })),
+      env.DB.prepare(`INSERT INTO ps_stream_runtime
+        (user_id, session_id, kick_session_id, broadcaster_user_id, status, last_observed_at,
+         last_subscription_check_at, last_error, created_at, updated_at)
+        VALUES (?1, ?2, ?3, ?4, 'live', ?5, 0, NULL, ?5, ?5)
+        ON CONFLICT(user_id) DO UPDATE SET session_id = excluded.session_id,
+          kick_session_id = excluded.kick_session_id, broadcaster_user_id = excluded.broadcaster_user_id,
+          status = 'live', last_observed_at = excluded.last_observed_at, last_error = NULL,
+          created_at = excluded.created_at, updated_at = excluded.updated_at`)
+        .bind(userId, sessionId, String(kickSessionId), broadcasterId, observedAt),
+    ]);
+  } else {
+    await env.DB.prepare(`UPDATE ps_stream_runtime SET kick_session_id = ?1,
+      broadcaster_user_id = ?2, last_observed_at = ?3, last_error = NULL, updated_at = ?3
+      WHERE user_id = ?4`).bind(String(kickSessionId), broadcasterId, observedAt, userId).run();
+    if (stream?.title) {
+      await env.DB.prepare(`UPDATE ps_stream_sessions SET title = ?1 WHERE id = ?2 AND ended_at IS NULL`)
+        .bind(String(stream.title).slice(0, 160), sessionId).run();
+    }
+  }
+  const viewerCount = boundedInsightMetric(stream?.viewer_count ?? stream?.viewerCount ?? stream?.viewers);
+  const sampleMinute = Math.floor(observedAt / 60_000);
+  await env.DB.batch([
+    env.DB.prepare(`INSERT INTO ps_stream_samples (session_id, sample_minute, viewer_count, observed_at)
+      VALUES (?1, ?2, ?3, ?4)
+      ON CONFLICT(session_id, sample_minute) DO UPDATE SET
+        viewer_count = MAX(ps_stream_samples.viewer_count, excluded.viewer_count),
+        observed_at = MAX(ps_stream_samples.observed_at, excluded.observed_at)`)
+      .bind(sessionId, sampleMinute, viewerCount, observedAt),
+    env.DB.prepare(`UPDATE ps_stream_sessions SET peak_viewers = MAX(peak_viewers, ?1)
+      WHERE id = ?2 AND ended_at IS NULL`).bind(viewerCount, sessionId),
+  ]);
+  return { sessionId, startedAt, viewerCount };
+}
+
+async function finalizeAutomaticStreamSession(env, userId, endedAt = Date.now()) {
+  await ensureDesktopPlatformSchema(env);
+  const runtime = await env.DB.prepare(`SELECT r.session_id AS sessionId,
+      r.broadcaster_user_id AS broadcasterId, s.started_at AS startedAt, s.peak_viewers AS peakViewers
+    FROM ps_stream_runtime r JOIN ps_stream_sessions s ON s.id = r.session_id
+    WHERE r.user_id = ?1 AND r.status = 'live' AND s.ended_at IS NULL LIMIT 1`).bind(String(userId)).first();
+  if (!runtime?.sessionId) return null;
+  const startedAt = Number(runtime.startedAt || endedAt);
+  const safeEndedAt = Math.max(startedAt + 1000, Math.min(Date.now() + 60_000, Number(endedAt) || Date.now()));
+  const startedIso = new Date(startedAt).toISOString();
+  const endedIso = new Date(safeEndedAt).toISOString();
+  const [sampleRow, eventRows, donateRows, followerStart] = await Promise.all([
+    env.DB.prepare(`SELECT COUNT(*) AS sampleCount, MAX(viewer_count) AS peakViewers,
+      AVG(viewer_count) AS averageViewers, MIN(viewer_count) AS minimumViewers
+      FROM ps_stream_samples WHERE session_id = ?1`).bind(String(runtime.sessionId)).first(),
+    env.DB.prepare(`SELECT event_type, payload_json, event_at, received_at
+      FROM kick_webhook_events WHERE broadcaster_user_id = ?1
+        AND COALESCE(event_at, received_at) >= ?2 AND COALESCE(event_at, received_at) <= ?3
+      ORDER BY COALESCE(event_at, received_at) ASC LIMIT 10000`)
+      .bind(String(runtime.broadcasterId), startedIso, endedIso).all(),
+    env.DB.prepare(`SELECT amount_minor AS amountMinor, currency, event_at AS eventAt, received_at AS receivedAt
+      FROM donate_bridge_events WHERE user_id = ?1
+        AND COALESCE(event_at, received_at) >= ?2 AND COALESCE(event_at, received_at) <= ?3
+      ORDER BY COALESCE(event_at, received_at) ASC LIMIT 10000`)
+      .bind(String(userId), startedAt, safeEndedAt).all(),
+    latestKnownFollowerCount(userId, env).catch(() => null),
+  ]);
+  const kickEvents = eventRows?.results || [];
+  const donateEvents = donateRows?.results || [];
+  const followersGained = kickEvents.filter(row => row.event_type === "channel.followed")
+    .reduce((sum, row) => sum + automaticStreamEventWeight(row), 0);
+  const subscriptions = kickEvents.filter(row => String(row.event_type || "").startsWith("channel.subscription"))
+    .reduce((sum, row) => sum + automaticStreamEventWeight(row), 0);
+  const kicksEvents = kickEvents.filter(row => row.event_type === "kicks.gifted");
+  const interactions = kickEvents.filter(row => row.event_type !== "livestream.status.updated")
+    .reduce((sum, row) => sum + automaticStreamEventWeight(row), 0) + donateEvents.length;
+  const revenueByCurrency = donateEvents.reduce((totals, row) => {
+    const currency = /^[A-Z]{3}$/.test(String(row.currency || "").toUpperCase()) ? String(row.currency).toUpperCase() : "OTHER";
+    totals[currency] = (totals[currency] || 0) + boundedInsightMetric(row.amountMinor, 100_000_000);
+    return totals;
+  }, {});
+  const revenueCurrencies = Object.keys(revenueByCurrency);
+  const revenueCurrency = revenueCurrencies.length === 1 ? revenueCurrencies[0] : "";
+  const revenueMinor = revenueCurrency ? revenueByCurrency[revenueCurrency] : 0;
+  const peakViewers = Math.max(Number(runtime.peakViewers || 0), Number(sampleRow?.peakViewers || 0));
+  const averageViewers = Number(Number(sampleRow?.averageViewers || 0).toFixed(2));
+  const durationSeconds = Math.max(1, Math.round((safeEndedAt - startedAt) / 1000));
+  const summary = {
+    collector: "server-automatic",
+    status: "completed",
+    broadcasterId: String(runtime.broadcasterId),
+    durationSeconds,
+    sampleCount: Number(sampleRow?.sampleCount || 0),
+    averageViewers,
+    minimumViewers: Math.max(0, Number(sampleRow?.minimumViewers || 0)),
+    peakViewers,
+    followersGained,
+    subscriptions,
+    kicksEvents: kicksEvents.length,
+    donationEvents: donateEvents.length,
+    revenueByCurrency,
+    revenueCurrency,
+    followerTotalAtClose: followerStart,
+    verification: {
+      stream: "kick-api-minute-samples",
+      engagement: "kick-signed-webhooks",
+      donations: donateEvents.length ? "provider-or-play-connect-events" : "no-events",
+    },
+    completedAt: safeEndedAt,
+  };
+  await env.DB.batch([
+    env.DB.prepare(`UPDATE ps_stream_sessions SET ended_at = ?1, peak_viewers = ?2,
+      interactions = ?3, followers_gained = ?4, revenue_minor = ?5, summary_json = ?6
+      WHERE id = ?7 AND user_id = ?8 AND ended_at IS NULL`)
+      .bind(safeEndedAt, peakViewers, interactions, followersGained, revenueMinor, JSON.stringify(summary), String(runtime.sessionId), String(userId)),
+    env.DB.prepare(`UPDATE ps_stream_runtime SET status = 'ended', last_observed_at = ?1,
+      last_error = NULL, updated_at = ?1 WHERE user_id = ?2 AND session_id = ?3`)
+      .bind(safeEndedAt, String(userId), String(runtime.sessionId)),
+  ]);
+  return { sessionId: String(runtime.sessionId), ...summary };
+}
+
+async function applyKickLivestreamEvent(env, broadcasterId, payload, eventAt) {
+  const state = kickLivestreamPayloadState(payload);
+  if (state.live === null) return null;
+  const row = await env.DB.prepare(`SELECT id FROM kick_sessions
+    WHERE user_id IS NOT NULL AND CAST(json_extract(account_json, '$.id') AS TEXT) = ?1
+    ORDER BY created_at DESC LIMIT 1`).bind(String(broadcasterId)).first();
+  if (!row?.id) return null;
+  const session = await getKickSession(String(row.id), env);
+  if (!session?.userId) return null;
+  const observedAt = Number(eventAt) || Date.now();
+  if (state.live) {
+    return ensureAutomaticStreamSession(env, String(row.id), session, {
+      title: state.title,
+      viewer_count: state.viewerCount,
+      startedAt: state.startedAt || observedAt,
+    }, observedAt);
+  }
+  return finalizeAutomaticStreamSession(env, session.userId, state.endedAt || observedAt);
+}
+
+async function syncScheduledLiveSessions(env) {
+  try {
+    await ensureUsersSchema(env);
+    await ensureDesktopPlatformSchema(env);
+    const rows = await env.DB.prepare(`SELECT ks.id, ks.user_id,
+        CASE WHEN r.status = 'live' THEN 1 ELSE 0 END AS is_active,
+        COALESCE(m.last_checked_at, r.last_observed_at, 0) AS last_observed_at,
+        COALESCE(m.last_subscription_check_at, 0) AS last_subscription_check_at
+      FROM kick_sessions ks
+      INNER JOIN (SELECT user_id, MAX(created_at) AS newest FROM kick_sessions
+        WHERE user_id IS NOT NULL GROUP BY user_id) latest
+        ON latest.user_id = ks.user_id AND latest.newest = ks.created_at
+      LEFT JOIN ps_stream_runtime r ON r.user_id = ks.user_id
+      LEFT JOIN ps_kick_monitor_state m ON m.user_id = ks.user_id
+      ORDER BY is_active DESC, last_observed_at ASC LIMIT 80`).all();
+    let checked = 0;
+    let live = 0;
+    let completed = 0;
+    let failed = 0;
+    for (const row of rows?.results || []) {
+      try {
+        let session = await getKickSession(String(row.id), env);
+        if (!session?.userId) continue;
+        if (Date.now() >= Number(session.expiresAt || 0) - 60_000) {
+          const refreshed = await refreshKickSessionSafely(String(row.id), env);
+          session = refreshed?.session || null;
+        }
+        if (!session?.userId) continue;
+        const now = Date.now();
+        await env.DB.prepare(`INSERT INTO ps_kick_monitor_state
+          (user_id, kick_session_id, broadcaster_user_id, last_checked_at,
+           last_subscription_check_at, last_error, updated_at)
+          VALUES (?1, ?2, ?3, ?4, ?5, NULL, ?4)
+          ON CONFLICT(user_id) DO UPDATE SET kick_session_id = excluded.kick_session_id,
+            broadcaster_user_id = excluded.broadcaster_user_id,
+            last_checked_at = excluded.last_checked_at, last_error = NULL,
+            updated_at = excluded.updated_at`)
+          .bind(String(session.userId), String(row.id), String(session.account?.id || ""), now,
+            Number(row.last_subscription_check_at || 0)).run();
+        if (now - Number(row.last_subscription_check_at || 0) >= 24 * 60 * 60 * 1000) {
+          const subscription = await ensureKickEventSubscriptions(session, env).catch(() => ({ ok: false }));
+          if (subscription?.ok) {
+            await env.DB.prepare(`UPDATE ps_kick_monitor_state SET last_subscription_check_at = ?1,
+              updated_at = MAX(updated_at, ?1) WHERE user_id = ?2`).bind(now, String(session.userId)).run();
+          }
+        }
+        const stream = await getKickStreamStatus(session);
+        checked += 1;
+        if (stream?.live) {
+          await ensureAutomaticStreamSession(env, String(row.id), session, stream, now);
+          live += 1;
+        } else {
+          const result = await finalizeAutomaticStreamSession(env, session.userId, now);
+          if (result) completed += 1;
+        }
+      } catch (error) {
+        failed += 1;
+        if (row.user_id) {
+          await env.DB.prepare(`INSERT INTO ps_kick_monitor_state
+            (user_id, kick_session_id, broadcaster_user_id, last_checked_at,
+             last_subscription_check_at, last_error, updated_at)
+            VALUES (?1, ?2, '', 0, 0, ?3, ?4)
+            ON CONFLICT(user_id) DO UPDATE SET last_error = excluded.last_error,
+              updated_at = excluded.updated_at`)
+            .bind(String(row.user_id), String(row.id), String(error?.message || "Yayın ölçümü başarısız.").slice(0, 240), Date.now())
+            .run().catch(() => {});
+        }
+      }
+    }
+    logSecurityEvent("automatic_stream_sync", { checked, live, completed, failed });
+  } catch (error) {
+    logSecurityEvent("automatic_stream_sync_failed", { reason: error?.code || error?.name || "unknown" });
+  }
 }
 
 function boundedInsightMetric(value, maximum = 10_000_000) {
@@ -3612,6 +3910,41 @@ async function ensureDesktopPlatformSchemaInD1(env) {
       FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
     )`),
     env.DB.prepare("CREATE INDEX IF NOT EXISTS idx_ps_stream_sessions_user_started ON ps_stream_sessions(user_id, started_at DESC)"),
+    env.DB.prepare(`CREATE TABLE IF NOT EXISTS ps_stream_runtime (
+      user_id TEXT PRIMARY KEY NOT NULL,
+      session_id TEXT NOT NULL UNIQUE,
+      kick_session_id TEXT NOT NULL,
+      broadcaster_user_id TEXT NOT NULL,
+      status TEXT NOT NULL CHECK (status IN ('live', 'ended')),
+      last_observed_at INTEGER NOT NULL,
+      last_subscription_check_at INTEGER NOT NULL DEFAULT 0,
+      last_error TEXT,
+      created_at INTEGER NOT NULL,
+      updated_at INTEGER NOT NULL,
+      FOREIGN KEY (session_id) REFERENCES ps_stream_sessions(id) ON DELETE CASCADE,
+      FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+    )`),
+    env.DB.prepare("CREATE INDEX IF NOT EXISTS idx_ps_stream_runtime_status_observed ON ps_stream_runtime(status, last_observed_at)"),
+    env.DB.prepare(`CREATE TABLE IF NOT EXISTS ps_stream_samples (
+      session_id TEXT NOT NULL,
+      sample_minute INTEGER NOT NULL,
+      viewer_count INTEGER NOT NULL,
+      observed_at INTEGER NOT NULL,
+      PRIMARY KEY (session_id, sample_minute),
+      FOREIGN KEY (session_id) REFERENCES ps_stream_sessions(id) ON DELETE CASCADE
+    )`),
+    env.DB.prepare("CREATE INDEX IF NOT EXISTS idx_ps_stream_samples_session_observed ON ps_stream_samples(session_id, observed_at)"),
+    env.DB.prepare(`CREATE TABLE IF NOT EXISTS ps_kick_monitor_state (
+      user_id TEXT PRIMARY KEY NOT NULL,
+      kick_session_id TEXT NOT NULL,
+      broadcaster_user_id TEXT,
+      last_checked_at INTEGER NOT NULL DEFAULT 0,
+      last_subscription_check_at INTEGER NOT NULL DEFAULT 0,
+      last_error TEXT,
+      updated_at INTEGER NOT NULL,
+      FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+    )`),
+    env.DB.prepare("CREATE INDEX IF NOT EXISTS idx_ps_kick_monitor_state_checked ON ps_kick_monitor_state(last_checked_at)"),
     env.DB.prepare(`CREATE TABLE IF NOT EXISTS ps_ai_insights (
       id TEXT PRIMARY KEY NOT NULL,
       user_id TEXT NOT NULL,
@@ -6812,6 +7145,10 @@ async function getKickStreamStatus(session) {
     live: Boolean(stream),
     title: stream?.session_title || stream?.title || null,
     viewer_count: boundedInsightMetric(stream?.viewer_count ?? stream?.viewerCount ?? stream?.viewers),
+    startedAt: (() => {
+      const parsed = Date.parse(String(stream?.started_at ?? stream?.startedAt ?? stream?.created_at ?? ""));
+      return Number.isFinite(parsed) ? parsed : null;
+    })(),
   };
 }
 
@@ -7200,6 +7537,13 @@ async function receiveKickWebhook(request, env) {
       receivedAt,
     )
     .run();
+
+  if (Number(write?.meta?.changes || 0) > 0 && verification.eventType === "livestream.status.updated") {
+    const eventTime = Date.parse(String(eventAt || receivedAt));
+    await applyKickLivestreamEvent(env, broadcasterId, payload, Number.isFinite(eventTime) ? eventTime : Date.now()).catch((error) => {
+      logSecurityEvent("automatic_stream_webhook_failed", { reason: error?.code || error?.name || "unknown" });
+    });
+  }
 
   return apiResponse(request, {
     ok: true,

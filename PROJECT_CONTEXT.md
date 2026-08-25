@@ -1,5 +1,15 @@
 # Play Streamers — Kalıcı Proje Bağlamı
 
+Sürüm 5.0 / Desktop 0.13.0 / Play Connect 1.11.0: Kick yayınları artık
+dakikalık Worker görevi ve imzalı livestream webhooklarıyla sunucuda otomatik
+oturum oluşturur. Site, masaüstü uygulaması ve eklenti kapalıyken de izleyici
+örnekleri toplanır; yayın kapanınca ortalama/tepe izleyici, takip, abonelik,
+bağış ve etkileşim özeti D1 üzerinde tamamlanır. Site kompakt iki sütunlu ürün
+düzenine ve üye alanında sunucu veri kartına geçti. Desktop aynı özeti açılışta
+ve dakikada bir yeniler. Windows 10/11 tek 0.13.0 uygulama ve 0.13.0.0 Store
+paketini kullanır; Store bildiriminde artık kamera/mikrofon yetkisi yoktur.
+Chrome ve Firefox Play Connect paketleri 1.11.0 sürümünde eşitlenmiştir.
+
 Sürüm 4.8 / Desktop 0.12.0: Kullanıcı kararıyla Studio, yerel kayıt/yayın
 motoru, genel kayıt-yayın-replay kısayolları, FFmpeg yan uygulaması ve sanal
 kamera dağıtımı masaüstü ürününden rafa kaldırıldı. Kaynak kodu gelecekteki

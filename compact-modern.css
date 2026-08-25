@@ -1,0 +1,220 @@
+:root {
+  --ps-accent: #6dff3f;
+  --ps-accent-soft: rgba(109, 255, 63, .12);
+  --ps-panel: rgba(8, 18, 29, .88);
+  --ps-panel-strong: #091522;
+  --ps-line: rgba(159, 192, 213, .14);
+  --ps-muted: #8fa4b4;
+}
+
+/* The final visual layer deliberately stays small and only owns spacing,
+   hierarchy and the server analytics card. Existing account flows keep their
+   original DOM and event handlers. */
+#authOverlay .landing-shell {
+  background:
+    radial-gradient(circle at 78% 8%, rgba(109, 255, 63, .08), transparent 30%),
+    radial-gradient(circle at 91% 32%, rgba(88, 97, 255, .11), transparent 34%),
+    #030b12;
+}
+
+#authOverlay .landing-nav,
+#authOverlay .landing-main,
+#authOverlay .landing-update-preview,
+#authOverlay .landing-footer {
+  width: min(1160px, calc(100% - 40px));
+  max-width: 1160px;
+}
+
+#authOverlay .landing-nav {
+  min-height: 72px;
+  padding: 14px 0;
+}
+
+#authOverlay .landing-main {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1.04fr) minmax(400px, .96fr) !important;
+  align-items: stretch;
+  gap: 18px !important;
+  min-height: 0;
+  padding: 22px 0 30px;
+}
+
+#authOverlay .landing-card,
+#authOverlay .landing-product {
+  width: 100% !important;
+  max-width: 100% !important;
+  min-width: 0;
+  border: 1px solid var(--ps-line);
+  border-radius: 24px;
+  background: linear-gradient(145deg, rgba(10, 24, 37, .95), rgba(4, 13, 22, .9));
+  box-shadow: 0 24px 70px rgba(0, 0, 0, .25);
+}
+
+#authOverlay .landing-card {
+  padding: clamp(30px, 4vw, 54px);
+}
+
+#authOverlay .landing-card h1 {
+  max-width: 720px;
+  margin: 12px 0 18px;
+  font-size: clamp(42px, 5.2vw, 72px);
+  line-height: .98;
+  letter-spacing: -.055em;
+}
+
+#authOverlay .landing-card > p {
+  max-width: 650px;
+  font-size: 15px;
+  line-height: 1.72;
+}
+
+#authOverlay .landing-points {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  margin: 24px 0 18px;
+}
+
+#authOverlay .landing-points li {
+  min-height: 46px;
+  padding: 10px 12px;
+  border: 1px solid var(--ps-line);
+  border-radius: 13px;
+  background: rgba(0, 0, 0, .14);
+}
+
+#authOverlay .landing-trust {
+  gap: 7px;
+}
+
+#authOverlay .landing-product {
+  padding: 16px;
+}
+
+#authOverlay .product-window {
+  height: 100%;
+  min-height: 520px;
+  border-radius: 18px;
+}
+
+#authOverlay .landing-update-preview {
+  padding: 8px 0 24px;
+}
+
+#authOverlay .landing-update-card {
+  border-radius: 20px;
+  padding: 26px 30px;
+}
+
+#authOverlay .ps61-site-metrics {
+  width: min(1160px, calc(100% - 40px));
+  max-width: 1160px;
+  margin: 12px auto 0;
+  border-radius: 18px;
+  background: rgba(7, 20, 31, .9);
+  border-color: var(--ps-line);
+}
+
+.ps-server-analytics {
+  grid-column: 1 / -1;
+  overflow: hidden;
+  border: 1px solid rgba(109, 255, 63, .2);
+  border-radius: 22px;
+  padding: 24px;
+  background:
+    linear-gradient(125deg, rgba(109, 255, 63, .08), transparent 42%),
+    rgba(6, 18, 29, .92);
+  color: #f5f9fb;
+}
+
+.ps-server-analytics header,
+.ps-server-analytics .ps-server-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.ps-server-analytics header span,
+.ps-server-analytics .ps-server-foot {
+  color: var(--ps-muted);
+  font-size: 12px;
+}
+
+.ps-server-analytics header b {
+  display: block;
+  margin-top: 5px;
+  font-size: 20px;
+}
+
+.ps-server-state {
+  flex: 0 0 auto;
+  padding: 8px 11px;
+  border: 1px solid var(--ps-line);
+  border-radius: 999px;
+  color: #b8c7d1;
+  background: rgba(0, 0, 0, .18);
+}
+
+.ps-server-state.live {
+  border-color: rgba(109, 255, 63, .35);
+  color: var(--ps-accent);
+  background: var(--ps-accent-soft);
+}
+
+.ps-server-metrics {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 9px;
+  margin: 20px 0 16px;
+}
+
+.ps-server-metrics article {
+  min-width: 0;
+  padding: 14px;
+  border: 1px solid var(--ps-line);
+  border-radius: 15px;
+  background: rgba(0, 0, 0, .16);
+}
+
+.ps-server-metrics span,
+.ps-server-metrics small {
+  display: block;
+  color: var(--ps-muted);
+  font-size: 11px;
+}
+
+.ps-server-metrics strong {
+  display: block;
+  overflow: hidden;
+  margin: 7px 0 4px;
+  font-size: 25px;
+  line-height: 1;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ps-server-foot strong {
+  color: #dce7ed;
+  font-weight: 600;
+}
+
+@media (max-width: 920px) {
+  #authOverlay .landing-main { grid-template-columns: 1fr !important; }
+  #authOverlay .landing-product { display: none; }
+  #authOverlay .landing-card h1 { font-size: clamp(42px, 11vw, 64px); }
+  .ps-server-metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (max-width: 620px) {
+  #authOverlay .landing-nav,
+  #authOverlay .landing-main,
+  #authOverlay .landing-update-preview,
+  #authOverlay .landing-footer,
+  #authOverlay .ps61-site-metrics { width: min(100% - 24px, 1160px); }
+  #authOverlay .landing-main { padding-top: 12px; }
+  #authOverlay .landing-card { padding: 28px 22px; border-radius: 20px; }
+  #authOverlay .landing-points { grid-template-columns: 1fr; }
+  .ps-server-analytics { padding: 19px; border-radius: 18px; }
+  .ps-server-analytics header, .ps-server-analytics .ps-server-foot { align-items: flex-start; flex-direction: column; }
+}

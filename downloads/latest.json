@@ -1,11 +1,11 @@
 {
-    "version":  "0.12.0",
-    "notes":  "Play Streamers Desktop 0.12.0: Studio ile yerel kayıt/yayın motoru rafa kaldırıldı. Uygulama artık 45 içerik, analiz, topluluk, marka, gelir, kasa ve ayar aracına odaklanır. Genel kayıt/yayın kısayolları kaldırıldı ve Windows üretim sürümü CMD penceresi açmadan bağımsız çalışır.",
-    "pub_date":  "2026-08-23T12:29:05.0457527+00:00",
-    "platforms":  {
-                      "windows-x86_64":  {
-                                             "signature":  "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVRcWlCbnhDNnc4UEIydER3RHp4OUpUWGdNU2xQU3RsaUdiOGV5T3h6T2NBc0pjenRGNjgrdkNVLzhES1c0Mm9MK1lqRDNPcFRvQjJSNTJVb0h4TUUwWk1sQ2NyU3VjQUFrPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzg3NDg3NTY2CWZpbGU6UGxheSBTdHJlYW1lcnNfMC4xMi4wX3g2NC1zZXR1cC5leGUKTjVsWk51NFJySFVxZXBITmdXdjl4S2hiOWVRbDJvMmhtQWgzWE40M3hicms1dlpYLytJZFRmc0VBbUVTTC9CSktlVW5jMEQvakJuejlrNW9KNjNLQ2c9PQo=",
-                                             "url":  "https://pstreamers.com/downloads/Play-Streamers-Setup.exe"
-                                         }
-                  }
+  "version": "0.13.0",
+  "notes": "Play Streamers Desktop 0.13.0: Kick yayınları artık site veya uygulama kapalıyken de sunucuda otomatik ölçülür. Son yayın ortalaması, tepe izleyici ve doğrulanmış etkileşimler ana ekranda yenilenir. Windows 10 ve 11 aynı sade, CMD penceresiz uygulama paketini kullanır.",
+  "pub_date": "2026-08-25T03:02:52.9161563+00:00",
+  "platforms": {
+    "windows-x86_64": {
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVRcWlCbnhDNnc4UExkdm9tMXdTUVRaYzA2YUZFdkFxeEZBRHZDaFE0V2pzdmhvSkhKb1R1RFE3TFBNQUZxbldvK3RXK3ZGVXFBaE5SQXVqRTFENVdvUW1nMzl4VnRkR2dRPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzg3NjI2OTY3CWZpbGU6UGxheSBTdHJlYW1lcnNfMC4xMy4wX3g2NC1zZXR1cC5leGUKd2hFbUJ5bEN0Rk5yMGE3cmY3MXVjL2ZkbXI0a3BCRWszbXQrcHNhdHR0V1VVZGNJQi9WU0l6eXdqSjhZYzR2SFNLN09XWjFXT0N1SDdVdUxNNW1YQ3c9PQo=",
+      "url": "https://pstreamers.com/downloads/Play-Streamers-Setup.exe"
+    }
+  }
 }

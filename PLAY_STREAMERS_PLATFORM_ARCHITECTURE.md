@@ -2,8 +2,8 @@
 
 Bu belge, Play Streamers'ın web sitesi ve masaüstü uygulaması arasındaki kalıcı
 ürün sınırını tanımlar. Kullanıcı açısından yalnızca **tek masaüstü uygulaması**
-vardır. `Studio`, bu uygulamanın içinde bulunan yayın ve kayıt çalışma alanıdır;
-ayrı bir ürün veya ikinci bir kullanıcı uygulaması değildir.
+vardır. Studio ve yerel kayıt/yayın motoru 0.12.0 kararıyla rafa kaldırılmıştır;
+pasif kaynakları derlenen ürüne veya menülere bağlanmaz.
 
 ## Ürün yüzeyleri
 
@@ -16,7 +16,7 @@ işler bulunur:
 - hesap açma, giriş, ödeme ve plan yönetimi,
 - SW Identity güvenlik ve cihaz yönetimine geçiş,
 - masaüstü uygulamasını indirme,
-- temel canlı durum ve kısa yayın özeti.
+- sunucunun ürettiği temel canlı durum ve kısa yayın özeti.
 
 Sahne düzenleme, kayıt, yayın, ayrıntılı analiz, içerik üretimi ve gelişmiş
 araçlar web sitesine taşınmaz.
@@ -26,7 +26,6 @@ araçlar web sitesine taşınmaz.
 Uygulama tüm yayıncı araçlarının ana merkezidir:
 
 - canlı kontrol paneli,
-- Studio (sahne, kaynak, ses, yayın ve kayıt),
 - analiz ve yayın sonrası raporlar,
 - içerik ve yayın hazırlığı,
 - topluluk ve etkileşim araçları,
@@ -37,6 +36,10 @@ Navigasyon plan adlarını değil kullanıcının yapmak istediği işi gösteri
 kontrolü, kullanıcı bir aracı açtığında ortak özellik kataloğundan uygulanır.
 
 ## Studio sınırı
+
+Bu bölüm tarihsel motor tasarımını belgeler. 0.12.0 ve sonrasında Studio,
+FFmpeg yan uygulaması, sanal kamera ve kayıt/yayın komutları dağıtılan üründe
+bulunmaz. Aşağıdaki maddeler yeniden etkin bir özellik listesi değildir.
 
 Studio uygulamanın bir bölümüdür. Güvenilirlik için yayın motoru gerektiğinde
 arka planda ayrı bir işletim sistemi süreci olarak çalışabilir; bu yalnızca
@@ -85,8 +88,8 @@ anahtarı işletim sisteminin güvenli kimlik kasasında tutulur.
 Özellikler tek bir katalogda `id`, `plan`, `alan`, `durum` ve `veri ihtiyacı`
 ile tanımlanır. Web, Worker ve masaüstü uygulaması aynı kimlikleri kullanır.
 
-- **Free:** temel panel, Studio yayın/kayıt, temel sahneler, sayaçlar ve notlar.
-- **Pro:** gelişmiş Studio araçları, ayrıntılı grafikler, yayın akışı ve içerik
+- **Free:** temel panel, sayaçlar, notlar ve temel yayın geçmişi.
+- **Pro:** ayrıntılı grafikler, yayın akışı ve içerik
   üretim araçları, dışa aktarma ve kişiselleştirme.
 - **Product Pro:** yayın zekâsı, izleyici nabzı, akıllı hedefler, gelir ve marka
   çalışma alanları, gelişmiş topluluk oyunları ve yapay zekâ açıklamaları.
@@ -110,10 +113,10 @@ kişisel veri içermeyen özeti anlaşılır Türkçe açıklamaya ve öneriye d
 ## Veri sahipliği
 
 - SW Identity: kimlik, güvenlik, ürün planı ve yetki kaynağı.
-- Play Streamers Worker: ürün oturumu, özellik ayarları, ölçüm özetleri,
-  raporlar ve AI açıklama önbelleği.
-- Masaüstü cihazı: sahneler, büyük medya dosyaları, ham kayıtlar ve hassas
-  yayın ayarları.
+- Play Streamers Worker: ürün oturumu, özellik ayarları, dakikalık Kick canlı
+  örnekleri, otomatik yayın özetleri, raporlar ve AI açıklama önbelleği.
+- Masaüstü cihazı: büyük medya dosyaları ve kullanıcıya özel yerel çalışma
+  alanları.
 - Bulut eşitleme: yalnız kullanıcının açtığı küçük ayarlar, şablonlar ve
   özetler; büyük kayıt dosyaları varsayılan olarak yerelde kalır.
 

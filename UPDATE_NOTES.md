@@ -4,13 +4,25 @@ Bu doküman; Play Streamers web uygulaması, Cloudflare Worker API'si ve Play Co
 
 ## Güncel sürümler
 
-- Web uygulaması / ürün bağlamı: **4.22**
-- Play Connect: **1.10.3**
-- Worker kaynak sabiti: **4.4**
+- Web uygulaması / ürün bağlamı: **5.0**
+- Play Connect: **1.11.0**
+- Desktop: **0.13.0**
+- Worker kaynak sabiti: **5.0**
 
 > Yayın öncesinde Worker'daki bildirim sürüm sabiti ile bu sürüm geçmişi aynı numaraya yükseltilmelidir.
 
 ## Play Streamers web uygulaması
+
+### 5.0 · Sunucu otomasyonu ve kompakt arayüz
+
+- Kick canlı durumu Worker tarafından dakikada bir izlenir; site, uygulama ve
+  eklenti kapalıyken de yayın oturumu ve izleyici örnekleri sunucuda oluşur.
+- Yayın kapanınca ortalama/tepe izleyici, takip, abonelik, bağış ve etkileşim
+  özeti otomatik tamamlanır.
+- Üye ana sayfası sunucu veri hattını gösterir; genel açılış ekranı daha
+  kompakt iki sütunlu düzene taşındı.
+- Desktop 0.13.0 ve Microsoft Store 0.13.0.0 tek Windows 10/11 paket sürümüne
+  eşitlendi; kamera ve mikrofon yetkileri dağıtım bildiriminden çıkarıldı.
 
 ### 1.0–1.2 · Kullanıcı ana sayfası
 

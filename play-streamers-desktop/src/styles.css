@@ -99,6 +99,8 @@ button:disabled { opacity: .42; cursor: not-allowed; }
 .panel-heading h3 { font-size: 12px; }
 .progress-label, .local-badge, .offline-badge { padding: 5px 7px; border: 1px solid rgba(83,252,24,.16); border-radius: 6px; color: var(--green); background: rgba(83,252,24,.05); font-size: 7px; font-weight: 800; text-transform: uppercase; letter-spacing: .08em; }
 .offline-badge { border-color: rgba(255,99,99,.17); color: #ff8989; background: rgba(255,69,69,.05); }
+.offline-badge.live { border-color: rgba(83,252,24,.25); color: var(--green); background: rgba(83,252,24,.08); }
+.empty-orbit.live > span { color: var(--green); filter: drop-shadow(0 0 10px rgba(83,252,24,.35)); }
 .local-badge { color: #82958b; border-color: var(--line); background: rgba(255,255,255,.025); }
 .prep-list { display: grid; gap: 2px; margin-top: 12px; }
 .prep-row { display: flex; align-items: center; gap: 11px; min-height: 45px; padding: 8px 4px; border-top: 1px solid rgba(170,200,185,.07); }

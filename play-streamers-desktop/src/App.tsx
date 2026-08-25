@@ -34,7 +34,18 @@ interface DesktopSessionSummary {
   interactions: number;
   followersGained: number;
   revenueMinor: number;
-  summary?: { durationSeconds?: number };
+  summary?: { durationSeconds?: number; averageViewers?: number; sampleCount?: number; collector?: string };
+}
+
+interface StreamMonitor {
+  connected: boolean;
+  status: "live" | "ended" | "offline" | "not-connected";
+  title?: string;
+  startedAt?: number | null;
+  currentViewers?: number;
+  peakViewers?: number;
+  lastCheckedAt?: number;
+  healthy?: boolean;
 }
 
 function useLocalList(key: string, initial: string[]) {
@@ -59,6 +70,7 @@ export function App() {
   const [accountName, setAccountName] = useState<string | null>(null);
   const [identityStatus, setIdentityStatus] = useState("Güvenli SW Identity");
   const [sessions, setSessions] = useState<DesktopSessionSummary[]>([]);
+  const [streamMonitor, setStreamMonitor] = useState<StreamMonitor>({ connected: false, status: "not-connected", healthy: true });
   const [search, setSearch] = useState("");
   const [selectedFeature, setSelectedFeature] = useState<FeatureDefinition | null>(null);
   const [updateState, setUpdateState] = useState<{ phase: "idle" | "checking" | "available" | "installing" | "current" | "error"; version?: string; message: string }>({ phase: "idle", message: "Güncellemeleri denetle" });
@@ -79,17 +91,21 @@ export function App() {
         : sessionStorage.getItem("ps.session");
       if (!token || disposed) return;
       const response = await fetch(`${API_BASE}/api/platform/bootstrap`, { headers: { authorization: `Bearer ${token}` } });
-      const data = await response.json().catch(() => null) as { signedIn?: boolean; user?: { name?: string }; plan?: { tier?: PlanTier }; recentSessions?: DesktopSessionSummary[]; sessions?: DesktopSessionSummary[] } | null;
+      const data = await response.json().catch(() => null) as { signedIn?: boolean; user?: { name?: string }; plan?: { tier?: PlanTier }; recentSessions?: DesktopSessionSummary[]; sessions?: DesktopSessionSummary[]; streamMonitor?: StreamMonitor } | null;
       if (!disposed && response.ok && data?.signedIn) {
         setPlan(data.plan?.tier || "free");
         setAccountName(data.user?.name || "SW hesabı");
         setSessions(Array.isArray(data.recentSessions) ? data.recentSessions : Array.isArray(data.sessions) ? data.sessions : []);
+        setStreamMonitor(data.streamMonitor || { connected: false, status: "not-connected", healthy: true });
         setIdentityStatus("Hesap ve plan eşitlendi");
       }
     }
     void bootstrap().catch(() => setIdentityStatus("Bağlantı çevrimdışı"));
+    const interval = window.setInterval(() => { if (!document.hidden) void bootstrap().catch(() => {}); }, 60_000);
+    const refreshVisible = () => { if (!document.hidden) void bootstrap().catch(() => {}); };
+    document.addEventListener("visibilitychange", refreshVisible);
     const unsubscribe = window.playStreamersNative?.onOpenUrl((url) => void completeIdentityLogin(url));
-    return () => { disposed = true; unsubscribe?.(); };
+    return () => { disposed = true; window.clearInterval(interval); document.removeEventListener("visibilitychange", refreshVisible); unsubscribe?.(); };
   }, []);
 
   useEffect(() => {
@@ -211,7 +227,7 @@ export function App() {
         </header>
 
         {section === "home" && !search ? (
-          <HomeDashboard notes={notes} setNotes={setNotes} ideas={ideas} setIdeas={setIdeas} sessions={sessions} onOpen={setSection} />
+          <HomeDashboard notes={notes} setNotes={setNotes} ideas={ideas} setIdeas={setIdeas} sessions={sessions} streamMonitor={streamMonitor} onOpen={setSection} />
         ) : (
           <FeatureLibrary section={section} plan={plan} features={visibleFeatures} search={search} onSelect={openFeature} />
         )}
@@ -222,12 +238,13 @@ export function App() {
   );
 }
 
-function HomeDashboard({ notes, setNotes, ideas, setIdeas, sessions, onOpen }: {
+function HomeDashboard({ notes, setNotes, ideas, setIdeas, sessions, streamMonitor, onOpen }: {
   notes: string[];
   setNotes: (items: string[]) => void;
   ideas: string[];
   setIdeas: (items: string[]) => void;
   sessions: DesktopSessionSummary[];
+  streamMonitor: StreamMonitor;
   onOpen: (section: AppSection) => void;
 }) {
   const [noteValue, setNoteValue] = useState("");
@@ -245,6 +262,8 @@ function HomeDashboard({ notes, setNotes, ideas, setIdeas, sessions, onOpen }: {
   const latestDetail = latestSession?.endedAt ? new Date(latestSession.endedAt).toLocaleDateString("tr-TR", { day: "2-digit", month: "short" }) : "İlk yayınını bekliyor";
   const monthStart = new Date(); monthStart.setDate(1); monthStart.setHours(0, 0, 0, 0);
   const thisMonth = completedSessions.filter((session) => Number(session.endedAt || 0) >= monthStart.getTime()).length;
+  const averageViewers = Number(latestSession?.summary?.averageViewers || 0);
+  const live = streamMonitor.status === "live";
   const addTimestampedNote = () => {
     const clean = noteValue.trim();
     if (!clean) return;
@@ -259,7 +278,7 @@ function HomeDashboard({ notes, setNotes, ideas, setIdeas, sessions, onOpen }: {
       </section>
 
       <section className="metric-grid">
-        <MetricCard label="Son yayın" value={durationLabel} detail={latestDetail} color="green" />
+        <MetricCard label={live ? "Anlık izleyici" : "Ortalama izleyici"} value={live ? String(streamMonitor.currentViewers || 0) : (latestSession ? String(averageViewers) : "—")} detail={live ? "Sunucu her dakika ölçüyor" : `${durationLabel} · ${latestDetail}`} color="green" />
         <MetricCard label="Tepe izleyici" value={latestSession ? String(latestSession.peakViewers || 0) : "—"} detail={latestSession ? "Doğrulanmış oturum" : "Kanal bağlanınca hazır"} color="purple" />
         <MetricCard label="Etkileşim" value={latestSession ? String(latestSession.interactions || 0) : "—"} detail={latestSession ? `+${latestSession.followersGained || 0} takipçi` : "Henüz veri yok"} color="cyan" />
         <MetricCard label="Bu ay yayın" value={String(thisMonth)} detail={thisMonth ? "Tamamlanan oturum" : "İlk yayınını bekliyor"} color="amber" />
@@ -270,14 +289,14 @@ function HomeDashboard({ notes, setNotes, ideas, setIdeas, sessions, onOpen }: {
           <div className="panel-heading"><div><span className="eyebrow">YAYINA HAZIRLIK</span><h2>Üç adımda yayına çık</h2></div><span className="progress-label">1 / 3 hazır</span></div>
           <div className="prep-list">
             <PrepRow done title="Uygulama hazır" detail="Yerel ayarlar ve kayıt alanı kullanılabilir" />
-            <PrepRow title="Kanalını bağla" detail="Canlı olaylar ve yayın verileri için" action="Bağla" />
+            <PrepRow done={streamMonitor.connected} title={streamMonitor.connected ? "Sunucu takibi açık" : "Kanalını bağla"} detail={streamMonitor.connected ? "Uygulama kapalıyken de yayın ölçülür" : "Canlı olaylar ve yayın verileri için"} />
             <PrepRow title="Yayın akışını hazırla" detail="Açılış, bölümler, mola ve kapanışı planla" action="Planla" onClick={() => onOpen("content")} />
           </div>
         </section>
 
         <section className="glass-panel now-panel">
-          <div className="panel-heading"><div><span className="eyebrow">CANLI DURUM</span><h2>Şu an</h2></div><span className="offline-badge">Çevrimdışı</span></div>
-          <div className="empty-orbit"><span>◉</span><strong>Yayın kapalı</strong><small>Bağlı kanal canlı olduğunda bu alan doğrulanmış veriye dönüşür.</small></div>
+          <div className="panel-heading"><div><span className="eyebrow">CANLI DURUM</span><h2>Şu an</h2></div><span className={`offline-badge${live ? " live" : ""}`}>{live ? "Canlı" : "Çevrimdışı"}</span></div>
+          <div className={`empty-orbit${live ? " live" : ""}`}><span>◉</span><strong>{live ? (streamMonitor.title || "Yayın açık") : "Yayın kapalı"}</strong><small>{live ? `${streamMonitor.currentViewers || 0} anlık · ${streamMonitor.peakViewers || 0} tepe izleyici` : streamMonitor.connected ? "Sunucu kanalını izlemeyi sürdürüyor." : "Kick kanalını bağladığında otomatik sunucu takibi başlar."}</small></div>
         </section>
 
         <LocalListPanel eyebrow="HIZLI NOTLAR" title="Aklından çıkmasın" items={notes} value={noteValue} onValue={setNoteValue} placeholder="Yeni bir yayın notu…" onAdd={addTimestampedNote} onRemove={(index) => setNotes(notes.filter((_, itemIndex) => itemIndex !== index))} />

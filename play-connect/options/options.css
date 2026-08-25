@@ -162,3 +162,18 @@ body.is-central-dab-view main{grid-auto-rows:max-content!important;align-content
 body.is-central-dab-view,body.is-central-dab-view .shell,body.is-central-dab-view main,body.is-central-dab-view main>aside{min-height:revert!important;height:revert!important;max-height:revert!important;background-image:revert!important}
 .locale-menu button>span{width:29px!important;height:21px!important;overflow:hidden!important;border:1px solid rgba(255,255,255,.16)!important;border-radius:4px!important;background:#07111d!important}
 .locale-menu button span img{display:block!important;width:100%!important;height:100%!important;max-width:100%!important;margin:0!important;border:0!important;border-radius:3px!important;clip-path:none!important;object-fit:cover!important;box-shadow:none!important}
+
+/* 1.11: compact control surface and stable panel height across every provider. */
+.shell{width:min(1180px,calc(100% - 32px));padding:22px 0 34px}
+.shell>header{position:sticky;z-index:80;top:0;margin:0 -10px 14px;padding:10px;border:1px solid rgba(178,211,242,.12);border-radius:16px;background:rgba(5,16,28,.9);backdrop-filter:blur(16px)}
+.pairing-panel{padding:20px;border-radius:18px}
+.pairing-panel h1{font-size:clamp(24px,3vw,34px)}
+.shell>main{grid-template-columns:250px minmax(0,1fr);gap:12px;margin-top:12px}
+.shell>main>aside,.provider-pane{border-radius:17px}
+.shell>main>aside{position:sticky;top:88px;max-height:calc(100vh - 108px);overflow:auto;padding:14px;scrollbar-color:rgba(83,252,24,.28) transparent}
+.provider-pane,.provider-pane.is-central-dab{min-height:520px!important;padding:20px!important}
+#providerNav{gap:5px}
+#providerNav button{min-height:42px;padding:8px 10px}
+.app-meta{margin-top:14px}
+button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible{outline:2px solid rgba(83,252,24,.7);outline-offset:2px}
+@media(max-width:780px){.shell{width:min(100% - 20px,1180px);padding-top:10px}.shell>header{position:relative;top:auto}.shell>main{grid-template-columns:1fr}.shell>main>aside{position:relative;top:auto;max-height:none}.provider-pane,.provider-pane.is-central-dab{min-height:0!important}}

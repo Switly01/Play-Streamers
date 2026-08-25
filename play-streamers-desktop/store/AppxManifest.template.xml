@@ -11,7 +11,7 @@
     <DisplayName>Play Streamers</DisplayName>
     <PublisherDisplayName>__PUBLISHER_DISPLAY_NAME__</PublisherDisplayName>
     <Logo>Assets\StoreLogo.png</Logo>
-    <Description>Yayın, kayıt ve yayıncı çalışma alanı.</Description>
+    <Description>Yayıncı analiz, içerik ve topluluk çalışma alanı.</Description>
   </Properties>
   <Dependencies>
     <TargetDeviceFamily Name="Windows.Desktop" MinVersion="__MIN_WINDOWS_VERSION__" MaxVersionTested="10.0.26100.0" />
@@ -25,7 +25,7 @@
       <uap:VisualElements
         AppListEntry="default"
         DisplayName="Play Streamers"
-        Description="Yayın, kayıt ve yayıncı çalışma alanı"
+        Description="Yayıncı analiz, içerik ve topluluk çalışma alanı"
         BackgroundColor="#07100C"
         Square44x44Logo="Assets\Square44x44Logo.png"
         Square150x150Logo="Assets\Square150x150Logo.png">
@@ -41,7 +41,5 @@ __VIRTUAL_CAMERA_EXTENSION__
   <Capabilities>
     <Capability Name="internetClient" />
     <rescap:Capability Name="runFullTrust" />
-    <DeviceCapability Name="webcam" />
-    <DeviceCapability Name="microphone" />
   </Capabilities>
 </Package>

@@ -25,3 +25,8 @@ existing `0008_kick_metric_snapshots.sql` migration.
 the shared entitlement, feature-setting, stream-summary and AI-insight tables
 used by the Play Streamers desktop application. Apply it after `0009` and
 before enabling desktop SW Identity exchange routes.
+
+`0011_automatic_stream_sessions.sql` adds the account monitor cursor, active
+Kick stream runtime and minute-level viewer samples. The scheduled Worker uses
+these tables to open and close stream summaries while the site, desktop app
+and browser extension are closed. Apply it after `0010` and before Worker 5.0.

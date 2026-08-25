@@ -73,3 +73,24 @@ footer{justify-content:space-between;padding-top:10px}footer small{border:1px so
   .scan-button span{display:none}
 }
 .provider-card i.disconnected,.provider-row i.disconnected{background:#ff586b;box-shadow:0 0 8px rgba(255,88,107,.35)}
+
+/* 1.11: the popup is deliberately shorter, keeps the account state visible
+   while scrolling and prevents long provider labels from shifting actions. */
+body{width:min(392px,100vw);max-height:600px;overflow:auto;scrollbar-color:rgba(83,252,24,.34) transparent}
+main{padding:14px}
+header{position:sticky;z-index:5;top:0;margin:-14px -14px 10px;padding:13px 14px 10px;background:linear-gradient(#050b14 78%,rgba(5,11,20,0));backdrop-filter:blur(9px)}
+.pair-card,.catalog,.delivery{border-radius:14px}
+.pair-card{padding:13px}
+.panel-button{min-height:42px;padding:10px 13px}
+.catalog{margin-top:9px;padding:12px}
+.section-title{align-items:flex-start;margin-bottom:9px}
+.scan-button{flex:0 0 auto;max-width:144px}
+.featured-grid{gap:7px}
+.provider-card{grid-template-columns:31px minmax(0,1fr);min-height:59px!important;padding:9px!important;border-radius:11px!important}
+.provider-card img{width:31px;height:31px}
+.provider-card small{margin-top:3px}
+.others-grid{max-height:188px}
+.delivery{margin-top:9px}
+footer{position:sticky;bottom:0;margin:0 -14px -14px;padding:10px 17px 12px;background:linear-gradient(rgba(5,11,20,0),#050b14 34%)}
+button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid rgba(83,252,24,.72);outline-offset:2px}
+@media(max-height:520px){.catalog{padding-bottom:9px}.featured-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.provider-card{min-height:54px!important}.delivery{padding:9px 11px}}

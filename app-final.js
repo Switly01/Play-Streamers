@@ -404,26 +404,33 @@
     const update = $('.landing-update-card', overlay);
     if (!overlay || !hero || !product || !update) return;
     overlay.classList.add('ps-creator-landing');
-    product.setAttribute('aria-label', 'Play Streamers temsili masaüstü arayüz demosu');
-    const eyebrow = $('.eyebrow', hero); if (eyebrow) eyebrow.textContent = 'PLAY STREAMERS · CREATOR OPERATING SYSTEM';
-    const title = $('h1', hero); if (title) title.textContent = 'Yayın aç. Kaydet. Büyümeyi tek yerden yönet.';
-    const lead = $(':scope > p', hero); if (lead) lead.textContent = 'Site hesap, plan ve güvenlik merkezi olarak sade kalır. Windows uygulaması doğrulanmış canlı veriler ile 45 yayıncı aracını tek bir çalışma akışında birleştirir.';
+    product.setAttribute('aria-label', 'Play Streamers masaüstü ve sunucu veri merkezi ön izlemesi');
+    const setText = (node, value) => { if (node && node.textContent !== value) node.textContent = value; };
+    const setMarkup = (node, value) => {
+      if (!node) return;
+      const template = document.createElement('template');
+      template.innerHTML = value;
+      if (node.innerHTML !== template.innerHTML) node.replaceChildren(template.content.cloneNode(true));
+    };
+    const eyebrow = $('.eyebrow', hero); setText(eyebrow, 'PLAY STREAMERS · YAYINCI MERKEZİ');
+    const title = $('h1', hero); setText(title, 'Yayın biter. Verin kaybolmaz.');
+    const lead = $(':scope > p', hero); setText(lead, 'Yayın geçmişin, izleyici ritmin ve topluluk hareketlerin site ya da uygulama açık olmasa da sunucuda işlenir. Hesabını burada yönet; üretim araçlarının tamamına masaüstü uygulamasından ulaş.');
     const points = $('.landing-points', hero);
-    if (points) points.innerHTML = '<li><i>✓</i>Windows 10/11 masaüstü uygulaması</li><li><i>✓</i>İçerik, analiz ve topluluk araçları</li><li><i>✓</i>Doğrulanmış Kick ve Play Connect olayları</li><li><i>✓</i>Free, Pro ve Product Pro çalışma alanları</li>';
+    setMarkup(points, '<li><i>✓</i>Sunucu tabanlı yayın geçmişi</li><li><i>✓</i>Otomatik izleyici ölçümü</li><li><i>✓</i>Windows 10/11 masaüstü merkezi</li><li><i>✓</i>Chrome ve Firefox Play Connect</li>');
     const trust = $('.landing-trust', hero);
-    if (trust) trust.innerHTML = '<span>SW Identity</span><span>Yerel çalışma alanı</span><span>Creator OS</span>';
-    const cta = $('.landing-cta', hero); if (cta) cta.textContent = 'Free ile hesabını oluştur; yayıncı araçlarını masaüstü uygulamasından yönet.';
-    const productWindow = $('.product-window', product); if (productWindow) productWindow.setAttribute('aria-label', 'Play Streamers temsili masaüstü arayüz demosu');
-    const productTop = $('.product-top > span:first-child', product); if (productTop) productTop.textContent = 'PLAY STREAMERS DESKTOP · TEMSİLİ ARAYÜZ';
+    setMarkup(trust, '<span>Site kapalıyken ölçüm</span><span>SW Identity güvenliği</span><span>Ücretsiz başlangıç</span>');
+    const cta = $('.landing-cta', hero); setText(cta, 'Hesabını oluştur, Kick bağlantını kur ve bir sonraki yayınından itibaren geçmişini otomatik toplamaya başla.');
+    const productWindow = $('.product-window', product); if (productWindow) productWindow.setAttribute('aria-label', 'Play Streamers masaüstü ve sunucu veri merkezi ön izlemesi');
+    const productTop = $('.product-top > span:first-child', product); setText(productTop, 'PLAY STREAMERS · CREATOR WORKSPACE');
     const previewCards = $$('.preview-card', product);
-    if (previewCards[0]) previewCards[0].innerHTML = '<span class="preview-kicker">UYGULAMA DEMOSU</span><div class="preview-live"><i></i>ARAYÜZ DEMOSU</div><p class="preview-title">Yayıncı çalışma alanını keşfet.</p><p class="preview-copy">Bu temsili alan canlı hesap veya yayın durumu göstermez.</p>';
-    if (previewCards[1]) previewCards[1].innerHTML = '<span class="preview-kicker">CREATOR OS</span><div class="mini-stat"><strong>54</strong><span>çalışma alanı</span></div><div class="mini-bars"><i style="height:34%"></i><i style="height:52%"></i><i style="height:76%"></i><i style="height:61%"></i><i style="height:88%"></i><i style="height:70%"></i></div>';
-    const updateEyebrow = $('.eyebrow', update); if (updateEyebrow) updateEyebrow.textContent = 'SON GÜNCELLEME';
-    const updateTitle = $('h2', update); if (updateTitle) updateTitle.textContent = '0.13.0 · Otomatik Sunucu Analizi';
-    const updateLead = $('header p', update); if (updateLead) updateLead.textContent = 'Yayın verileri site ve uygulama kapalıyken de sunucuda ölçülüyor.';
-    const updateTime = $('time', update); if (updateTime) updateTime.textContent = '25 Ağustos 2026';
+    setMarkup(previewCards[0], '<span class="preview-kicker">OTOMATİK VERİ HATTI</span><div class="preview-live"><i></i>SUNUCU AKTİF</div><p class="preview-title">Yayının kapansa da geçmişin hazır.</p><p class="preview-copy">Doğrulanmış oturumlar ve izleyici örnekleri sunucuda işlenir.</p>');
+    setMarkup(previewCards[1], '<span class="preview-kicker">CREATOR OS</span><div class="mini-stat"><strong>54</strong><span>çalışma alanı</span></div><div class="mini-bars"><i style="height:34%"></i><i style="height:52%"></i><i style="height:76%"></i><i style="height:61%"></i><i style="height:88%"></i><i style="height:70%"></i></div>');
+    const updateEyebrow = $('.eyebrow', update); setText(updateEyebrow, 'SİSTEM DURUMU');
+    const updateTitle = $('h2', update); setText(updateTitle, '7.0 · Control Room');
+    const updateLead = $('header p', update); setText(updateLead, 'Eski görsel katmanlar devreden çıkarıldı; tüm site tek bir kontrol odası tasarım sistemine geçti.');
+    const updateTime = $('time', update); setText(updateTime, '25 Ağustos 2026');
     const updateItems = $('ul', update);
-    if (updateItems) updateItems.innerHTML = '<li>Kick yayın oturumları Worker tarafından otomatik açılıp kapatılır.</li><li>Ortalama ve tepe izleyici sunucudaki dakika örneklerinden hesaplanır.</li><li>Windows 10 ve 11 tek 0.13.0 pakette eşitlendi.</li><li>Play Connect Chrome ve Firefox paketleri 1.11.0 sürümüne yükseltildi.</li>';
+    setMarkup(updateItems, '<li>2 MB’tan büyük legacy stil paketi aktif sayfa yükünden çıkarıldı.</li><li>Vitrin, hesap, üye merkezi ve Dashboard tek CSS sistemiyle yeniden kuruldu.</li><li>Neon ve glow ağırlıklı görünüm yerine düz, tipografik Control Room dili getirildi.</li><li>Sunucu analizi yalnızca gerektiğinde yenilenerek gereksiz istekler azaltıldı.</li>');
   }
   function restorePublicLandingSurface() {
     const overlay = $('#authOverlay'), app = $('.app'), home = $('#psSecondHome');
@@ -2759,16 +2766,18 @@
   function ensureSiteMetricsCards() {
     let created = false;
     const publicNav = $('#authOverlay .landing-nav');
+    const publicMain = $('#authOverlay .landing-main');
     let publicCard = $('#authOverlay .ps61-site-metrics');
-    if (publicNav) {
+    if (publicNav && publicMain) {
       if (!publicCard) { publicCard = createSiteMetrics('public'); created = true; }
-      if (publicNav.nextElementSibling !== publicCard) publicNav.after(publicCard);
+      if (publicMain.nextElementSibling !== publicCard) publicMain.after(publicCard);
     }
     const memberNav = $('#psSecondHome .ps20-nav');
+    const memberHero = $('#psSecondHome .ps20-hero');
     let memberCard = $('#psSecondHome .ps61-site-metrics');
-    if (memberNav) {
+    if (memberNav && memberHero) {
       if (!memberCard) { memberCard = createSiteMetrics('member'); created = true; }
-      if (memberNav.nextElementSibling !== memberCard) memberNav.after(memberCard);
+      if (memberHero.nextElementSibling !== memberCard) memberHero.after(memberCard);
     }
     let cached = null;
     try { cached = JSON.parse(localStorage.getItem(SITE_METRICS_CACHE_KEY) || 'null'); } catch (_) {}

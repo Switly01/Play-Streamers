@@ -1,11 +1,11 @@
 # Play Streamers — Kalıcı Proje Bağlamı
 
-Sürüm 5.0 / Desktop 0.13.0 / Play Connect 1.11.0: Kick yayınları artık
+Site 7.0 / Platform 5.0 / Desktop 0.13.0 / Play Connect 1.11.0: Kick yayınları artık
 dakikalık Worker görevi ve imzalı livestream webhooklarıyla sunucuda otomatik
 oturum oluşturur. Site, masaüstü uygulaması ve eklenti kapalıyken de izleyici
 örnekleri toplanır; yayın kapanınca ortalama/tepe izleyici, takip, abonelik,
-bağış ve etkileşim özeti D1 üzerinde tamamlanır. Site kompakt iki sütunlu ürün
-düzenine ve üye alanında sunucu veri kartına geçti. Desktop aynı özeti açılışta
+bağış ve etkileşim özeti D1 üzerinde tamamlanır. Site; ziyaretçi, üye, hesap ve
+Dashboard yüzeylerini ortak Control Room tasarım sisteminde birleştirdi. Desktop aynı özeti açılışta
 ve dakikada bir yeniler. Windows 10/11 tek 0.13.0 uygulama ve 0.13.0.0 Store
 paketini kullanır; Store bildiriminde artık kamera/mikrofon yetkisi yoktur.
 Chrome ve Firefox Play Connect paketleri 1.11.0 sürümünde eşitlenmiştir.
@@ -1100,3 +1100,16 @@ bağlantı durumları sade ama güçlü bir arayüzde sunulmalıdır.
   Güvenli bağlantılar · Kişisel panel · Ücretsiz başlangıç metni tam ortada ve
   Developed by SW CREATE bağlantısı sağda gösterilir; dar ekranda üçü ortalanıp
   alt alta dizilir.
+- Site 7.0 görsel sistemi yalnız `site-v7.css` ve `site-v7.js` üzerinden
+  yüklenir. Eski `styles.css`, `compact-modern.css` ve 6.0 katmanları çalışma
+  geçmişi için korunabilir ancak `index.html` tarafından yüklenmez. Ziyaretçi
+  ana sayfası, giriş/kayıt, bilgi sayfaları, üye ana sayfası, hesap merkezi ve
+  Dashboard aynı grafit, mercan ve kemik beyazı Control Room dilini kullanır;
+  eski işlevsel olay dinleyicileri ve kimlik doğrulama akışları korunur.
+  `app-final.js` içindeki ziyaretçi metni yenilemesi DOM'u
+  yalnızca içerik gerçekten değiştiğinde günceller; böylece eski düzeltme
+  gözlemcisinin kendi değişikliğini sürekli yeniden tetiklemesi önlenir.
+- Sunucu analiz kartı görünür üye yüzeyi dışında gereksiz veri isteği göndermez.
+  İlgili yüzey açıldığında, tarayıcı yeniden çevrimiçi olduğunda veya sekme
+  yeniden görünür olduğunda yenilenir; geçici ağ hatası boş kart yerine açık bir
+  yeniden deneme durumu gösterir.

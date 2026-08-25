@@ -10,7 +10,7 @@
     '/account/support': 'support'
   });
   const TITLES = Object.freeze({
-    '/': 'Play Streamers',
+    '/': 'Play Streamers — Yayıncı Merkezi',
     '/about': 'Hakkımızda · Play Streamers',
     '/products': 'Ürünlerimiz · Play Streamers',
     '/how-it-works': 'Nasıl Çalışır? · Play Streamers',

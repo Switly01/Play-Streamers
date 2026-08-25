@@ -4,6 +4,7 @@
   const STORAGE_KEY = 'play-streamers-v17-site';
   let pending = null;
   let lastRefresh = 0;
+  let lastData = null;
 
   function readSession() {
     try {
@@ -45,6 +46,11 @@
     card.setAttribute('aria-label', 'Sunucudan otomatik yayın analizi');
     grid.prepend(card);
     return card;
+  }
+
+  function homeIsVisible() {
+    const home = document.querySelector('#psSecondHome.ps20-member-home');
+    return Boolean(home && !home.hidden && getComputedStyle(home).display !== 'none');
   }
 
   function paint(data) {
@@ -89,9 +95,31 @@
     card.append(header, metrics, footer);
   }
 
+  function paintError(message = 'Sunucu verisine şu anda ulaşılamıyor') {
+    const card = ensureCard();
+    if (!card || lastData) return;
+    card.replaceChildren();
+    const header = document.createElement('header');
+    const title = document.createElement('div');
+    const kicker = document.createElement('span');
+    const heading = document.createElement('b');
+    const state = document.createElement('i');
+    kicker.textContent = 'SUNUCU VERİ HATTI';
+    heading.textContent = message;
+    state.className = 'ps-server-state error';
+    state.textContent = navigator.onLine ? 'YENİDEN DENENECEK' : 'ÇEVRİMDIŞI';
+    title.append(kicker, heading);
+    header.append(title, state);
+    const copy = document.createElement('p');
+    copy.className = 'ps-server-empty';
+    copy.textContent = 'Mevcut yayın verilerin kaybolmaz. Bağlantı geri geldiğinde bu alan otomatik olarak yenilenir.';
+    card.append(header, copy);
+  }
+
   async function refresh(force = false) {
     const token = readSession();
     if (!token || !ensureCard()) return;
+    if (!homeIsVisible()) return;
     if (!force && Date.now() - lastRefresh < 45_000) return;
     if (pending) return pending;
     pending = fetch(`${API}/api/platform/bootstrap`, {
@@ -101,18 +129,32 @@
       const data = await response.json().catch(() => null);
       if (response.ok && data?.signedIn) {
         lastRefresh = Date.now();
+        lastData = data;
         paint(data);
+      } else if (response.status !== 401) {
+        paintError();
       }
-    }).catch(() => {}).finally(() => { pending = null; });
+    }).catch(() => paintError()).finally(() => { pending = null; });
     return pending;
   }
 
-  const observer = new MutationObserver(() => {
-    if (ensureCard()) void refresh();
+  let mutationRefreshQueued = false;
+  const observer = new MutationObserver((mutations) => {
+    const relevant = mutations.some((mutation) => {
+      if (mutation.type === 'attributes') return mutation.target.id === 'psSecondHome';
+      return [...mutation.addedNodes].some((node) => node.nodeType === 1 && (node.matches?.('#psSecondHome,.ps20-grid') || node.querySelector?.('#psSecondHome,.ps20-grid')));
+    });
+    if (!relevant || mutationRefreshQueued) return;
+    mutationRefreshQueued = true;
+    window.requestAnimationFrame(() => {
+      mutationRefreshQueued = false;
+      if (ensureCard() && homeIsVisible()) void refresh();
+    });
   });
-  observer.observe(document.documentElement, { childList: true, subtree: true });
+  observer.observe(document.documentElement, { childList: true, subtree: true, attributes: true, attributeFilter: ['hidden'] });
   document.addEventListener('visibilitychange', () => { if (!document.hidden) void refresh(true); });
-  window.addEventListener('online', () => void refresh(true));
+  window.addEventListener('online', () => { lastData = null; void refresh(true); });
+  window.addEventListener('offline', () => { if (homeIsVisible()) paintError(); });
   window.setInterval(() => { if (!document.hidden) void refresh(); }, 60_000);
   void refresh(true);
 })();

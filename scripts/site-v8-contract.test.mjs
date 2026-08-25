@@ -5,20 +5,25 @@ import test from 'node:test';
 const root = new URL('../', import.meta.url);
 const read = (name) => readFile(new URL(name, root), 'utf8');
 
-test('site 8.1 assets are cache-busted and monochrome', async () => {
+test('site 8.2 assets are cache-busted and monochrome', async () => {
   const [html, css, logo] = await Promise.all([
     read('index.html'),
     read('site-v7.css'),
     read('play-streamers-ps-logo.svg'),
   ]);
-  assert.match(html, /play-streamers-build" content="2026-08-25-site-8\.1"/);
-  assert.match(html, /site-v7\.css\?v=8\.1/);
-  assert.match(html, /site-v7\.js\?v=8\.1/);
+  assert.match(html, /play-streamers-build" content="2026-08-25-site-8\.2"/);
+  assert.match(html, /site-v7\.css\?v=8\.2/);
+  assert.match(html, /site-v7\.js\?v=8\.2/);
   assert.match(css, /html\[data-ps-site-version="8"\]/);
   assert.match(css, /--signal: #f5f5f2/);
+  assert.match(css, /@keyframes ps82-meteor/);
+  assert.match(css, /@keyframes ps82-marquee/);
+  assert.match(css, /@keyframes ps82-window-float/);
+  assert.match(css, /prefers-reduced-motion: reduce/);
   assert.doesNotMatch(logo, /53fc18|ff7043/i);
-  assert.match(logo, /aria-label="Play Streamers keskin PS monogramı"/);
+  assert.match(logo, /aria-label="Play Streamers katmanlı keskin PS monogramı"/);
   assert.doesNotMatch(logo, /stroke-linecap="round"|rx="/);
+  assert.match(logo, /linearGradient id="frame"/);
 });
 
 test('public home promotes the desktop app without restoring legacy hero', async () => {
@@ -31,6 +36,8 @@ test('public home promotes the desktop app without restoring legacy hero', async
   assert.match(source, /PLAY<span>\.<\/span>STREAMERS/);
   assert.match(source, /class="ps81-showcase"/);
   assert.match(source, /className = 'ps81-nav-download'/);
+  assert.match(source, /class="ps82-motion-field"/);
+  assert.match(source, /IntersectionObserver/);
   assert.match(source, /current\.replaceWith\(home\)/);
   assert.doesNotMatch(source, /className = 'landing-card'/);
 });

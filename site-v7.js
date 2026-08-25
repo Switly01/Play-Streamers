@@ -5,6 +5,50 @@
     return [...document.querySelectorAll(selector)].some((node) => !node.hidden && node.getAttribute('aria-hidden') !== 'true');
   }
 
+  function activatePublicMotion(home) {
+    if (!home || home.dataset.ps82Motion === '1') return;
+    home.dataset.ps82Motion = '1';
+    const revealNodes = home.querySelectorAll([
+      '.ps81-showcase > header', '.ps81-showcase .ps8-app-stage',
+      '.ps8-section-head', '.ps8-boundary-grid article',
+      '.ps8-features > header', '.ps8-feature-grid article',
+      '.ps8-steps > div', '.ps8-steps li',
+      '.ps8-final-cta > *'
+    ].join(','));
+    revealNodes.forEach((node, index) => {
+      node.classList.add('ps82-reveal');
+      node.style.setProperty('--ps82-delay', `${(index % 6) * 70}ms`);
+    });
+    if ('IntersectionObserver' in window) {
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+          entry.target.classList.add('is-visible');
+          observer.unobserve(entry.target);
+        });
+      }, { threshold: .12, rootMargin: '0px 0px -5% 0px' });
+      revealNodes.forEach((node) => observer.observe(node));
+    } else {
+      revealNodes.forEach((node) => node.classList.add('is-visible'));
+    }
+
+    const hero = home.querySelector('.ps81-hero');
+    if (!hero || !matchMedia('(pointer:fine)').matches) return;
+    let pointerFrame = 0;
+    hero.addEventListener('pointermove', (event) => {
+      if (pointerFrame) cancelAnimationFrame(pointerFrame);
+      pointerFrame = requestAnimationFrame(() => {
+        const rect = hero.getBoundingClientRect();
+        hero.style.setProperty('--ps82-x', `${((event.clientX - rect.left) / rect.width) * 100}%`);
+        hero.style.setProperty('--ps82-y', `${((event.clientY - rect.top) / rect.height) * 100}%`);
+      });
+    }, { passive: true });
+    hero.addEventListener('pointerleave', () => {
+      hero.style.setProperty('--ps82-x', '50%');
+      hero.style.setProperty('--ps82-y', '42%');
+    }, { passive: true });
+  }
+
   function ensurePublicHome() {
     const root = document.getElementById('authOverlay');
     const shell = root?.querySelector('.landing-shell');
@@ -27,6 +71,8 @@
         <div class="ps8-dot-field" aria-hidden="true"></div>
         <div class="ps81-star-layer ps81-stars-one" aria-hidden="true"></div>
         <div class="ps81-star-layer ps81-stars-two" aria-hidden="true"></div>
+        <div class="ps82-motion-field" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><span></span><span></span></div>
+        <div class="ps82-orbits" aria-hidden="true"><i></i><i></i></div>
         <div class="ps8-hero-copy">
           <span class="ps8-version"><i></i> SÜRÜM 0.13.0</span>
           <h1 id="ps8-title">PLAY<span>.</span>STREAMERS</h1>
@@ -45,14 +91,14 @@
         <div class="ps81-scroll-cue" aria-hidden="true"><i></i><span>KEŞFET</span></div>
       </section>
 
-      <div class="ps8-marquee" aria-label="Play Streamers yetenekleri"><div><span>CANLI ANALİZ</span><i>✦</i><span>İÇERİK PLANLAMA</span><i>✦</i><span>PLAY CONNECT</span><i>✦</i><span>TOPLULUK</span><i>✦</i><span>MARKA ARAÇLARI</span><i>✦</i><span>GELİR GÖRÜNÜMLERİ</span></div></div>
+      <div class="ps8-marquee" aria-label="Play Streamers yetenekleri"><div class="ps82-marquee-track"><span class="ps82-marquee-group"><b>CANLI ANALİZ</b><i>✦</i><b>İÇERİK PLANLAMA</b><i>✦</i><b>PLAY CONNECT</b><i>✦</i><b>TOPLULUK</b><i>✦</i><b>MARKA ARAÇLARI</b><i>✦</i><b>GELİR GÖRÜNÜMLERİ</b><i>✦</i></span><span class="ps82-marquee-group" aria-hidden="true"><b>CANLI ANALİZ</b><i>✦</i><b>İÇERİK PLANLAMA</b><i>✦</i><b>PLAY CONNECT</b><i>✦</i><b>TOPLULUK</b><i>✦</i><b>MARKA ARAÇLARI</b><i>✦</i><b>GELİR GÖRÜNÜMLERİ</b><i>✦</i></span></div></div>
 
       <section class="ps81-showcase" aria-labelledby="ps81-showcase-title">
         <header><span>MASAÜSTÜ UYGULAMASI</span><h2 id="ps81-showcase-title">Her şey tek platformda.</h2><p>Analiz, içerik, topluluk ve daha fazlası — yayınını yönetmek için ihtiyacın olan araçlar tek sade uygulamada.</p></header>
         <div class="ps8-app-stage" aria-label="Play Streamers masaüstü uygulaması ön izlemesi">
           <div class="ps8-app-halo" aria-hidden="true"></div>
           <article class="ps8-app-window">
-            <header><span class="ps8-window-brand"><img src="./play-streamers-ps-logo.svg?v=8.3" alt=""><b>PLAY STREAMERS</b></span><span class="ps8-window-controls">— □ ×</span></header>
+            <header><span class="ps8-window-brand"><img src="./play-streamers-ps-logo.svg?v=8.4" alt=""><b>PLAY STREAMERS</b></span><span class="ps8-window-controls">— □ ×</span></header>
             <div class="ps8-app-body">
               <aside><i class="active"></i><i></i><i></i><i></i><i></i><i></i></aside>
               <div class="ps8-app-content">
@@ -96,7 +142,7 @@
       </section>
 
       <section class="ps8-final-cta" aria-labelledby="ps8-final-title">
-        <img src="./play-streamers-ps-logo.svg?v=8.3" alt="Play Streamers PS logosu">
+        <img src="./play-streamers-ps-logo.svg?v=8.4" alt="Play Streamers PS logosu">
         <span>WINDOWS 10/11 · SÜRÜM 0.13.0</span>
         <h2 id="ps8-final-title">Yayınını değil,<br>sistemini büyüt.</h2>
         <p>Hesabını ücretsiz oluştur. Play Streamers Desktop'ı indir ve üretim araçlarını tek sade merkezde kullanmaya başla.</p>
@@ -104,6 +150,7 @@
         <small>Doğrudan kurulum dosyası Windows yayınevi imzası tamamlanana kadar SmartScreen uyarısı gösterebilir.</small>
       </section>`;
     current.replaceWith(home);
+    activatePublicMotion(home);
     root.querySelector('.landing-update-preview')?.setAttribute('aria-hidden', 'true');
   }
 

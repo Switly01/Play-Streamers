@@ -1,6 +1,6 @@
 # Play Streamers — Kalıcı Proje Bağlamı
 
-Site 8.1 / Platform 5.0 / Desktop 0.13.0 / Play Connect 1.12.0: Ana sayfa,
+Site 8.2 / Platform 5.0 / Desktop 0.13.0 / Play Connect 1.12.0: Ana sayfa,
 Klyze referansının güçlü ürün sunumu örnek alınarak ancak özgün bir Play
 Streamers kimliğiyle tamamen siyah-beyaz düzene geçirildi. Yeni PS monogramı,
 katmanlı Desktop ön izlemesi, web/uygulama görev ayrımı, masaüstü indirme
@@ -10,7 +10,11 @@ monokrom değişkenleri kullanır. 8.1 revizyonunda Klyze referansına daha yak�
 ortalanmış sinematik hero, yıldız/toz alanı, büyük PLAY.STREAMERS kelime markası,
 tek güçlü Windows indirme çağrısı ve hero altı masaüstü ürün sahnesi kuruldu.
 PS logosu yuvarlak çizgilerden arındırılarak keskin geometrik P ve S harfleriyle
-yeniden çizildi. Kick yayınları artık
+yeniden çizildi. 8.2 revizyonunda yıldız katmanlarının hızı artırıldı; ışık
+izleri, işaretçi odak ışığı, sürekli kayan yetenek bandı, kademeli scroll reveal,
+hareketli grafik çubukları ve süzülen ürün penceresi eklendi. Logo; çift sekizgen
+çerçeve, diyagonal iç katman, tonlu harf yüzeyi ve teknik mikro detaylarla daha
+karakterli hale getirildi. `prefers-reduced-motion` hareketleri kapatır. Kick yayınları artık
 dakikalık Worker görevi ve imzalı livestream webhooklarıyla sunucuda otomatik
 oturum oluşturur. Site, masaüstü uygulaması ve eklenti kapalıyken de izleyici
 örnekleri toplanır; yayın kapanınca ortalama/tepe izleyici, takip, abonelik,

@@ -1,5 +1,22 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Play Streamers keskin PS monogramı">
-  <path d="M10 1h44l9 9v44l-9 9H10l-9-9V10Z" fill="#050505" stroke="#f5f5f2" stroke-width="1.5"/>
-  <path fill="#f5f5f2" fill-rule="evenodd" d="M8 11h18l8 8v12l-8 8h-9v14H8V11Zm9 9v10h6l2-2v-6l-2-2h-6Z"/>
-  <path d="M53 11H40l-7 7v12l7 7h6v7H33v9h16l7-7V34l-7-7h-7v-7h11Z" fill="#f5f5f2" stroke="#050505" stroke-width="2.4" stroke-linejoin="miter" paint-order="stroke"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Play Streamers katmanlı keskin PS monogramı">
+  <defs>
+    <linearGradient id="frame" x1="8" y1="4" x2="56" y2="60" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#fff"/><stop offset=".48" stop-color="#8d8d8a"/><stop offset="1" stop-color="#f5f5f2"/>
+    </linearGradient>
+    <linearGradient id="letter" x1="10" y1="12" x2="54" y2="52" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#fff"/><stop offset=".55" stop-color="#f1f1ed"/><stop offset="1" stop-color="#9b9b98"/>
+    </linearGradient>
+    <clipPath id="oct"><path d="M10 1h44l9 9v44l-9 9H10l-9-9V10Z"/></clipPath>
+  </defs>
+  <path d="M10 1h44l9 9v44l-9 9H10l-9-9V10Z" fill="#050505" stroke="url(#frame)" stroke-width="1.7"/>
+  <path d="m12 5-7 7v40l7 7h40l7-7V12l-7-7H12Z" fill="none" stroke="#343434" stroke-width="1"/>
+  <g clip-path="url(#oct)" opacity=".72">
+    <path d="M-4 51 51-4h12L8 51H-4Zm15 17 57-57v8L19 68h-8Z" fill="#151515"/>
+    <path d="M8 56 56 8" stroke="#242424" stroke-width="1"/>
+  </g>
+  <path fill="url(#letter)" fill-rule="evenodd" d="M8 11h18l8 8v12l-8 8h-9v14H8V11Zm9 9v10h6l2-2v-6l-2-2h-6Z"/>
+  <path d="M53 11H40l-7 7v12l7 7h6v7H33v9h16l7-7V34l-7-7h-7v-7h11Z" fill="url(#letter)" stroke="#050505" stroke-width="2.4" stroke-linejoin="miter" paint-order="stroke"/>
+  <path d="M8 47h9v6H8v-6Zm39-36h6v6h-6v-6Z" fill="#050505" opacity=".48"/>
+  <path d="M4 18h3v8H4v-8Zm53 20h3v8h-3v-8Z" fill="#d7d7d3"/>
+  <path d="M21 7h9M34 57h9" stroke="#777" stroke-width="1"/>
 </svg>

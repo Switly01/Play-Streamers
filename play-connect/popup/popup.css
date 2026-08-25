@@ -77,6 +77,7 @@ footer{justify-content:space-between;padding-top:10px}footer small{border:1px so
 /* 1.11: the popup is deliberately shorter, keeps the account state visible
    while scrolling and prevents long provider labels from shifting actions. */
 body{width:min(392px,100vw);max-height:600px;overflow:auto;scrollbar-color:rgba(83,252,24,.34) transparent}
+.narrow-notice{display:none}
 main{padding:14px}
 header{position:sticky;z-index:5;top:0;margin:-14px -14px 10px;padding:13px 14px 10px;background:linear-gradient(#050b14 78%,rgba(5,11,20,0));backdrop-filter:blur(9px)}
 .pair-card,.catalog,.delivery{border-radius:14px}
@@ -94,3 +95,72 @@ header{position:sticky;z-index:5;top:0;margin:-14px -14px 10px;padding:13px 14px
 footer{position:sticky;bottom:0;margin:0 -14px -14px;padding:10px 17px 12px;background:linear-gradient(rgba(5,11,20,0),#050b14 34%)}
 button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid rgba(83,252,24,.72);outline-offset:2px}
 @media(max-height:520px){.catalog{padding-bottom:9px}.featured-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.provider-card{min-height:54px!important}.delivery{padding:9px 11px}}
+
+/* 1.12: browser windows and Firefox panels can constrain an extension popup
+   far below its preferred width. Every mode owns its overflow explicitly so
+   the UI never collapses into a scrollbar-only strip. */
+html{max-width:100%;overflow-x:hidden;background:#050b14}
+body{max-width:100%;overflow-x:hidden;scrollbar-width:thin}
+body::-webkit-scrollbar,.others-grid::-webkit-scrollbar{width:7px;height:7px}
+body::-webkit-scrollbar-track,.others-grid::-webkit-scrollbar-track{background:rgba(255,255,255,.035)}
+body::-webkit-scrollbar-thumb,.others-grid::-webkit-scrollbar-thumb{border-radius:999px;background:rgba(83,252,24,.38)}
+@media(max-width:319px){
+  body{width:100vw}
+  main{padding:10px}
+  header{position:relative;margin:-10px -10px 8px;padding:10px 10px 8px;grid-template-columns:minmax(0,1fr) 9px;gap:7px}
+  .header-brand{grid-template-columns:34px minmax(0,1fr);gap:8px}
+  .brand-mark{width:34px;height:34px}
+  header b{font-size:13px}header small{font-size:9px}
+  #connectionDot{width:7px;height:7px}
+  .pair-card,.catalog,.delivery{border-radius:12px}
+  .pair-card,.catalog{padding:10px}
+  .label{font-size:8px}
+  h1{font-size:16px;line-height:1.18}
+  p{font-size:10px}
+  #pairForm{grid-template-columns:1fr;margin-top:9px}
+  #pairForm input{width:100%;padding:9px;font-size:10px;letter-spacing:.04em}
+  #pairForm button{min-height:36px}
+  .panel-button{min-height:39px;margin-top:8px;padding:9px 11px;font-size:11px}
+  .catalog{margin-top:8px}
+  .section-title{align-items:center;gap:7px}
+  .section-title span b{font-size:13px}.section-title span small{font-size:9px}
+  .scan-button{width:32px;min-width:32px;max-width:32px;padding:5px!important}
+  .scan-button span{display:none}
+  .provider-search{margin-bottom:8px}.provider-search input{padding:9px;font-size:10px}
+  .featured-grid{grid-template-columns:1fr;gap:6px}
+  .provider-card{grid-template-columns:28px minmax(0,1fr);min-height:50px!important;padding:8px!important}
+  .provider-card img{width:28px;height:28px}
+  .provider-card b{font-size:11px}.provider-card small{font-size:9px}
+  .others-toggle{margin-top:7px;padding:8px 9px!important;font-size:10px!important}
+  .delivery{margin-top:8px;padding:9px 10px}.delivery b{font-size:10px}.delivery small{font-size:8px}
+  footer{position:relative;margin:0 -10px -10px;padding:10px 12px;font-size:9px}
+  footer a{font-size:9px}
+}
+@media(max-width:219px){
+  main{padding:8px}
+  header{margin:-8px -8px 7px;padding:8px}
+  .header-brand{grid-template-columns:30px minmax(0,1fr);gap:6px}
+  .brand-mark{width:30px;height:30px}
+  header b{font-size:12px}header small{font-size:8px}
+  .pair-card,.catalog{padding:9px}
+  .pair-card>p{display:none}
+  h1{font-size:14px}
+  .panel-button{padding:8px 9px}
+  .section-title span small{display:none}
+  .provider-card small{display:none}
+  .delivery small{margin-left:0}
+  footer{margin:0 -8px -8px;padding:9px 10px}
+}
+@media(max-width:139px){
+  body{min-height:100vh;overflow:hidden;background:linear-gradient(180deg,rgba(83,252,24,.12),transparent 40%),#050b14}
+  main{display:none}
+  .narrow-notice{display:grid;min-height:100vh;place-items:center;align-content:center;gap:8px;overflow:hidden;padding:6px;color:#edf6ff;text-align:center}
+  .narrow-notice img{display:block;width:min(42px,calc(100vw - 8px));height:min(42px,calc(100vw - 8px));object-fit:contain}
+  .narrow-notice b{max-width:118px;font-size:11px;line-height:1.15;overflow-wrap:anywhere}
+  .narrow-notice small{max-width:118px;color:#9fb4c7;font-size:8px;line-height:1.35;overflow-wrap:anywhere}
+}
+@media(max-width:48px){
+  .narrow-notice{padding:2px}
+  .narrow-notice img{width:max(8px,calc(100vw - 4px));height:max(8px,calc(100vw - 4px))}
+  .narrow-notice b,.narrow-notice small{display:none}
+}

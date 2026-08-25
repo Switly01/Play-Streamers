@@ -17,6 +17,18 @@ test("manual page detection controls are removed", async () => {
   assert.match(background, /streamer\/donate\/incoming/);
 });
 
+test("popup dar tarayici panellerinde tasma ve kaydirma cubugu seridine donusmez", async () => {
+  const html = await read("../popup/popup.html");
+  const css = await read("../popup/popup.css");
+
+  assert.match(html, /class="narrow-notice"/);
+  assert.match(css, /@media\(max-width:319px\)/);
+  assert.match(css, /@media\(max-width:139px\)/);
+  assert.match(css, /@media\(max-width:48px\)/);
+  assert.match(css, /overflow-x:hidden/);
+  assert.match(css, /\.narrow-notice\{display:grid/);
+});
+
 test("OBS alert bağlantısı ve teslimat kuyruğu manifestte etkin", async () => {
   const manifest = JSON.parse(await read("../manifest.json"));
   const background = await read("../src/background.js");

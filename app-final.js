@@ -426,7 +426,7 @@
     setMarkup(previewCards[0], '<span class="preview-kicker">OTOMATİK VERİ HATTI</span><div class="preview-live"><i></i>SUNUCU AKTİF</div><p class="preview-title">Yayının kapansa da geçmişin hazır.</p><p class="preview-copy">Doğrulanmış oturumlar ve izleyici örnekleri sunucuda işlenir.</p>');
     setMarkup(previewCards[1], '<span class="preview-kicker">CREATOR OS</span><div class="mini-stat"><strong>54</strong><span>çalışma alanı</span></div><div class="mini-bars"><i style="height:34%"></i><i style="height:52%"></i><i style="height:76%"></i><i style="height:61%"></i><i style="height:88%"></i><i style="height:70%"></i></div>');
     const updateEyebrow = $('.eyebrow', update); setText(updateEyebrow, 'SİSTEM DURUMU');
-    const updateTitle = $('h2', update); setText(updateTitle, '7.0 · Control Room');
+    const updateTitle = $('h2', update); setText(updateTitle, '7.1 · Control Room');
     const updateLead = $('header p', update); setText(updateLead, 'Eski görsel katmanlar devreden çıkarıldı; tüm site tek bir kontrol odası tasarım sistemine geçti.');
     const updateTime = $('time', update); setText(updateTime, '25 Ağustos 2026');
     const updateItems = $('ul', update);

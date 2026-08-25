@@ -774,9 +774,14 @@ body.ps54-account-open { overflow: hidden; }
 .ps57-notification-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--signal); }
 .notice { min-width: 260px; max-width: min(380px,calc(100vw - 36px)); border: 1px solid var(--line-light); border-radius: 12px; padding: 14px; color: var(--paper); background: var(--panel-raised); box-shadow: 0 24px 60px rgba(0,0,0,.42); }
 #ps46Tooltip { position: fixed; z-index: 50000; max-width: 240px; border: 1px solid var(--line-light); border-radius: 7px; padding: 7px 9px; color: var(--paper-dim); background: #1c2125; font-size: 8px; pointer-events: none; }
-.ps46-support-widget { position: fixed; z-index: 8000; right: 18px; bottom: 18px; }
+#ps46Support, .ps46-support-widget { position: fixed; z-index: 8000; right: 18px; bottom: 18px; width: 48px; height: 48px; pointer-events: none; }
+#ps46Support .ps46-support-copy, #ps46Support .ps46-support-arrow { display: none !important; }
 .ps46-support-link { display: flex; align-items: center; gap: 9px; border: 1px solid var(--line-light); border-radius: 12px; padding: 11px 13px; color: var(--paper); background: var(--panel-raised); text-decoration: none; box-shadow: 0 20px 50px rgba(0,0,0,.35); }
+#ps46Support .ps46-support-link { width: 48px; height: 48px; justify-content: center; padding: 0; pointer-events: auto; }
+#ps46Support .ps46-support-link svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.8; }
+body.ps-v7-dialog-open #ps46Support { opacity: .25; pointer-events: none; }
 .ps46-support-copy b, .ps46-support-copy small { display: block; }.ps46-support-copy b { font-size: 10px; }.ps46-support-copy small { color: var(--muted); font-size: 8px; }
+.ps70-google-render-probe, body.ps28-stable-loaders .ps14-loader { display: none !important; }
 .overlay:not(#authOverlay) { position: fixed; z-index: 18000; inset: 0; display: grid; place-items: center; overflow: auto; padding: 18px; background: rgba(6,7,8,.82); backdrop-filter: blur(14px); }
 .overlay:not(#authOverlay) :is(.dialog,.ps11-dialog,.ps14-dialog,.psmail-dialog,.ps-release-dialog) { position: relative; width: min(620px,100%); max-height: calc(100dvh - 36px); overflow: auto; border: 1px solid var(--line-light); border-radius: 18px; padding: 28px; color: var(--paper); background: var(--panel); box-shadow: 0 36px 90px rgba(0,0,0,.48); }
 .dialog h2, .ps11-dialog h2, .ps14-dialog h2 { margin: 8px 0; font: 600 28px var(--display); letter-spacing: -.045em; }
@@ -868,7 +873,7 @@ body.ps54-account-open { overflow: hidden; }
   .app .ticker { grid-template-columns: 1fr; }
   .app .card { min-height: 220px; padding: 18px; }
   .app .foot { flex-direction: column; }
-  .ps46-support-widget { right: 12px; bottom: 12px; }
+  #ps46Support, .ps46-support-widget { right: 12px; bottom: 12px; }
   .ps46-support-copy { display: none; }
 }
 @media (prefers-reduced-motion: reduce) {

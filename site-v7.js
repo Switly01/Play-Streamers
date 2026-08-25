@@ -24,7 +24,7 @@
     if (product) product.setAttribute('aria-label', 'Play Streamers masaüstü ve sunucu veri merkezi ön izlemesi');
     if (update) {
       setText(update, '.eyebrow', 'SİSTEM DURUMU');
-      setText(update, 'h2', '7.0 · Control Room');
+      setText(update, 'h2', '7.1 · Control Room');
       setText(update, 'header p', 'Eski görsel katmanlar devreden çıkarıldı; tüm site tek bir kontrol odası tasarım sistemine geçti.');
       setText(update, 'time', '25 Ağustos 2026');
     }

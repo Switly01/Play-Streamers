@@ -1,6 +1,6 @@
 # Play Streamers — Kalıcı Proje Bağlamı
 
-Site 7.0 / Platform 5.0 / Desktop 0.13.0 / Play Connect 1.11.0: Kick yayınları artık
+Site 7.1 / Platform 5.0 / Desktop 0.13.0 / Play Connect 1.11.0: Kick yayınları artık
 dakikalık Worker görevi ve imzalı livestream webhooklarıyla sunucuda otomatik
 oturum oluşturur. Site, masaüstü uygulaması ve eklenti kapalıyken de izleyici
 örnekleri toplanır; yayın kapanınca ortalama/tepe izleyici, takip, abonelik,
@@ -1100,7 +1100,7 @@ bağlantı durumları sade ama güçlü bir arayüzde sunulmalıdır.
   Güvenli bağlantılar · Kişisel panel · Ücretsiz başlangıç metni tam ortada ve
   Developed by SW CREATE bağlantısı sağda gösterilir; dar ekranda üçü ortalanıp
   alt alta dizilir.
-- Site 7.0 görsel sistemi yalnız `site-v7.css` ve `site-v7.js` üzerinden
+- Site 7.1 görsel sistemi yalnız `site-v7.css` ve `site-v7.js` üzerinden
   yüklenir. Eski `styles.css`, `compact-modern.css` ve 6.0 katmanları çalışma
   geçmişi için korunabilir ancak `index.html` tarafından yüklenmez. Ziyaretçi
   ana sayfası, giriş/kayıt, bilgi sayfaları, üye ana sayfası, hesap merkezi ve

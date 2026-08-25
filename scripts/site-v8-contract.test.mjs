@@ -11,8 +11,8 @@ test('site 9.0 assets are cache-busted and monochrome', async () => {
     read('site-v7.css'),
     read('play-streamers-ps-logo.svg'),
   ]);
-  assert.match(html, /play-streamers-build" content="2026-08-26-site-9\.0"/);
-  assert.match(html, /site-v7\.css\?v=9\.0/);
+  assert.match(html, /play-streamers-build" content="2026-08-26-site-9\.0\.1"/);
+  assert.match(html, /site-v7\.css\?v=9\.0\.1/);
   assert.match(html, /site-v7\.js\?v=9\.0/);
   assert.match(html, /app-final\.js\?v=5\.2/);
   assert.match(css, /html\[data-ps-site-version="8"\]/);
@@ -28,6 +28,7 @@ test('site 9.0 assets are cache-busted and monochrome', async () => {
   assert.match(css, /#ps9Ambient/);
   assert.match(css, /ps9-surface-in/);
   assert.match(css, /ps9-sw-ai-summary/);
+  assert.doesNotMatch(css, /body\.ps-v9\s*>\s*:not\(#ps9Ambient\)/);
   assert.match(logo, /aria-label="Play Streamers karakteristik keskin PS amblemi"/);
   assert.doesNotMatch(logo, /stroke-linecap="round"|rx="/);
   assert.match(logo, /linearGradient id="ps9-frame"/);
@@ -66,7 +67,7 @@ test('SW Bot audits the whole interface and explains issues with SW AI', async (
   assert.match(worker, /sw-bot:global-status:v10/);
   assert.match(worker, /explainSwBotIssuesWithAi/);
   assert.match(worker, /swBotDeterministicReport/);
-  assert.match(worker, /site-v7\.css\?v=9\.0/);
+  assert.match(worker, /site-v7\.css\?v=9\.0\.1/);
   assert.match(worker, /terms\.html/);
 });
 

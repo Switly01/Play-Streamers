@@ -776,7 +776,7 @@ async function runScheduledPlayBotAudit(env) {
     ["Ana uygulama betiği", "https://pstreamers.com/app.js?v=5.0", "script"],
     ["Uygulama betiği", "https://pstreamers.com/app-final.js?v=5.2", "script"],
     ["Site davranış betiği", "https://pstreamers.com/site-v7.js?v=9.0", "script"],
-    ["Premium stil dosyası", "https://pstreamers.com/site-v7.css?v=9.0", "style"],
+    ["Premium stil dosyası", "https://pstreamers.com/site-v7.css?v=9.0.1", "style"],
     ["Gizlilik sayfası", "https://pstreamers.com/privacy.html", "document"],
     ["Kullanım koşulları", "https://pstreamers.com/terms.html", "document"],
     ["PS marka amblemi", "https://pstreamers.com/play-streamers-ps-logo.svg?v=9.0", "image"],
@@ -841,11 +841,11 @@ async function runScheduledPlayBotAudit(env) {
   const homeDocument = results.find(result => result.type === "document");
   if (homeDocument?.ok) {
     const documentContracts = [
-      ["site-v7.css?v=9.0", "Güncel premium stil dosyası"],
+      ["site-v7.css?v=9.0.1", "Güncel premium stil dosyası"],
       ["app.js?v=5.0", "Güncel ana uygulama betiği"],
       ["app-final.js?v=5.2", "Güncel onarım betiği"],
       ["site-v7.js?v=9.0", "Güncel site davranış betiği"],
-      ["play-streamers-build\" content=\"2026-08-26-site-9.0", "Site 9.0 sürüm işareti"],
+      ["play-streamers-build\" content=\"2026-08-26-site-9.0.1", "Site 9.0.1 sürüm işareti"],
     ];
     for (const [token, label] of documentContracts) {
       if (!homeDocument.body.includes(token)) issues.push(`${label} canlı ana sayfaya bağlanmamış.`);

@@ -979,7 +979,7 @@ body.ps-v9 :is(.brand-logo,.ps20-logo,.ps51-account-brand i,.ps53-products-brand
   transform: translate(-50%,-50%);
   transition: top .12s linear,left .12s linear;
 }
-body.ps-v9 > :not(#ps9Ambient) { position: relative; z-index: 1; }
+body.ps-v9 > :is(.app,#authOverlay,#psSecondHome,#ps49InfoPage,#ps53ProductsPage) { position: relative; z-index: 1; }
 
 @keyframes ps9-star-cruise { to { background-position: 132px 164px,226px 272px,186px 121px; } }
 @keyframes ps9-meteor { 0%,70% { opacity:0; transform:translate3d(-10vw,-18vh,0) rotate(38deg); } 74% { opacity:.72; } 100% { opacity:0; transform:translate3d(38vw,118vh,0) rotate(38deg); } }

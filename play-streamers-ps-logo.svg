@@ -1,6 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Play Streamers PS monogramı">
-  <rect x="1.25" y="1.25" width="61.5" height="61.5" rx="16" fill="#050505" stroke="#f5f5f2" stroke-width="1.5"/>
-  <path fill="#f5f5f2" fill-rule="evenodd" d="M9.5 12.5h12.8c8.4 0 13.5 4.9 13.5 12.6S30.7 37.7 22.3 37.7h-5.1v13.8H9.5v-39Zm7.7 6.8v11.6h4.9c4 0 5.9-1.9 5.9-5.8s-1.9-5.8-5.9-5.8h-4.9Z"/>
-  <path d="M51.5 20c-2.6-3.7-6-5.6-10.2-5.6-5 0-8.1 2.5-8.1 6.2 0 4 3 5.8 9.2 7.5 7.7 2.2 11.5 5.7 11.5 11.8 0 7.2-5.6 12-13.9 12-5.7 0-10.4-2-13.9-5.9" fill="none" stroke="#050505" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>
-  <path d="M51.5 20c-2.6-3.7-6-5.6-10.2-5.6-5 0-8.1 2.5-8.1 6.2 0 4 3 5.8 9.2 7.5 7.7 2.2 11.5 5.7 11.5 11.8 0 7.2-5.6 12-13.9 12-5.7 0-10.4-2-13.9-5.9" fill="none" stroke="#f5f5f2" stroke-width="5.2" stroke-linecap="round" stroke-linejoin="round"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Play Streamers keskin PS monogramı">
+  <path d="M10 1h44l9 9v44l-9 9H10l-9-9V10Z" fill="#050505" stroke="#f5f5f2" stroke-width="1.5"/>
+  <path fill="#f5f5f2" fill-rule="evenodd" d="M8 11h18l8 8v12l-8 8h-9v14H8V11Zm9 9v10h6l2-2v-6l-2-2h-6Z"/>
+  <path d="M53 11H40l-7 7v12l7 7h6v7H33v9h16l7-7V34l-7-7h-7v-7h11Z" fill="#f5f5f2" stroke="#050505" stroke-width="2.4" stroke-linejoin="miter" paint-order="stroke"/>
 </svg>

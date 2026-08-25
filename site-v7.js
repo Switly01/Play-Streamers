@@ -9,30 +9,50 @@
     const root = document.getElementById('authOverlay');
     const shell = root?.querySelector('.landing-shell');
     const current = shell?.querySelector('.landing-main');
-    if (!root || !shell || !current || current.classList.contains('ps8-home')) return;
+    if (!root || !shell || !current) return;
+    const navActions = root.querySelector('.landing-actions');
+    if (navActions && !navActions.querySelector('.ps81-nav-download')) {
+      const navDownload = document.createElement('a');
+      navDownload.className = 'ps81-nav-download';
+      navDownload.href = './downloads/Play-Streamers-Setup.exe';
+      navDownload.setAttribute('download', '');
+      navDownload.innerHTML = '<span>Windows için indir</span><i>↓</i>';
+      navActions.prepend(navDownload);
+    }
+    if (current.classList.contains('ps8-home')) return;
     const home = document.createElement('section');
     home.className = 'landing-main ps8-home';
     home.innerHTML = `
-      <section class="ps8-hero" aria-labelledby="ps8-title">
+      <section class="ps8-hero ps81-hero" aria-labelledby="ps8-title">
         <div class="ps8-dot-field" aria-hidden="true"></div>
+        <div class="ps81-star-layer ps81-stars-one" aria-hidden="true"></div>
+        <div class="ps81-star-layer ps81-stars-two" aria-hidden="true"></div>
         <div class="ps8-hero-copy">
-          <span class="ps8-version"><i></i> PLAY STREAMERS DESKTOP · 0.13.0</span>
-          <h1 id="ps8-title"><span>YAYININ.</span><span class="ps8-outline">VERİN.</span><span>KONTROLÜN.</span></h1>
-          <p>Yayın verilerin sunucuda otomatik toplansın. Hesabını web'de yönet; analiz, içerik, topluluk ve üretim araçlarının tamamını sade masaüstü uygulamasında kullan.</p>
+          <span class="ps8-version"><i></i> SÜRÜM 0.13.0</span>
+          <h1 id="ps8-title">PLAY<span>.</span>STREAMERS</h1>
+          <h2>Profesyonel Yayıncı Kontrol Platformu</h2>
+          <p>Canlı analiz · İçerik planlama · Topluluk · Marka · Play Connect</p>
           <div class="ps8-hero-actions">
             <a class="ps8-download" href="./downloads/Play-Streamers-Setup.exe" download>
               <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4.5 10.5 3v8.2H3V4.5Zm8.5-1.7L21 1v10.2h-9.5V2.8ZM3 12.2h7.5V21L3 19.5v-7.3Zm8.5 0H21V23l-9.5-1.8v-9Z"/></svg>
               <span><b>Windows için indir</b><small>Windows 10/11 · 64 bit</small></span>
               <i>↓</i>
             </a>
-            <button class="ps8-account" type="button" data-ps8-action="register">Ücretsiz hesap oluştur <span>↗</span></button>
           </div>
-          <div class="ps8-proof" aria-label="Ürün bilgileri"><span><b>45</b> hazır araç</span><span><b>7/24</b> sunucu ölçümü</span><span><b>1</b> sade merkez</span></div>
+          <div class="ps8-proof" aria-label="Ürün bilgileri"><span>Ücretsiz</span><i>•</i><span>3.1 MB</span><i>•</i><span>Windows 10/11</span></div>
+          <button class="ps81-hero-account" type="button" data-ps8-action="register">Ücretsiz hesap oluştur <span>↗</span></button>
         </div>
+        <div class="ps81-scroll-cue" aria-hidden="true"><i></i><span>KEŞFET</span></div>
+      </section>
+
+      <div class="ps8-marquee" aria-label="Play Streamers yetenekleri"><div><span>CANLI ANALİZ</span><i>✦</i><span>İÇERİK PLANLAMA</span><i>✦</i><span>PLAY CONNECT</span><i>✦</i><span>TOPLULUK</span><i>✦</i><span>MARKA ARAÇLARI</span><i>✦</i><span>GELİR GÖRÜNÜMLERİ</span></div></div>
+
+      <section class="ps81-showcase" aria-labelledby="ps81-showcase-title">
+        <header><span>MASAÜSTÜ UYGULAMASI</span><h2 id="ps81-showcase-title">Her şey tek platformda.</h2><p>Analiz, içerik, topluluk ve daha fazlası — yayınını yönetmek için ihtiyacın olan araçlar tek sade uygulamada.</p></header>
         <div class="ps8-app-stage" aria-label="Play Streamers masaüstü uygulaması ön izlemesi">
           <div class="ps8-app-halo" aria-hidden="true"></div>
           <article class="ps8-app-window">
-            <header><span class="ps8-window-brand"><img src="./play-streamers-ps-logo.svg?v=8.2" alt=""><b>PLAY STREAMERS</b></span><span class="ps8-window-controls">— □ ×</span></header>
+            <header><span class="ps8-window-brand"><img src="./play-streamers-ps-logo.svg?v=8.3" alt=""><b>PLAY STREAMERS</b></span><span class="ps8-window-controls">— □ ×</span></header>
             <div class="ps8-app-body">
               <aside><i class="active"></i><i></i><i></i><i></i><i></i><i></i></aside>
               <div class="ps8-app-content">
@@ -50,8 +70,6 @@
           <span class="ps8-float ps8-float-bottom"><b>45</b> araç tek uygulamada</span>
         </div>
       </section>
-
-      <div class="ps8-marquee" aria-label="Play Streamers yetenekleri"><div><span>CANLI ANALİZ</span><i>✦</i><span>İÇERİK PLANLAMA</span><i>✦</i><span>PLAY CONNECT</span><i>✦</i><span>TOPLULUK</span><i>✦</i><span>MARKA ARAÇLARI</span><i>✦</i><span>GELİR GÖRÜNÜMLERİ</span></div></div>
 
       <section class="ps8-boundary" aria-labelledby="ps8-boundary-title">
         <div class="ps8-section-head"><span>WEB + DESKTOP</span><h2 id="ps8-boundary-title">Doğru araç,<br>doğru yerde.</h2><p>Her şeyi siteye sıkıştırmıyoruz. Tarayıcı hızlı hesap işlemlerini, masaüstü uygulaması ise günlük üretim akışını taşır.</p></div>
@@ -78,7 +96,7 @@
       </section>
 
       <section class="ps8-final-cta" aria-labelledby="ps8-final-title">
-        <img src="./play-streamers-ps-logo.svg?v=8.2" alt="Play Streamers PS logosu">
+        <img src="./play-streamers-ps-logo.svg?v=8.3" alt="Play Streamers PS logosu">
         <span>WINDOWS 10/11 · SÜRÜM 0.13.0</span>
         <h2 id="ps8-final-title">Yayınını değil,<br>sistemini büyüt.</h2>
         <p>Hesabını ücretsiz oluştur. Play Streamers Desktop'ı indir ve üretim araçlarını tek sade merkezde kullanmaya başla.</p>

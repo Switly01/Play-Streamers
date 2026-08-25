@@ -1907,6 +1907,9 @@ html[data-ps-site-version="9"] body.ps-v9 .ps44-menu-button:hover,
 html[data-ps-site-version="9"] body.ps-v9 .ps44-menu-button:focus-visible {
   color:#fff;background:rgba(255,255,255,.075);outline:none;
 }
+html[data-ps-site-version="9"] body.ps-v9 #authOverlay .landing-footer a {
+  display:inline-flex;min-height:28px;align-items:center;
+}
 html[data-ps-site-version="9"] body.ps-v9 .ps8-feature-grid { grid-template-columns:repeat(12,minmax(0,1fr)) !important; }
 html[data-ps-site-version="9"] body.ps-v9 .ps8-feature-grid > article:nth-child(1) { grid-column:span 8 !important; }
 html[data-ps-site-version="9"] body.ps-v9 .ps8-feature-grid > article:nth-child(2) { grid-column:span 4 !important; }

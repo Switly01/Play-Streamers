@@ -1,6 +1,6 @@
 # Play Streamers — Kalıcı Proje Bağlamı
 
-Site 9.0.1 / Platform 5.1 / Desktop 0.13.0 / Play Connect 1.12.0: Ana sayfa,
+Site 9.0.2 / Platform 5.1 / Desktop 0.13.0 / Play Connect 1.12.0: Ana sayfa,
 Klyze referansının güçlü ürün sunumu örnek alınarak ancak özgün bir Play
 Streamers kimliğiyle tamamen siyah-beyaz düzene geçirildi. Yeni PS monogramı,
 katmanlı Desktop ön izlemesi, web/uygulama görev ayrımı, masaüstü indirme
@@ -64,6 +64,13 @@ kontroller, hedefsiz bağlantılar, bozuk `aria-expanded` ve açılır katman
 açıklaması üretir; geçersiz/başarısız AI çıktısında deterministik Türkçe özet
 ve güvenli sonraki adım kullanılır. Aynı sorun kümesi değişmedikçe AI sonucu
 önbellekten tekrar kullanılır.
+
+Site 9.0.2 etkileşim onarımı: `showDialog` kullanan destek, güncelleme,
+grafik, hesap güvenliği, çıkış ve sıfırlama pencereleri ortak sabit modal
+katmanına alındı; böylece body sonuna görünmeden eklenmez. Eski sistem durumu
+penceresi SW Bot ile aynı tıklamada ikinci kez açılmaz. SW Bot görünürlük
+denetimi gizli/ölçüsüz atıl kopyaları ve kapalı Google ölçüm düğmesini sorun
+saymaz; altlık bağlantıları güvenli dokunma yüksekliğine sahiptir.
 
 Sürüm 4.8 / Desktop 0.12.0: Kullanıcı kararıyla Studio, yerel kayıt/yayın
 motoru, genel kayıt-yayın-replay kısayolları, FFmpeg yan uygulaması ve sanal

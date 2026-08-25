@@ -2,6 +2,7 @@
   'use strict';
   /* Bu katman Dashboard ikonları, kart büyütme ve geçiş davranışlarının tek sahibidir. */
   document.documentElement.dataset.ps53DashboardOwner = '1';
+  window.psSwBotOwnsStatus = true;
   const STORE = 'play-streamers-v17-site';
   const $ = (selector, root = document) => root.querySelector(selector);
   const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
@@ -144,7 +145,7 @@
       if (panel.isConnected && !panel.hidden) renderConnectionPanel(panel);
     }).catch(() => {});
   }
-  function showDialog(id, body) { let layer = document.getElementById(id); if (!layer) { layer = document.createElement('section'); layer.id = id; document.body.append(layer); } window.clearTimeout(layer.ps48CloseTimer); layer.classList.remove('ps44-modal-closing'); layer.innerHTML = `<article class="ps44-dialog">${body}</article>`; layer.hidden = false; layer.onclick = event => { if (event.target === layer) closeDialog(layer); }; return layer; }
+  function showDialog(id, body) { let layer = document.getElementById(id); if (!layer) { layer = document.createElement('section'); layer.id = id; document.body.append(layer); } window.clearTimeout(layer.ps48CloseTimer); layer.classList.add('ps44-dialog-layer'); layer.classList.remove('ps44-modal-closing'); layer.setAttribute('role', 'dialog'); layer.setAttribute('aria-modal', 'true'); layer.innerHTML = `<article class="ps44-dialog">${body}</article>`; layer.hidden = false; layer.onclick = event => { if (event.target === layer) closeDialog(layer); }; return layer; }
   let updatesReturnPath = '';
   function closeUpdates() {
     closeDialog($('#ps44UpdatesDialog'));
@@ -2416,11 +2417,22 @@
     if (duplicated.length) issues.push(`${duplicated.length} yinelenen arayüz kimliği bulundu: ${duplicated.slice(0, 4).join(', ')}.`);
     if (!navigator.onLine) issues.push('Tarayıcı çevrimdışı; canlı veriler güncellenemiyor.');
     if (!playBotApiHealthy) issues.push('Play Streamers API yanıt vermiyor veya yanıt süresi aşıldı.');
-    const visible = node => Boolean(node && !node.hidden && node.getClientRects().length && getComputedStyle(node).visibility !== 'hidden');
+    const visible = node => {
+      if (!node || !node.isConnected || node.hidden || node.closest('[hidden],[inert]')) return false;
+      let current = node;
+      while (current && current !== document.documentElement) {
+        const style = getComputedStyle(current);
+        if (style.display === 'none' || style.visibility === 'hidden' || Number(style.opacity) === 0) return false;
+        current = current.parentElement;
+      }
+      const rect = node.getBoundingClientRect();
+      return Boolean(node.getClientRects().length && rect.width > 0 && rect.height > 0);
+    };
     const memberHome = $('#psSecondHome');
     const dashboard = $('.app');
     const publicHome = $('#authOverlay');
-    if (![memberHome, dashboard, publicHome].some(visible)) issues.push('Görünür bir ana ekran bulunamadı; sayfa boş görünümde kalmış olabilir.');
+    const infoPage = $('#ps49InfoPage,#ps53ProductsPage,.ps23-info-page');
+    if (![memberHome, dashboard, publicHome, infoPage].some(visible)) issues.push('Görünür bir ana ekran bulunamadı; sayfa boş görünümde kalmış olabilir.');
     if (visible(memberHome) && visible(dashboard)) issues.push('Üye ana sayfası ile Dashboard aynı anda görünür durumda.');
     const loader = $$('#ps20Loader,.ps14-loader,#psUnifiedLoader').find(node => visible(node) && (node.classList.contains('show') || node.getAttribute('aria-busy') === 'true'));
     if (loader) {
@@ -2434,26 +2446,10 @@
     const failedImages = $$('img').filter(image => image.isConnected && image.complete && image.naturalWidth === 0 && image.getClientRects().length).slice(0, 4);
     failedImages.forEach(image => issues.push(`Görsel bozuk: “${image.getAttribute('alt') || image.getAttribute('src') || 'isimsiz görsel'}” ekranda yüklenemiyor.`));
     const visibleDialogs = $$('.auth-dialog,.ps27-dialog,#ps30Modal .ps30-dialog').filter(visible);
-    // Giriş penceresi kapaliyken de gercek CSS/DOM yapisini kullanarak Google
-    // isaretini olcer. Boylece Play Bot yalniz sunucu sagligini degil,
-    // kullanicinin gorecegi sosyal giris dugmesini de her kontrolde dener.
-    const playBotSurface = document.body;
-    let googleProbe = $('.ps70-google-render-probe', playBotSurface);
-    if (!googleProbe) {
-      googleProbe = document.createElement('button');
-      googleProbe.type = 'button';
-      googleProbe.tabIndex = -1;
-      googleProbe.className = 'ps51-provider-button ps70-google-render-probe';
-      googleProbe.dataset.ps48Provider = 'google';
-      googleProbe.setAttribute('aria-hidden', 'true');
-      googleProbe.innerHTML = `<span class="ps11-google-mark" aria-hidden="true">${googleMark}</span><span>Google ile devam et</span>`;
-      playBotSurface.append(googleProbe);
-    }
-    const probeIcon = googleProbe.querySelector('svg');
-    const probeRect = probeIcon?.getBoundingClientRect();
-    if (!probeIcon || !probeRect || probeRect.width < 18 || probeRect.height < 18) {
-      issues.push('Giriş ve kayıt bozuk: Google simgesi gerçek düğme düzeninde görünmüyor veya doğru boyutta değil.');
-    }
+    // Sosyal giriş düzenini yalnız gerçekten açık olan pencerede ölç. Önceki
+    // görünmez ölçüm düğmesi 0x0 geometri üreterek yanlış hata veriyor ve
+    // doğrudan body altında gereksiz bir işlem alanı bırakıyordu.
+    $('.ps70-google-render-probe')?.remove();
     visibleDialogs.forEach(dialog => {
       if (dialog.closest('#ps56TwoFactorLogin,#ps15KickSetup,#googleProfileSetup,.account-blocker')) return;
       const googleButtons = $$('[data-ps48-provider="google"]', dialog).filter(visible);
@@ -2497,7 +2493,12 @@
     const clippedControls = $$('button,a[href],input,select').filter(node => {
       if (!visible(node)) return false;
       const rect = node.getBoundingClientRect();
-      const fixed = getComputedStyle(node).position === 'fixed' || Boolean(node.closest('.popover,.side-menu,.overlay,.landing-auth-modal,#ps51AccountCenter'));
+      let fixed = false;
+      let ancestor = node;
+      while (ancestor && ancestor !== document.documentElement) {
+        if (getComputedStyle(ancestor).position === 'fixed') { fixed = true; break; }
+        ancestor = ancestor.parentElement;
+      }
       return rect.width < 20 || rect.height < 20 || (fixed && (rect.right < 0 || rect.left > innerWidth || rect.bottom < 0 || rect.top > innerHeight));
     });
     if (clippedControls.length) issues.push(`Yerleşim sorunu: ${clippedControls.length} işlem alanı görünmeyecek kadar küçük veya ekranın dışında.`);
@@ -2574,6 +2575,7 @@
     playBotBackgroundTimer = window.setTimeout(monitorPlayBotInBackground, 20000);
   }
   function openStatus(button) {
+    ['ps17StatusPanel', 'ps18StatusLayer', 'ps23Issues'].forEach(id => document.getElementById(id)?.remove());
     const popover = document.getElementById('ps44StatusPopover') || document.body.appendChild(document.createElement('aside'));
     popover.id = 'ps44StatusPopover';
     if (!popover.hidden && popover.dataset.owner === button.id) { closeStatus(); return; }

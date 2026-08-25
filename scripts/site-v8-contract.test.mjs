@@ -11,10 +11,11 @@ test('site 9.0 assets are cache-busted and monochrome', async () => {
     read('site-v7.css'),
     read('play-streamers-ps-logo.svg'),
   ]);
-  assert.match(html, /play-streamers-build" content="2026-08-26-site-9\.0\.1"/);
-  assert.match(html, /site-v7\.css\?v=9\.0\.1/);
+  assert.match(html, /play-streamers-build" content="2026-08-26-site-9\.0\.2"/);
+  assert.match(html, /site-v7\.css\?v=9\.0\.2/);
+  assert.match(html, /app\.js\?v=5\.1/);
   assert.match(html, /site-v7\.js\?v=9\.0/);
-  assert.match(html, /app-final\.js\?v=5\.2/);
+  assert.match(html, /app-final\.js\?v=5\.3/);
   assert.match(css, /html\[data-ps-site-version="8"\]/);
   assert.match(css, /--signal: #f5f5f2/);
   assert.match(css, /@keyframes ps82-meteor/);
@@ -56,8 +57,14 @@ test('public home promotes the desktop app without restoring legacy hero', async
 });
 
 test('SW Bot audits the whole interface and explains issues with SW AI', async () => {
-  const [app, worker] = await Promise.all([read('app-final.js'), read('cloudflare-worker.js')]);
+  const [app, legacyApp, worker] = await Promise.all([read('app-final.js'), read('app.js'), read('cloudflare-worker.js')]);
   assert.match(app, /<b>SW BOT<\/b>/);
+  assert.match(app, /classList\.add\('ps44-dialog-layer'\)/);
+  assert.match(app, /node\.closest\('\[hidden\],\[inert\]'\)/);
+  assert.doesNotMatch(app, /playBotSurface\.append\(googleProbe\)/);
+  assert.match(app, /window\.psSwBotOwnsStatus = true/);
+  assert.match(app, /getComputedStyle\(ancestor\)\.position === 'fixed'/);
+  assert.match(legacyApp, /window\.psSwBotOwnsStatus === true && issue/);
   assert.match(app, /\/api\/sw-bot\/status/);
   assert.match(app, /SW AI AÇIKLAMASI/);
   assert.match(app, /unnamedControls/);
@@ -67,7 +74,7 @@ test('SW Bot audits the whole interface and explains issues with SW AI', async (
   assert.match(worker, /sw-bot:global-status:v10/);
   assert.match(worker, /explainSwBotIssuesWithAi/);
   assert.match(worker, /swBotDeterministicReport/);
-  assert.match(worker, /site-v7\.css\?v=9\.0\.1/);
+  assert.match(worker, /site-v7\.css\?v=9\.0\.2/);
   assert.match(worker, /terms\.html/);
 });
 

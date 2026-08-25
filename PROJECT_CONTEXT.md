@@ -1,11 +1,17 @@
 # Play Streamers — Kalıcı Proje Bağlamı
 
-Site 7.1 / Platform 5.0 / Desktop 0.13.0 / Play Connect 1.12.0: Kick yayınları artık
+Site 8.0 / Platform 5.0 / Desktop 0.13.0 / Play Connect 1.12.0: Ana sayfa,
+Klyze referansının güçlü ürün sunumu örnek alınarak ancak özgün bir Play
+Streamers kimliğiyle tamamen siyah-beyaz düzene geçirildi. Yeni PS monogramı,
+katmanlı Desktop ön izlemesi, web/uygulama görev ayrımı, masaüstü indirme
+çağrıları ve responsive ürün bölümleri tek aktif vitrin katmanında çalışır.
+Turuncu Control Room dili kaldırıldı; hesap, üye ve Dashboard yüzeyleri de aynı
+monokrom değişkenleri kullanır. Kick yayınları artık
 dakikalık Worker görevi ve imzalı livestream webhooklarıyla sunucuda otomatik
 oturum oluşturur. Site, masaüstü uygulaması ve eklenti kapalıyken de izleyici
 örnekleri toplanır; yayın kapanınca ortalama/tepe izleyici, takip, abonelik,
 bağış ve etkileşim özeti D1 üzerinde tamamlanır. Site; ziyaretçi, üye, hesap ve
-Dashboard yüzeylerini ortak Control Room tasarım sisteminde birleştirdi. Desktop aynı özeti açılışta
+Dashboard yüzeylerini ortak monokrom tasarım sisteminde birleştirdi. Desktop aynı özeti açılışta
 ve dakikada bir yeniler. Windows 10/11 tek 0.13.0 uygulama ve 0.13.0.0 Store
 paketini kullanır; Store bildiriminde artık kamera/mikrofon yetkisi yoktur.
 Chrome ve Firefox Play Connect paketleri 1.12.0 sürümünde eşitlenmiştir. Popup;

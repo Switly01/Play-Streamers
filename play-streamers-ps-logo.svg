@@ -1,6 +1,6 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 42 42" role="img" aria-label="Play Streamers PS logo">
-  <g transform="translate(0 2.2) skewY(-6)">
-    <path d="M11 .5h20A10.5 10.5 0 0 1 41.5 11v20A10.5 10.5 0 0 1 31 41.5H3.5A3 3 0 0 1 .5 38.5V11A10.5 10.5 0 0 1 11 .5Z" fill="#050a08" stroke="#53fc18" stroke-opacity=".68" stroke-width="1"/>
-    <text x="21" y="28.4" text-anchor="middle" fill="#53fc18" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="26" font-weight="900" letter-spacing="-2.1">PS</text>
-  </g>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Play Streamers PS monogramı">
+  <rect x="1" y="1" width="62" height="62" rx="17" fill="#050505" stroke="#f5f5f2" stroke-width="2"/>
+  <path fill="#f5f5f2" fill-rule="evenodd" d="M9 12h13c8.7 0 14 5.1 14 13s-5.3 13-14 13h-5v14H9V12Zm8 7v12h5c4.1 0 6-2 6-6s-1.9-6-6-6h-5Z"/>
+  <path d="M52 20c-2.7-3.8-6.2-5.8-10.5-5.8-5.1 0-8.4 2.6-8.4 6.4 0 4.1 3.1 6 9.5 7.8 7.9 2.2 11.8 5.9 11.8 12.1 0 7.4-5.7 12.3-14.2 12.3-5.9 0-10.7-2-14.3-6" fill="none" stroke="#050505" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M52 20c-2.7-3.8-6.2-5.8-10.5-5.8-5.1 0-8.4 2.6-8.4 6.4 0 4.1 3.1 6 9.5 7.8 7.9 2.2 11.8 5.9 11.8 12.1 0 7.4-5.7 12.3-14.2 12.3-5.9 0-10.7-2-14.3-6" fill="none" stroke="#f5f5f2" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>

@@ -5,6 +5,15 @@
     return [...document.querySelectorAll(selector)].some((node) => !node.hidden && node.getAttribute('aria-hidden') !== 'true');
   }
 
+  function normalizePublicMetrics() {
+    const metrics = document.querySelector('#authOverlay .ps61-site-metrics');
+    if (!metrics) return;
+    const values = [...metrics.querySelectorAll('.ps61-metric :is(strong,b)')]
+      .map((node) => String(node.textContent || '').trim());
+    const hasValue = values.some((value) => value && value !== '—' && value !== '-');
+    metrics.classList.toggle('ps83-metrics-empty', !hasValue);
+  }
+
   function activatePublicMotion(home) {
     if (!home || home.dataset.ps82Motion === '1') return;
     home.dataset.ps82Motion = '1';
@@ -41,12 +50,28 @@
         const rect = hero.getBoundingClientRect();
         hero.style.setProperty('--ps82-x', `${((event.clientX - rect.left) / rect.width) * 100}%`);
         hero.style.setProperty('--ps82-y', `${((event.clientY - rect.top) / rect.height) * 100}%`);
+        hero.style.setProperty('--ps83-px', `${((((event.clientX - rect.left) / rect.width) - .5) * 28).toFixed(2)}px`);
+        hero.style.setProperty('--ps83-py', `${((((event.clientY - rect.top) / rect.height) - .5) * 20).toFixed(2)}px`);
       });
     }, { passive: true });
     hero.addEventListener('pointerleave', () => {
       hero.style.setProperty('--ps82-x', '50%');
       hero.style.setProperty('--ps82-y', '42%');
+      hero.style.setProperty('--ps83-px', '0px');
+      hero.style.setProperty('--ps83-py', '0px');
     }, { passive: true });
+    let scrollFrame = 0;
+    const syncScrollMotion = () => {
+      if (scrollFrame) return;
+      scrollFrame = requestAnimationFrame(() => {
+        scrollFrame = 0;
+        const rect = hero.getBoundingClientRect();
+        const progress = Math.max(-1, Math.min(1, -rect.top / Math.max(rect.height, 1)));
+        hero.style.setProperty('--ps83-scroll', `${(progress * 38).toFixed(2)}px`);
+      });
+    };
+    window.addEventListener('scroll', syncScrollMotion, { passive: true });
+    syncScrollMotion();
   }
 
   function ensurePublicHome() {
@@ -159,6 +184,7 @@
     document.body.classList.remove('ps-v7');
     document.body.classList.add('ps-v8');
     ensurePublicHome();
+    normalizePublicMetrics();
     const publicSurface = document.getElementById('authOverlay');
     const infoSurface = document.getElementById('ps49InfoPage');
     const publicInfoOpen = Boolean(infoSurface && !infoSurface.hidden && getComputedStyle(infoSurface).display !== 'none' && document.body.classList.contains('auth-locked'));

@@ -1,6 +1,6 @@
 # Play Streamers — Kalıcı Proje Bağlamı
 
-Site 8.2 / Platform 5.0 / Desktop 0.13.0 / Play Connect 1.12.0: Ana sayfa,
+Site 8.3 / Platform 5.0 / Desktop 0.13.0 / Play Connect 1.12.0: Ana sayfa,
 Klyze referansının güçlü ürün sunumu örnek alınarak ancak özgün bir Play
 Streamers kimliğiyle tamamen siyah-beyaz düzene geçirildi. Yeni PS monogramı,
 katmanlı Desktop ön izlemesi, web/uygulama görev ayrımı, masaüstü indirme
@@ -28,6 +28,14 @@ normal, dar ve kapalı panel genişliklerinde yatay taşma veya yalnız kaydırm
 Chrome/Chromium mağaza paketi `play-connect-chromium-v1.12.0.zip`, Firefox/AMO
 paketi `play-connect-gecko-v1.12.0.zip`, site indirme paketi ise
 `play-connect-v1.12.0.zip` ve geriye uyumlu `play-connect.zip` adlarıyla tutulur.
+
+Site 8.3 görsel denetimi: yıldız/parçacık/meteor hızları artırıldı, işaretçi ve
+kaydırma paralaksı ile PLAY.STREAMERS ışık taraması eklendi. Masaüstü özellik
+ızgarasındaki boş üçüncü sütun 8/4 + 4/4/4 yerleşimiyle kapatıldı. Mobil sabit
+destek düğmesi içerik üzerinden üst menüdeki boş alana taşındı; uygulama durum
+rozeti pencere kontrollerinin üzerinden kaldırıldı. Gerçek değer gelmediğinde
+üç büyük tire gösteren canlı istatistik şeridi artık saklanır ve değer geldiği
+anda otomatik görünür.
 
 Site çalışma tercihi: Kullanıcı aksi yönde açıkça istemedikçe tamamlanan site
 değişiklikleri, yerel doğrulama ve testlerden sonra GitHub Pages üzerinden

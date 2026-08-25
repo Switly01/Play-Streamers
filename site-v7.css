@@ -1437,9 +1437,9 @@ body.ps-v8 #authOverlay .ps81-nav-download i { color: #aaa; font: 500 15px var(-
   content: "";
   transition: background-position .18s ease;
 }
-.ps81-stars-one { animation-duration: 16s; }
-.ps81-stars-two { animation-duration: 3.2s; }
-.ps82-motion-field { position: absolute; z-index: 1; inset: 0; overflow: hidden; pointer-events: none; }
+.ps81-stars-one { animation-duration: 8.5s; }
+.ps81-stars-two { animation-duration: 1.65s; }
+.ps82-motion-field { position: absolute; z-index: 1; inset: -4%; overflow: hidden; pointer-events: none; transform: translate3d(var(--ps83-px,0px),calc(var(--ps83-py,0px) + var(--ps83-scroll,0px)),0); transition: transform .16s ease-out; }
 .ps82-motion-field > i {
   position: absolute;
   width: 3px;
@@ -1447,12 +1447,12 @@ body.ps-v8 #authOverlay .ps81-nav-download i { color: #aaa; font: 500 15px var(-
   border-radius: 50%;
   background: #fff;
   box-shadow: 0 0 10px rgba(255,255,255,.85),0 0 24px rgba(255,255,255,.28);
-  animation: ps82-particle-float 7s ease-in-out infinite alternate;
+  animation: ps82-particle-float 4.2s ease-in-out infinite alternate;
 }
 .ps82-motion-field > i:nth-child(1) { top: 18%; left: 12%; animation-delay: -1s; }
-.ps82-motion-field > i:nth-child(2) { top: 29%; right: 17%; width: 4px; height: 4px; animation-delay: -4s; animation-duration: 9s; }
-.ps82-motion-field > i:nth-child(3) { right: 30%; bottom: 21%; animation-delay: -2s; animation-duration: 6s; }
-.ps82-motion-field > i:nth-child(4) { bottom: 26%; left: 22%; width: 2px; height: 2px; animation-delay: -5s; animation-duration: 8s; }
+.ps82-motion-field > i:nth-child(2) { top: 29%; right: 17%; width: 4px; height: 4px; animation-delay: -4s; animation-duration: 5.3s; }
+.ps82-motion-field > i:nth-child(3) { right: 30%; bottom: 21%; animation-delay: -2s; animation-duration: 3.7s; }
+.ps82-motion-field > i:nth-child(4) { bottom: 26%; left: 22%; width: 2px; height: 2px; animation-delay: -5s; animation-duration: 4.8s; }
 .ps82-motion-field > i:nth-child(5) { top: 13%; left: 58%; width: 2px; height: 2px; animation-delay: -3s; }
 @keyframes ps82-particle-float {
   0% { opacity: .25; transform: translate3d(-4px,8px,0) scale(.7); }
@@ -1469,18 +1469,18 @@ body.ps-v8 #authOverlay .ps81-nav-download i { color: #aaa; font: 500 15px var(-
   background: linear-gradient(90deg,transparent,rgba(255,255,255,.9),transparent);
   filter: drop-shadow(0 0 5px rgba(255,255,255,.55));
   transform: rotate(-32deg);
-  animation: ps82-meteor 7.5s cubic-bezier(.22,.7,.22,1) infinite;
+  animation: ps82-meteor 4.8s cubic-bezier(.22,.7,.22,1) infinite;
 }
-.ps82-motion-field > span:last-child { top: 8%; left: 42%; width: 105px; animation-delay: -3.8s; animation-duration: 10.5s; }
+.ps82-motion-field > span:last-child { top: 8%; left: 42%; width: 105px; animation-delay: -2.4s; animation-duration: 7s; }
 @keyframes ps82-meteor {
   0%,64% { opacity: 0; transform: translate3d(0,0,0) rotate(-32deg); }
   67% { opacity: .85; }
   80%,100% { opacity: 0; transform: translate3d(115vw,78vh,0) rotate(-32deg); }
 }
-.ps82-orbits { position: absolute; z-index: 0; top: 50%; left: 50%; width: min(920px,82vw); aspect-ratio: 1; pointer-events: none; transform: translate(-50%,-50%); }
-.ps82-orbits i { position: absolute; inset: 10%; border: 1px solid rgba(255,255,255,.025); border-radius: 50%; animation: ps82-orbit 34s linear infinite; }
+.ps82-orbits { position: absolute; z-index: 0; top: 50%; left: 50%; width: min(920px,82vw); aspect-ratio: 1; pointer-events: none; transform: translate3d(calc(-50% + var(--ps83-px,0px)),calc(-50% + var(--ps83-py,0px) + var(--ps83-scroll,0px)),0); transition: transform .2s ease-out; }
+.ps82-orbits i { position: absolute; inset: 10%; border: 1px solid rgba(255,255,255,.025); border-radius: 50%; animation: ps82-orbit 18s linear infinite; }
 .ps82-orbits i::before { position: absolute; top: 20%; right: 8%; width: 5px; height: 5px; border-radius: 50%; background: rgba(255,255,255,.4); box-shadow: 0 0 13px rgba(255,255,255,.35); content: ""; }
-.ps82-orbits i:last-child { inset: 24%; animation-direction: reverse; animation-duration: 23s; }
+.ps82-orbits i:last-child { inset: 24%; animation-direction: reverse; animation-duration: 12s; }
 .ps82-orbits i:last-child::before { top: auto; right: auto; bottom: 12%; left: 16%; width: 3px; height: 3px; }
 @keyframes ps82-orbit { to { transform: rotate(360deg); } }
 
@@ -1490,7 +1490,7 @@ body.ps-v8 #authOverlay .ps81-nav-download i { color: #aaa; font: 500 15px var(-
   min-height: 62px;
   gap: 0;
   padding: 0;
-  animation: ps82-marquee 28s linear infinite;
+  animation: ps82-marquee 18s linear infinite;
   will-change: transform;
 }
 .ps82-marquee-group { display: flex; flex: 0 0 auto; align-items: center; gap: 29px; padding-right: 29px; color: #90908d; font: 700 9px var(--display); letter-spacing: .15em; }
@@ -1522,11 +1522,59 @@ body.ps-v8 #authOverlay .ps81-nav-download i { color: #aaa; font: 500 15px var(-
 body.ps-v8 #authOverlay .landing-brand:hover .brand-logo { transform: rotate(-3deg) scale(1.04); filter: drop-shadow(0 0 11px rgba(255,255,255,.17)); }
 body.ps-v8 #authOverlay .landing-brand .brand-logo { transition: transform .22s ease,filter .22s ease; }
 
+/* 8.3 — denser motion and layout repairs from the live visual audit. */
+.ps81-hero h1 {
+  color: transparent;
+  background: linear-gradient(105deg,#f8f8f5 0%,#f8f8f5 38%,#777 47%,#fff 53%,#f8f8f5 62%,#f8f8f5 100%);
+  background-size: 230% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  animation: ps83-title-scan 5.4s ease-in-out infinite;
+}
+.ps81-hero h1 span { color: transparent; }
+@keyframes ps83-title-scan {
+  0%,24% { background-position: 100% 50%; }
+  68%,100% { background-position: -90% 50%; }
+}
+.ps81-hero .ps8-download { animation: ps83-download-halo 2.8s ease-in-out infinite; }
+@keyframes ps83-download-halo {
+  0%,100% { box-shadow: 0 22px 70px rgba(0,0,0,.62),0 0 0 7px rgba(255,255,255,.025); }
+  50% { box-shadow: 0 26px 76px rgba(0,0,0,.7),0 0 0 10px rgba(255,255,255,.055); }
+}
+.ps81-showcase { padding-bottom: clamp(52px,6vw,82px); }
+.ps8-boundary { padding-top: clamp(72px,7vw,104px); }
+.ps8-feature-grid { grid-template-columns: repeat(12,minmax(0,1fr)); }
+.ps8-feature-grid > article:nth-child(1) { grid-column: span 8; }
+.ps8-feature-grid > article:nth-child(2) { grid-column: span 4; }
+.ps8-feature-grid > article:nth-child(3),
+.ps8-feature-grid > article:nth-child(4),
+.ps8-feature-grid > article:nth-child(5) { grid-column: span 4; }
+.ps8-feature-grid > article:nth-child(5) h3 { max-width: 330px; }
+.ps8-feature-grid > article:nth-child(5) p { max-width: 370px; }
+#authOverlay .ps61-site-metrics.ps83-metrics-empty { display: none !important; }
+
+@media (max-width: 900px) {
+  .ps8-feature-grid { grid-template-columns: repeat(2,minmax(0,1fr)); }
+  .ps8-feature-grid > article:nth-child(1) { grid-column: 1/-1; }
+  .ps8-feature-grid > article:nth-child(2),
+  .ps8-feature-grid > article:nth-child(3),
+  .ps8-feature-grid > article:nth-child(4) { grid-column: span 1; }
+  .ps8-feature-grid > article:nth-child(5) { grid-column: 1/-1; }
+}
+
 @media (max-width: 760px) {
   .ps82-orbits { width: 150vw; }
   .ps82-motion-field > span { animation-duration: 9.5s; }
   .ps82-marquee-group { gap: 24px; padding-right: 24px; }
   .ps81-showcase .ps8-app-window { animation-name: ps82-window-float-mobile; }
+  .ps81-showcase .ps8-float-top { top: -6px; right: 4px; padding: 8px 10px; font-size: 7px; }
+  .ps8-boundary-grid article { min-height: 278px; padding: 25px; }
+  .ps8-boundary-grid h3 { margin-top: 42px; }
+  body.ps-v8.auth-locked #ps46Support { top: 13px; right: 12px; bottom: auto; width: 40px; height: 40px; opacity: .78; }
+  body.ps-v8.auth-locked #ps46Support:hover,
+  body.ps-v8.auth-locked #ps46Support:focus-within { opacity: 1; }
+  .ps8-feature-grid { grid-template-columns: 1fr; }
+  .ps8-feature-grid > article:nth-child(n) { grid-column: auto; }
   @keyframes ps82-window-float-mobile {
     0%,100% { transform: translate3d(-50%,0,0); }
     50% { transform: translate3d(-50%,-6px,0); }
@@ -1535,4 +1583,6 @@ body.ps-v8 #authOverlay .landing-brand .brand-logo { transition: transform .22s 
 @media (prefers-reduced-motion: reduce) {
   .ps82-reveal { opacity: 1 !important; transform: none !important; }
   .ps81-hero::after { display: none; }
+  .ps81-hero h1 { color: #f8f8f5; background: none; -webkit-text-fill-color: initial; }
+  .ps81-hero h1 span { color: #777; }
 }

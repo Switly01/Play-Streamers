@@ -2543,6 +2543,10 @@
   function renderPlayBot(popover, issues) {
     const body = $('.ps69-play-bot-body', popover);
     if (!body) return;
+    $$('.ps17-system-status,#ps17SystemStatus,#ps54InfoSystemStatus,#ps66MemberSystemStatus,#ps66DashboardSystemStatus').forEach(button => {
+      button.classList.toggle('ps69-bot-has-issues', issues.length > 0);
+      button.dataset.ps69IssueCount = String(issues.length);
+    });
     body.dataset.busy = '0';
     const serverByIssue = new Map(playBotGlobalReports.map(report => [String(report.issue || ''), report]));
     body.innerHTML = issues.length

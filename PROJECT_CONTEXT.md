@@ -1,6 +1,6 @@
 # Play Streamers — Kalıcı Proje Bağlamı
 
-Site 9.0.2 / Platform 5.1 / Desktop 0.13.0 / Play Connect 1.12.0: Ana sayfa,
+Site 9.0.3 / Platform 5.1 / Desktop 0.13.0 / Play Connect 1.12.0: Ana sayfa,
 Klyze referansının güçlü ürün sunumu örnek alınarak ancak özgün bir Play
 Streamers kimliğiyle tamamen siyah-beyaz düzene geçirildi. Yeni PS monogramı,
 katmanlı Desktop ön izlemesi, web/uygulama görev ayrımı, masaüstü indirme

@@ -11,11 +11,11 @@ test('site 9.0 assets are cache-busted and monochrome', async () => {
     read('site-v7.css'),
     read('play-streamers-ps-logo.svg'),
   ]);
-  assert.match(html, /play-streamers-build" content="2026-08-26-site-9\.0\.2"/);
+  assert.match(html, /play-streamers-build" content="2026-08-26-site-9\.0\.3"/);
   assert.match(html, /site-v7\.css\?v=9\.0\.2/);
   assert.match(html, /app\.js\?v=5\.1/);
   assert.match(html, /site-v7\.js\?v=9\.0/);
-  assert.match(html, /app-final\.js\?v=5\.3/);
+  assert.match(html, /app-final\.js\?v=5\.4/);
   assert.match(css, /html\[data-ps-site-version="8"\]/);
   assert.match(css, /--signal: #f5f5f2/);
   assert.match(css, /@keyframes ps82-meteor/);
@@ -63,6 +63,7 @@ test('SW Bot audits the whole interface and explains issues with SW AI', async (
   assert.match(app, /node\.closest\('\[hidden\],\[inert\]'\)/);
   assert.doesNotMatch(app, /playBotSurface\.append\(googleProbe\)/);
   assert.match(app, /window\.psSwBotOwnsStatus = true/);
+  assert.match(app, /button\.dataset\.ps69IssueCount = String\(issues\.length\)/);
   assert.match(app, /getComputedStyle\(ancestor\)\.position === 'fixed'/);
   assert.match(legacyApp, /window\.psSwBotOwnsStatus === true && issue/);
   assert.match(app, /\/api\/sw-bot\/status/);

@@ -62,6 +62,11 @@
   }
 
   function normalizeLegalLinks(root = document) {
+    root.querySelectorAll?.('a[href="https://guns.lol/switly"]').forEach((link) => {
+      link.href = 'https://swcreate.com';
+      link.target = '_blank';
+      link.rel = 'noopener noreferrer';
+    });
     root.querySelectorAll?.('.ps73-privacy-slot').forEach((slot) => {
       let privacy = slot.querySelector('.ps72-privacy-link');
       if (privacy) privacy.textContent = 'Gizlilik';
@@ -168,7 +173,7 @@
     root.style.overflowY = 'auto';
     const navHeight = root.querySelector('.landing-nav')?.getBoundingClientRect().height || 76;
     const top = Math.max(0, target.offsetTop - navHeight - 20);
-    root.scrollTo({ top, behavior: smooth && !matchMedia('(prefers-reduced-motion: reduce)').matches ? 'smooth' : 'auto' });
+    root.scrollTo({ top, behavior: smooth ? 'smooth' : 'auto' });
     root.querySelectorAll('.ps14-nav-links button').forEach((button) => {
       const buttonKey = button.dataset.info || button.dataset.ps49Info;
       button.classList.toggle('active', buttonKey === key);
@@ -182,6 +187,39 @@
   }
 
   window.psPublicHomeNavigate = navigatePublicHome;
+
+  function activatePlanTabs(home) {
+    const tabs = [...home.querySelectorAll('[data-ps92-plan-tab]')];
+    const panels = [...home.querySelectorAll('[data-ps92-plan-panel]')];
+    if (!tabs.length || home.dataset.ps92PlanTabs === '1') return;
+    home.dataset.ps92PlanTabs = '1';
+    const select = (key, focus = false) => {
+      tabs.forEach((tab) => {
+        const active = tab.dataset.ps92PlanTab === key;
+        tab.classList.toggle('active', active);
+        tab.setAttribute('aria-selected', String(active));
+        tab.tabIndex = active ? 0 : -1;
+        if (active && focus) tab.focus();
+      });
+      panels.forEach((panel) => {
+        const active = panel.dataset.ps92PlanPanel === key;
+        panel.hidden = !active;
+        panel.classList.toggle('active', active);
+      });
+    };
+    tabs.forEach((tab, index) => {
+      tab.addEventListener('click', () => select(tab.dataset.ps92PlanTab));
+      tab.addEventListener('keydown', (event) => {
+        if (!['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) return;
+        event.preventDefault();
+        const nextIndex = event.key === 'Home' ? 0
+          : event.key === 'End' ? tabs.length - 1
+            : (index + (event.key === 'ArrowRight' ? 1 : -1) + tabs.length) % tabs.length;
+        select(tabs[nextIndex].dataset.ps92PlanTab, true);
+      });
+    });
+    select(tabs.find((tab) => tab.classList.contains('active'))?.dataset.ps92PlanTab || 'play');
+  }
 
   function ensurePublicHome() {
     const root = document.getElementById('authOverlay');
@@ -199,8 +237,21 @@
     }
     if (current.classList.contains('ps8-home')) {
       activatePublicMotion(current);
+      activatePlanTabs(current);
       return;
     }
+    const warpStars = Array.from({ length: 44 }, (_, index) => {
+      const angle = ((index * 137.508) + 11) * Math.PI / 180;
+      const distanceX = 52 + (index % 7) * 7;
+      const distanceY = 42 + (index % 5) * 8;
+      const tx = (Math.cos(angle) * distanceX).toFixed(2);
+      const ty = (Math.sin(angle) * distanceY).toFixed(2);
+      const rotation = (angle * 180 / Math.PI).toFixed(2);
+      const delay = (-((index * 0.173) % 3.7)).toFixed(2);
+      const duration = (1.75 + (index % 6) * 0.19).toFixed(2);
+      const length = 34 + (index % 8) * 9;
+      return `<i style="--ps92-tx:${tx}vw;--ps92-ty:${ty}vh;--ps92-rot:${rotation}deg;--ps92-delay:${delay}s;--ps92-duration:${duration}s;--ps92-length:${length}px"></i>`;
+    }).join('');
     const home = document.createElement('section');
     home.className = 'landing-main ps8-home';
     home.innerHTML = `
@@ -208,11 +259,12 @@
         <div class="ps8-dot-field" aria-hidden="true"></div>
         <div class="ps81-star-layer ps81-stars-one" aria-hidden="true"></div>
         <div class="ps81-star-layer ps81-stars-two" aria-hidden="true"></div>
+        <div class="ps92-warp-field" aria-hidden="true">${warpStars}</div>
         <div class="ps82-motion-field" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><span></span><span></span></div>
         <div class="ps82-orbits" aria-hidden="true"><i></i><i></i></div>
         <div class="ps8-hero-copy">
-          <span class="ps8-version"><i></i> SÜRÜM 0.14.0</span>
-          <h1 id="ps8-title">PLAY<span>.</span>STREAMERS</h1>
+          <span class="ps8-version"><i></i> SÜRÜM 0.14.1</span>
+          <h1 id="ps8-title" aria-label="PLAY STREAMERS"><span>PLAY</span><span>STREAMERS</span></h1>
           <h2>Profesyonel Yayıncı Kontrol Platformu</h2>
           <p>Canlı analiz · İçerik planlama · Topluluk · Marka · Play Connect</p>
           <div class="ps8-hero-actions">
@@ -235,7 +287,7 @@
         <div class="ps8-app-stage" aria-label="Play Streamers masaüstü uygulaması ön izlemesi">
           <div class="ps8-app-halo" aria-hidden="true"></div>
           <article class="ps8-app-window">
-            <header><span class="ps8-window-brand"><img src="./play-streamers-ps-logo.svg?v=9.1" alt=""><b>PLAY STREAMERS</b></span><span class="ps8-window-controls">— □ ×</span></header>
+            <header><span class="ps8-window-brand"><img src="./play-streamers-ps-logo.svg?v=9.2" alt=""><b>PLAY STREAMERS</b></span><span class="ps8-window-controls">— □ ×</span></header>
             <div class="ps8-app-body">
               <aside><i class="active"></i><i></i><i></i><i></i><i></i><i></i></aside>
               <div class="ps8-app-content">
@@ -260,28 +312,42 @@
       <section class="ps8-about" id="ps8-about" aria-labelledby="ps8-about-title">
         <header><span>HAKKIMIZDA</span><h2 id="ps8-about-title">Yayıncı için çalışan,<br>yayın bitince durmayan sistem.</h2><p>Play Streamers, dağınık yayın araçlarını çoğaltmak yerine veriyi, üretimi ve hesap yönetimini tek anlaşılır düzende birleştirir.</p></header>
         <div class="ps8-about-grid">
-          <article class="ps8-about-manifesto"><span>01 · NEDEN VARIZ?</span><h3>Yayıncının dikkatini pencerelere değil, topluluğuna geri vermek için.</h3><p>Yayın açıkken oluşan önemli hareketler sunucuda izlenir; daha sonra geri döndüğünde geçmişin, ortalaman ve değişimin hazır olur.</p><div><b>OTOMATİK</b><b>ANLAŞILIR</b><b>YAYINCI ODAKLI</b></div></article>
-          <article class="ps8-about-system"><span>02 · TEK EKOSİSTEM</span><div class="ps8-about-orbit" aria-hidden="true"><i>PS</i><b>WEB</b><b>APP</b><b>CONNECT</b></div><p>Site hesap ve bağlantıları, masaüstü uygulaması günlük üretimi, Play Connect ise tarayıcı akışını taşır. Hepsi aynı SW Identity hesabında birleşir.</p></article>
+          <article class="ps8-about-manifesto"><span>NEDEN VARIZ?</span><h3>Yayıncının dikkatini pencerelere değil, topluluğuna geri vermek için.</h3><p>Yayın açıkken oluşan önemli hareketler sunucuda izlenir; daha sonra geri döndüğünde geçmişin, ortalaman ve değişimin hazır olur.</p><div><b>OTOMATİK</b><b>ANLAŞILIR</b><b>YAYINCI ODAKLI</b></div></article>
+          <article class="ps8-about-system"><span>TEK EKOSİSTEM</span><div class="ps8-about-orbit" aria-hidden="true"><i><img src="./play-streamers-ps-logo.svg?v=9.2" alt=""></i><b>WEB</b><b>APP</b><b>CONNECT</b></div><p>Site hesap ve bağlantıları, masaüstü uygulaması günlük üretimi, Play Connect ise tarayıcı akışını taşır. Hepsi aynı SW Identity hesabında birleşir.</p></article>
         </div>
       </section>
 
-      <section class="ps8-boundary" id="ps8-products" aria-labelledby="ps8-boundary-title">
-        <div class="ps8-section-head"><span>WEB + DESKTOP</span><h2 id="ps8-boundary-title">Doğru araç,<br>doğru yerde.</h2><p>Her şeyi siteye sıkıştırmıyoruz. Tarayıcı hızlı hesap işlemlerini, masaüstü uygulaması ise günlük üretim akışını taşır.</p></div>
-        <div class="ps8-boundary-grid">
-          <article class="light"><span>01 · PStreamers.com</span><h3>Hesabın ve bağlantıların.</h3><p>SW Identity, plan yönetimi, güvenlik, Kick ve Play Connect bağlantıları.</p><button type="button" data-ps8-action="register">Web merkezini aç <i>↗</i></button></article>
-          <article class="dark"><span>02 · Play Streamers Desktop</span><h3>Üretim sisteminin tamamı.</h3><p>Canlı merkez, yayın analizi, içerik, topluluk, marka, gelir ve yerel kasa araçları.</p><a href="./downloads/Play-Streamers-Setup.exe" download>Uygulamayı indir <i>↓</i></a></article>
+      <section class="ps8-boundary ps92-plans" id="ps8-products" aria-labelledby="ps8-boundary-title">
+        <div class="ps8-section-head"><span>ÜRÜNLERİMİZ</span><h2 id="ps8-boundary-title">İhtiyacın kadar başla.<br>Sisteminle birlikte büyü.</h2><p>Web hesabın, Play Connect ve masaüstü uygulaman aynı ürün ailesinde; plan değiştirdiğinde yeniden öğrenmen gerekmez.</p></div>
+        <div class="ps92-plan-tabs" role="tablist" aria-label="Ürün planları">
+          <button id="ps92-tab-play" class="active" type="button" role="tab" aria-selected="true" aria-controls="ps92-panel-play" data-ps92-plan-tab="play">Play Streamers Plans</button>
+          <button id="ps92-tab-create" type="button" role="tab" aria-selected="false" aria-controls="ps92-panel-create" data-ps92-plan-tab="create">SW Create Plans</button>
         </div>
+        <div id="ps92-panel-play" class="ps92-plan-panel active" role="tabpanel" aria-labelledby="ps92-tab-play" data-ps92-plan-panel="play">
+          <article><span>FREE</span><h3>Play Streamers Free</h3><p>Yayına başlamak, temel verilerini görmek ve günlük üretim düzenini kurmak için.</p><b>Ücretsiz başlangıç</b><button type="button" data-ps8-action="register">Hesap oluştur <i>↗</i></button></article>
+          <article class="featured"><span>PRO</span><h3>Play Streamers Pro</h3><p>İçerik, topluluk ve marka araçlarını daha düzenli bir üretim sistemine dönüştürmek için.</p><b>Üretim sistemi</b><button type="button" data-ps8-action="register">Pro'yu keşfet <i>↗</i></button></article>
+          <article><span>PRODUCT PRO</span><h3>Play Streamers Product Pro</h3><p>Derin analiz, SW AI açıklamaları ve gelişmiş iş akışlarıyla veriyi karara çevirmek için.</p><b>Tam ürün deneyimi</b><button type="button" data-ps8-action="register">Product Pro'yu keşfet <i>↗</i></button></article>
+        </div>
+        <div id="ps92-panel-create" class="ps92-plan-panel" role="tabpanel" aria-labelledby="ps92-tab-create" data-ps92-plan-panel="create" hidden>
+          <article><span>FREE EDITION</span><h3>SW Create Free Edition</h3><p>SW Create ekosistemini ve ortak kimlik merkezini kullanmaya başlamak için.</p><b>Temel ekosistem</b><a href="https://swcreate.com" target="_blank" rel="noopener noreferrer">SW Create'e git <i>↗</i></a></article>
+          <article class="featured"><span>PRO EDITION</span><h3>SW Create Pro Edition</h3><p>Birden fazla üretim aracını ortak hesap, güvenlik ve plan yapısında birleştirmek için.</p><b>Gelişmiş üretim</b><a href="https://swcreate.com" target="_blank" rel="noopener noreferrer">Pro Edition <i>↗</i></a></article>
+          <article><span>PRODUCT PRO EDITION</span><h3>SW Create Product Pro Edition</h3><p>SW Create ürün ailesindeki en kapsamlı araçlara ve akıllı sistemlere erişmek için.</p><b>Tam ekosistem</b><a href="https://swcreate.com" target="_blank" rel="noopener noreferrer">Product Pro Edition <i>↗</i></a></article>
+        </div>
+        <nav class="ps92-brand-directory" aria-label="Play Streamers ürün bağlantıları">
+          <a class="ps92-swcreate-link" href="https://swcreate.com" target="_blank" rel="noopener noreferrer"><span>GELİŞTİREN EKOSİSTEM</span><b>SW CREATE</b><i>↗</i></a>
+          <div><a href="https://pstreamers.com">Play Streamers sitesi <i>↗</i></a><a href="./play-connect-v1.13.0.zip" download>Play Connect <i>↓</i></a><a href="./downloads/Play-Streamers-Setup.exe" download>Play Streamers uygulaması <i>↓</i></a></div>
+        </nav>
       </section>
 
       <section class="ps8-features" aria-labelledby="ps8-features-title">
         <header><span>CREATOR OPERATING SYSTEM</span><h2 id="ps8-features-title">Yayın bittikten sonra da çalışan sistem.</h2></header>
         <div class="ps8-feature-grid">
-          <article class="ps8-feature-large"><span>01</span><h3>Sunucu tabanlı yayın geçmişi</h3><p>Site, uygulama ve eklenti kapalı olsa bile uygun platform bağlantısından yayın oturumları işlenmeye devam eder.</p><div class="ps8-signal"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></article>
-          <article><span>02</span><h3>Anlaşılır analiz</h3><p>Ham sayılar yerine değişimin ne anlama geldiğini gösteren okunabilir yayın özetleri.</p><b class="ps8-big-number">+18<small>%</small></b></article>
-          <article><span>03</span><h3>Play Connect</h3><p>Chrome ve Firefox üzerinden destek, olay ve platform bağlantıları tek hesaba ulaşır.</p><div class="ps8-connect"><i>PC</i><b>Bağlı</b></div></article>
-          <article><span>04</span><h3>İçerik ve topluluk</h3><p>Fikir kasasından yayın planına, topluluk ritminden marka araçlarına kadar aynı çalışma alanı.</p><div class="ps8-tags"><i>PLAN</i><i>TOPLULUK</i><i>MARKA</i></div></article>
-          <article class="ps9-swbot-feature"><span>05</span><h3>SW Bot + SW AI</h3><p>Arayüzü, bağlantıları ve canlı dosyaları denetler; teknik sorunları anlaşılır bir Türkçe açıklamaya dönüştürür.</p><div class="ps9-scan-line"><i></i><b>SİSTEM TARAMASI</b></div></article>
-          <article class="ps8-feature-wide"><span>06</span><h3>Free'den Product Pro'ya tek deneyim.</h3><p>Planın büyüdüğünde yeni bir uygulama öğrenmezsin; ihtiyaç duyduğun çalışma alanları aynı sade sistem içinde açılır.</p><button type="button" data-ps8-action="products">Planları ve ürünleri incele <i>→</i></button></article>
+          <article class="ps8-feature-large"><h3>Sunucu tabanlı yayın geçmişi</h3><p>Site, uygulama ve eklenti kapalı olsa bile uygun platform bağlantısından yayın oturumları işlenmeye devam eder.</p><div class="ps8-signal"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></article>
+          <article><h3>Anlaşılır analiz</h3><p>Ham sayılar yerine değişimin ne anlama geldiğini gösteren okunabilir yayın özetleri.</p><b class="ps8-big-number">+18<small>%</small></b></article>
+          <article><h3>Play Connect</h3><p>Chrome ve Firefox üzerinden destek, olay ve platform bağlantıları tek hesaba ulaşır.</p><div class="ps8-connect"><i>PC</i><b>Bağlı</b></div></article>
+          <article><h3>İçerik ve topluluk</h3><p>Fikir kasasından yayın planına, topluluk ritminden marka araçlarına kadar aynı çalışma alanı.</p><div class="ps8-tags"><i>PLAN</i><i>TOPLULUK</i><i>MARKA</i></div></article>
+          <article class="ps9-swbot-feature"><h3>SW Bot + SW AI</h3><p>Arayüzü, bağlantıları ve canlı dosyaları denetler; teknik sorunları anlaşılır bir Türkçe açıklamaya dönüştürür.</p><div class="ps9-scan-line"><i></i><b>SİSTEM TARAMASI</b></div></article>
+          <article class="ps8-feature-wide"><h3>Free'den Product Pro'ya tek deneyim.</h3><p>Planın büyüdüğünde yeni bir uygulama öğrenmezsin; ihtiyaç duyduğun çalışma alanları aynı sade sistem içinde açılır.</p><button type="button" data-ps8-action="products">Planları ve ürünleri incele <i>→</i></button></article>
         </div>
       </section>
 
@@ -291,8 +357,8 @@
       </section>
 
       <section class="ps8-final-cta" aria-labelledby="ps8-final-title">
-        <img src="./play-streamers-ps-logo.svg?v=9.1" alt="Play Streamers PS logosu">
-        <span>WINDOWS 10/11 · SÜRÜM 0.14.0</span>
+        <img src="./play-streamers-ps-logo.svg?v=9.2" alt="Play Streamers PS logosu">
+        <span>WINDOWS 10/11 · SÜRÜM 0.14.1</span>
         <h2 id="ps8-final-title">Yayınını değil,<br>sistemini büyüt.</h2>
         <p>Hesabını ücretsiz oluştur. Play Streamers Desktop'ı indir ve üretim araçlarını tek sade merkezde kullanmaya başla.</p>
         <div><a href="./downloads/Play-Streamers-Setup.exe" download>Uygulamayı ücretsiz indir <i>↓</i></a><button type="button" data-ps8-action="register">Hesap oluştur</button></div>
@@ -300,6 +366,7 @@
       </section>`;
     current.replaceWith(home);
     activatePublicMotion(home);
+    activatePlanTabs(home);
     root.querySelector('.landing-update-preview')?.setAttribute('aria-hidden', 'true');
   }
 

@@ -5,17 +5,17 @@ import test from 'node:test';
 const root = new URL('../', import.meta.url);
 const read = (name) => readFile(new URL(name, root), 'utf8');
 
-test('site 9.1 assets are cache-busted and monochrome', async () => {
+test('site 9.2 assets are cache-busted and use fluid monochrome glass', async () => {
   const [html, css, logo] = await Promise.all([
     read('index.html'),
     read('site-v7.css'),
     read('play-streamers-ps-logo.svg'),
   ]);
-  assert.match(html, /play-streamers-build" content="2026-08-26-site-9\.1\.0"/);
-  assert.match(html, /site-v7\.css\?v=9\.1\.0/);
+  assert.match(html, /play-streamers-build" content="2026-08-26-site-9\.2\.0"/);
+  assert.match(html, /site-v7\.css\?v=9\.2\.0/);
   assert.match(html, /app\.js\?v=5\.2/);
-  assert.match(html, /site-v7\.js\?v=9\.1/);
-  assert.match(html, /app-final\.js\?v=5\.5/);
+  assert.match(html, /site-v7\.js\?v=9\.2/);
+  assert.match(html, /app-final\.js\?v=5\.6/);
   assert.match(css, /html\[data-ps-site-version="8"\]/);
   assert.match(css, /--signal: #f5f5f2/);
   assert.match(css, /@keyframes ps82-meteor/);
@@ -23,16 +23,17 @@ test('site 9.1 assets are cache-busted and monochrome', async () => {
   assert.match(css, /@keyframes ps82-window-float/);
   assert.match(css, /@keyframes ps83-title-scan/);
   assert.match(css, /grid-template-columns: repeat\(12,minmax\(0,1fr\)\)/);
-  assert.match(css, /prefers-reduced-motion: reduce/);
+  assert.doesNotMatch(css, /prefers-reduced-motion: reduce/);
   assert.doesNotMatch(logo, /53fc18|ff7043/i);
   assert.match(css, /html\[data-ps-site-version="9"\]/);
   assert.match(css, /#ps9Ambient/);
   assert.match(css, /ps9-surface-in/);
   assert.match(css, /ps9-sw-ai-summary/);
   assert.doesNotMatch(css, /body\.ps-v9\s*>\s*:not\(#ps9Ambient\)/);
-  assert.match(logo, /aria-label="Play Streamers keskin PS amblemi"/);
-  assert.doesNotMatch(logo, /stroke-linecap="round"|rx="/);
-  assert.match(logo, /linearGradient id="frame"/);
+  assert.match(logo, /aria-label="Play Streamers PS portal amblemi"/);
+  assert.match(logo, /linearGradient id="ps92-frame"/);
+  assert.match(css, /@keyframes ps92-warp/);
+  assert.match(css, /--ps92-glass/);
 });
 
 test('public home promotes the desktop app without restoring legacy hero', async () => {
@@ -47,7 +48,7 @@ test('public home promotes the desktop app without restoring legacy hero', async
   assert.match(source, /id="ps8-how"/);
   assert.match(source, /window\.psPublicHomeNavigate = navigatePublicHome/);
   assert.match(source, /root\.scrollTo/);
-  assert.match(source, /PLAY<span>\.<\/span>STREAMERS/);
+  assert.match(source, /aria-label="PLAY STREAMERS"><span>PLAY<\/span><span>STREAMERS<\/span>/);
   assert.match(source, /class="ps81-showcase"/);
   assert.match(source, /className = 'ps81-nav-download'/);
   assert.match(source, /class="ps82-motion-field"/);
@@ -57,6 +58,15 @@ test('public home promotes the desktop app without restoring legacy hero', async
   assert.match(source, /animateNewSurfaces/);
   assert.match(source, /SW Bot denetimde/);
   assert.match(source, /SW Bot \+ SW AI/);
+  assert.match(source, /Play Streamers Plans/);
+  assert.match(source, /SW Create Plans/);
+  assert.match(source, /Play Streamers Product Pro/);
+  assert.match(source, /SW Create Product Pro Edition/);
+  assert.match(source, /data-ps92-plan-tab="play"/);
+  assert.match(source, /class="ps92-warp-field"/);
+  assert.match(source, /https:\/\/swcreate\.com/);
+  assert.doesNotMatch(source, />01 · NEDEN VARIZ\?</);
+  assert.doesNotMatch(source, /<article class="ps8-feature-large"><span>01<\/span>/);
   assert.match(source, /current\.replaceWith\(home\)/);
   assert.doesNotMatch(source, /className = 'landing-card'/);
 });
@@ -77,10 +87,10 @@ test('SW Bot audits the whole interface and explains issues with SW AI', async (
   assert.match(app, /inertLinks/);
   assert.match(app, /clippedControls/);
   assert.match(app, /visibleFloaters/);
-  assert.match(worker, /sw-bot:global-status:v10/);
+  assert.match(worker, /sw-bot:global-status:v11/);
   assert.match(worker, /explainSwBotIssuesWithAi/);
   assert.match(worker, /swBotDeterministicReport/);
-  assert.match(worker, /site-v7\.css\?v=9\.1\.0/);
+  assert.match(worker, /site-v7\.css\?v=9\.2\.0/);
   assert.match(worker, /terms\.html/);
 });
 
@@ -88,7 +98,7 @@ test('privacy and terms share the premium legal design', async () => {
   const [privacy, terms, legalCss] = await Promise.all([read('privacy.html'), read('terms.html'), read('legal-v9.css')]);
   assert.match(privacy, /legal-v9\.css\?v=9\.0/);
   assert.match(privacy, /Kullanım Koşulları/);
-  assert.match(terms, /play-streamers-build" content="2026-08-26-legal-9\.0"/);
+  assert.match(terms, /play-streamers-build" content="2026-08-26-legal-9\.2"/);
   assert.match(terms, /SW Bot ve SW AI/);
   assert.match(legalCss, /@keyframes legal-stars/);
   assert.match(legalCss, /\.brand-mark img/);

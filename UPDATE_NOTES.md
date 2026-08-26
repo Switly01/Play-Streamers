@@ -4,14 +4,26 @@ Bu doküman; Play Streamers web uygulaması, Cloudflare Worker API'si ve Play Co
 
 ## Güncel sürümler
 
-- Web uygulaması / ürün bağlamı: **5.1**
+- Web uygulaması / ürün bağlamı: **5.2**
 - Play Connect: **1.13.0**
-- Desktop: **0.14.0**
-- Worker kaynak sabiti: **5.1**
+- Desktop: **0.14.1**
+- Worker kaynak sabiti: **5.2**
 
 > Yayın öncesinde Worker'daki bildirim sürüm sabiti ile bu sürüm geçmişi aynı numaraya yükseltilmelidir.
 
 ## Play Streamers web uygulaması
+
+### 5.2 · Sıvı cam vitrin ve ürün planları
+
+- Yeni PS portal amblemi; site, yasal sayfalar ve masaüstü arayüz markasında
+  ortak kullanılır.
+- Ana sayfadaki yıldız alanı ileri hareket hissi veren perspektif tüneline
+  dönüştürüldü; büyük kelime markası ve kesintisiz yetenek bandı onarıldı.
+- Play Streamers ve SW Create ürünleri iki sekmede toplam altı planla sunulur;
+  SW CREATE, Play Streamers, Play Connect ve masaüstü uygulama bağlantıları aynı
+  ürün dizininde birleştirildi.
+- Siyah-beyaz tema korunarak navigasyon, hesap, Dashboard, doğrulama, kart ve
+  modal yüzeylerine hareketli sıvı cam dili uygulandı.
 
 ### 5.0 · Sunucu otomasyonu ve kompakt arayüz
 
@@ -21,7 +33,7 @@ Bu doküman; Play Streamers web uygulaması, Cloudflare Worker API'si ve Play Co
   özeti otomatik tamamlanır.
 - Üye ana sayfası sunucu veri hattını gösterir; genel açılış ekranı daha
   kompakt iki sütunlu düzene taşındı.
-- Desktop 0.14.0 ve Microsoft Store 0.14.0.0 tek Windows 10/11 paket sürümüne
+- Desktop 0.14.1 ve Microsoft Store 0.14.1.0 tek Windows 10/11 paket sürümüne
   eşitlendi; kamera ve mikrofon yetkileri dağıtım bildiriminden çıkarıldı.
 
 ### 1.0–1.2 · Kullanıcı ana sayfası

@@ -1,17 +1,17 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Play Streamers keskin PS amblemi">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96" role="img" aria-label="Play Streamers PS portal amblemi">
   <defs>
-    <linearGradient id="frame" x1="7" y1="4" x2="57" y2="60" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#ffffff"/><stop offset=".48" stop-color="#9b9b98"/><stop offset="1" stop-color="#f5f5f2"/>
-    </linearGradient>
-    <linearGradient id="face" x1="17" y1="12" x2="49" y2="53" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#ffffff"/><stop offset=".58" stop-color="#e8e8e5"/><stop offset="1" stop-color="#8b8b88"/>
-    </linearGradient>
+    <linearGradient id="ps92-frame" x1="8" y1="4" x2="88" y2="92" gradientUnits="userSpaceOnUse"><stop stop-color="#fff"/><stop offset=".34" stop-color="#bcbcbc"/><stop offset=".58" stop-color="#fff"/><stop offset="1" stop-color="#727272"/></linearGradient>
+    <linearGradient id="ps92-face" x1="20" y1="19" x2="78" y2="78" gradientUnits="userSpaceOnUse"><stop stop-color="#fff"/><stop offset=".48" stop-color="#d9d9d7"/><stop offset="1" stop-color="#8c8c8a"/></linearGradient>
+    <linearGradient id="ps92-glass" x1="22" y1="8" x2="76" y2="86" gradientUnits="userSpaceOnUse"><stop stop-color="#fff" stop-opacity=".28"/><stop offset=".52" stop-color="#fff" stop-opacity=".03"/><stop offset="1" stop-color="#fff" stop-opacity=".13"/></linearGradient>
+    <filter id="ps92-glow" x="-35%" y="-35%" width="170%" height="170%"><feGaussianBlur stdDeviation="2.1" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
   </defs>
-  <path d="M12 2h37l13 13v34L49 62H15L2 49V12Z" fill="url(#frame)"/>
-  <path d="M15 8h30l11 11v26L45 56H19L8 45V16Z" fill="#050505"/>
-  <path d="M8 16h6V9h12L8 27Zm48 29h-6v10H38l18-18Z" fill="#cfcfcc" opacity=".74"/>
-  <path d="M17 14h21l10 10v9l-9 9H28v12H17Zm11 9v10h8l3-3v-4l-3-3Z" fill="url(#face)" fill-rule="evenodd"/>
-  <path d="M48 16H35L25 26v10l8 8h8v3l-3 3H22v9h20l9-9V39l-8-8h-8v-3l3-3h10Z" fill="url(#face)" stroke="#050505" stroke-width="3" stroke-linejoin="miter" paint-order="stroke"/>
-  <path d="M13 46 46 13M18 55h9M38 9h9" fill="none" stroke="#fff" stroke-width="1.2" opacity=".26"/>
-  <path d="M5 31h5m44 2h5" stroke="#050505" stroke-width="2"/>
+  <path d="M18 4h47l27 25v40L67 92H24L4 72V24Z" fill="url(#ps92-frame)"/>
+  <path d="M21 10h41l23 22v34L64 86H27L11 69V27Z" fill="#050506"/>
+  <path d="M13 21 23 11h19L12 42ZM84 55v12L64 85H47Z" fill="#fff" opacity=".16"/>
+  <path d="M20 21h28l10 10v15L48 56H34v18H20Zm14 12v11h10l3-3v-5l-3-3Z" fill="url(#ps92-face)" fill-rule="evenodd"/>
+  <path d="M79 21H58L47 32v14l9 9h10l3 3v3l-3 3H44v13h28l11-11V52l-10-10H61l-2-2v-3l3-3h17Z" fill="url(#ps92-face)" stroke="#050506" stroke-width="2.4" stroke-linejoin="miter" paint-order="stroke"/>
+  <path d="M28 15h31l19 18" fill="none" stroke="url(#ps92-glass)" stroke-width="2" stroke-linecap="round"/>
+  <path d="M17 64 65 16" fill="none" stroke="#fff" stroke-width="1.25" opacity=".18"/>
+  <path d="M7 47h8M81 47h8M47 7v7M47 82v7" stroke="#050506" stroke-width="2.4"/>
+  <path d="M18 4h47l27 25" fill="none" stroke="#fff" stroke-width="1.3" opacity=".42" filter="url(#ps92-glow)"/>
 </svg>

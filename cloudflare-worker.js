@@ -78,7 +78,7 @@ const DONATE_OAUTH_PROVIDERS = Object.freeze({
     clientSecretVariable: "TIPEEESTREAM_CLIENT_SECRET",
   }),
 });
-const CURRENT_RELEASE_VERSION = "5.1";
+const CURRENT_RELEASE_VERSION = "5.2";
 const CURRENT_RELEASE_PUBLISHED_AT = "2026-08-25T12:00:00+03:00";
 const SW_IDENTITY_ORIGIN = "https://api.swcreate.com";
 const DESKTOP_IDENTITY_REDIRECT = "playstreamers://identity/callback";
@@ -735,7 +735,7 @@ export default {
   },
 };
 
-const PLAY_BOT_GLOBAL_STATUS_KEY = "sw-bot:global-status:v10";
+const PLAY_BOT_GLOBAL_STATUS_KEY = "sw-bot:global-status:v11";
 
 async function ensurePlayBotMetadataStorage(env) {
   if (!env.DB) throw new Error("Worker is missing the DB binding");
@@ -774,12 +774,12 @@ async function runScheduledPlayBotAudit(env) {
   const resources = [
     ["Ana sayfa", "https://pstreamers.com/", "document"],
     ["Ana uygulama betiği", "https://pstreamers.com/app.js?v=5.2", "script"],
-    ["Uygulama betiği", "https://pstreamers.com/app-final.js?v=5.5", "script"],
-    ["Site davranış betiği", "https://pstreamers.com/site-v7.js?v=9.1", "script"],
-    ["Premium stil dosyası", "https://pstreamers.com/site-v7.css?v=9.1.0", "style"],
+    ["Uygulama betiği", "https://pstreamers.com/app-final.js?v=5.6", "script"],
+    ["Site davranış betiği", "https://pstreamers.com/site-v7.js?v=9.2", "script"],
+    ["Premium stil dosyası", "https://pstreamers.com/site-v7.css?v=9.2.0", "style"],
     ["Gizlilik sayfası", "https://pstreamers.com/privacy.html", "document"],
     ["Kullanım koşulları", "https://pstreamers.com/terms.html", "document"],
-    ["PS marka amblemi", "https://pstreamers.com/play-streamers-ps-logo.svg?v=9.1", "image"],
+    ["PS marka amblemi", "https://pstreamers.com/play-streamers-ps-logo.svg?v=9.2", "image"],
     ["Windows kurucusu", "https://pstreamers.com/downloads/Play-Streamers-Setup.exe", "binary"],
     ["Türkçe bayrağı", "https://pstreamers.com/assets/flags/tr.svg", "image"],
     ["İngilizce bayrağı", "https://pstreamers.com/assets/flags/gb.svg", "image"],
@@ -841,11 +841,11 @@ async function runScheduledPlayBotAudit(env) {
   const homeDocument = results.find(result => result.type === "document");
   if (homeDocument?.ok) {
     const documentContracts = [
-      ["site-v7.css?v=9.1.0", "Güncel premium stil dosyası"],
+      ["site-v7.css?v=9.2.0", "Güncel premium stil dosyası"],
       ["app.js?v=5.2", "Güncel ana uygulama betiği"],
-      ["app-final.js?v=5.5", "Güncel onarım betiği"],
-      ["site-v7.js?v=9.1", "Güncel site davranış betiği"],
-      ["play-streamers-build\" content=\"2026-08-26-site-9.1.0", "Site 9.0.3 sürüm işareti"],
+      ["app-final.js?v=5.6", "Güncel onarım betiği"],
+      ["site-v7.js?v=9.2", "Güncel site davranış betiği"],
+      ["play-streamers-build\" content=\"2026-08-26-site-9.2.0", "Site 9.2 sürüm işareti"],
     ];
     for (const [token, label] of documentContracts) {
       if (!homeDocument.body.includes(token)) issues.push(`${label} canlı ana sayfaya bağlanmamış.`);
@@ -1264,7 +1264,7 @@ function turnstileOAuthPage(provider, purpose, mode, env, remember = false) {
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Play Streamers · Güvenlik doğrulaması</title>
-  <meta name="ps-worker-build" content="5.1-sw-bot-premium">
+  <meta name="ps-worker-build" content="5.2-sw-bot-premium">
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cpath d='M12 5h40a7 7 0 0 1 7 7v40a7 7 0 0 1-7 7H19L5 48V12a7 7 0 0 1 7-7Z' fill='%23050a08' stroke='%2353fc18' stroke-width='3'/%3E%3Ctext x='32' y='41' text-anchor='middle' fill='%2353fc18' font-family='Arial,sans-serif' font-size='27' font-weight='900'%3EPS%3C/text%3E%3C/svg%3E">
   <link rel="preconnect" href="https://challenges.cloudflare.com" crossorigin>
   <link rel="dns-prefetch" href="//challenges.cloudflare.com">

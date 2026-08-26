@@ -547,7 +547,7 @@
     }
     if (!footer.classList.contains('landing-footer')) {
       footer.className = 'landing-footer';
-      footer.innerHTML = '<span>Güvenli bağlantılar · Kişisel panel · Ücretsiz başlangıç</span><span>Developed by <a href="https://guns.lol/switly" target="_blank" rel="noopener noreferrer">SW CREATE</a></span>';
+      footer.innerHTML = '<span>Güvenli bağlantılar · Kişisel panel · Ücretsiz başlangıç</span><span>Developed by <a href="https://swcreate.com" target="_blank" rel="noopener noreferrer">SW CREATE</a></span>';
     }
     const shell = document.createElement('article'); shell.className = 'landing-shell ps52-info-shell';
     const main = document.createElement('main'); main.className = 'ps52-info-main'; main.innerHTML = '<section class="ps49-info-content"></section>';
@@ -651,7 +651,7 @@
     if (!layer) { layer = document.createElement('section'); layer.id = 'ps49InfoPage'; document.body.append(layer); }
     window.clearTimeout(layer.ps49CloseTimer);
     layer.className = 'ps53-products-copy';
-    layer.innerHTML = '<article class="ps53-products-shell"><header class="ps53-products-nav"><button class="ps53-products-brand" type="button" aria-label="İkinci ana sayfaya dön"><i>PS</i><span>PLAY STREAMERS</span></button><button class="ps53-products-close ps53-products-back" type="button" aria-label="İkinci ana sayfaya dön"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 5-7 7 7 7"/></svg></button></header><main class="ps53-products-main"><section class="ps49-info-content"></section></main><footer class="landing-footer"><span>Güvenli bağlantılar · Kişisel panel · Ücretsiz başlangıç</span><span>Developed by <a href="https://guns.lol/switly" target="_blank" rel="noopener noreferrer">SW CREATE</a></span></footer></article>';
+    layer.innerHTML = '<article class="ps53-products-shell"><header class="ps53-products-nav"><button class="ps53-products-brand" type="button" aria-label="İkinci ana sayfaya dön"><i>PS</i><span>PLAY STREAMERS</span></button><button class="ps53-products-close ps53-products-back" type="button" aria-label="İkinci ana sayfaya dön"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 5-7 7 7 7"/></svg></button></header><main class="ps53-products-main"><section class="ps49-info-content"></section></main><footer class="landing-footer"><span>Güvenli bağlantılar · Kişisel panel · Ücretsiz başlangıç</span><span>Developed by <a href="https://swcreate.com" target="_blank" rel="noopener noreferrer">SW CREATE</a></span></footer></article>';
     renderInfoContent(layer, 'products', false);
     layer.hidden = false;
     const brand = $('.ps53-products-brand', layer), back = $('.ps53-products-back', layer);
@@ -2845,7 +2845,7 @@
       cancelAnimationFrame(node.ps61Frame);
       node.ps61Frame = 0;
     }
-    if (start === target || matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    if (start === target) {
       node.ps61DisplayedValue = target;
       node.textContent = target.toLocaleString('tr-TR');
       return;
@@ -2996,7 +2996,7 @@
       if (node.closest('script,style,textarea') || node.children.length) return;
       if ((node.textContent || '').trim().toLocaleUpperCase('tr-TR') === 'SW CREATE') node.classList.add('ps53-sw-create');
     });
-    $$('a[href*="guns.lol/switly"]').forEach(link => link.classList.add('ps53-sw-create'));
+    $$('a[href*="swcreate.com"]').forEach(link => link.classList.add('ps53-sw-create'));
   }
   function stripKickFromCompletion() {
     $$('#ps15KickSetup #ps15KickAuth,#ps15KickSetup [data-ps27-social="kick"],#googleProfileSetup #ps15KickAuth,#googleProfileSetup [data-ps27-social="kick"],.account-blocker .ps15-kick-auth').forEach(node => node.remove());
@@ -3118,7 +3118,7 @@
         return;
       }
       footer.classList.add('ps73-footer-order');
-      footer.innerHTML = '<span class="ps73-privacy-slot"><a class="ps72-privacy-link" href="https://pstreamers.com/privacy.html" aria-label="Play Streamers Gizlilik Politikası">Gizlilik</a><a class="ps72-terms-link" href="https://pstreamers.com/terms.html" aria-label="Play Streamers Kullanım Koşulları">Kullanım Koşulları</a></span><span class="ps73-feature-slot">Güvenli bağlantılar · Kişisel panel · Ücretsiz başlangıç</span><span class="ps73-developer-slot">Developed by <a class="switly-link ps73-developer-link" href="https://guns.lol/switly" target="_blank" rel="noopener"><strong>SW CREATE</strong></a></span>';
+      footer.innerHTML = '<span class="ps73-privacy-slot"><a class="ps72-privacy-link" href="https://pstreamers.com/privacy.html" aria-label="Play Streamers Gizlilik Politikası">Gizlilik</a><a class="ps72-terms-link" href="https://pstreamers.com/terms.html" aria-label="Play Streamers Kullanım Koşulları">Kullanım Koşulları</a></span><span class="ps73-feature-slot">Güvenli bağlantılar · Kişisel panel · Ücretsiz başlangıç</span><span class="ps73-developer-slot">Developed by <a class="switly-link ps73-developer-link" href="https://swcreate.com" target="_blank" rel="noopener noreferrer"><strong>SW CREATE</strong></a></span>';
     });
   }
 

@@ -1,26 +1,27 @@
 # Play Streamers
 
-Play Streamers; yayın açma, güvenli video kaydı, sahne yönetimi ve yayıncı çalışma araçlarını sade bir masaüstü deneyiminde birleştirir.
+Play Streamers; yayın analizini, içerik planlamasını, topluluk yönetimini, marka araçlarını ve gelir görünümünü tek sade Windows uygulamasında birleştiren yayıncı çalışma alanıdır.
 
 ## Öne çıkanlar
 
-- Kick, Twitch, YouTube ve özel RTMPS hedeflerine yayın
-- Donanım kodlayıcı destekli güvenli MKV kayıt ve hızlı MP4 dönüştürme
-- Masaüstü, pencere ve kamera yakalama; logo, yazı ve mola sahnesi
-- Windows 11'de Play Streamers Camera sanal kamera çıkışı
-- Masaüstü sesi ve mikrofon mikseri; ayrı ses kanalları
-- Yayın geçmişi, klip işaretleri, içerik ve analiz çalışma alanları
+- Sunucuda otomatik oluşan yayın geçmişi, ortalama ve tepe izleyici özeti
+- Kick ve Play Connect üzerinden doğrulanmış kanal olayları
+- İçerik fikir kasası, yayın planı ve üretim çalışma alanları
+- Topluluk ritmi, marka araçları ve medya kiti hazırlığı
+- Free, Pro ve Product Pro için aynı sade uygulama deneyimi
+- SW Bot sistem denetimi ve anlaşılır SW AI açıklamaları
 - SW Identity ile güvenli hesap ve plan eşitleme
+- Windows Credential Manager ile cihazda korunan oturum
 
-Görüntü işleme, yayın anahtarı ve kayıt dosyaları cihazında kalır. Ağ tabanlı hesap ve analiz özellikleri yalnız gerektiğinde Play Streamers hizmetlerine bağlanır.
+Play Streamers bu sürümde kamera, mikrofon veya medya yakalamaz; yayın açma, yerel video kaydı ve sanal kamera özelliği içermez. Ham medya dosyaları sunucuya gönderilmez. Canlı kanal olayları ve yayın geçmişi yalnız bağlı hesaptan doğrulanan verilerle gösterilir.
 
 ## Kısa açıklama
 
-Yayın, kayıt, sanal kamera ve yayıncı çalışma araçları tek sade uygulamada.
+Analiz, içerik, topluluk ve marka araçları için sade yayıncı çalışma alanı.
 
 ## Arama terimleri
 
-yayın, canlı yayın, kayıt, streamer, sanal kamera, Kick, Twitch, YouTube, RTMPS, studio
+yayıncı, yayın analizi, streamer, içerik planlama, topluluk, marka, Kick, Play Connect
 
 ## Destek
 
@@ -28,4 +29,8 @@ https://pstreamers.com
 
 ## Gizlilik
 
-https://pstreamers.com/privacy
+https://pstreamers.com/privacy.html
+
+## Kullanım koşulları
+
+https://pstreamers.com/terms.html

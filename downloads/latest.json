@@ -1,10 +1,10 @@
 {
-  "version": "0.14.0",
-  "notes": "Play Streamers Desktop 0.14.0: Arayüz Site 9 ile aynı keskin siyah-beyaz premium tasarım diline geçirildi. Kick yayınları site veya uygulama kapalıyken de sunucuda otomatik ölçülür. Windows 10 ve 11 aynı sade, CMD penceresiz uygulama paketini kullanır.",
-  "pub_date": "2026-08-26T02:46:13.3279742+00:00",
+  "version": "0.14.1",
+  "notes": "Play Streamers Desktop 0.14.1: Arayüz Site 9 ile aynı keskin siyah-beyaz premium tasarım diline geçirildi. Kick yayınları site veya uygulama kapalıyken de sunucuda otomatik ölçülür. Windows 10 ve 11 aynı sade, CMD penceresiz uygulama paketini kullanır.",
+  "pub_date": "2026-08-26T10:43:54.9074605+00:00",
   "platforms": {
     "windows-x86_64": {
-      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVRcWlCbnhDNnc4UEQ3a2w1VE0vRjlhWStUS2NOcVE5RUtmNEEvOGRuYjM2R0tEOU85THU2MWs0WlNHNkw4VU9kanlSM1Vab3g4Q3plRi9Udnh3WUtRcWNraGI1SmJTVHdFPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzg3NzEyMzYzCWZpbGU6UGxheSBTdHJlYW1lcnNfMC4xNC4wX3g2NC1zZXR1cC5leGUKR3NWaVVGdVVuVEVHU2FWUWk2b2pPNTJBWjEzSVV5aHQ3d1ZETU91TTJLb1FKOEZIMkhXcUYzVVhpdURSdkU2ckdsdUxzYThnaEFTdHRLOUs4L2UxQWc9PQo=",
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVRcWlCbnhDNnc4UElHR0ZzVHMydGFQMFdQN2pkK2NrNFRiR0dLcG5QMUR4dUZTYllKTXpaL0U5YlhVTnB4OTlhdmxEMHhabHlJRHY1bHpEUk5RNThxRmxwODZCTVhtalE0PQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzg3NzQwOTY2CWZpbGU6UGxheSBTdHJlYW1lcnNfMC4xNC4xX3g2NC1zZXR1cC5leGUKRHRNU1dNQXQva3JKcm9Sd2J2WUQwTlhmalFHYkdVakhjMjgxeXlLZXJFSGdhZkRGQVVSd0xQdTlzM051MmZGKy9IcW5NMWRFdmhDTWhBYWZLTUNDQlE9PQo=",
       "url": "https://pstreamers.com/downloads/Play-Streamers-Setup.exe"
     }
   }

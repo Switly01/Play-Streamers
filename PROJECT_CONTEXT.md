@@ -99,8 +99,11 @@ Arapçada genel yerleşim LTR kalır. SW Bot kaydırılabilir sabit panelde çal
 yenileme sırasında eski sonucu silmez, kaydırılabilir ana sayfanın aşağıdaki
 kontrollerini yanlış taşma olarak raporlamaz ve SW AI kullanıcıya işlem talimatı
 vermek yerine sorunu sade biçimde açıklar. Destek, Gizlilik ve Kullanım
-Koşulları ortak monokrom sıvı cam tasarımına geçirildi. Site sürümü 10.1.0,
-ana betik 5.3.2, son onarım betiği 5.7.7 ve canlı çeviri önbelleği v3'tür.
+Koşulları ortak monokrom sıvı cam tasarımına geçirildi. Site sürümü 10.1.2,
+ana betik 5.3.2, son onarım betiği 5.7.7 ve canlı çeviri önbelleği v4'tür.
+Canlı çeviri, uzun AI JSON paketlerinin eksik kalmasını önlemek için görünür
+metinleri 12'li paketler hâlinde işler; geçersiz paketleri kontrollü biçimde
+böler ve başarılı her paketi sayfaya beklemeden uygular.
 
 Site 9.0.2 etkileşim onarımı: `showDialog` kullanan destek, güncelleme,
 grafik, hesap güvenliği, çıkış ve sıfırlama pencereleri ortak sabit modal

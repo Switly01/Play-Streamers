@@ -11,12 +11,12 @@ test('site 10 assets are cache-busted and use fluid monochrome glass', async () 
     read('site-v7.css'),
     read('play-streamers-ps-logo.svg'),
   ]);
-  assert.match(html, /play-streamers-build" content="2026-08-27-site-10\.1\.1"/);
-  assert.match(html, /site-v7\.css\?v=10\.1\.0/);
+  assert.match(html, /play-streamers-build" content="2026-08-27-site-10\.1\.2"/);
+  assert.match(html, /site-v7\.css\?v=10\.1\.2/);
   assert.match(html, /app\.js\?v=5\.3\.2/);
-  assert.match(html, /site-v7\.js\?v=10\.1\.0/);
+  assert.match(html, /site-v7\.js\?v=10\.1\.2/);
   assert.match(html, /app-final\.js\?v=5\.7\.7/);
-  assert.match(html, /live-i18n\.js\?v=3\.0/);
+  assert.match(html, /live-i18n\.js\?v=4\.0/);
   assert.match(css, /html\[data-ps-site-version="8"\]/);
   assert.match(css, /--signal: #f5f5f2/);
   assert.match(css, /@keyframes ps82-meteor/);
@@ -100,7 +100,7 @@ test('SW Bot audits the whole interface and explains issues with SW AI', async (
   assert.match(worker, /sw-bot:global-status:v12/);
   assert.match(worker, /explainSwBotIssuesWithAi/);
   assert.match(worker, /swBotDeterministicReport/);
-  assert.match(worker, /site-v7\.css\?v=10\.1\.0/);
+  assert.match(worker, /site-v7\.css\?v=10\.1\.2/);
   assert.match(worker, /\/api\/i18n\/translate/);
   assert.match(worker, /LEGACY_PLAY_STREAMERS_AUTH_PATHS/);
   assert.match(worker, /SW_IDENTITY_REQUIRED/);
@@ -122,7 +122,9 @@ test('SW Identity owns direct login and registration without legacy account leak
   assert.match(app, /setTimeout\(\(\)=>location\.reload\(\),180\)/);
   assert.match(app, /adoptAuthenticatedUser\(data\.user\);state\.settings\.userSession=activeUserSession/);
   assert.match(identityWorker, /hostname === \"pstreamers\.com\"/);
-  assert.match(i18n, /ps-live-i18n-v3/);
+  assert.match(i18n, /ps-live-i18n-v4/);
+  assert.match(i18n, /index \+= 12/);
+  assert.match(i18n, /requestTranslations\(strings\.slice\(0, middle\), depth \+ 1\)/);
   assert.match(i18n, /SKIP_ATTRIBUTE_SELECTOR/);
 });
 

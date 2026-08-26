@@ -45,7 +45,7 @@ export function installLiveI18n({ localeKey = "ps15-locale", getLocale, root = d
   document.documentElement.dataset.psLiveLocale = language;
   if (language === "tr" || !root) return { language, refresh() {} };
 
-  const cacheKey = `ps-live-i18n-v3:${language}`;
+  const cacheKey = `ps-live-i18n-v4:${language}`;
   const cache = { ...(critical[language] || {}), ...cacheRead(cacheKey) };
   const textState = new WeakMap();
   const attributeState = new WeakMap();
@@ -64,6 +64,32 @@ export function installLiveI18n({ localeKey = "ps15-locale", getLocale, root = d
     const record = attributeState.get(element) || {};
     record[name] = { source, translated };
     attributeState.set(element, record);
+  };
+
+  const requestTranslations = async (strings, depth = 0) => {
+    if (!strings.length) return [];
+    try {
+      const response = await fetch(API, {
+        method: "POST",
+        credentials: "omit",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ language, strings }),
+      });
+      const result = await response.json().catch(() => ({}));
+      if (response.ok && Array.isArray(result.translations) && result.translations.length === strings.length) {
+        return result.translations.map(value => clean(value));
+      }
+      // Küçük modeller uzun JSON listelerinde zaman zaman eksik bir öğe
+      // döndürebiliyor. 429 durumunda bekleriz; diğer geçersiz yanıtlarda paketi
+      // kontrollü biçimde bölerek görünür metinlerin yarım kalmasını önleriz.
+      if (response.status === 429 || strings.length === 1 || depth >= 3) return strings.map(() => "");
+    } catch {
+      if (strings.length === 1 || depth >= 3) return strings.map(() => "");
+    }
+    const middle = Math.ceil(strings.length / 2);
+    const left = await requestTranslations(strings.slice(0, middle), depth + 1);
+    const right = await requestTranslations(strings.slice(middle), depth + 1);
+    return [...left, ...right];
   };
 
   const collect = () => {
@@ -101,15 +127,23 @@ export function installLiveI18n({ localeKey = "ps15-locale", getLocale, root = d
     try {
       const targets = collect();
       const missing = [...new Set(targets.map(item => item.source).filter(source => !cache[source]))];
-      for (let index = 0; index < missing.length; index += 45) {
-        const strings = missing.slice(index, index + 45);
-        try {
-          const response = await fetch(API, { method: "POST", credentials: "omit", headers: { "content-type": "application/json" }, body: JSON.stringify({ language, strings }) });
-          const result = await response.json().catch(() => ({}));
-          if (!response.ok || !Array.isArray(result.translations)) continue;
-          strings.forEach((source, itemIndex) => { const value = clean(result.translations[itemIndex]); if (value) cache[source] = value; });
-          cacheWrite(cacheKey, cache);
-        } catch { /* Keep original copy until the next live pass. */ }
+      // On iki öğelik paketler hem AI JSON yanıtını güvenilir tutar hem de ilk
+      // ekranın çevirisini büyük bir paketin tamamlanmasını beklemeden gösterir.
+      for (let index = 0; index < missing.length; index += 12) {
+        const strings = missing.slice(index, index + 12);
+        const translations = await requestTranslations(strings);
+        if (translations.length !== strings.length) continue;
+        strings.forEach((source, itemIndex) => {
+          const value = clean(translations[itemIndex]);
+          if (value) cache[source] = value;
+        });
+        cacheWrite(cacheKey, cache);
+        targets.forEach(target => {
+          const translated = cache[target.source];
+          if (!translated || !strings.includes(target.source)) return;
+          if (target.type === "text" && target.node.isConnected) applyText(target.node, translated);
+          else if (target.type === "attribute" && target.element.isConnected) applyAttribute(target.element, target.name, translated, target.source);
+        });
       }
       targets.forEach(target => {
         const translated = cache[target.source];

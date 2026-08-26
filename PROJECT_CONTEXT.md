@@ -99,8 +99,8 @@ Arapçada genel yerleşim LTR kalır. SW Bot kaydırılabilir sabit panelde çal
 yenileme sırasında eski sonucu silmez, kaydırılabilir ana sayfanın aşağıdaki
 kontrollerini yanlış taşma olarak raporlamaz ve SW AI kullanıcıya işlem talimatı
 vermek yerine sorunu sade biçimde açıklar. Destek, Gizlilik ve Kullanım
-Koşulları ortak monokrom sıvı cam tasarımına geçirildi. Site sürümü 10.2.0,
-ana betik 5.3.4, son onarım betiği 5.7.8 ve canlı çeviri önbelleği v4.3'tür.
+Koşulları ortak monokrom sıvı cam tasarımına geçirildi. Site sürümü 10.2.1,
+ana betik 5.3.5, son onarım betiği 5.7.8 ve canlı çeviri önbelleği v4.3'tür.
 10.2 ile ana kahraman alanındaki dikdörtgen blur kaldırıldı; cam yüzeyler yansıma,
 kenar kırılması ve katmanlı saydamlıkla yeniden kuruldu. Saf beyaz beşgen PS
 monogramı, sabit canlı metrik kapsülü, kancalı halat astronotu, özel doğum tarihi

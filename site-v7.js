@@ -174,6 +174,7 @@
     const navHeight = root.querySelector('.landing-nav')?.getBoundingClientRect().height || 76;
     const top = Math.max(0, target.offsetTop - navHeight - 20);
     root.scrollTo({ top, behavior: smooth ? 'smooth' : 'auto' });
+    target.scrollIntoView({ behavior: smooth ? 'smooth' : 'auto', block: 'start' });
     root.querySelectorAll('.ps14-nav-links button').forEach((button) => {
       const buttonKey = button.dataset.info || button.dataset.ps49Info;
       button.classList.toggle('active', buttonKey === key);
@@ -221,6 +222,36 @@
     select(tabs.find((tab) => tab.classList.contains('active'))?.dataset.ps92PlanTab || 'play');
   }
 
+  function scheduleAstronaut(home) {
+    if (!home || home.dataset.ps10AstronautScheduled === '1') return;
+    home.dataset.ps10AstronautScheduled = '1';
+    const delay = new URL(location.href).searchParams.get('astronaut') === '1' ? 1200 : 300000;
+    const position = () => {
+      const astronaut = home.querySelector('.ps10-astronaut-visitor');
+      const hero = home.querySelector('.ps81-hero');
+      const download = home.querySelector('.ps8-download');
+      if (!astronaut || !hero || !download) return;
+      const heroBox = hero.getBoundingClientRect();
+      const downloadBox = download.getBoundingClientRect();
+      astronaut.style.top = `${Math.max(210, downloadBox.top - heroBox.top + 8)}px`;
+      astronaut.style.left = `${Math.min(heroBox.width - 58, downloadBox.right - heroBox.left + 20)}px`;
+    };
+    const reveal = () => {
+      const root = document.getElementById('authOverlay');
+      if (!home.isConnected || !root || root.hidden || document.hidden || root.scrollTop > (home.querySelector('.ps81-hero')?.offsetHeight || 800)) {
+        window.setTimeout(reveal, 15000);
+        return;
+      }
+      const astronaut = home.querySelector('.ps10-astronaut-visitor');
+      if (!astronaut || astronaut.classList.contains('is-visible')) return;
+      position();
+      astronaut.classList.add('is-visible');
+      astronaut.setAttribute('aria-hidden', 'false');
+      window.addEventListener('resize', position, { passive: true });
+    };
+    window.setTimeout(reveal, delay);
+  }
+
   function ensurePublicHome() {
     const root = document.getElementById('authOverlay');
     const shell = root?.querySelector('.landing-shell');
@@ -238,19 +269,17 @@
     if (current.classList.contains('ps8-home')) {
       activatePublicMotion(current);
       activatePlanTabs(current);
+      scheduleAstronaut(current);
       return;
     }
     const warpStars = Array.from({ length: 44 }, (_, index) => {
-      const angle = ((index * 137.508) + 11) * Math.PI / 180;
-      const distanceX = 52 + (index % 7) * 7;
-      const distanceY = 42 + (index % 5) * 8;
-      const tx = (Math.cos(angle) * distanceX).toFixed(2);
-      const ty = (Math.sin(angle) * distanceY).toFixed(2);
-      const rotation = (angle * 180 / Math.PI).toFixed(2);
-      const delay = (-((index * 0.173) % 3.7)).toFixed(2);
-      const duration = (1.75 + (index % 6) * 0.19).toFixed(2);
-      const length = 34 + (index % 8) * 9;
-      return `<i style="--ps92-tx:${tx}vw;--ps92-ty:${ty}vh;--ps92-rot:${rotation}deg;--ps92-delay:${delay}s;--ps92-duration:${duration}s;--ps92-length:${length}px"></i>`;
+      const x = (5 + ((index * 37) % 91)).toFixed(2);
+      const y = (7 + ((index * 53) % 86)).toFixed(2);
+      const delay = (-((index * .73) % 11)).toFixed(2);
+      const duration = (7.5 + (index % 8) * 1.15).toFixed(2);
+      const size = (index % 9 === 0 ? 3 : index % 4 === 0 ? 2 : 1).toFixed(0);
+      const drift = (-24 + (index * 17) % 49).toFixed(0);
+      return `<i style="--ps10-x:${x}%;--ps10-y:${y}%;--ps10-delay:${delay}s;--ps10-duration:${duration}s;--ps10-size:${size}px;--ps10-drift:${drift}px"></i>`;
     }).join('');
     const home = document.createElement('section');
     home.className = 'landing-main ps8-home';
@@ -263,19 +292,33 @@
         <div class="ps82-motion-field" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><span></span><span></span></div>
         <div class="ps82-orbits" aria-hidden="true"><i></i><i></i></div>
         <div class="ps8-hero-copy">
-          <span class="ps8-version"><i></i> SÜRÜM 0.14.1</span>
+          <span class="ps8-version"><i></i> PLAY STREAMERS WEB · v10.0.7</span>
           <h1 id="ps8-title" aria-label="PLAY STREAMERS"><span>PLAY</span><span>STREAMERS</span></h1>
           <h2>Profesyonel Yayıncı Kontrol Platformu</h2>
           <p>Canlı analiz · İçerik planlama · Topluluk · Marka · Play Connect</p>
           <div class="ps8-hero-actions">
             <a class="ps8-download" href="./downloads/Play-Streamers-Setup.exe" download>
               <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4.5 10.5 3v8.2H3V4.5Zm8.5-1.7L21 1v10.2h-9.5V2.8ZM3 12.2h7.5V21L3 19.5v-7.3Zm8.5 0H21V23l-9.5-1.8v-9Z"/></svg>
-              <span><b>Windows için indir</b><small>Windows 10/11 · 64 bit</small></span>
+              <span><b>Windows için indir</b><small>APP v0.14.2 · Windows 10/11 · 64 bit</small></span>
               <i>↓</i>
             </a>
           </div>
           <div class="ps8-proof" aria-label="Ürün bilgileri"><span>Ücretsiz</span><i>•</i><span>3.1 MB</span><i>•</i><span>Windows 10/11</span></div>
           <button class="ps81-hero-account" type="button" data-ps8-action="register">Ücretsiz hesap oluştur <span>↗</span></button>
+        </div>
+        <div class="ps10-astronaut-visitor" aria-hidden="true">
+          <div class="ps10-astronaut-bubble">Her geleceğin yayıncısı,<br><b>orada mısın?</b></div>
+          <svg viewBox="0 0 96 118" role="img" aria-label="Windows indirme düğmesinin üzerinde oturan piksel astronot" shape-rendering="crispEdges">
+            <path fill="#d9d9d7" d="M29 5h38v5h9v9h5v31h-5v10h-9v5H29v-5h-9V50h-5V19h5v-9h9V5Z"/>
+            <path fill="#151517" d="M29 18h38v5h6v24h-6v6H29v-6h-6V23h6v-5Z"/>
+            <path fill="#7b7b80" d="M35 24h27v4H35zM30 30h37v14H30z"/>
+            <path fill="#f4f4f1" d="M27 62h42v8h7v27H63V77H34v20H21V70h6v-8Z"/>
+            <path fill="#a8a8a5" d="M40 70h16v7H40zM24 82h10v15H24zM63 82h10v15H63z"/>
+            <path fill="#f4f4f1" d="M17 70h10v26H11V79h6v-9Zm52 0h10v9h6v17H69V70Z"/>
+            <path fill="#c7c7c4" d="M21 97h15v8H21zm40 0h15v8H61z"/>
+            <path fill="#f4f4f1" d="M22 102h20v11H8v-6h14v-5Zm32 0h20v5h14v6H54v-11Z"/>
+            <path fill="#fff" d="M32 14h8v4h-8zM25 67h8v4h-8z"/>
+          </svg>
         </div>
         <div class="ps81-scroll-cue" aria-hidden="true"><i></i><span>KEŞFET</span></div>
       </section>
@@ -335,7 +378,7 @@
         </div>
         <nav class="ps92-brand-directory" aria-label="Play Streamers ürün bağlantıları">
           <a class="ps92-swcreate-link" href="https://swcreate.com" target="_blank" rel="noopener noreferrer"><span>GELİŞTİREN EKOSİSTEM</span><b>SW CREATE</b><i>↗</i></a>
-          <div><a href="https://pstreamers.com">Play Streamers sitesi <i>↗</i></a><a href="./play-connect-v1.13.0.zip" download>Play Connect <i>↓</i></a><a href="./downloads/Play-Streamers-Setup.exe" download>Play Streamers uygulaması <i>↓</i></a></div>
+          <div><a href="https://pstreamers.com">Play Streamers Web <i>↗</i></a><a href="./play-connect-v1.14.0.zip" download>Play Connect <i>↓</i></a><a href="./downloads/Play-Streamers-Setup.exe" download>Play Streamers App <i>↓</i></a></div>
         </nav>
       </section>
 
@@ -358,7 +401,7 @@
 
       <section class="ps8-final-cta" aria-labelledby="ps8-final-title">
         <img src="./play-streamers-ps-logo.svg?v=9.2" alt="Play Streamers PS logosu">
-        <span>WINDOWS 10/11 · SÜRÜM 0.14.1</span>
+        <span>WINDOWS 10/11 · SÜRÜM 0.14.2</span>
         <h2 id="ps8-final-title">Yayınını değil,<br>sistemini büyüt.</h2>
         <p>Hesabını ücretsiz oluştur. Play Streamers Desktop'ı indir ve üretim araçlarını tek sade merkezde kullanmaya başla.</p>
         <div><a href="./downloads/Play-Streamers-Setup.exe" download>Uygulamayı ücretsiz indir <i>↓</i></a><button type="button" data-ps8-action="register">Hesap oluştur</button></div>
@@ -367,6 +410,7 @@
     current.replaceWith(home);
     activatePublicMotion(home);
     activatePlanTabs(home);
+    scheduleAstronaut(home);
     root.querySelector('.landing-update-preview')?.setAttribute('aria-hidden', 'true');
   }
 
@@ -377,6 +421,12 @@
     ensurePremiumAmbient();
     ensurePublicHome();
     normalizePublicMetrics();
+    const publicMetrics = document.querySelector('#authOverlay .ps61-site-metrics');
+    const hero = document.querySelector('#authOverlay .ps81-hero');
+    if (publicMetrics && hero && publicMetrics.parentElement !== hero) {
+      publicMetrics.classList.add('ps10-hero-metrics');
+      hero.append(publicMetrics);
+    }
     normalizeLegalLinks(root);
     animateNewSurfaces(root);
     const publicSurface = document.getElementById('authOverlay');
@@ -410,6 +460,26 @@
   new MutationObserver(queue).observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['hidden','aria-hidden'] });
   const infoPaths = { about: '#hakkimizda', products: '#urunlerimiz', how: '#nasil-calisir' };
   document.addEventListener('click', (event) => {
+    const publicBrand = event.target instanceof Element ? event.target.closest('#authOverlay .landing-brand') : null;
+    if (publicBrand) {
+      const root = document.getElementById('authOverlay');
+      if (root && !root.hidden) {
+        event.preventDefault();
+        event.stopImmediatePropagation();
+        publicBrand.classList.remove('ps10-brand-return');
+        void publicBrand.offsetWidth;
+        publicBrand.classList.add('ps10-brand-return');
+        root.querySelectorAll('.ps14-nav-links button').forEach((button) => {
+          button.classList.remove('active');
+          button.removeAttribute('aria-current');
+        });
+        root.scrollTo({ top: 0, behavior: 'smooth' });
+        history.pushState(null, '', '/');
+        document.title = 'Play Streamers — Yayıncı Merkezi';
+        window.setTimeout(() => publicBrand.classList.remove('ps10-brand-return'), 650);
+        return;
+      }
+    }
     const action = event.target instanceof Element ? event.target.closest('[data-ps8-action]') : null;
     if (action) {
       const key = action.dataset.ps8Action;

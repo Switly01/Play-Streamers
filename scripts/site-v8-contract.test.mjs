@@ -5,17 +5,18 @@ import test from 'node:test';
 const root = new URL('../', import.meta.url);
 const read = (name) => readFile(new URL(name, root), 'utf8');
 
-test('site 9.2 assets are cache-busted and use fluid monochrome glass', async () => {
+test('site 10 assets are cache-busted and use fluid monochrome glass', async () => {
   const [html, css, logo] = await Promise.all([
     read('index.html'),
     read('site-v7.css'),
     read('play-streamers-ps-logo.svg'),
   ]);
-  assert.match(html, /play-streamers-build" content="2026-08-26-site-9\.2\.0"/);
-  assert.match(html, /site-v7\.css\?v=9\.2\.0/);
-  assert.match(html, /app\.js\?v=5\.2/);
-  assert.match(html, /site-v7\.js\?v=9\.2/);
-  assert.match(html, /app-final\.js\?v=5\.6/);
+  assert.match(html, /play-streamers-build" content="2026-08-26-site-10\.0\.7"/);
+  assert.match(html, /site-v7\.css\?v=10\.0\.7/);
+  assert.match(html, /app\.js\?v=5\.3\.1/);
+  assert.match(html, /site-v7\.js\?v=10\.0\.7/);
+  assert.match(html, /app-final\.js\?v=5\.7\.5/);
+  assert.match(html, /live-i18n\.js\?v=2\.0/);
   assert.match(css, /html\[data-ps-site-version="8"\]/);
   assert.match(css, /--signal: #f5f5f2/);
   assert.match(css, /@keyframes ps82-meteor/);
@@ -30,8 +31,8 @@ test('site 9.2 assets are cache-busted and use fluid monochrome glass', async ()
   assert.match(css, /ps9-surface-in/);
   assert.match(css, /ps9-sw-ai-summary/);
   assert.doesNotMatch(css, /body\.ps-v9\s*>\s*:not\(#ps9Ambient\)/);
-  assert.match(logo, /aria-label="Play Streamers PS portal amblemi"/);
-  assert.match(logo, /linearGradient id="ps92-frame"/);
+  assert.match(logo, /aria-label="Play Streamers akış yörüngesi amblemi"/);
+  assert.match(logo, /id="ps10Shell"/);
   assert.match(css, /@keyframes ps92-warp/);
   assert.match(css, /--ps92-glass/);
 });
@@ -41,6 +42,7 @@ test('public home promotes the desktop app without restoring legacy hero', async
   assert.match(source, /className = 'landing-main ps8-home'/);
   assert.match(source, /Windows için indir/);
   assert.match(source, /Windows 10\/11 · 64 bit/);
+  assert.match(source, /APP v0\.14\.2/);
   assert.match(source, /data-ps8-action="register"/);
   assert.match(source, /data-ps8-action="products"/);
   assert.match(source, /id="ps8-about"/);
@@ -65,6 +67,10 @@ test('public home promotes the desktop app without restoring legacy hero', async
   assert.match(source, /data-ps92-plan-tab="play"/);
   assert.match(source, /class="ps92-warp-field"/);
   assert.match(source, /https:\/\/swcreate\.com/);
+  assert.match(source, /Play Streamers Web/);
+  assert.match(source, /Play Streamers App/);
+  assert.match(source, /scheduleAstronaut/);
+  assert.match(source, /Her geleceğin yayıncısı/);
   assert.doesNotMatch(source, />01 · NEDEN VARIZ\?</);
   assert.doesNotMatch(source, /<article class="ps8-feature-large"><span>01<\/span>/);
   assert.match(source, /current\.replaceWith\(home\)/);
@@ -82,7 +88,7 @@ test('SW Bot audits the whole interface and explains issues with SW AI', async (
   assert.match(app, /getComputedStyle\(ancestor\)\.position === 'fixed'/);
   assert.match(legacyApp, /window\.psSwBotOwnsStatus === true && issue/);
   assert.match(app, /\/api\/sw-bot\/status/);
-  assert.match(app, /SW AI AÇIKLAMASI/);
+  assert.match(app, /Ekibimiz sorun üzerinde çalışıyor\./);
   assert.match(app, /unnamedControls/);
   assert.match(app, /inertLinks/);
   assert.match(app, /clippedControls/);
@@ -90,7 +96,10 @@ test('SW Bot audits the whole interface and explains issues with SW AI', async (
   assert.match(worker, /sw-bot:global-status:v11/);
   assert.match(worker, /explainSwBotIssuesWithAi/);
   assert.match(worker, /swBotDeterministicReport/);
-  assert.match(worker, /site-v7\.css\?v=9\.2\.0/);
+  assert.match(worker, /site-v7\.css\?v=10\.0\.5/);
+  assert.match(worker, /\/api\/i18n\/translate/);
+  assert.match(worker, /LEGACY_PLAY_STREAMERS_AUTH_PATHS/);
+  assert.match(worker, /SW_IDENTITY_REQUIRED/);
   assert.match(worker, /terms\.html/);
 });
 

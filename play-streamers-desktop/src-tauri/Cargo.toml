@@ -1,6 +1,6 @@
 [package]
 name = "play-streamers"
-version = "0.14.1"
+version = "0.14.2"
 description = "Play Streamers masaüstü yayıncı çalışma alanı"
 authors = ["SW CREATE"]
 edition = "2021"

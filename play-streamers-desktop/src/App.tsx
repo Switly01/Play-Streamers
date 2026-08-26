@@ -4,6 +4,7 @@ import { check } from "@tauri-apps/plugin-updater";
 import { FEATURES, canUseFeature, featuresForSection, planLabels, sectionLabels } from "./features";
 import { FeatureWorkspace } from "./FeatureWorkspace";
 import { openExternal } from "./nativeBridge";
+import { installLiveI18n } from "./liveI18n";
 import type { AppSection, FeatureDefinition, PlanTier } from "./types";
 
 const NAVIGATION: Array<{ id: AppSection; icon: string }> = [
@@ -74,6 +75,7 @@ export function App() {
   const [search, setSearch] = useState("");
   const [selectedFeature, setSelectedFeature] = useState<FeatureDefinition | null>(null);
   const [updateState, setUpdateState] = useState<{ phase: "idle" | "checking" | "available" | "installing" | "current" | "error"; version?: string; message: string }>({ phase: "idle", message: "Güncellemeleri denetle" });
+  const [locale, setLocale] = useState(() => localStorage.getItem("ps.locale") || "tr");
   const [notes, setNotes] = useLocalList("ps.quick-notes", ["Yayın açılışında yeni hedefi anlat", "Mola öncesi soru kutusunu aç"]);
   const [ideas, setIdeas] = useLocalList("ps.idea-vault", ["İzleyici seçimli oyun gecesi", "Yayın kurulumunun kamera arkası"]);
 
@@ -82,6 +84,10 @@ export function App() {
     const needle = search.trim().toLocaleLowerCase("tr-TR");
     return needle ? source.filter((feature) => `${feature.title} ${feature.description}`.toLocaleLowerCase("tr-TR").includes(needle)) : source;
   }, [search, section]);
+  useEffect(() => {
+    localStorage.setItem("ps.locale", locale);
+    return installLiveI18n(locale);
+  }, [locale]);
   useEffect(() => {
     document.documentElement.dataset.theme = localStorage.getItem("ps.theme") || "violet";
     let disposed = false;
@@ -223,7 +229,7 @@ export function App() {
         <header className="topbar">
           <div className="topbar-title"><span className="mobile-mark"><img src="./play-streamers-ps-logo.svg" alt="" /></span><div><small>PLAY STREAMERS</small><strong>{search ? "Arama sonuçları" : sectionLabels[section]}</strong></div></div>
           <label className="search-box"><span>⌕</span><input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Bir araç veya özellik ara…" /><kbd>Ctrl K</kbd></label>
-          <div className="top-actions"><button className={`update-button ${updateState.phase}`} aria-label={updateState.message} title={updateState.message} disabled={updateState.phase === "checking" || updateState.phase === "installing"} onClick={() => void (updateState.phase === "available" ? installDesktopUpdate() : checkDesktopUpdate(false))}>{updateState.phase === "available" ? "↑" : updateState.phase === "installing" || updateState.phase === "checking" ? "…" : "↻"}</button><span className="system-ready"><i /> {updateState.phase === "available" ? `Sürüm ${updateState.version} hazır` : "Sistem hazır"}</span></div>
+          <div className="top-actions"><label className="desktop-locale" title="Dil seçimi"><span>◎</span><select aria-label="Dil seçimi" value={locale} onChange={(event) => setLocale(event.target.value)}><option value="tr">Türkçe</option><option value="en">English</option><option value="de">Deutsch</option><option value="es">Español</option><option value="fr">Français</option><option value="ru">Русский</option><option value="ar">العربية</option><option value="ja">日本語</option></select></label><button className={`update-button ${updateState.phase}`} aria-label={updateState.message} title={updateState.message} disabled={updateState.phase === "checking" || updateState.phase === "installing"} onClick={() => void (updateState.phase === "available" ? installDesktopUpdate() : checkDesktopUpdate(false))}>{updateState.phase === "available" ? "↑" : updateState.phase === "installing" || updateState.phase === "checking" ? "…" : "↻"}</button><span className="system-ready"><i /> {updateState.phase === "available" ? `Sürüm ${updateState.version} hazır` : "Sistem hazır"}</span></div>
         </header>
 
         {section === "home" && !search ? (

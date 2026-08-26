@@ -2214,8 +2214,8 @@
     const dataNote = '* Kick Public API toplam takipçi ve aktif abone sayılarını her hesapta doğrudan sunmadığı için kartlar, erişilebildiğinde Kick kanal özetini; aksi halde Play Streamers’a ulaşan doğrulanmış takip ve abonelik olaylarından bilinen en güvenli değeri gösterir. Grafikler son üç aylık hareketleri gösterir.';
     const panes = {
       data: `<span class="ps51-account-kicker">HESAP MERKEZİ · VERİLER</span><h2>Hesap özeti</h2><p class="ps51-account-lead">Bağlı Kick profilini ve işlenen kanal hareketlerini tek bakışta gör.</p>${kickSummary.profile}<div class="ps51-data-grid">${dataCards.join('')}<p class="ps54-data-note">${esc(dataNote)}</p></div>`,
-      profile: `<span class="ps51-account-kicker">HESAP MERKEZİ · PROFİL</span><h2>Profilini düzenle</h2><p class="ps51-account-lead">Kullanıcı adını ve profil fotoğrafını buradan yönet.</p><div class="ps51-profile-head"><div class="ps51-profile-avatar">${accountAvatar(user)}</div><div><b>${esc(user.username || user.name || 'Play Streamers kullanıcısı')}</b><p>${esc(user.email || 'E-posta bağlı değil')}</p></div></div><article class="ps51-account-section"><h3>Kullanıcı adı</h3><p>Yeni kullanıcı adın 3–24 karakter olmalıdır. ${esc(cooldownText(user.usernameChangeAvailableAt))}</p><form id="ps51UsernameForm"><label>Kullanıcı adı<input name="username" value="${esc(user.username || '')}" minlength="3" maxlength="24" autocomplete="username" required></label><p class="ps51-account-status" aria-live="polite">${esc(flash)}</p><button class="ps51-primary" type="submit">Kullanıcı adını kaydet</button></form></article><article class="ps51-account-section"><h3>Profil fotoğrafı</h3><p>Hazır bir profil seçebilir veya bu cihaz için kendi fotoğrafını kullanabilirsin.</p><div class="ps51-avatar-grid">${accountAvatars.map(item => `<button class="ps51-avatar-choice${user.picture === item[0] ? ' active' : ''}" type="button" data-avatar="${item[0]}" aria-label="${item[2]}">${item[1]}</button>`).join('')}</div><label class="ps51-avatar-upload">Kendi fotoğrafını seç<input id="ps51AvatarFile" type="file" accept="image/png,image/jpeg,image/webp"></label><p class="ps51-account-status${flash ? ' success' : ''}" aria-live="polite">${esc(flash)}</p></article>`,
-      account: `<span class="ps51-account-kicker">HESAP MERKEZİ · HESAP</span><h2>E-posta, şifre ve güvenlik</h2><p class="ps51-account-lead">Hesap değişiklikleri e-posta koduyla; bütün yeni oturum açılışları standart doğrulama uygulaması koduyla korunur.</p><article class="ps51-account-section"><h3>E-posta</h3><p>${esc(cooldownText(user.emailChangeAvailableAt))} · Değişiklik için doğrulama kodu gönderilir.</p><form id="ps51EmailForm"><label>Yeni e-posta<input name="email" type="email" value="${esc(user.email || '')}" autocomplete="email" required></label><label>Mevcut şifre<input name="currentPassword" type="password" autocomplete="current-password" required></label><p class="ps51-account-status" aria-live="polite">${esc(flash)}</p><button class="ps51-primary" type="submit">E-postayı değiştir</button></form></article><article class="ps51-account-section"><h3>Şifre</h3><p>${esc(cooldownText(user.passwordChangeAvailableAt))} · Değişiklik için doğrulama kodu gönderilir.</p><form id="ps51PasswordForm"><label>Mevcut şifre<input name="currentPassword" type="password" autocomplete="current-password" required></label><label>Yeni şifre<input name="password" type="password" minlength="8" autocomplete="new-password" required></label><label>Yeni şifre tekrar<input name="password" type="password" minlength="8" autocomplete="new-password" required></label><p class="ps51-account-status${flash ? ' success' : ''}" aria-live="polite">${esc(flash)}</p><button class="ps51-primary" type="submit">Şifreyi değiştir</button></form></article><article class="ps51-account-section ps56-two-factor-card"><h3>Doğrulama uygulaması</h3><p>${user.twoFactorEnabled ? 'Açık. Yeni bir oturum açarken Google Authenticator, Microsoft Authenticator veya iPhone Parolalar uygulamasındaki 6 haneli kod ya da tek kullanımlık kurtarma kodun istenir.' : 'Kapalı. Google Authenticator, Microsoft Authenticator ve iPhone Parolalar dahil standart TOTP uygulamalarıyla çalışır.'}</p><p id="ps56TwoFactorStatus" class="ps51-account-status${flash ? ' success' : ''}" aria-live="polite">${esc(flash)}</p><div class="ps60-security-actions"><button id="ps56TwoFactorToggle" class="${user.twoFactorEnabled ? 'ps51-danger' : 'ps51-primary'}" type="button" data-enabled="${user.twoFactorEnabled ? 'true' : 'false'}">${user.twoFactorEnabled ? 'İki adımlı doğrulamayı kaldır' : 'Doğrulama uygulaması bağla'}</button>${user.twoFactorEnabled ? '<button id="ps60RecoveryCodes" class="ps51-secondary" type="button">Yedek kodları yenile</button>' : ''}</div></article><div class="ps55-delete-zone"><button id="ps55DeleteAccount" class="ps55-delete-account" type="button">Hesabımı sil</button></div>`,
+      profile: `<span class="ps51-account-kicker">SW IDENTITY · PROFİL</span><h2>Merkezi SW profilin</h2><p class="ps51-account-lead">Kullanıcı adı, profil görseli ve ürün kimliğin artık tek SW Identity hesabından yönetilir.</p><div class="ps51-profile-head"><div class="ps51-profile-avatar"><img src="./play-streamers-ps-logo.svg?v=10" alt=""></div><div><b>${esc(user.username || user.name || 'SW Identity kullanıcısı')}</b><p>${esc(user.email || 'SW Identity hesabı')}</p></div></div><article class="ps51-account-section ps10-identity-handoff"><h3>SW Identity hesap merkezine geç</h3><p>Profil değişikliklerin SW Create ve Play Streamers dahil tüm bağlı ürünlerde aynı kimlikle güncellenir.</p><a class="ps51-primary" href="https://swcreate.com/center/?view=profile" target="_blank" rel="noopener noreferrer">SW profilimi yönet <span>↗</span></a></article>`,
+      account: `<span class="ps51-account-kicker">SW IDENTITY · GÜVENLİK</span><h2>E-posta, şifre ve güvenlik</h2><p class="ps51-account-lead">E-posta, parola, iki adımlı doğrulama, güvenilir cihazlar ve merkezi hesap silme işlemi SW Identity tarafından yönetilir.</p><article class="ps51-account-section ps10-identity-handoff"><h3>Tek güvenlik merkezi</h3><p>Play Streamers ayrı parola veya ayrı hesap oluşturmaz. Güvenlik değişiklikleri bütün SW ürünlerine tek noktadan uygulanır.</p><a class="ps51-primary" href="https://swcreate.com/center/?view=security" target="_blank" rel="noopener noreferrer">SW güvenlik merkezini aç <span>↗</span></a><small>SW Identity altyapısıyla korunur · güvenlik doğrulaması hesap merkezinin içinde tamamlanır.</small></article>`,
       devices: `<span class="ps51-account-kicker">HESAP MERKEZİ · CİHAZLAR</span><h2>Oturum açılan cihazlar</h2><p class="ps51-account-lead">Hesabına giriş yapılan cihazları, açık oturumları, son aktiflik saatini ve Cloudflare tarafından sağlanan yaklaşık konumu buradan kontrol et. Cihaz geçmişi bu özellik etkinleştirildikten sonraki oturumları kapsar.</p>${accountDevicesPaneHtml()}<p class="ps51-account-status${flash ? ' success' : ''}" aria-live="polite">${esc(flash)}</p>`,
       connections: `<span class="ps51-account-kicker">HESAP MERKEZİ · BAĞLANTILAR</span><h2>Yayın bağlantıları</h2><p class="ps51-account-lead">Kick kanalını ve Play Connect cihazlarını tek merkezden yönet. Donate platformlarında doğrudan API veya sunucu bildirimi varsa bu yöntem; yoksa bir defalık girişten sonra sekme gerektirmeyen arka plan bağlantısı kullanılır. Platform oturumları ve erişim anahtarları cihazda kalır; sunucuda yalnızca cihaz anahtarının özeti ile doğrulanmış olaylar tutulur.</p><article class="ps51-kick-card"><i class="ps51-kick-mark">K</i><span><b>Kick</b><small>${kickConnected ? `${esc(kickName)} bağlı` : 'Henüz yayın hesabı bağlı değil'}</small></span>${kickConnected ? '<button id="ps51KickDisconnect" class="ps51-danger" type="button">Bağlantıyı kes</button>' : '<button id="ps51KickConnect" class="ps51-primary" type="button">Kick bağla</button>'}</article>${donateBridgeConnectionsHtml()}<p class="ps51-account-status${flash ? ' success' : ''}" aria-live="polite">${esc(flash)}</p>`,
       support: `<span class="ps51-account-kicker">HESAP MERKEZİ · DESTEK TALEPLERİ</span><h2>Destek konuşmaların</h2><p class="ps51-account-lead">Gönderdiğin talepler ve destek ekibinden gelen cevaplar burada aynı konuşma içinde görünür.</p>${supportPaneHtml()}`
@@ -2258,7 +2258,7 @@
     }
     const layer = document.createElement('section'); layer.id = 'ps51AccountCenter'; layer.dataset.currentTab = safeTab;
     const initialViewVersion = accountCenterViewVersion;
-    layer.innerHTML = `<article class="ps51-account-shell"><button class="ps51-account-close" type="button" aria-label="Hesap merkezini kapat">×</button><nav class="ps51-account-nav" aria-label="Hesap bölümleri"><div class="ps51-account-brand"><i>PS</i><span>PLAY STREAMERS</span></div>${[['data','Veriler'],['profile','Profil'],['account','Hesap'],['devices','Cihazlar'],['connections','Bağlantılar'],['support','Destek talepleri']].map(item => { const active = safeTab === item[0]; return `<button type="button" data-ps51-tab="${item[0]}" class="${active ? 'active' : ''}"${active ? ' disabled aria-current="page"' : ''}>${accountNavIcons[item[0]]}<span>${item[1]}</span></button>`; }).join('')}</nav><main class="ps51-account-main"><section class="ps51-account-pane" data-pane="${safeTab}">${panes[safeTab]}</section></main></article>`;
+    layer.innerHTML = `<article class="ps51-account-shell"><button class="ps51-account-close" type="button" aria-label="Hesap merkezini kapat">×</button><nav class="ps51-account-nav" aria-label="Hesap bölümleri"><div class="ps51-account-brand"><i><img src="./play-streamers-ps-logo.svg?v=10" alt=""></i><span>PLAY STREAMERS<small>SW IDENTITY</small></span></div>${[['data','Veriler'],['profile','SW Profil'],['account','SW Güvenlik'],['devices','Cihazlar'],['connections','Bağlantılar'],['support','Destek talepleri']].map(item => { const active = safeTab === item[0]; return `<button type="button" data-ps51-tab="${item[0]}" class="${active ? 'active' : ''}"${active ? ' disabled aria-current="page"' : ''}>${accountNavIcons[item[0]]}<span>${item[1]}</span></button>`; }).join('')}</nav><main class="ps51-account-main"><section class="ps51-account-pane" data-pane="${safeTab}">${panes[safeTab]}</section></main></article>`;
     document.body.classList.add('ps54-account-open'); document.body.append(layer);
     if (safeTab === 'connections') normalizeTipeeeStreamDabLogo(layer);
     bindAccountPane(layer, safeTab);
@@ -2550,7 +2550,7 @@
     body.dataset.busy = '0';
     const serverByIssue = new Map(playBotGlobalReports.map(report => [String(report.issue || ''), report]));
     body.innerHTML = issues.length
-      ? `<ul>${issues.map(issue => { const clean = String(issue).replace(/^Site geneli:\s*/i, ''); const report = serverByIssue.get(clean) || explainSwBotIssue(clean); return `<li class="error"><i aria-hidden="true"></i><span><b>${esc(report.title || 'SW Bot uyarısı')}</b><small>${esc(report.summary || clean)}</small><em class="ps9-sw-ai-summary"><b>SW AI AÇIKLAMASI</b>${esc(report.action || report.nextAction || 'Sorun yeniden denetlenecek.')}</em></span></li>`; }).join('')}</ul><time>Son kontrol: ${esc(new Date().toLocaleTimeString('tr-TR'))}</time>`
+      ? `<ul>${issues.map(issue => { const clean = String(issue).replace(/^Site geneli:\s*/i, '').replace(/\s+/g, ' ').trim(); const report = serverByIssue.get(clean) || explainSwBotIssue(clean); const description = String(report.summary || clean).replace(/^(Sayfayı yenile|Tarayıcı yakınlaştırmasını|İşlemi tekrar dene)[^.]*\.?\s*/i, '').trim() || clean; return `<li class="error"><i aria-hidden="true"></i><span><b>${esc(report.title || 'SW AI sistem açıklaması')}</b><em class="ps9-sw-ai-summary"><b>SW AI AÇIKLAMASI</b>${esc(`${description.replace(/[.!?]+$/, '')}. Ekibimiz sorun üzerinde çalışıyor.`)}</em></span></li>`; }).join('')}</ul><time>Son kontrol: ${esc(new Date().toLocaleTimeString('tr-TR'))}</time>`
       : `<p class="ps69-play-bot-clear">SW Bot tüm denetimleri tamamladı. Sorun tespit edilmedi.</p><time>Son kontrol: ${esc(new Date().toLocaleTimeString('tr-TR'))}</time>`;
   }
   async function runPlayBot(popover, force = false) {
@@ -2699,7 +2699,7 @@
       if (!button) { button = document.createElement('button'); button.type = 'button'; button.className = 'ps28-eye'; button.dataset.ps48Eye = '1'; button.innerHTML = '<svg class="ps47-eye-closed" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 3l18 18M10.6 10.7a2.2 2.2 0 0 0 2.8 2.7M9.1 5.9A10.8 10.8 0 0 1 12 5.5c6.2 0 9.5 6.5 9.5 6.5a16.4 16.4 0 0 1-2.6 3.3M6.2 7.2A16.7 16.7 0 0 0 2.5 12s3.3 6.5 9.5 6.5a10.9 10.9 0 0 0 3.1-.4"/></svg><svg class="ps47-eye-open" viewBox="0 0 24 24" aria-hidden="true"><path d="M2.5 12s3.3-5.5 9.5-5.5S21.5 12 21.5 12 18.2 17.5 12 17.5 2.5 12 2.5 12Z"/><circle cx="12" cy="12" r="2.7"/></svg>'; host.append(button); }
       const sync = () => { const visible = input.type === 'text'; button.classList.toggle('is-open', visible); button.setAttribute('aria-label', visible ? 'Şifreyi gizle' : 'Şifreyi göster'); button.setAttribute('aria-pressed', String(visible)); };
       button.onpointerdown = event => event.preventDefault();
-      button.onclick = event => { event.preventDefault(); event.stopImmediatePropagation(); input.type = input.type === 'password' ? 'text' : 'password'; sync(); input.focus({ preventScroll: true }); }; sync();
+      button.onclick = event => { event.preventDefault(); event.stopImmediatePropagation(); if (button.dataset.psEyeBusy === '1') return; button.dataset.psEyeBusy = '1'; input.type = input.type === 'password' ? 'text' : 'password'; sync(); input.focus({ preventScroll: true }); window.requestAnimationFrame(() => { delete button.dataset.psEyeBusy; }); }; sync();
     });
   }
   function rememberIntentForProvider(button) {
@@ -2715,6 +2715,7 @@
   }
   function normalizeProviderButtons() {
     $$('.auth-dialog,.ps27-dialog,#ps30Modal .ps30-dialog').forEach(dialog => {
+      if (dialog.matches('[data-sw-identity-auth="1"]')) return;
       if (dialog.closest('#ps56TwoFactorLogin')) {
         $$('[data-ps27-social],[data-ps48-provider],.ps55-provider-pair,.ps27-social-row,.ps30-socials,.provider-buttons', dialog)
           .forEach(node => node.remove());
@@ -2983,7 +2984,7 @@
     window.setInterval(() => requestSiteMetrics(), LIVE_CONTROL_INTERVALS.siteMetrics);
     requestSiteMetrics();
   }
-  function decorateDialogs() { $$('.auth-dialog,.ps27-dialog,#ps30Modal .ps30-dialog,.ps41-verify-card').forEach(dialog => { if ($('.ps44-auth-logo', dialog)) return; const logo = document.createElement('span'); logo.className = 'ps44-auth-logo'; logo.setAttribute('aria-hidden', 'true'); logo.textContent = 'PS'; dialog.prepend(logo); }); }
+  function decorateDialogs() { $$('.auth-dialog,.ps27-dialog,#ps30Modal .ps30-dialog,.ps41-verify-card').forEach(dialog => { if (dialog.matches('[data-sw-identity-auth="1"]') || $('.ps44-auth-logo', dialog)) return; const logo = document.createElement('span'); logo.className = 'ps44-auth-logo'; logo.setAttribute('aria-hidden', 'true'); logo.textContent = 'PS'; dialog.prepend(logo); }); }
   function normalizeLogos() {
     $$('.brand-logo,#psSecondHome .ps20-logo,#psSecondHome .ps-second-brand>b,#psSecondHome #ps12HomeBrand>b,.ps30-brand-mark,.ps44-auth-logo').forEach(logo => {
       logo.querySelectorAll('svg,img').forEach(mark => mark.remove());
@@ -3439,9 +3440,54 @@
   }
   function openPublicHomeSection(key) {
     if (typeof window.psPublicHomeNavigate === 'function' && window.psPublicHomeNavigate(key)) return;
+    const targetId = { about: 'ps8-about', products: 'ps8-products', how: 'ps8-how' }[key];
+    const root = $('#authOverlay');
+    const target = targetId ? document.getElementById(targetId) : null;
+    if (root && target) {
+      const navHeight = $('.landing-nav', root)?.getBoundingClientRect().height || 76;
+      root.hidden = false;
+      root.inert = false;
+      root.removeAttribute('aria-hidden');
+      root.scrollTo({ top: Math.max(0, target.offsetTop - navHeight - 20), behavior: 'smooth' });
+      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      const hash = { about: '#hakkimizda', products: '#urunlerimiz', how: '#nasil-calisir' }[key];
+      if (hash && location.hash !== hash) history.pushState(null, '', `/${hash}`);
+      return;
+    }
     showPublicInfo(key);
   }
-  function bindPublicNavigation() { $('#authOverlay .ps14-nav-links button').forEach(button => { const key = button.dataset.info || (/ürün/i.test(button.textContent) ? 'products' : /nasıl/i.test(button.textContent) ? 'how' : 'about'); button.onclick = event => { event.preventDefault(); event.stopImmediatePropagation(); openPublicHomeSection(key); }; }); }
+  function bindPublicNavigation() {
+    $$('#authOverlay .ps14-nav-links button').forEach(button => {
+      const key = button.dataset.info || (/ürün/i.test(button.textContent) ? 'products' : /nasıl/i.test(button.textContent) ? 'how' : 'about');
+      button.onclick = event => { event.preventDefault(); event.stopImmediatePropagation(); openPublicHomeSection(key); };
+    });
+    $$('#authOverlay [data-ps8-action]').forEach(button => {
+      button.onclick = event => {
+        const key = button.dataset.ps8Action;
+        event.preventDefault();
+        event.stopImmediatePropagation();
+        if (key === 'register') document.getElementById('landingSignup')?.click();
+        else if (key === 'products') openPublicHomeSection('products');
+      };
+    });
+    const brand = $('#authOverlay .landing-brand');
+    if (brand) brand.onclick = event => {
+      const root = $('#authOverlay');
+      if (!root || root.hidden) return;
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      brand.classList.remove('ps10-brand-return');
+      void brand.offsetWidth;
+      brand.classList.add('ps10-brand-return');
+      $$('.ps14-nav-links button', root).forEach(button => {
+        button.classList.remove('active');
+        button.removeAttribute('aria-current');
+      });
+      root.scrollTo({ top: 0, behavior: 'smooth' });
+      if (location.pathname !== '/' || location.hash) history.pushState(null, '', '/');
+      window.setTimeout(() => brand.classList.remove('ps10-brand-return'), 650);
+    };
+  }
   function repair() { applyRememberPolicy(); installStatus(); bindLocaleControl(); normalizeLocaleFlags(); ensureRememberControls(); normalizeEyes(); normalizeProviderButtons(); decorateDialogs(); normalizeLogos(); normalizeSwCreate(); stripKickFromCompletion(); removeReleaseBanners(); removeRetiredSurfaces(); refreshCreatorLanding(); bindCurrentControls(); bindPublicNavigation(); enableMemberBrand(); ensureSupport(); ensureMemberExtras(); ensureSiteMetricsCards(); ensurePrivacyLinks(); startSiteMetrics(); ensureDashboardLayout(); ensureStatsResetControl(); ensureNotificationControls(); normalizeAccountMetricZeroes(); normalizeTipeeeStreamDabLogo(document); normalizeTooltips(); updateConnectionIcon(); memberLoadingTransition(); }
   let queued = false; const queueRepair = () => { if (!queued) { queued = true; requestAnimationFrame(() => { queued = false; repair(); }); } };
   let lastStatusPress = 0;

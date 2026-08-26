@@ -1,3 +1,5 @@
+import { installLiveI18n } from "../src/live-i18n.js";
+
 const $ = selector => document.querySelector(selector);
 let latestState = null;
 let providerQuery = "";
@@ -58,7 +60,7 @@ function render(state) {
   const paired = Boolean(connection.paired && connection.hasDeviceToken);
   $("#connectionDot").classList.toggle("connected", paired);
   $("#pairCard").classList.toggle("connected", paired);
-  $("#pairTitle").textContent = paired ? "Play Streamers hesabı bağlı" : "Play Streamers hesabını bağla";
+  $("#pairTitle").textContent = paired ? "SW Identity hesabı bağlı" : "SW Identity hesabını bağla";
   $("#pairText").textContent = paired
     ? `${connection.deviceName || "Chrome Eklentisi"} · Platform giriş bilgilerin bu cihazda kalır.`
     : "Sitede Hesabım → Bağlantılar bölümünden bir kod oluştur ve buraya gir.";
@@ -116,6 +118,7 @@ function render(state) {
 }
 
 async function load() {
+  installLiveI18n({ locale: localStorage.getItem("play-connect-locale") || "tr" });
   try {
     $("#extensionVersion").textContent = `v${chrome.runtime.getManifest().version}`;
     render(await send({ type: "GET_STATE" }));

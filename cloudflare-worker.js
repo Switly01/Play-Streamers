@@ -82,6 +82,10 @@ const CURRENT_RELEASE_VERSION = "5.2";
 const CURRENT_RELEASE_PUBLISHED_AT = "2026-08-25T12:00:00+03:00";
 const SW_IDENTITY_ORIGIN = "https://api.swcreate.com";
 const DESKTOP_IDENTITY_REDIRECT = "playstreamers://identity/callback";
+const WEB_IDENTITY_REDIRECTS = new Set([
+  "https://pstreamers.com/identity/callback",
+  "https://www.pstreamers.com/identity/callback",
+]);
 const PLAY_STREAMERS_FEATURES = Object.freeze([
   ["home-command-center", "free"], ["quick-notes", "free"], ["stream-timer", "free"],
   ["live-events", "free"], ["goal-board", "free"], ["basic-stats", "free"],
@@ -265,6 +269,21 @@ const BLOCKED_USERNAME_FRAGMENTS = [
 // This is a versioned migration path; it never locks older accounts out.
 const PASSWORD_HASH_ITERATIONS_LEGACY = 10_000;
 const PASSWORD_HASH_ITERATIONS_CURRENT = 15_000;
+const LEGACY_PLAY_STREAMERS_AUTH_PATHS = new Set([
+  "/api/auth/register",
+  "/api/auth/login",
+  "/api/auth/verify-two-factor",
+  "/api/auth/request-email-verification",
+  "/api/auth/verify-email",
+  "/api/auth/request-password-reset",
+  "/api/auth/reset-password",
+  "/api/auth/complete-google-profile",
+  "/api/auth/complete-kick-profile",
+  "/api/auth/oauth/start",
+  "/auth/oauth/continue",
+  "/auth/google/login",
+  "/auth/kick/account-login",
+]);
 
 export default {
   async fetch(request, env) {
@@ -286,9 +305,18 @@ export default {
           ok: true,
           service: "Play Streamers API",
           version: CURRENT_RELEASE_VERSION,
+          identityProvider: "sw-identity",
           turnstileEnabled: isTurnstileEnabled(env),
           aiEnabled: Boolean(env.AI || env.OPENAI_API_KEY),
         });
+      }
+
+      if (LEGACY_PLAY_STREAMERS_AUTH_PATHS.has(url.pathname)) {
+        return apiResponse(request, {
+          error: "Play Streamers hesap girişi SW Identity'ye taşındı.",
+          code: "SW_IDENTITY_REQUIRED",
+          identityUrl: "https://swcreate.com/account",
+        }, 410);
       }
 
       if (["/api/sw-bot/status", "/api/play-bot/status"].includes(url.pathname) && request.method === "GET") {
@@ -300,6 +328,10 @@ export default {
           turnstileEnabled: isTurnstileEnabled(env),
           turnstileSiteKey: isTurnstileEnabled(env) ? env.TURNSTILE_SITE_KEY : null,
         });
+      }
+
+      if (url.pathname === "/api/i18n/translate" && request.method === "POST") {
+        return translateInterfaceStrings(request, env);
       }
 
       if (url.pathname === "/api/site/activity" && request.method === "POST") {
@@ -776,7 +808,7 @@ async function runScheduledPlayBotAudit(env) {
     ["Ana uygulama betiği", "https://pstreamers.com/app.js?v=5.2", "script"],
     ["Uygulama betiği", "https://pstreamers.com/app-final.js?v=5.6", "script"],
     ["Site davranış betiği", "https://pstreamers.com/site-v7.js?v=9.2", "script"],
-    ["Premium stil dosyası", "https://pstreamers.com/site-v7.css?v=9.2.0", "style"],
+    ["Premium stil dosyası", "https://pstreamers.com/site-v7.css?v=10.0.5", "style"],
     ["Gizlilik sayfası", "https://pstreamers.com/privacy.html", "document"],
     ["Kullanım koşulları", "https://pstreamers.com/terms.html", "document"],
     ["PS marka amblemi", "https://pstreamers.com/play-streamers-ps-logo.svg?v=9.2", "image"],
@@ -841,11 +873,11 @@ async function runScheduledPlayBotAudit(env) {
   const homeDocument = results.find(result => result.type === "document");
   if (homeDocument?.ok) {
     const documentContracts = [
-      ["site-v7.css?v=9.2.0", "Güncel premium stil dosyası"],
+      ["site-v7.css?v=10.0.5", "Güncel premium stil dosyası"],
       ["app.js?v=5.2", "Güncel ana uygulama betiği"],
       ["app-final.js?v=5.6", "Güncel onarım betiği"],
       ["site-v7.js?v=9.2", "Güncel site davranış betiği"],
-      ["play-streamers-build\" content=\"2026-08-26-site-9.2.0", "Site 9.2 sürüm işareti"],
+      ["play-streamers-build\" content=\"2026-08-26-site-10.0.5", "Site 10.0 sürüm işareti"],
     ];
     for (const [token, label] of documentContracts) {
       if (!homeDocument.body.includes(token)) issues.push(`${label} canlı ana sayfaya bağlanmamış.`);
@@ -1021,6 +1053,72 @@ async function explainSwBotIssuesWithAi(issues, env) {
   try { parsed = JSON.parse(cleaned.slice(start, end + 1)); } catch { parsed = null; }
   const reports = validSwBotReports(parsed, issues);
   return reports ? { reports, model } : null;
+}
+
+const INTERFACE_LANGUAGES = Object.freeze({
+  en: "English", de: "German", es: "Spanish", fr: "French",
+  ru: "Russian", ar: "Arabic", ja: "Japanese",
+});
+
+async function translateInterfaceStrings(request, env) {
+  const input = await requestJson(request);
+  const language = String(input?.language || "").toLowerCase();
+  const rawStrings = Array.isArray(input?.strings) ? input.strings : [];
+  if (!INTERFACE_LANGUAGES[language]) return apiResponse(request, { error: "Desteklenmeyen arayüz dili." }, 400);
+  if (!rawStrings.length || rawStrings.length > 60) return apiResponse(request, { error: "Çeviri paketi 1 ile 60 metin içermelidir." }, 400);
+  const strings = rawStrings.map(value => String(value || "").replace(/[\u0000-\u001f\u007f]+/g, " ").replace(/\s+/g, " ").trim());
+  if (strings.some(value => !value || value.length > 240)) return apiResponse(request, { error: "Çevrilecek arayüz metni geçersiz." }, 400);
+  if (!(await allowInterfaceTranslationRequest(request, env, language))) {
+    return apiResponse(request, { error: "Canlı çeviri sınırına ulaşıldı. Kısa süre sonra yeniden dene." }, 429);
+  }
+  const signature = await sha256Hex(JSON.stringify([language, strings]));
+  const cacheKey = `i18n:v2:${language}:${signature}`;
+  if (env.SESSIONS) {
+    const cached = await env.SESSIONS.get(cacheKey, "json").catch(() => null);
+    if (Array.isArray(cached) && cached.length === strings.length) {
+      return apiResponse(request, { ok: true, language, translations: cached, cached: true });
+    }
+  }
+  if (!env.AI || typeof env.AI.run !== "function") return apiResponse(request, { error: "Canlı çeviri şu anda kullanılamıyor." }, 503);
+  const payload = await env.AI.run("@cf/meta/llama-3.1-8b-instruct-fp8", {
+    messages: [
+      {
+        role: "system",
+        content: `You translate software interface copy from Turkish into ${INTERFACE_LANGUAGES[language]}. Preserve Play Streamers, Play Connect, SW Create, SW Identity, SW Bot, SW AI, Product Pro, URLs, versions, numbers and keyboard shortcuts exactly. Translate naturally and concisely. Do not add advice or explanations. Keep the same item order. Return only valid JSON.`,
+      },
+      {
+        role: "user",
+        content: `Translate this JSON array. Return {"translations":["..."]}: ${JSON.stringify(strings)}`,
+      },
+    ],
+    max_tokens: 2400,
+    temperature: 0.05,
+  });
+  const text = typeof payload?.response === "string" ? payload.response
+    : typeof payload?.result?.response === "string" ? payload.result.response
+      : typeof payload?.choices?.[0]?.message?.content === "string" ? payload.choices[0].message.content : "";
+  const cleaned = text.trim().replace(/^```(?:json)?\s*/i, "").replace(/\s*```$/i, "");
+  const start = cleaned.indexOf("{");
+  const end = cleaned.lastIndexOf("}");
+  let translations = null;
+  try { translations = JSON.parse(cleaned.slice(start, end + 1))?.translations; } catch { translations = null; }
+  if (!Array.isArray(translations) || translations.length !== strings.length || translations.some(value => typeof value !== "string" || !value.trim() || value.length > 360)) {
+    return apiResponse(request, { error: "Canlı çeviri güvenli biçimde doğrulanamadı." }, 502);
+  }
+  translations = translations.map(value => value.trim());
+  if (env.SESSIONS) await env.SESSIONS.put(cacheKey, JSON.stringify(translations), { expirationTtl: 30 * 24 * 60 * 60 }).catch(() => {});
+  return apiResponse(request, { ok: true, language, translations, cached: false });
+}
+
+async function allowInterfaceTranslationRequest(request, env, language) {
+  if (!env.SESSIONS) return true;
+  const minute = Math.floor(Date.now() / 60000);
+  const client = await sha256Hex(`${request.headers.get("CF-Connecting-IP") || "unknown"}:${language}:${minute}`);
+  const key = `i18n-rate:${client}`;
+  const current = Number(await env.SESSIONS.get(key).catch(() => 0) || 0);
+  if (current >= 30) return false;
+  await env.SESSIONS.put(key, String(current + 1), { expirationTtl: 120 }).catch(() => {});
+  return true;
 }
 
 // External providers occasionally respond slowly or fail temporarily.  This
@@ -1824,14 +1922,18 @@ async function exchangeDesktopSwIdentity(request, env) {
   await ensureUsersSchema(env);
   const input = await requestJson(request);
   const code = String(input.code || "").trim();
+  const redirectUri = String(input.redirectUri || DESKTOP_IDENTITY_REDIRECT).trim();
   if (!/^[a-f0-9]{64}$/i.test(code)) return apiResponse(request, { error: "SW Identity giriş kodu geçersiz." }, 400);
+  if (redirectUri !== DESKTOP_IDENTITY_REDIRECT && !WEB_IDENTITY_REDIRECTS.has(redirectUri)) {
+    return apiResponse(request, { error: "SW Identity dönüş adresi geçersiz." }, 400);
+  }
   const identityResponse = await fetch(`${SW_IDENTITY_ORIGIN}/api/internal/auth/product/exchange`, {
     method: "POST",
     headers: {
       authorization: `Bearer ${env.SW_PRODUCT_SSO_SECRET}`,
       "content-type": "application/json",
     },
-    body: JSON.stringify({ code, clientId: "play-streamers", redirectUri: DESKTOP_IDENTITY_REDIRECT }),
+    body: JSON.stringify({ code, clientId: "play-streamers", redirectUri }),
   });
   const identity = await safeJson(identityResponse);
   if (!identityResponse.ok || !identity?.ok || !identity?.user) {
@@ -1855,14 +1957,18 @@ async function exchangeDesktopSwIdentity(request, env) {
     .bind(user.id, tier, identity?.product?.status || "active", identity?.identityVersion || null, identity?.product?.expiresAt || null, now).run();
   const sessionId = await createUserSession(user, env);
   const plan = await desktopEntitlement(user.id, env);
-  return apiResponse(request, {
+  const payload = {
     ok: true,
     signedIn: true,
     sessionId,
     user,
     plan,
     features: enabledDesktopFeatures(plan.tier),
-  });
+    identityProvider: "sw-identity",
+  };
+  return WEB_IDENTITY_REDIRECTS.has(redirectUri)
+    ? authenticatedApiResponse(request, payload, 200, sessionId)
+    : apiResponse(request, payload);
 }
 
 async function desktopPlatformBootstrap(request, env) {
@@ -8019,6 +8125,15 @@ function isChromeDonateConnectorRequest(request, origin) {
   return method === "POST";
 }
 
+function isExtensionTranslationRequest(request, origin) {
+  if (new URL(request.url).pathname !== "/api/i18n/translate") return false;
+  if (!/^(?:chrome|moz)-extension:\/\/[A-Za-z0-9-]{16,128}$/.test(String(origin || ""))) return false;
+  const method = request.method === "OPTIONS"
+    ? String(request.headers.get("Access-Control-Request-Method") || "").toUpperCase()
+    : request.method;
+  return method === "POST";
+}
+
 function apiResponse(request, data, status = 200) {
   const headers = new Headers({
     "cache-control": "no-store",
@@ -8034,13 +8149,14 @@ function apiResponse(request, data, status = 200) {
   });
   const origin = request.headers.get("Origin");
   const donateConnectorOrigin = isChromeDonateConnectorRequest(request, origin);
+  const extensionTranslationOrigin = isExtensionTranslationRequest(request, origin);
   const desktopOrigin = ALLOWED_DESKTOP_ORIGINS.has(origin);
-  if (origin && (ALLOWED_FRONTEND_ORIGINS.has(origin) || ALLOWED_DESKTOP_ORIGINS.has(origin) || donateConnectorOrigin)) {
+  if (origin && (ALLOWED_FRONTEND_ORIGINS.has(origin) || ALLOWED_DESKTOP_ORIGINS.has(origin) || donateConnectorOrigin || extensionTranslationOrigin)) {
     headers.set("access-control-allow-origin", origin);
     headers.set("access-control-allow-methods", "GET, POST, PUT, PATCH, DELETE, OPTIONS");
     headers.set("access-control-allow-headers", "Authorization, Content-Type, If-None-Match, X-Turnstile-Token, X-CSRF-Token, X-Play-Streamers-Bridge");
-    if (!donateConnectorOrigin) headers.set("access-control-allow-credentials", "true");
-    if (donateConnectorOrigin || desktopOrigin) headers.set("cross-origin-resource-policy", "cross-origin");
+    if (!donateConnectorOrigin && !extensionTranslationOrigin) headers.set("access-control-allow-credentials", "true");
+    if (donateConnectorOrigin || extensionTranslationOrigin || desktopOrigin) headers.set("cross-origin-resource-policy", "cross-origin");
     headers.set("vary", "Origin");
   }
   return new Response(status === 204 ? null : JSON.stringify(data), { status, headers });

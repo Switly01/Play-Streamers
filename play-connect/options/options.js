@@ -1,3 +1,5 @@
+import { installLiveI18n } from "../src/live-i18n.js";
+
 const $ = (selector, root = document) => root.querySelector(selector);
 let state = null;
 let activeProviderId = "";
@@ -21,8 +23,9 @@ function installLocaleMenu() {
     const selected = LOCALES.some(item => item[0] === locale) ? locale : "tr";
     localStorage.setItem("play-connect-locale", selected);
     document.documentElement.lang = selected;
-    document.documentElement.dir = selected === "ar" ? "rtl" : "ltr";
+    document.documentElement.dir = "ltr";
     menu.querySelectorAll("button").forEach(item => item.classList.toggle("active", item.dataset.locale === selected));
+    installLiveI18n({ locale: selected });
   };
   menu.replaceChildren(...LOCALES.map(([locale, flag, label]) => {
     const item = document.createElement("button");
@@ -145,7 +148,7 @@ function renderConnection() {
   const connection = state.connection || {};
   const paired = Boolean(connection.paired && connection.hasDeviceToken);
   $("#serverDot").classList.toggle("connected", paired);
-  $("#serverTitle").textContent = paired ? "Play Streamers hesabı bağlı" : "Hesap bağlantısı yok";
+  $("#serverTitle").textContent = paired ? "SW Identity hesabı bağlı" : "Hesap bağlantısı yok";
   const responseText = connection.lastDeliveryAttemptAt
     ? (Number(connection.lastDeliveryHttpStatus || 0) > 0
         ? `Son API yanıtı: HTTP ${Number(connection.lastDeliveryHttpStatus)}`
@@ -154,7 +157,7 @@ function renderConnection() {
   $("#serverText").textContent = paired
     ? `${connection.deviceName || "Chrome Eklentisi"} · ${responseText} · Sunucuda: ${Number(connection.lastServerEventCount || 0)} · Bekleyen: ${state.queueCount || 0}`
     : "Önce tek kullanımlık kodla eşleştir.";
-  $("#pairHeading").textContent = paired ? "Sunucu bağlantısı hazır" : "Eklentiyi Play Streamers hesabına bağla";
+  $("#pairHeading").textContent = paired ? "Sunucu bağlantısı hazır" : "Eklentiyi SW Identity hesabına bağla";
   $("#pairDescription").textContent = paired
     ? "Platform oturumları ve erişim anahtarları bu Chrome profilinde kalır. Sunucuya yalnızca normalleştirilmiş donate olayları gider."
     : "Hesabım → Bağlantılar bölümündeki tek kullanımlık kodu gir. Platform parolaların ve oturum bilgilerin sunucuya gönderilmez.";
@@ -185,7 +188,7 @@ function syncSupportForm() {
   email.dataset.accountValue = paired ? "1" : "0";
   hint.className = paired ? "support-account-connected" : "";
   hint.textContent = paired
-    ? "Bağlı Play Streamers hesabındaki doğrulanmış e-posta otomatik kullanılacak."
+    ? "Bağlı SW Identity hesabındaki doğrulanmış e-posta otomatik kullanılacak."
     : "Hesap bağlantısı bulunamadı. Yanıt alabilmek için e-posta adresini yazmalısın.";
 }
 
@@ -343,7 +346,7 @@ function renderProvider() {
     replaceSafeMarkup(pane, `
       <div class="provider-head">
         <span class="provider-logo" style="--provider-color:${esc(provider.brandColor)}"><img src="${esc(providerIcon(provider))}" alt="${esc(provider.name)} ikonu"><i>${esc(shortMark(provider.name))}</i></span>
-        <span><h2>${esc(provider.name)}</h2><p>Bu platformun bağlantısı Play Streamers hesabındaki DAB bölümünden güvenli OAuth ile yönetilir. Eklentiye ayrıca erişim anahtarı yazman gerekmez.</p></span>
+        <span><h2>${esc(provider.name)}</h2><p>Bu platformun bağlantısı SW Identity hesabındaki Play Streamers bağlantılarından güvenli OAuth ile yönetilir. Eklentiye ayrıca erişim anahtarı yazman gerekmez.</p></span>
         <span class="status-pill ${serverConnected ? "connected" : "ready"}">${serverConnected ? "Bağlı" : "DAB hazır"}</span>
       </div>
       ${serverConnected ? `<section class="managed-health is-active"><i aria-hidden="true">✓</i><span><b>Merkezi DAB bağlantısı aktif</b><small>${esc(provider.name)} olayları doğrudan Play Streamers sunucusuna geliyor; eklenti aynı veriyi ikinci kez okumuyor.</small></span></section>` : ""}

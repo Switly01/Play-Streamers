@@ -1,10 +1,10 @@
 {
-  "version": "0.14.1",
-  "notes": "Play Streamers Desktop 0.14.1: Arayüz Site 9 ile aynı keskin siyah-beyaz premium tasarım diline geçirildi. Kick yayınları site veya uygulama kapalıyken de sunucuda otomatik ölçülür. Windows 10 ve 11 aynı sade, CMD penceresiz uygulama paketini kullanır.",
-  "pub_date": "2026-08-26T10:43:54.9074605+00:00",
+  "version": "0.14.2",
+  "notes": "Play Streamers Desktop 0.14.2: Sekiz dil için canlı arayüz çevirisi, yenilenen sıvı cam görünümü ve SW Identity odaklı hesap deneyimi eklendi. Windows 10 ve 11 desteği korunur.",
+  "pub_date": "2026-08-26T17:18:37.4977348Z",
   "platforms": {
     "windows-x86_64": {
-      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVRcWlCbnhDNnc4UElHR0ZzVHMydGFQMFdQN2pkK2NrNFRiR0dLcG5QMUR4dUZTYllKTXpaL0U5YlhVTnB4OTlhdmxEMHhabHlJRHY1bHpEUk5RNThxRmxwODZCTVhtalE0PQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzg3NzQwOTY2CWZpbGU6UGxheSBTdHJlYW1lcnNfMC4xNC4xX3g2NC1zZXR1cC5leGUKRHRNU1dNQXQva3JKcm9Sd2J2WUQwTlhmalFHYkdVakhjMjgxeXlLZXJFSGdhZkRGQVVSd0xQdTlzM051MmZGKy9IcW5NMWRFdmhDTWhBYWZLTUNDQlE9PQo=",
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVRcWlCbnhDNnc4UE9xTlY5K1JITXNiQTF4d2ltZCtkQjA1VFl0WnB6Vk1hbDBMUGJYQll1NWdSQnluOWpqVUdQZDFxcEwzM3ZYV05iOHp3OXcvZDkzMzRkN3dna2NnY1FvPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzg3NzY0Njk0CWZpbGU6UGxheSBTdHJlYW1lcnNfMC4xNC4yX3g2NC1zZXR1cC5leGUKT3RobWhjUFQwKzVzRjJhRTh2RFFhVzhWVHNZc3dJUlAzRVhDN3dqaHpUREpwYmJGTGZicnplY0JSVzNqR2ZYUVFNVW1iM1JibzRtTUV4dXpJOWMwQkE9PQo=",
       "url": "https://pstreamers.com/downloads/Play-Streamers-Setup.exe"
     }
   }

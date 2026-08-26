@@ -2835,40 +2835,16 @@
   }
   function animateMetricValue(node, nextValue) {
     const target = Math.max(0, Math.round(Number(nextValue) || 0));
-    const previousTarget = Number(node.dataset.ps61Value);
-    if (node.ps61Frame && previousTarget === target) return;
-    const renderedText = Number(String(node.textContent || '').replace(/[^0-9-]/g, ''));
-    const displayed = Number(node.ps61DisplayedValue);
-    const start = Number.isFinite(displayed)
-      ? displayed
-      : Number.isFinite(renderedText)
-        ? renderedText
-        : target;
-    node.dataset.ps61Value = String(target);
     if (node.ps61Frame) {
       cancelAnimationFrame(node.ps61Frame);
       node.ps61Frame = 0;
     }
-    if (start === target) {
-      node.ps61DisplayedValue = target;
-      node.textContent = target.toLocaleString('tr-TR');
-      return;
-    }
-    const startedAt = performance.now();
-    const tick = now => {
-      const progress = Math.min(1, (now - startedAt) / 360);
-      const eased = 1 - Math.pow(1 - progress, 3);
-      const displayedValue = Math.round(start + (target - start) * eased);
-      node.ps61DisplayedValue = displayedValue;
-      node.textContent = displayedValue.toLocaleString('tr-TR');
-      if (progress < 1) node.ps61Frame = requestAnimationFrame(tick);
-      else {
-        node.ps61Frame = 0;
-        node.ps61DisplayedValue = target;
-        node.textContent = target.toLocaleString('tr-TR');
-      }
-    };
-    node.ps61Frame = requestAnimationFrame(tick);
+    // Sunucu verisi geldiğinde sayaç mutlaka görünür olmalı. Bazı arka plan
+    // sekmelerinde requestAnimationFrame durdurulduğu için önceki animasyonlu
+    // akış veri kümesini güncelliyor fakat ekranda "—" bırakabiliyordu.
+    node.dataset.ps61Value = String(target);
+    node.ps61DisplayedValue = target;
+    node.textContent = target.toLocaleString('tr-TR');
   }
   function renderSiteMetrics(data, offline = false) {
     if (!data || !['totalVisitors','registeredUsers','activeUsers'].every(key => Number.isFinite(Number(data[key])))) return;

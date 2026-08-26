@@ -806,7 +806,7 @@ async function runScheduledPlayBotAudit(env) {
   const resources = [
     ["Ana sayfa", "https://pstreamers.com/", "document"],
     ["Ana uygulama betiği", "https://pstreamers.com/app.js?v=5.3.2", "script"],
-    ["Uygulama betiği", "https://pstreamers.com/app-final.js?v=5.7.6", "script"],
+    ["Uygulama betiği", "https://pstreamers.com/app-final.js?v=5.7.7", "script"],
     ["Site davranış betiği", "https://pstreamers.com/site-v7.js?v=10.1.0", "script"],
     ["Premium stil dosyası", "https://pstreamers.com/site-v7.css?v=10.1.0", "style"],
     ["Gizlilik sayfası", "https://pstreamers.com/privacy.html", "document"],
@@ -875,9 +875,9 @@ async function runScheduledPlayBotAudit(env) {
     const documentContracts = [
       ["site-v7.css?v=10.1.0", "Güncel premium stil dosyası"],
       ["app.js?v=5.3.2", "Güncel ana uygulama betiği"],
-      ["app-final.js?v=5.7.6", "Güncel onarım betiği"],
+      ["app-final.js?v=5.7.7", "Güncel onarım betiği"],
       ["site-v7.js?v=10.1.0", "Güncel site davranış betiği"],
-      ["play-streamers-build\" content=\"2026-08-27-site-10.1.0", "Site 10.1 sürüm işareti"],
+      ["play-streamers-build\" content=\"2026-08-27-site-10.1.1", "Site 10.1.1 sürüm işareti"],
     ];
     for (const [token, label] of documentContracts) {
       if (!homeDocument.body.includes(token)) issues.push(`${label} canlı ana sayfaya bağlanmamış.`);

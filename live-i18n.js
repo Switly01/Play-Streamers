@@ -45,7 +45,7 @@ export function installLiveI18n({ localeKey = "ps15-locale", getLocale, root = d
   document.documentElement.dataset.psLiveLocale = language;
   if (language === "tr" || !root) return { language, refresh() {} };
 
-  const cacheKey = `ps-live-i18n-v4:${language}`;
+  const cacheKey = `ps-live-i18n-v4-1:${language}`;
   const cache = { ...(critical[language] || {}), ...cacheRead(cacheKey) };
   const textState = new WeakMap();
   const attributeState = new WeakMap();
@@ -129,18 +129,26 @@ export function installLiveI18n({ localeKey = "ps15-locale", getLocale, root = d
       const missing = [...new Set(targets.map(item => item.source).filter(source => !cache[source]))];
       // On iki öğelik paketler hem AI JSON yanıtını güvenilir tutar hem de ilk
       // ekranın çevirisini büyük bir paketin tamamlanmasını beklemeden gösterir.
-      for (let index = 0; index < missing.length; index += 12) {
-        const strings = missing.slice(index, index + 12);
-        const translations = await requestTranslations(strings);
-        if (translations.length !== strings.length) continue;
-        strings.forEach((source, itemIndex) => {
-          const value = clean(translations[itemIndex]);
-          if (value) cache[source] = value;
+      const chunks = [];
+      for (let index = 0; index < missing.length; index += 12) chunks.push(missing.slice(index, index + 12));
+      // Dört küçük paket paralel çalışır. Böylece ilk kez dil değiştiren kişi
+      // bütün sayfanın çevrilmesi için dakikalarca beklemez; Worker'ın sınırını
+      // aşmadan görünür içerik yaklaşık bir ekran yenileme süresinde tamamlanır.
+      for (let groupIndex = 0; groupIndex < chunks.length; groupIndex += 4) {
+        const group = chunks.slice(groupIndex, groupIndex + 4);
+        const translatedGroups = await Promise.all(group.map(strings => requestTranslations(strings)));
+        const groupSources = new Set(group.flat());
+        group.forEach((strings, chunkIndex) => {
+          const translations = translatedGroups[chunkIndex] || [];
+          strings.forEach((source, itemIndex) => {
+            const value = clean(translations[itemIndex]);
+            if (value) cache[source] = value;
+          });
         });
         cacheWrite(cacheKey, cache);
         targets.forEach(target => {
           const translated = cache[target.source];
-          if (!translated || !strings.includes(target.source)) return;
+          if (!translated || !groupSources.has(target.source)) return;
           if (target.type === "text" && target.node.isConnected) applyText(target.node, translated);
           else if (target.type === "attribute" && target.element.isConnected) applyAttribute(target.element, target.name, translated, target.source);
         });

@@ -11,7 +11,9 @@
     const values = [...metrics.querySelectorAll('.ps61-metric :is(strong,b)')]
       .map((node) => String(node.textContent || '').trim());
     const hasValue = values.some((value) => value && value !== '—' && value !== '-');
-    metrics.classList.toggle('ps83-metrics-empty', !hasValue);
+    metrics.classList.remove('ps83-metrics-empty');
+    metrics.classList.toggle('is-loading', !hasValue);
+    metrics.dataset.metricsReady = hasValue ? '1' : '0';
   }
 
   function ensurePremiumAmbient() {
@@ -247,6 +249,26 @@
       position();
       astronaut.classList.add('is-visible');
       astronaut.setAttribute('aria-hidden', 'false');
+      astronaut.tabIndex = 0;
+      const depart = () => {
+        if (astronaut.classList.contains('is-departing')) return;
+        astronaut.classList.add('is-departing');
+        astronaut.setAttribute('aria-label', 'Astronot yukarı çıkıyor');
+        window.setTimeout(() => {
+          astronaut.classList.remove('is-visible', 'is-departing');
+          astronaut.setAttribute('aria-hidden', 'true');
+          astronaut.tabIndex = -1;
+        }, 2100);
+      };
+      if (astronaut.dataset.ps10DepartBound !== '1') {
+        astronaut.dataset.ps10DepartBound = '1';
+        astronaut.addEventListener('click', depart);
+        astronaut.addEventListener('keydown', (event) => {
+          if (event.key !== 'Enter' && event.key !== ' ') return;
+          event.preventDefault();
+          depart();
+        });
+      }
       window.addEventListener('resize', position, { passive: true });
     };
     window.setTimeout(reveal, delay);
@@ -272,11 +294,11 @@
       scheduleAstronaut(current);
       return;
     }
-    const warpStars = Array.from({ length: 44 }, (_, index) => {
+    const warpStars = Array.from({ length: 72 }, (_, index) => {
       const x = (5 + ((index * 37) % 91)).toFixed(2);
       const y = (7 + ((index * 53) % 86)).toFixed(2);
       const delay = (-((index * .73) % 11)).toFixed(2);
-      const duration = (7.5 + (index % 8) * 1.15).toFixed(2);
+      const duration = (6.4 + (index % 11) * .92).toFixed(2);
       const size = (index % 9 === 0 ? 3 : index % 4 === 0 ? 2 : 1).toFixed(0);
       const drift = (-24 + (index * 17) % 49).toFixed(0);
       return `<i style="--ps10-x:${x}%;--ps10-y:${y}%;--ps10-delay:${delay}s;--ps10-duration:${duration}s;--ps10-size:${size}px;--ps10-drift:${drift}px"></i>`;
@@ -289,10 +311,11 @@
         <div class="ps81-star-layer ps81-stars-one" aria-hidden="true"></div>
         <div class="ps81-star-layer ps81-stars-two" aria-hidden="true"></div>
         <div class="ps92-warp-field" aria-hidden="true">${warpStars}</div>
+        <div class="ps10-space-detail" aria-hidden="true"><i class="ps10-moon"></i><i class="ps10-orbital-ring"></i><span class="ps10-constellation"><b></b><b></b><b></b><b></b><b></b></span><span class="ps10-spacecraft"><i></i><b></b></span><em class="ps10-nebula"></em></div>
         <div class="ps82-motion-field" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><span></span><span></span></div>
         <div class="ps82-orbits" aria-hidden="true"><i></i><i></i></div>
         <div class="ps8-hero-copy">
-          <span class="ps8-version"><i></i> PLAY STREAMERS WEB · v10.0.7</span>
+          <span class="ps8-version"><i></i> PLAY STREAMERS WEB · v10.1.0</span>
           <h1 id="ps8-title" aria-label="PLAY STREAMERS"><span>PLAY</span><span>STREAMERS</span></h1>
           <h2>Profesyonel Yayıncı Kontrol Platformu</h2>
           <p>Canlı analiz · İçerik planlama · Topluluk · Marka · Play Connect</p>
@@ -306,20 +329,11 @@
           <div class="ps8-proof" aria-label="Ürün bilgileri"><span>Ücretsiz</span><i>•</i><span>3.1 MB</span><i>•</i><span>Windows 10/11</span></div>
           <button class="ps81-hero-account" type="button" data-ps8-action="register">Ücretsiz hesap oluştur <span>↗</span></button>
         </div>
-        <div class="ps10-astronaut-visitor" aria-hidden="true">
-          <div class="ps10-astronaut-bubble">Her geleceğin yayıncısı,<br><b>orada mısın?</b></div>
-          <svg viewBox="0 0 96 118" role="img" aria-label="Windows indirme düğmesinin üzerinde oturan piksel astronot" shape-rendering="crispEdges">
-            <path fill="#d9d9d7" d="M29 5h38v5h9v9h5v31h-5v10h-9v5H29v-5h-9V50h-5V19h5v-9h9V5Z"/>
-            <path fill="#151517" d="M29 18h38v5h6v24h-6v6H29v-6h-6V23h6v-5Z"/>
-            <path fill="#7b7b80" d="M35 24h27v4H35zM30 30h37v14H30z"/>
-            <path fill="#f4f4f1" d="M27 62h42v8h7v27H63V77H34v20H21V70h6v-8Z"/>
-            <path fill="#a8a8a5" d="M40 70h16v7H40zM24 82h10v15H24zM63 82h10v15H63z"/>
-            <path fill="#f4f4f1" d="M17 70h10v26H11V79h6v-9Zm52 0h10v9h6v17H69V70Z"/>
-            <path fill="#c7c7c4" d="M21 97h15v8H21zm40 0h15v8H61z"/>
-            <path fill="#f4f4f1" d="M22 102h20v11H8v-6h14v-5Zm32 0h20v5h14v6H54v-11Z"/>
-            <path fill="#fff" d="M32 14h8v4h-8zM25 67h8v4h-8z"/>
-          </svg>
-        </div>
+        <button class="ps10-astronaut-visitor" type="button" aria-hidden="true" aria-label="Astronotu yukarı gönder" tabindex="-1">
+          <span class="ps10-astronaut-rope" aria-hidden="true"></span>
+          <span class="ps10-astronaut-bubble">Hey, <b>geleceğin yayıncısı!</b></span>
+          <img src="./assets/play-streamers-pixel-astronaut-v2.png?v=10.1" alt="El sallayan piksel astronot">
+        </button>
         <div class="ps81-scroll-cue" aria-hidden="true"><i></i><span>KEŞFET</span></div>
       </section>
 
@@ -330,7 +344,7 @@
         <div class="ps8-app-stage" aria-label="Play Streamers masaüstü uygulaması ön izlemesi">
           <div class="ps8-app-halo" aria-hidden="true"></div>
           <article class="ps8-app-window">
-            <header><span class="ps8-window-brand"><img src="./play-streamers-ps-logo.svg?v=9.2" alt=""><b>PLAY STREAMERS</b></span><span class="ps8-window-controls">— □ ×</span></header>
+            <header><span class="ps8-window-brand"><img src="./play-streamers-ps-logo.svg?v=10.1" alt=""><b>PLAY STREAMERS</b></span><span class="ps8-window-controls">— □ ×</span></header>
             <div class="ps8-app-body">
               <aside><i class="active"></i><i></i><i></i><i></i><i></i><i></i></aside>
               <div class="ps8-app-content">
@@ -356,7 +370,7 @@
         <header><span>HAKKIMIZDA</span><h2 id="ps8-about-title">Yayıncı için çalışan,<br>yayın bitince durmayan sistem.</h2><p>Play Streamers, dağınık yayın araçlarını çoğaltmak yerine veriyi, üretimi ve hesap yönetimini tek anlaşılır düzende birleştirir.</p></header>
         <div class="ps8-about-grid">
           <article class="ps8-about-manifesto"><span>NEDEN VARIZ?</span><h3>Yayıncının dikkatini pencerelere değil, topluluğuna geri vermek için.</h3><p>Yayın açıkken oluşan önemli hareketler sunucuda izlenir; daha sonra geri döndüğünde geçmişin, ortalaman ve değişimin hazır olur.</p><div><b>OTOMATİK</b><b>ANLAŞILIR</b><b>YAYINCI ODAKLI</b></div></article>
-          <article class="ps8-about-system"><span>TEK EKOSİSTEM</span><div class="ps8-about-orbit" aria-hidden="true"><i><img src="./play-streamers-ps-logo.svg?v=9.2" alt=""></i><b>WEB</b><b>APP</b><b>CONNECT</b></div><p>Site hesap ve bağlantıları, masaüstü uygulaması günlük üretimi, Play Connect ise tarayıcı akışını taşır. Hepsi aynı SW Identity hesabında birleşir.</p></article>
+          <article class="ps8-about-system"><span>TEK EKOSİSTEM</span><div class="ps8-about-orbit" aria-hidden="true"><i><img src="./play-streamers-ps-logo.svg?v=10.1" alt=""></i><b>WEB</b><b>APP</b><b>CONNECT</b></div><p>Site hesap ve bağlantıları, masaüstü uygulaması günlük üretimi, Play Connect ise tarayıcı akışını taşır. Hepsi aynı SW Identity hesabında birleşir.</p></article>
         </div>
       </section>
 
@@ -400,7 +414,7 @@
       </section>
 
       <section class="ps8-final-cta" aria-labelledby="ps8-final-title">
-        <img src="./play-streamers-ps-logo.svg?v=9.2" alt="Play Streamers PS logosu">
+        <img src="./play-streamers-ps-logo.svg?v=10.1" alt="Play Streamers PS logosu">
         <span>WINDOWS 10/11 · SÜRÜM 0.14.2</span>
         <h2 id="ps8-final-title">Yayınını değil,<br>sistemini büyüt.</h2>
         <p>Hesabını ücretsiz oluştur. Play Streamers Desktop'ı indir ve üretim araçlarını tek sade merkezde kullanmaya başla.</p>

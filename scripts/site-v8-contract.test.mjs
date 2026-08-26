@@ -11,12 +11,12 @@ test('site 10 assets are cache-busted and use fluid monochrome glass', async () 
     read('site-v7.css'),
     read('play-streamers-ps-logo.svg'),
   ]);
-  assert.match(html, /play-streamers-build" content="2026-08-26-site-10\.0\.7"/);
-  assert.match(html, /site-v7\.css\?v=10\.0\.7/);
-  assert.match(html, /app\.js\?v=5\.3\.1/);
-  assert.match(html, /site-v7\.js\?v=10\.0\.7/);
-  assert.match(html, /app-final\.js\?v=5\.7\.5/);
-  assert.match(html, /live-i18n\.js\?v=2\.0/);
+  assert.match(html, /play-streamers-build" content="2026-08-27-site-10\.1\.0"/);
+  assert.match(html, /site-v7\.css\?v=10\.1\.0/);
+  assert.match(html, /app\.js\?v=5\.3\.2/);
+  assert.match(html, /site-v7\.js\?v=10\.1\.0/);
+  assert.match(html, /app-final\.js\?v=5\.7\.6/);
+  assert.match(html, /live-i18n\.js\?v=3\.0/);
   assert.match(css, /html\[data-ps-site-version="8"\]/);
   assert.match(css, /--signal: #f5f5f2/);
   assert.match(css, /@keyframes ps82-meteor/);
@@ -31,10 +31,13 @@ test('site 10 assets are cache-busted and use fluid monochrome glass', async () 
   assert.match(css, /ps9-surface-in/);
   assert.match(css, /ps9-sw-ai-summary/);
   assert.doesNotMatch(css, /body\.ps-v9\s*>\s*:not\(#ps9Ambient\)/);
-  assert.match(logo, /aria-label="Play Streamers akış yörüngesi amblemi"/);
-  assert.match(logo, /id="ps10Shell"/);
+  assert.match(logo, /aria-label="Play Streamers PS akış amblemi"/);
+  assert.match(logo, /id="shell"/);
   assert.match(css, /@keyframes ps92-warp/);
   assert.match(css, /--ps92-glass/);
+  assert.match(css, /@keyframes ps101-astronaut-descend/);
+  assert.match(css, /\.ps10-space-detail/);
+  assert.match(css, /\.ps-identity-credential-form/);
 });
 
 test('public home promotes the desktop app without restoring legacy hero', async () => {
@@ -70,7 +73,8 @@ test('public home promotes the desktop app without restoring legacy hero', async
   assert.match(source, /Play Streamers Web/);
   assert.match(source, /Play Streamers App/);
   assert.match(source, /scheduleAstronaut/);
-  assert.match(source, /Her geleceğin yayıncısı/);
+  assert.match(source, /Hey, <b>geleceğin yayıncısı!/);
+  assert.match(source, /play-streamers-pixel-astronaut-v2\.png/);
   assert.doesNotMatch(source, />01 · NEDEN VARIZ\?</);
   assert.doesNotMatch(source, /<article class="ps8-feature-large"><span>01<\/span>/);
   assert.match(source, /current\.replaceWith\(home\)/);
@@ -85,7 +89,7 @@ test('SW Bot audits the whole interface and explains issues with SW AI', async (
   assert.doesNotMatch(app, /playBotSurface\.append\(googleProbe\)/);
   assert.match(app, /window\.psSwBotOwnsStatus = true/);
   assert.match(app, /button\.dataset\.ps69IssueCount = String\(issues\.length\)/);
-  assert.match(app, /getComputedStyle\(ancestor\)\.position === 'fixed'/);
+  assert.match(app, /getComputedStyle\(node\)\.position === 'fixed'/);
   assert.match(legacyApp, /window\.psSwBotOwnsStatus === true && issue/);
   assert.match(app, /\/api\/sw-bot\/status/);
   assert.match(app, /Ekibimiz sorun üzerinde çalışıyor\./);
@@ -93,21 +97,40 @@ test('SW Bot audits the whole interface and explains issues with SW AI', async (
   assert.match(app, /inertLinks/);
   assert.match(app, /clippedControls/);
   assert.match(app, /visibleFloaters/);
-  assert.match(worker, /sw-bot:global-status:v11/);
+  assert.match(worker, /sw-bot:global-status:v12/);
   assert.match(worker, /explainSwBotIssuesWithAi/);
   assert.match(worker, /swBotDeterministicReport/);
-  assert.match(worker, /site-v7\.css\?v=10\.0\.5/);
+  assert.match(worker, /site-v7\.css\?v=10\.1\.0/);
   assert.match(worker, /\/api\/i18n\/translate/);
   assert.match(worker, /LEGACY_PLAY_STREAMERS_AUTH_PATHS/);
   assert.match(worker, /SW_IDENTITY_REQUIRED/);
   assert.match(worker, /terms\.html/);
 });
 
+test('SW Identity owns direct login and registration without legacy account leakage', async () => {
+  const [app, identityWorker, i18n] = await Promise.all([
+    read('app.js'),
+    read('swcreate-site/cloudflare-worker.js'),
+    read('live-i18n.js'),
+  ]);
+  assert.match(app, /showLandingAuthV101/);
+  assert.match(app, /name=\"identity\"/);
+  assert.match(app, /name=\"passwordRepeat\"/);
+  assert.match(app, /name=\"birthDate\"/);
+  assert.match(app, /data-provider=\"sw\"/);
+  assert.match(app, /submitSwIdentityCredentials/);
+  assert.match(app, /setTimeout\(\(\)=>location\.reload\(\),180\)/);
+  assert.match(app, /adoptAuthenticatedUser\(data\.user\);state\.settings\.userSession=activeUserSession/);
+  assert.match(identityWorker, /hostname === \"pstreamers\.com\"/);
+  assert.match(i18n, /ps-live-i18n-v3/);
+  assert.match(i18n, /SKIP_ATTRIBUTE_SELECTOR/);
+});
+
 test('privacy and terms share the premium legal design', async () => {
   const [privacy, terms, legalCss] = await Promise.all([read('privacy.html'), read('terms.html'), read('legal-v9.css')]);
-  assert.match(privacy, /legal-v9\.css\?v=9\.0/);
+  assert.match(privacy, /legal-v9\.css\?v=10\.1/);
   assert.match(privacy, /Kullanım Koşulları/);
-  assert.match(terms, /play-streamers-build" content="2026-08-26-legal-9\.2"/);
+  assert.match(terms, /play-streamers-build" content="2026-08-27-legal-10\.1"/);
   assert.match(terms, /SW Bot ve SW AI/);
   assert.match(legalCss, /@keyframes legal-stars/);
   assert.match(legalCss, /\.brand-mark img/);

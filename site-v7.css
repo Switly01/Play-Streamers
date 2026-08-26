@@ -2365,7 +2365,7 @@ body.ps-v9 :is(.ps8-about-grid article,.ps8-feature-grid article,.ps92-plan-pane
 .ps10-hero-metrics {
   position:absolute !important;
   z-index:6 !important;
-  top:108px !important;
+  top:22px !important;
   right:24px !important;
   bottom:auto !important;
   left:auto !important;
@@ -2385,6 +2385,9 @@ body.ps-v9 :is(.ps8-about-grid article,.ps8-feature-grid article,.ps92-plan-pane
 .ps10-hero-metrics .ps61-metric + .ps61-metric { border-left:1px solid rgba(255,255,255,.1) !important; }
 .ps10-hero-metrics .ps61-metric :is(strong,b) { font-size:17px !important; }
 .ps10-hero-metrics .ps61-metric :is(span,small) { font-size:6px !important; letter-spacing:.08em !important; }
+.ps10-hero-metrics .ps61-metrics-head { grid-column:1/-1 !important; min-height:0 !important; margin:0 !important; padding:5px 9px 7px !important; }
+.ps10-hero-metrics .ps61-metrics-head > :is(b,small) { display:none !important; }
+.ps10-hero-metrics .ps61-metrics-head > span { font-size:7px !important; letter-spacing:.16em !important; }
 
 .ps10-astronaut-visitor {
   position:absolute;
@@ -2497,4 +2500,118 @@ input[type="date"]::-webkit-calendar-picker-indicator { width:20px; height:20px;
   .ps10-astronaut-visitor { top:calc(50% + 148px); transform:translate3d(-50%,-75vh,0) scale(.72); }
   .ps10-astronaut-bubble { right:61px; left:auto; max-width:190px; font-size:8px; }
   .ps-identity-auth .auth-dialog { padding:26px 22px !important; border-radius:25px !important; }
+}
+
+/* Site 10.1 — richer space scene, stable system surfaces and complete SW Identity forms. */
+#authOverlay .ps61-site-metrics,
+#authOverlay .ps61-site-metrics.ps83-metrics-empty {
+  display:grid !important;
+  visibility:visible !important;
+  opacity:1 !important;
+}
+#authOverlay .ps61-site-metrics.is-loading .ps61-metric :is(strong,b) {
+  min-width:34px;
+  color:transparent !important;
+  border-radius:7px;
+  background:linear-gradient(100deg,rgba(255,255,255,.045),rgba(255,255,255,.17),rgba(255,255,255,.045));
+  background-size:220% 100%;
+  animation:ps101-metric-loading 1.5s linear infinite;
+}
+@keyframes ps101-metric-loading { to { background-position:-220% 0; } }
+
+.ps10-space-detail { position:absolute; z-index:1; inset:0; overflow:hidden; pointer-events:none; }
+.ps10-moon { position:absolute; top:16%; left:7%; width:clamp(78px,10vw,150px); aspect-ratio:1; border:1px solid rgba(255,255,255,.13); border-radius:50%; background:radial-gradient(circle at 33% 29%,rgba(255,255,255,.17) 0 3%,transparent 4%),radial-gradient(circle at 65% 59%,rgba(255,255,255,.08) 0 8%,transparent 9%),radial-gradient(circle at 42% 70%,rgba(255,255,255,.06) 0 5%,transparent 6%),linear-gradient(145deg,rgba(255,255,255,.11),rgba(255,255,255,.012) 58%); box-shadow:inset -22px -20px 42px rgba(0,0,0,.72),0 0 90px rgba(255,255,255,.045); opacity:.72; animation:ps101-moon-float 17s ease-in-out infinite; }
+.ps10-orbital-ring { position:absolute; top:12%; left:2%; width:clamp(150px,19vw,280px); height:clamp(70px,9vw,132px); border:1px solid rgba(255,255,255,.11); border-radius:50%; transform:rotate(-24deg); animation:ps101-ring-drift 23s ease-in-out infinite alternate; }
+.ps10-constellation { position:absolute; top:17%; right:8%; width:170px; height:105px; opacity:.48; transform:rotate(-8deg); }
+.ps10-constellation::before,.ps10-constellation::after { position:absolute; height:1px; background:linear-gradient(90deg,rgba(255,255,255,.02),rgba(255,255,255,.4),rgba(255,255,255,.05)); content:""; transform-origin:left; }
+.ps10-constellation::before { top:25px; left:20px; width:125px; transform:rotate(22deg); }
+.ps10-constellation::after { top:70px; left:40px; width:102px; transform:rotate(-31deg); }
+.ps10-constellation b { position:absolute; width:4px; height:4px; border-radius:50%; background:#fff; box-shadow:0 0 14px rgba(255,255,255,.8); animation:ps101-twinkle 2.8s ease-in-out infinite alternate; }
+.ps10-constellation b:nth-child(1){left:18px;top:23px}.ps10-constellation b:nth-child(2){left:76px;top:46px;animation-delay:-.7s}.ps10-constellation b:nth-child(3){right:20px;top:72px;animation-delay:-1.1s}.ps10-constellation b:nth-child(4){left:38px;bottom:14px;animation-delay:-1.8s}.ps10-constellation b:nth-child(5){right:6px;top:17px;animation-delay:-2.2s}
+.ps10-spacecraft { position:absolute; right:12%; bottom:24%; width:46px; height:17px; animation:ps101-spacecraft 22s linear infinite; opacity:.58; }
+.ps10-spacecraft i { position:absolute; inset:4px 10px 3px 0; clip-path:polygon(0 50%,22% 0,100% 22%,100% 78%,22% 100%); background:linear-gradient(90deg,#666,#eee 62%,#555); }
+.ps10-spacecraft b { position:absolute; right:0; top:0; width:13px; height:17px; clip-path:polygon(0 0,100% 30%,100% 70%,0 100%); background:rgba(255,255,255,.28); }
+.ps10-nebula { position:absolute; right:-12%; bottom:-22%; width:58%; height:62%; border-radius:50%; background:radial-gradient(ellipse,rgba(255,255,255,.085),rgba(255,255,255,.024) 30%,transparent 66%); filter:blur(32px); animation:ps101-nebula 14s ease-in-out infinite alternate; }
+@keyframes ps101-moon-float { 50% { transform:translate3d(12px,-16px,0) rotate(4deg); } }
+@keyframes ps101-ring-drift { to { transform:translate3d(18px,-9px,0) rotate(-16deg); } }
+@keyframes ps101-twinkle { to { opacity:.25; transform:scale(.55); } }
+@keyframes ps101-spacecraft { 0% { transform:translate3d(35vw,13vh,0) rotate(-8deg); opacity:0; } 12%,82% { opacity:.58; } 100% { transform:translate3d(-105vw,-28vh,0) rotate(-8deg); opacity:0; } }
+@keyframes ps101-nebula { to { transform:translate3d(-5%,-4%,0) scale(1.12); opacity:.55; } }
+
+.ps10-astronaut-visitor {
+  width:118px !important;
+  height:auto !important;
+  border:0 !important;
+  padding:0 !important;
+  color:inherit !important;
+  background:transparent !important;
+  cursor:pointer;
+  isolation:isolate;
+}
+.ps10-astronaut-visitor img { position:relative; z-index:2; display:block; width:118px; height:auto; image-rendering:pixelated; filter:drop-shadow(0 18px 24px rgba(0,0,0,.7)); }
+.ps10-astronaut-rope { position:absolute; z-index:1; bottom:calc(100% - 13px); left:50%; width:2px; height:110vh; background:linear-gradient(90deg,rgba(255,255,255,.12),rgba(255,255,255,.72),rgba(255,255,255,.12)); box-shadow:0 0 8px rgba(255,255,255,.18); transform:translateX(-50%); }
+.ps10-astronaut-visitor.is-visible { pointer-events:auto; animation:ps101-astronaut-descend 2.35s cubic-bezier(.2,.76,.24,1) forwards,ps101-astronaut-idle 4.8s ease-in-out 2.35s infinite !important; }
+.ps10-astronaut-visitor.is-departing { pointer-events:none; animation:ps101-astronaut-ascend 2.05s cubic-bezier(.58,.02,.83,.31) forwards !important; }
+.ps10-astronaut-visitor.is-departing .ps10-astronaut-bubble { animation:ps101-bubble-out .2s ease forwards !important; }
+.ps10-astronaut-bubble { z-index:3; left:96px; bottom:86px; animation:ps10-bubble-in .48s ease 2.45s forwards !important; }
+@keyframes ps101-astronaut-descend { 0% { opacity:0; transform:translate3d(-50%,-88vh,0) rotate(-5deg) scale(.88); } 12% { opacity:1; } 78% { transform:translate3d(-48%,-14px,0) rotate(3deg) scale(1); } 100% { opacity:1; transform:translate3d(-50%,0,0) rotate(0) scale(1); } }
+@keyframes ps101-astronaut-idle { 50% { transform:translate3d(-50%,-7px,0) rotate(1.4deg); } }
+@keyframes ps101-astronaut-ascend { 0% { opacity:1; transform:translate3d(-50%,0,0) rotate(0); } 16% { transform:translate3d(-53%,8px,0) rotate(-2deg); } 100% { opacity:0; transform:translate3d(-50%,-92vh,0) rotate(4deg); } }
+@keyframes ps101-bubble-out { to { opacity:0; transform:translateY(-10px) scale(.92); } }
+
+.ps-identity-auth .auth-dialog { max-height:min(92vh,860px); overflow-y:auto !important; scrollbar-width:thin; scrollbar-color:rgba(255,255,255,.28) transparent; }
+.ps-identity-credential-form { display:grid; gap:11px; margin-top:18px; }
+.ps-identity-auth .ps27-social-row { display:none !important; }
+.ps-identity-credential-form .auth-field { display:grid; gap:6px; color:#aaa; font:700 8px var(--body); letter-spacing:.07em; text-transform:uppercase; }
+.ps-identity-credential-form .auth-field input { width:100%; min-height:49px; border:1px solid rgba(255,255,255,.14); border-radius:14px; padding:0 14px; color:#fff; background:rgba(255,255,255,.045); outline:none; font:600 12px var(--body); letter-spacing:0; text-transform:none; transition:border-color .18s ease,background .18s ease,box-shadow .18s ease; }
+.ps-identity-credential-form .auth-field input:focus { border-color:rgba(255,255,255,.42); background:rgba(255,255,255,.075); box-shadow:0 0 0 4px rgba(255,255,255,.05); }
+.ps-identity-credential-form .auth-error { min-height:17px; margin:0; color:#ff9c9c; font-size:9px; }
+.ps-identity-form-submit { min-height:54px !important; border-radius:16px !important; }
+.ps-identity-form-submit:disabled { cursor:wait; opacity:.68; }
+.ps-identity-honeypot { position:absolute !important; left:-9999px !important; width:1px !important; height:1px !important; opacity:0 !important; }
+.ps-identity-providers.has-sw-provider { grid-template-columns:repeat(3,1fr); }
+.ps-identity-providers [data-provider="sw"] .ps-sw-shield { width:31px; height:31px; }
+.ps-identity-remember input { transition:transform .22s cubic-bezier(.2,.9,.3,1.4),filter .22s ease; }
+.ps-identity-remember:has(input:checked) input { transform:scale(1.16) rotate(-5deg); filter:drop-shadow(0 0 7px rgba(255,255,255,.45)); }
+
+#ps44StatusPopover { width:min(440px,calc(100vw - 24px)) !important; max-height:min(76vh,650px) !important; overflow:hidden !important; }
+#ps44StatusPopover > p { margin-bottom:8px !important; }
+.ps69-play-bot { display:flex; min-height:0; max-height:min(56vh,470px); flex-direction:column; overflow:hidden; background:linear-gradient(145deg,rgba(255,255,255,.09),rgba(8,8,10,.88)) !important; backdrop-filter:blur(28px) saturate(150%); }
+.ps69-play-bot header { display:flex; flex:0 0 auto; align-items:center; justify-content:space-between; gap:12px; }
+.ps69-play-bot header > span { display:flex; align-items:center; gap:8px; }
+.ps69-play-bot header > span::before { width:7px; height:7px; border-radius:50%; background:#fff; box-shadow:0 0 13px rgba(255,255,255,.62); content:""; }
+.ps69-play-bot-body { min-height:76px; overflow-y:auto; overscroll-behavior:contain; padding-right:5px; scrollbar-width:thin; scrollbar-color:rgba(255,255,255,.27) transparent; }
+.ps69-play-bot-body::-webkit-scrollbar { width:6px; }.ps69-play-bot-body::-webkit-scrollbar-thumb { border-radius:99px; background:rgba(255,255,255,.24); }
+.ps69-play-bot-refresh { position:relative; flex:0 0 auto; }
+.ps69-play-bot.is-refreshing .ps69-play-bot-refresh { padding-right:28px; opacity:.76; pointer-events:none; }
+.ps69-play-bot.is-refreshing .ps69-play-bot-refresh::after { position:absolute; top:50%; right:9px; width:10px; height:10px; margin-top:-5px; border:1px solid rgba(255,255,255,.26); border-top-color:#fff; border-radius:50%; content:""; animation:ps101-refresh-spin .65s linear infinite; }
+@keyframes ps101-refresh-spin { to { transform:rotate(360deg); } }
+
+#ps46Support { width:auto !important; height:auto !important; }
+#ps46Support .ps46-support-link { position:relative; width:56px; height:56px; border:1px solid rgba(255,255,255,.22); border-radius:19px; color:#fff; background:linear-gradient(145deg,rgba(255,255,255,.16),rgba(9,9,11,.78)); box-shadow:0 18px 48px rgba(0,0,0,.48),inset 0 1px 0 rgba(255,255,255,.22); backdrop-filter:blur(26px) saturate(150%); transition:transform .22s ease,border-color .22s ease,background .22s ease !important; }
+#ps46Support .ps46-support-link::before { position:absolute; inset:-5px; border:1px solid rgba(255,255,255,.08); border-radius:23px; content:""; animation:ps101-support-pulse 3.3s ease-out infinite; }
+#ps46Support .ps46-support-link:hover { transform:translateY(-4px) !important; border-color:rgba(255,255,255,.42); background:linear-gradient(145deg,rgba(255,255,255,.22),rgba(12,12,14,.86)); }
+#ps47MailDialog .ps44-dialog { background:radial-gradient(circle at 8% 0,rgba(255,255,255,.15),transparent 30%),linear-gradient(145deg,rgba(25,25,28,.9),rgba(5,5,7,.88)) !important; box-shadow:0 48px 130px rgba(0,0,0,.7),inset 0 1px 0 rgba(255,255,255,.22) !important; backdrop-filter:blur(38px) saturate(155%) !important; }
+#ps47MailDialog .ps47-mail-form :is(input,textarea) { border-radius:14px !important; background:rgba(255,255,255,.045) !important; }
+#ps47MailDialog .ps49-file-drop { border-style:dashed !important; background:rgba(255,255,255,.035) !important; }
+@keyframes ps101-support-pulse { 70%,100% { opacity:0; transform:scale(1.24); } }
+
+.ps15-locale-button,.ps41-locale-button { width:42px !important; min-width:42px !important; height:42px !important; min-height:42px !important; flex:0 0 42px !important; contain:layout paint; backface-visibility:hidden; filter:none !important; }
+.ps15-locale-button:hover,.ps41-locale-button:hover { filter:none !important; box-shadow:inset 0 1px 0 rgba(255,255,255,.15) !important; }
+
+body.ps-v9 :is(.landing-nav,.ps8-hero-copy,.ps8-app-window,.ps8-float,.ps9-float-chip,.ps92-plan-tabs,#ps44StatusPopover,#ps44HomeMenu,#ps44HomeConnection,.auth-dialog,.ps44-dialog,.ps27-dialog,.ps20-member-header,.app .topbar,.workspace-tabs) {
+  border-color:rgba(255,255,255,.17) !important;
+  background-image:linear-gradient(145deg,rgba(255,255,255,.115),rgba(255,255,255,.025) 46%,rgba(4,4,6,.78)) !important;
+  box-shadow:0 26px 80px rgba(0,0,0,.48),inset 0 1px 0 rgba(255,255,255,.22) !important;
+  -webkit-backdrop-filter:blur(30px) saturate(155%) !important;
+  backdrop-filter:blur(30px) saturate(155%) !important;
+}
+
+@media(max-width:760px) {
+  body.ps-v8 #authOverlay .landing-actions > #landingLogin { display:inline-flex !important; align-items:center; justify-content:center; }
+  .ps10-space-detail .ps10-constellation { right:-35px; transform:scale(.72) rotate(-8deg); }
+  .ps10-moon { top:13%; left:-30px; }
+  .ps10-astronaut-visitor,.ps10-astronaut-visitor img { width:92px !important; }
+  .ps10-astronaut-bubble { right:70px; left:auto; bottom:70px; }
+  #ps44StatusPopover { max-height:calc(100dvh - 28px) !important; }
 }

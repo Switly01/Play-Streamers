@@ -84,6 +84,24 @@ doğrulama ve modal yüzeylerinde siyah-beyaz ana tema korunarak dinamik ışık
 yansıma, saydamlık ve bulanıklık kullanan ortak sıvı cam dili uygulanır.
 `Developed by SW CREATE` bağlantısı `https://swcreate.com` adresine gider.
 
+Site 10.1 kimlik, hareket ve kararlılık revizyonu: Ana sayfanın uzay sahnesine
+katmanlı yörünge, ay, takımyıldız ve uzak araç hareketleri eklendi. Beş dakika
+sonra Windows indirme düğmesine halatla inen özgün piksel astronot “Hey,
+geleceğin yayıncısı!” mesajını gösterir; tıklanınca aynı halatla yukarı çıkar.
+Canlı ziyaretçi/hesap/aktif sayaçları yükleme iskeletiyle her zaman görünür ve
+büyük başlıkla çakışmaz. Giriş penceresi kullanıcı adı veya e-posta + şifreyi,
+Google/Kick/SW sağlayıcılarını; kayıt penceresi kullanıcı adı, iki şifre, doğum
+tarihi ve Google/Kick sağlayıcılarını doğrudan SW Identity üzerinde kullanır.
+Hesap kapsamı değiştiğinde önceki hesabın yerel panel verileri yeni hesaba
+taşınmaz. Bütün dil seçimleri sayfayı tek kaynak dille yeniden kurar; canlı
+çeviri görünür metin, form açıklaması ve erişilebilirlik etiketlerine uygulanır,
+Arapçada genel yerleşim LTR kalır. SW Bot kaydırılabilir sabit panelde çalışır,
+yenileme sırasında eski sonucu silmez, kaydırılabilir ana sayfanın aşağıdaki
+kontrollerini yanlış taşma olarak raporlamaz ve SW AI kullanıcıya işlem talimatı
+vermek yerine sorunu sade biçimde açıklar. Destek, Gizlilik ve Kullanım
+Koşulları ortak monokrom sıvı cam tasarımına geçirildi. Site sürümü 10.1.0,
+ana betik 5.3.2, son onarım betiği 5.7.6 ve canlı çeviri önbelleği v3'tür.
+
 Site 9.0.2 etkileşim onarımı: `showDialog` kullanan destek, güncelleme,
 grafik, hesap güvenliği, çıkış ve sıfırlama pencereleri ortak sabit modal
 katmanına alındı; böylece body sonuna görünmeden eklenmez. Eski sistem durumu

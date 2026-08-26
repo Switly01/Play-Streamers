@@ -78,7 +78,7 @@ const DONATE_OAUTH_PROVIDERS = Object.freeze({
     clientSecretVariable: "TIPEEESTREAM_CLIENT_SECRET",
   }),
 });
-const CURRENT_RELEASE_VERSION = "5.2";
+const CURRENT_RELEASE_VERSION = "5.3";
 const CURRENT_RELEASE_PUBLISHED_AT = "2026-08-25T12:00:00+03:00";
 const SW_IDENTITY_ORIGIN = "https://api.swcreate.com";
 const DESKTOP_IDENTITY_REDIRECT = "playstreamers://identity/callback";
@@ -767,7 +767,7 @@ export default {
   },
 };
 
-const PLAY_BOT_GLOBAL_STATUS_KEY = "sw-bot:global-status:v11";
+const PLAY_BOT_GLOBAL_STATUS_KEY = "sw-bot:global-status:v12";
 
 async function ensurePlayBotMetadataStorage(env) {
   if (!env.DB) throw new Error("Worker is missing the DB binding");
@@ -805,13 +805,13 @@ async function runScheduledPlayBotAudit(env) {
   await ensurePlayBotMetadataStorage(env);
   const resources = [
     ["Ana sayfa", "https://pstreamers.com/", "document"],
-    ["Ana uygulama betiği", "https://pstreamers.com/app.js?v=5.2", "script"],
-    ["Uygulama betiği", "https://pstreamers.com/app-final.js?v=5.6", "script"],
-    ["Site davranış betiği", "https://pstreamers.com/site-v7.js?v=9.2", "script"],
-    ["Premium stil dosyası", "https://pstreamers.com/site-v7.css?v=10.0.5", "style"],
+    ["Ana uygulama betiği", "https://pstreamers.com/app.js?v=5.3.2", "script"],
+    ["Uygulama betiği", "https://pstreamers.com/app-final.js?v=5.7.6", "script"],
+    ["Site davranış betiği", "https://pstreamers.com/site-v7.js?v=10.1.0", "script"],
+    ["Premium stil dosyası", "https://pstreamers.com/site-v7.css?v=10.1.0", "style"],
     ["Gizlilik sayfası", "https://pstreamers.com/privacy.html", "document"],
     ["Kullanım koşulları", "https://pstreamers.com/terms.html", "document"],
-    ["PS marka amblemi", "https://pstreamers.com/play-streamers-ps-logo.svg?v=9.2", "image"],
+    ["PS marka amblemi", "https://pstreamers.com/play-streamers-ps-logo.svg?v=10.1", "image"],
     ["Windows kurucusu", "https://pstreamers.com/downloads/Play-Streamers-Setup.exe", "binary"],
     ["Türkçe bayrağı", "https://pstreamers.com/assets/flags/tr.svg", "image"],
     ["İngilizce bayrağı", "https://pstreamers.com/assets/flags/gb.svg", "image"],
@@ -873,11 +873,11 @@ async function runScheduledPlayBotAudit(env) {
   const homeDocument = results.find(result => result.type === "document");
   if (homeDocument?.ok) {
     const documentContracts = [
-      ["site-v7.css?v=10.0.5", "Güncel premium stil dosyası"],
-      ["app.js?v=5.2", "Güncel ana uygulama betiği"],
-      ["app-final.js?v=5.6", "Güncel onarım betiği"],
-      ["site-v7.js?v=9.2", "Güncel site davranış betiği"],
-      ["play-streamers-build\" content=\"2026-08-26-site-10.0.5", "Site 10.0 sürüm işareti"],
+      ["site-v7.css?v=10.1.0", "Güncel premium stil dosyası"],
+      ["app.js?v=5.3.2", "Güncel ana uygulama betiği"],
+      ["app-final.js?v=5.7.6", "Güncel onarım betiği"],
+      ["site-v7.js?v=10.1.0", "Güncel site davranış betiği"],
+      ["play-streamers-build\" content=\"2026-08-27-site-10.1.0", "Site 10.1 sürüm işareti"],
     ];
     for (const [token, label] of documentContracts) {
       if (!homeDocument.body.includes(token)) issues.push(`${label} canlı ana sayfaya bağlanmamış.`);
@@ -976,27 +976,27 @@ function swBotDeterministicReport(issue) {
   const text = String(issue || "Bilinmeyen bir sorun bulundu.").slice(0, 500);
   let category = "interface";
   let title = "Arayüz denetimi";
-  let action = "Sayfayı yenileyip işlemi tekrar dene. Sorun sürerse Destek bölümünden bildir.";
+  let action = "Ekibimiz sorun üzerinde çalışıyor.";
   if (/API|sunucu|D1|bağlantı|yüklenemiyor/i.test(text)) {
     category = "connection";
     title = "Veri bağlantısı";
-    action = "Veriler silinmez. Bağlantı yeniden kurulduğunda ekran otomatik olarak güncellenir.";
+    action = "Ekibimiz sorun üzerinde çalışıyor.";
   } else if (/görsel|logo|bayrak|image/i.test(text)) {
     category = "asset";
     title = "Görsel kaynak";
-    action = "Temel işlevler çalışmaya devam eder. Sayfayı yenileyerek görseli yeniden yükleyebilirsin.";
+    action = "Ekibimiz sorun üzerinde çalışıyor.";
   } else if (/giriş|kayıt|doğrulama|OAuth|Google|Kick/i.test(text)) {
     category = "account";
     title = "Hesap erişimi";
-    action = "Açık doğrulama penceresini kapatıp işlemi yeniden başlat. Bilgilerin doğrulanmadan değiştirilmez.";
+    action = "Ekibimiz sorun üzerinde çalışıyor.";
   } else if (/stil|taşıyor|yerleşim|arayüz/i.test(text)) {
     category = "layout";
     title = "Ekran yerleşimi";
-    action = "Tarayıcı yakınlaştırmasını yüzde 100 yapıp sayfayı yenile. Sorun SW Bot kaydında tutulur.";
+    action = "Ekibimiz sorun üzerinde çalışıyor.";
   } else if (/kurucu|indir/i.test(text)) {
     category = "download";
     title = "Uygulama indirmesi";
-    action = "İndirme düğmesini kısa süre sonra yeniden dene. Hesabın ve web verilerin etkilenmez.";
+    action = "Ekibimiz sorun üzerinde çalışıyor.";
   }
   return { issue: text, category, title, summary: text, action };
 }
@@ -1028,7 +1028,7 @@ async function explainSwBotIssuesWithAi(issues, env) {
     messages: [
       {
         role: "system",
-        content: "Sen SW AI'sın. SW Bot'un teknik site denetimlerini son kullanıcı için sade Türkçeye çevirirsin. Sorunun nedenini kanıt yoksa uydurma. Gizli veri isteme. Her sorun için ne olduğunu, kullanıcıya etkisini ve güvenli sonraki adımı yaz. Yalnız geçerli JSON döndür.",
+        content: "Sen SW AI'sın. SW Bot'un teknik site denetimlerini son kullanıcı için sade Türkçeye çevirirsin. Sorunun nedenini kanıt yoksa uydurma. Kullanıcıya ayar değiştirmesini, sayfayı yenilemesini veya başka bir işlem yapmasını söyleme. Yalnız sorunun ne olduğunu ve etkisini açıkla. action alanını daima 'Ekibimiz sorun üzerinde çalışıyor.' yap. Yalnız geçerli JSON döndür.",
       },
       {
         role: "user",

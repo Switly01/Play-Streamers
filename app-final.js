@@ -2493,12 +2493,10 @@
     const clippedControls = $$('button,a[href],input,select').filter(node => {
       if (!visible(node)) return false;
       const rect = node.getBoundingClientRect();
-      let fixed = false;
-      let ancestor = node;
-      while (ancestor && ancestor !== document.documentElement) {
-        if (getComputedStyle(ancestor).position === 'fixed') { fixed = true; break; }
-        ancestor = ancestor.parentElement;
-      }
+      // A control inside the fixed, vertically scrollable public shell is not
+      // clipped merely because it is below the current viewport. Only the
+      // control's own fixed positioning must remain inside the viewport.
+      const fixed = getComputedStyle(node).position === 'fixed';
       return rect.width < 20 || rect.height < 20 || (fixed && (rect.right < 0 || rect.left > innerWidth || rect.bottom < 0 || rect.top > innerHeight));
     });
     if (clippedControls.length) issues.push(`Yerleşim sorunu: ${clippedControls.length} işlem alanı görünmeyecek kadar küçük veya ekranın dışında.`);
@@ -2532,12 +2530,12 @@
   function explainSwBotIssue(issue) {
     const text = String(issue || 'Bilinmeyen bir sorun bulundu.');
     let title = 'Arayüz denetimi';
-    let action = 'Sayfayı yenileyip işlemi tekrar dene. Sorun sürerse Destek bölümünden bildir.';
-    if (/API|sunucu|bağlantı|çevrimdışı/i.test(text)) { title = 'Veri bağlantısı'; action = 'İnternet bağlantını kontrol et. Veriler sunucuda korunur ve bağlantı geldiğinde tekrar yüklenir.'; }
-    else if (/taşıyor|yerleşim|ekranın dışında|çakışma/i.test(text)) { title = 'Ekran yerleşimi'; action = 'Tarayıcı yakınlaştırmasını %100 yapıp sayfayı yenile. SW Bot bu görünümü yeniden ölçecek.'; }
-    else if (/giriş|kayıt|doğrulama|Google/i.test(text)) { title = 'Hesap erişimi'; action = 'Açık pencereyi kapatıp giriş işlemini yeniden başlat. Girilen bilgiler kaydedilmeden önce doğrulanır.'; }
-    else if (/görsel|logo|bayrak/i.test(text)) { title = 'Görsel kaynak'; action = 'Sayfayı yenile. İşlevler çalışmaya devam eder; eksik görsel yeniden yüklenecek.'; }
-    else if (/erişilebilirlik|adı yok/i.test(text)) { title = 'Kullanılabilirlik'; action = 'İşlem çalışabilir ancak açıklaması eksik. SW Bot bunu arayüz sorunu olarak kaydetti.'; }
+    const action = 'Ekibimiz sorun üzerinde çalışıyor.';
+    if (/API|sunucu|bağlantı|çevrimdışı/i.test(text)) title = 'Veri bağlantısı';
+    else if (/taşıyor|yerleşim|ekranın dışında|çakışma/i.test(text)) title = 'Ekran yerleşimi';
+    else if (/giriş|kayıt|doğrulama|Google/i.test(text)) title = 'Hesap erişimi';
+    else if (/görsel|logo|bayrak/i.test(text)) title = 'Görsel kaynak';
+    else if (/erişilebilirlik|adı yok/i.test(text)) title = 'Kullanılabilirlik';
     return { title, summary: text, action };
   }
   function renderPlayBot(popover, issues) {
@@ -2548,6 +2546,7 @@
       button.dataset.ps69IssueCount = String(issues.length);
     });
     body.dataset.busy = '0';
+    body.closest('.ps69-play-bot')?.classList.remove('is-refreshing');
     const serverByIssue = new Map(playBotGlobalReports.map(report => [String(report.issue || ''), report]));
     body.innerHTML = issues.length
       ? `<ul>${issues.map(issue => { const clean = String(issue).replace(/^Site geneli:\s*/i, '').replace(/\s+/g, ' ').trim(); const report = serverByIssue.get(clean) || explainSwBotIssue(clean); const description = String(report.summary || clean).replace(/^(Sayfayı yenile|Tarayıcı yakınlaştırmasını|İşlemi tekrar dene)[^.]*\.?\s*/i, '').trim() || clean; return `<li class="error"><i aria-hidden="true"></i><span><b>${esc(report.title || 'SW AI sistem açıklaması')}</b><em class="ps9-sw-ai-summary"><b>SW AI AÇIKLAMASI</b>${esc(`${description.replace(/[.!?]+$/, '')}. Ekibimiz sorun üzerinde çalışıyor.`)}</em></span></li>`; }).join('')}</ul><time>Son kontrol: ${esc(new Date().toLocaleTimeString('tr-TR'))}</time>`
@@ -2557,7 +2556,11 @@
     if (!popover?.isConnected) return;
     const body = $('.ps69-play-bot-body', popover);
     if (body && (body.dataset.busy === '1' && !force)) return;
-    if (body) { body.dataset.busy = '1'; body.innerHTML = '<p class="ps69-play-bot-checking">SW Bot; sayfaları, menüleri, düğmeleri, görselleri, veri bağlantısını ve çalışma zamanı hatalarını denetliyor…</p>'; }
+    if (body) {
+      body.dataset.busy = '1';
+      body.closest('.ps69-play-bot')?.classList.add('is-refreshing');
+      if (!body.children.length) body.innerHTML = '<p class="ps69-play-bot-checking">SW Bot; sayfaları, menüleri, düğmeleri, görselleri, veri bağlantısını ve çalışma zamanı hatalarını denetliyor…</p>';
+    }
     runPlayBotResourceAudits();
     await refreshGlobalPlayBotAudit(force);
     if (!popover.isConnected) return;
@@ -2589,7 +2592,7 @@
     popover.innerHTML = developmentWarning
       ? '<b>Sistem gözlemde</b><p>SW Bot; kullanıcı alanını, Dashboard’u, menüleri ve veri bağlantılarını arka planda düzenli olarak denetliyor.</p>'
       : '<b>Sistem normal</b><p>Teknik sorun görünmüyor. Giriş, kayıt, panel ve bağlantı akışları denetleniyor.</p>';
-    popover.insertAdjacentHTML('beforeend', '<section class="ps69-play-bot"><header><span><b>SW BOT</b><small>Tüm site + veri akışı + SW AI açıklaması</small></span><button class="ps69-play-bot-refresh" type="button">Taramayı yenile</button></header><div class="ps69-play-bot-body" aria-live="polite"></div></section>');
+    popover.insertAdjacentHTML('beforeend', '<section class="ps69-play-bot"><header><span><b>SW BOT</b></span><button class="ps69-play-bot-refresh" type="button">Taramayı yenile</button></header><div class="ps69-play-bot-body" aria-live="polite"></div></section>');
     popover.dataset.owner = button.id || 'ps17SystemStatus'; popover.hidden = false; place(button, popover); window.requestAnimationFrame(() => place(button, popover)); button.setAttribute('aria-expanded', 'true'); hideTooltip();
     $('.ps69-play-bot-refresh', popover).onclick = () => runPlayBot(popover, true);
     const keepStatusOpen = event => {

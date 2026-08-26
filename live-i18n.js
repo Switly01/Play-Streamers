@@ -1,10 +1,15 @@
 const API = "https://api.pstreamers.com/api/i18n/translate";
 const SUPPORTED = new Set(["tr", "en", "de", "es", "fr", "ru", "ar", "ja"]);
-const SKIP_SELECTOR = [
-  "script", "style", "noscript", "code", "pre", "textarea", "option",
+const SKIP_TEXT_SELECTOR = [
+  "script", "style", "noscript", "code", "pre", "textarea",
   "[contenteditable]", "[data-no-translate]", ".entries", ".event-message",
   ".event-detail-message", ".name", ".message", ".support-ticket-message",
-  ".ps59-chart", ".ps69-hourly-chart", ".ps15-locale-menu"
+  ".ps59-chart", ".ps69-hourly-chart"
+].join(",");
+const SKIP_ATTRIBUTE_SELECTOR = [
+  "script", "style", "noscript", "code", "pre", "[contenteditable]",
+  "[data-no-translate]", ".entries", ".event-message", ".event-detail-message",
+  ".name", ".message", ".support-ticket-message", ".ps59-chart", ".ps69-hourly-chart"
 ].join(",");
 
 const critical = Object.freeze({
@@ -40,7 +45,7 @@ export function installLiveI18n({ localeKey = "ps15-locale", getLocale, root = d
   document.documentElement.dataset.psLiveLocale = language;
   if (language === "tr" || !root) return { language, refresh() {} };
 
-  const cacheKey = `ps-live-i18n-v2:${language}`;
+  const cacheKey = `ps-live-i18n-v3:${language}`;
   const cache = { ...(critical[language] || {}), ...cacheRead(cacheKey) };
   const textState = new WeakMap();
   const attributeState = new WeakMap();
@@ -66,7 +71,7 @@ export function installLiveI18n({ localeKey = "ps15-locale", getLocale, root = d
     const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
     for (let node = walker.nextNode(); node; node = walker.nextNode()) {
       const parent = node.parentElement;
-      if (!parent || parent.closest(SKIP_SELECTOR)) continue;
+      if (!parent || parent.closest(SKIP_TEXT_SELECTOR)) continue;
       const value = clean(node.nodeValue);
       const previous = textState.get(node);
       if (previous?.translated === value) continue;
@@ -74,10 +79,11 @@ export function installLiveI18n({ localeKey = "ps15-locale", getLocale, root = d
       if (!translatable(source)) continue;
       targets.push({ type: "text", node, source });
     }
-    root.querySelectorAll("[placeholder],[title],[aria-label]").forEach(element => {
-      if (element.closest(SKIP_SELECTOR)) return;
-      ["placeholder", "title", "aria-label"].forEach(name => {
+    root.querySelectorAll("[placeholder],[title],[aria-label],[value]").forEach(element => {
+      if (element.closest(SKIP_ATTRIBUTE_SELECTOR)) return;
+      ["placeholder", "title", "aria-label", "value"].forEach(name => {
         if (!element.hasAttribute(name)) return;
+        if (name === "value" && !element.matches('input[type="button"],input[type="submit"],input[type="reset"]')) return;
         const value = clean(element.getAttribute(name));
         const previous = attributeState.get(element)?.[name];
         if (previous?.translated === value) return;

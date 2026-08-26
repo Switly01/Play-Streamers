@@ -34,7 +34,7 @@ test("OBS alert bağlantısı ve teslimat kuyruğu manifestte etkin", async () =
   const background = await read("../src/background.js");
 
   assert.equal(manifest.incognito, undefined);
-  assert.ok(manifest.permissions.includes("tabs"));
+  assert.ok(!manifest.permissions.includes("tabs"));
   assert.ok(manifest.permissions.includes("webRequest"));
   assert.doesNotMatch(background, /incognito:\s*true/);
   assert.doesNotMatch(background, /OPEN_INCOGNITO_SETTINGS/);

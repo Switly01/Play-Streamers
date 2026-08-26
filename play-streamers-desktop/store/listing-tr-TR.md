@@ -13,15 +13,21 @@ Play Streamers; yayın analizini, içerik planlamasını, topluluk yönetimini, 
 - SW Identity ile güvenli hesap ve plan eşitleme
 - Windows Credential Manager ile cihazda korunan oturum
 
-Play Streamers bu sürümde kamera, mikrofon veya medya yakalamaz; yayın açma, yerel video kaydı ve sanal kamera özelliği içermez. Ham medya dosyaları sunucuya gönderilmez. Canlı kanal olayları ve yayın geçmişi yalnız bağlı hesaptan doğrulanan verilerle gösterilir.
+Uygulamayı indirmek ve Play Streamers Free ile temel çalışma alanını kullanmak ücretsizdir. Play Streamers Pro ve Product Pro, Microsoft Store dışında yönetilen isteğe bağlı ücretli aboneliklerdir ve ek araçların kilidini açar. Kilitli özellikler uygulamada açıkça etiketlenir. Bu, süreli bir deneme değildir; kullanıcı satın alma yapmadan Free planı kullanmaya devam edebilir.
+
+Play Streamers 0.14.1 kamera, mikrofon veya medya yakalamaz; yayın açma, yerel video kaydı, sanal kamera ya da Studio içermez. Ham medya dosyaları sunucuya gönderilmez. Canlı kanal olayları ve yayın geçmişi yalnız bağlı hesaptan doğrulanan verilerle gösterilir.
+
+## Bu sürümdeki yenilikler
+
+0.14.1; eski Studio/yerel motor bağlantısını kaldırır, SW Identity masaüstü hesap devrini güçlendirir, Windows 10 uyumluluğunu korur ve uygulamanın gerçek özellikleriyle mağaza açıklamalarını eşitler.
 
 ## Kısa açıklama
 
-Analiz, içerik, topluluk ve marka araçları için sade yayıncı çalışma alanı.
+Sunucu analizleri, içerik, topluluk ve marka araçları için sade yayıncı çalışma alanı. Free plan sürekli kullanılabilir; Pro planlar isteğe bağlıdır.
 
 ## Arama terimleri
 
-yayıncı, yayın analizi, streamer, içerik planlama, topluluk, marka, Kick, Play Connect
+yayıncı, yayın analizi, içerik planlama, topluluk, marka, Kick, Play Connect
 
 ## Destek
 

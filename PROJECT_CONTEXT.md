@@ -1173,6 +1173,12 @@ bağlantı durumları sade ama güçlü bir arayüzde sunulmalıdır.
   ve gereksiz boş alan kaldırıldı. Yerel bayraklar kenarları kırpılmış biçimde
   gösterilir; TipeeeStream DAB logosu dosya yüklemesi başarısız olsa bile gömülü
   yedekten çizilir.
+- Chrome Web Mağazası'nın 26 Ağustos 2026 tarihli `Purple Potassium` reddi,
+  Play Connect'in kullanmadığı `tabs` izninden kaynaklandı. Play Connect 1.13.0
+  manifesti bu izni istemez; platform giriş/çıkış sayfaları `chrome.tabs.create`
+  çağrısı için ayrı `tabs` izni gerekmeden açılır. Chrome mağaza paketinde izinler
+  `alarms`, `cookies`, `notifications`, `offscreen`, `storage` ve `webRequest`
+  ile sınırlandırılmıştır.
 - Sürüm 4.21 ile tüm ana altlıklarda ilk satır Gizlilik Politikası bağlantısı,
   ikinci satır ise guns.lol/switly adresine giden Developed by SW CREATE
   bağlantısı olarak sabitlendi; eski özellik sloganlarının yeniden görünmesi

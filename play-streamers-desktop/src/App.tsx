@@ -201,7 +201,7 @@ export function App() {
     <div className="app-shell">
       <aside className="sidebar">
         <button className="brand" onClick={() => setSection("home")} aria-label="Play Streamers başlangıç">
-          <span className="brand-mark">PS</span>
+          <span className="brand-mark"><img src="./play-streamers-ps-logo.svg" alt="" /></span>
           <span><strong>PLAY</strong><small>STREAMERS</small></span>
         </button>
         <nav aria-label="Ana menü">
@@ -221,7 +221,7 @@ export function App() {
 
       <main className="main-surface">
         <header className="topbar">
-          <div className="topbar-title"><span className="mobile-mark">PS</span><div><small>PLAY STREAMERS</small><strong>{search ? "Arama sonuçları" : sectionLabels[section]}</strong></div></div>
+          <div className="topbar-title"><span className="mobile-mark"><img src="./play-streamers-ps-logo.svg" alt="" /></span><div><small>PLAY STREAMERS</small><strong>{search ? "Arama sonuçları" : sectionLabels[section]}</strong></div></div>
           <label className="search-box"><span>⌕</span><input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Bir araç veya özellik ara…" /><kbd>Ctrl K</kbd></label>
           <div className="top-actions"><button className={`update-button ${updateState.phase}`} aria-label={updateState.message} title={updateState.message} disabled={updateState.phase === "checking" || updateState.phase === "installing"} onClick={() => void (updateState.phase === "available" ? installDesktopUpdate() : checkDesktopUpdate(false))}>{updateState.phase === "available" ? "↑" : updateState.phase === "installing" || updateState.phase === "checking" ? "…" : "↻"}</button><span className="system-ready"><i /> {updateState.phase === "available" ? `Sürüm ${updateState.version} hazır` : "Sistem hazır"}</span></div>
         </header>

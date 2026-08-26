@@ -87,6 +87,7 @@
     home.dataset.ps82Motion = '1';
     const revealNodes = home.querySelectorAll([
       '.ps81-showcase > header', '.ps81-showcase .ps8-app-stage',
+      '.ps8-about > header', '.ps8-about-grid article',
       '.ps8-section-head', '.ps8-boundary-grid article',
       '.ps8-features > header', '.ps8-feature-grid article',
       '.ps8-steps > div', '.ps8-steps li',
@@ -142,6 +143,46 @@
     syncScrollMotion();
   }
 
+  const publicSectionTargets = {
+    about: 'ps8-about',
+    products: 'ps8-products',
+    how: 'ps8-how',
+  };
+
+  function navigatePublicHome(key, smooth = true) {
+    const targetId = publicSectionTargets[key];
+    const root = document.getElementById('authOverlay');
+    const target = targetId ? document.getElementById(targetId) : null;
+    if (!root || !target) return false;
+    const info = document.getElementById('ps49InfoPage');
+    if (info) {
+      info.hidden = true;
+      info.classList.remove('ps49-info-closing');
+    }
+    root.hidden = false;
+    root.inert = false;
+    root.removeAttribute('aria-hidden');
+    root.style.removeProperty('display');
+    document.body.classList.add('auth-locked');
+    document.body.classList.remove('ps-v7-dialog-open', 'ps54-account-open');
+    root.style.overflowY = 'auto';
+    const navHeight = root.querySelector('.landing-nav')?.getBoundingClientRect().height || 76;
+    const top = Math.max(0, target.offsetTop - navHeight - 20);
+    root.scrollTo({ top, behavior: smooth && !matchMedia('(prefers-reduced-motion: reduce)').matches ? 'smooth' : 'auto' });
+    root.querySelectorAll('.ps14-nav-links button').forEach((button) => {
+      const buttonKey = button.dataset.info || button.dataset.ps49Info;
+      button.classList.toggle('active', buttonKey === key);
+      if (buttonKey === key) button.setAttribute('aria-current', 'location');
+      else button.removeAttribute('aria-current');
+    });
+    const hash = ({ about: '#hakkimizda', products: '#urunlerimiz', how: '#nasil-calisir' })[key];
+    if (hash && location.hash !== hash) history.pushState(null, '', `/${hash}`);
+    document.title = ({ about: 'Hakkımızda · Play Streamers', products: 'Ürünlerimiz · Play Streamers', how: 'Nasıl Çalışır? · Play Streamers' })[key];
+    return true;
+  }
+
+  window.psPublicHomeNavigate = navigatePublicHome;
+
   function ensurePublicHome() {
     const root = document.getElementById('authOverlay');
     const shell = root?.querySelector('.landing-shell');
@@ -170,7 +211,7 @@
         <div class="ps82-motion-field" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><span></span><span></span></div>
         <div class="ps82-orbits" aria-hidden="true"><i></i><i></i></div>
         <div class="ps8-hero-copy">
-          <span class="ps8-version"><i></i> SÜRÜM 0.13.0</span>
+          <span class="ps8-version"><i></i> SÜRÜM 0.14.0</span>
           <h1 id="ps8-title">PLAY<span>.</span>STREAMERS</h1>
           <h2>Profesyonel Yayıncı Kontrol Platformu</h2>
           <p>Canlı analiz · İçerik planlama · Topluluk · Marka · Play Connect</p>
@@ -194,7 +235,7 @@
         <div class="ps8-app-stage" aria-label="Play Streamers masaüstü uygulaması ön izlemesi">
           <div class="ps8-app-halo" aria-hidden="true"></div>
           <article class="ps8-app-window">
-            <header><span class="ps8-window-brand"><img src="./play-streamers-ps-logo.svg?v=9.0" alt=""><b>PLAY STREAMERS</b></span><span class="ps8-window-controls">— □ ×</span></header>
+            <header><span class="ps8-window-brand"><img src="./play-streamers-ps-logo.svg?v=9.1" alt=""><b>PLAY STREAMERS</b></span><span class="ps8-window-controls">— □ ×</span></header>
             <div class="ps8-app-body">
               <aside><i class="active"></i><i></i><i></i><i></i><i></i><i></i></aside>
               <div class="ps8-app-content">
@@ -215,7 +256,16 @@
         </div>
       </section>
 
-      <section class="ps8-boundary" aria-labelledby="ps8-boundary-title">
+
+      <section class="ps8-about" id="ps8-about" aria-labelledby="ps8-about-title">
+        <header><span>HAKKIMIZDA</span><h2 id="ps8-about-title">Yayıncı için çalışan,<br>yayın bitince durmayan sistem.</h2><p>Play Streamers, dağınık yayın araçlarını çoğaltmak yerine veriyi, üretimi ve hesap yönetimini tek anlaşılır düzende birleştirir.</p></header>
+        <div class="ps8-about-grid">
+          <article class="ps8-about-manifesto"><span>01 · NEDEN VARIZ?</span><h3>Yayıncının dikkatini pencerelere değil, topluluğuna geri vermek için.</h3><p>Yayın açıkken oluşan önemli hareketler sunucuda izlenir; daha sonra geri döndüğünde geçmişin, ortalaman ve değişimin hazır olur.</p><div><b>OTOMATİK</b><b>ANLAŞILIR</b><b>YAYINCI ODAKLI</b></div></article>
+          <article class="ps8-about-system"><span>02 · TEK EKOSİSTEM</span><div class="ps8-about-orbit" aria-hidden="true"><i>PS</i><b>WEB</b><b>APP</b><b>CONNECT</b></div><p>Site hesap ve bağlantıları, masaüstü uygulaması günlük üretimi, Play Connect ise tarayıcı akışını taşır. Hepsi aynı SW Identity hesabında birleşir.</p></article>
+        </div>
+      </section>
+
+      <section class="ps8-boundary" id="ps8-products" aria-labelledby="ps8-boundary-title">
         <div class="ps8-section-head"><span>WEB + DESKTOP</span><h2 id="ps8-boundary-title">Doğru araç,<br>doğru yerde.</h2><p>Her şeyi siteye sıkıştırmıyoruz. Tarayıcı hızlı hesap işlemlerini, masaüstü uygulaması ise günlük üretim akışını taşır.</p></div>
         <div class="ps8-boundary-grid">
           <article class="light"><span>01 · PStreamers.com</span><h3>Hesabın ve bağlantıların.</h3><p>SW Identity, plan yönetimi, güvenlik, Kick ve Play Connect bağlantıları.</p><button type="button" data-ps8-action="register">Web merkezini aç <i>↗</i></button></article>
@@ -235,14 +285,14 @@
         </div>
       </section>
 
-      <section class="ps8-steps" aria-labelledby="ps8-steps-title">
+      <section class="ps8-steps" id="ps8-how" aria-labelledby="ps8-steps-title">
         <div><span>BAŞLANGIÇ</span><h2 id="ps8-steps-title">Üç adım.<br>Sonrası otomatik.</h2></div>
         <ol><li><i>01</i><span><b>Hesabını oluştur</b><small>SW Identity ile güvenli merkezini aç.</small></span></li><li><i>02</i><span><b>Platformunu bağla</b><small>Kick ve Play Connect bağlantılarını tamamla.</small></span></li><li><i>03</i><span><b>Uygulamayı indir</b><small>Tüm araçlarına masaüstünden eriş.</small></span></li></ol>
       </section>
 
       <section class="ps8-final-cta" aria-labelledby="ps8-final-title">
-        <img src="./play-streamers-ps-logo.svg?v=9.0" alt="Play Streamers PS logosu">
-        <span>WINDOWS 10/11 · SÜRÜM 0.13.0</span>
+        <img src="./play-streamers-ps-logo.svg?v=9.1" alt="Play Streamers PS logosu">
+        <span>WINDOWS 10/11 · SÜRÜM 0.14.0</span>
         <h2 id="ps8-final-title">Yayınını değil,<br>sistemini büyüt.</h2>
         <p>Hesabını ücretsiz oluştur. Play Streamers Desktop'ı indir ve üretim araçlarını tek sade merkezde kullanmaya başla.</p>
         <div><a href="./downloads/Play-Streamers-Setup.exe" download>Uygulamayı ücretsiz indir <i>↓</i></a><button type="button" data-ps8-action="register">Hesap oluştur</button></div>
@@ -271,6 +321,10 @@
       if (publicInfoOpen) publicSurface.setAttribute('aria-hidden', 'true');
       else publicSurface.removeAttribute('aria-hidden');
     }
+    if (publicSurface && !publicSurface.hidden && document.body.classList.contains('auth-locked')) {
+      publicSurface.style.overflowY = 'auto';
+      publicSurface.style.touchAction = 'pan-y';
+    }
     document.body.classList.toggle('ps-v7-dialog-open', visible('.landing-auth-modal,.account-blocker,.ps44-dialog-layer,.ps27-dialog-layer,#ps30Modal'));
     if (!visible('#ps51AccountCenter')) document.body.classList.remove('ps54-account-open');
     root.querySelectorAll?.('button:not([aria-label])').forEach((button) => {
@@ -287,7 +341,7 @@
     requestAnimationFrame(() => { queued = false; normalize(); });
   };
   new MutationObserver(queue).observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['hidden','aria-hidden'] });
-  const infoPaths = { about: '/about', products: '/products', how: '/how-it-works' };
+  const infoPaths = { about: '#hakkimizda', products: '#urunlerimiz', how: '#nasil-calisir' };
   document.addEventListener('click', (event) => {
     const action = event.target instanceof Element ? event.target.closest('[data-ps8-action]') : null;
     if (action) {
@@ -300,9 +354,7 @@
       if (key === 'products') {
         event.preventDefault();
         event.stopImmediatePropagation();
-        window.psCleanRouteApi?.publicInfo?.('products');
-        if (location.pathname !== '/products') history.pushState(null, '', '/products');
-        document.title = 'Ürünlerimiz · Play Streamers';
+        navigatePublicHome('products');
         return;
       }
     }
@@ -323,12 +375,10 @@
     if (!button) return;
     const key = button.dataset.ps49Info || button.dataset.info;
     const path = infoPaths[key];
-    if (!path || typeof window.psCleanRouteApi?.publicInfo !== 'function') return;
+    if (!path) return;
     event.preventDefault();
     event.stopImmediatePropagation();
-    window.psCleanRouteApi.publicInfo(key);
-    if (location.pathname !== path) history.pushState(null, '', path);
-    document.title = ({ about: 'Hakkımızda · Play Streamers', products: 'Ürünlerimiz · Play Streamers', how: 'Nasıl Çalışır? · Play Streamers' })[key];
+    navigatePublicHome(key);
   }, true);
   document.addEventListener('keydown', (event) => {
     if (event.key !== 'Enter' && event.key !== ' ') return;

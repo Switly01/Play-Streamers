@@ -5,17 +5,17 @@ import test from 'node:test';
 const root = new URL('../', import.meta.url);
 const read = (name) => readFile(new URL(name, root), 'utf8');
 
-test('site 9.0 assets are cache-busted and monochrome', async () => {
+test('site 9.1 assets are cache-busted and monochrome', async () => {
   const [html, css, logo] = await Promise.all([
     read('index.html'),
     read('site-v7.css'),
     read('play-streamers-ps-logo.svg'),
   ]);
-  assert.match(html, /play-streamers-build" content="2026-08-26-site-9\.0\.3"/);
-  assert.match(html, /site-v7\.css\?v=9\.0\.2/);
-  assert.match(html, /app\.js\?v=5\.1/);
-  assert.match(html, /site-v7\.js\?v=9\.0/);
-  assert.match(html, /app-final\.js\?v=5\.4/);
+  assert.match(html, /play-streamers-build" content="2026-08-26-site-9\.1\.0"/);
+  assert.match(html, /site-v7\.css\?v=9\.1\.0/);
+  assert.match(html, /app\.js\?v=5\.2/);
+  assert.match(html, /site-v7\.js\?v=9\.1/);
+  assert.match(html, /app-final\.js\?v=5\.5/);
   assert.match(css, /html\[data-ps-site-version="8"\]/);
   assert.match(css, /--signal: #f5f5f2/);
   assert.match(css, /@keyframes ps82-meteor/);
@@ -30,9 +30,9 @@ test('site 9.0 assets are cache-busted and monochrome', async () => {
   assert.match(css, /ps9-surface-in/);
   assert.match(css, /ps9-sw-ai-summary/);
   assert.doesNotMatch(css, /body\.ps-v9\s*>\s*:not\(#ps9Ambient\)/);
-  assert.match(logo, /aria-label="Play Streamers karakteristik keskin PS amblemi"/);
+  assert.match(logo, /aria-label="Play Streamers keskin PS amblemi"/);
   assert.doesNotMatch(logo, /stroke-linecap="round"|rx="/);
-  assert.match(logo, /linearGradient id="ps9-frame"/);
+  assert.match(logo, /linearGradient id="frame"/);
 });
 
 test('public home promotes the desktop app without restoring legacy hero', async () => {
@@ -42,6 +42,11 @@ test('public home promotes the desktop app without restoring legacy hero', async
   assert.match(source, /Windows 10\/11 · 64 bit/);
   assert.match(source, /data-ps8-action="register"/);
   assert.match(source, /data-ps8-action="products"/);
+  assert.match(source, /id="ps8-about"/);
+  assert.match(source, /id="ps8-products"/);
+  assert.match(source, /id="ps8-how"/);
+  assert.match(source, /window\.psPublicHomeNavigate = navigatePublicHome/);
+  assert.match(source, /root\.scrollTo/);
   assert.match(source, /PLAY<span>\.<\/span>STREAMERS/);
   assert.match(source, /class="ps81-showcase"/);
   assert.match(source, /className = 'ps81-nav-download'/);
@@ -75,7 +80,7 @@ test('SW Bot audits the whole interface and explains issues with SW AI', async (
   assert.match(worker, /sw-bot:global-status:v10/);
   assert.match(worker, /explainSwBotIssuesWithAi/);
   assert.match(worker, /swBotDeterministicReport/);
-  assert.match(worker, /site-v7\.css\?v=9\.0\.2/);
+  assert.match(worker, /site-v7\.css\?v=9\.1\.0/);
   assert.match(worker, /terms\.html/);
 });
 

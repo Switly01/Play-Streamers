@@ -247,3 +247,44 @@ button:disabled { opacity: .42; cursor: not-allowed; }
 .transition-preview{display:grid;min-height:150px;place-items:center;overflow:hidden;border-radius:13px;color:white;background:linear-gradient(135deg,#050806,color-mix(in srgb,var(--overlay-color) 24%,#050806));border-bottom:7px solid var(--overlay-color)}.transition-preview strong{font-size:22px}.transition-preview.slide strong{animation:transition-slide 1.4s ease infinite alternate}.transition-preview.fade strong{animation:transition-fade 1.4s ease infinite alternate}@keyframes transition-slide{from{opacity:.2;transform:translateX(-35px)}}@keyframes transition-fade{from{opacity:.1}}
 .badge-preview{display:grid;width:150px;height:150px;place-items:center;justify-self:center;border-radius:24%;font-size:48px;font-weight:950;box-shadow:0 20px 50px #0008}.media-kit-about{width:100%;min-height:110px}
 @media(max-width:760px){.coach-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+/* 0.14 — Site 9 ile ortak premium siyah/beyaz masaüstü tasarım sistemi. */
+:root,:root[data-theme="cyan"],:root[data-theme="amber"],:root[data-theme="mono"]{
+  color:#f4f4f2;background:#030303;--green:#f4f4f2;--green-soft:#cfcfd2;
+  --panel:rgba(16,16,18,.88);--line:rgba(255,255,255,.115);--muted:#929298;
+}
+body{color:#f4f4f2;background:
+  radial-gradient(circle at 11% -8%,rgba(255,255,255,.12),transparent 26%),
+  radial-gradient(circle at 88% 12%,rgba(255,255,255,.042) 0 1px,transparent 1.7px) 0 0/23px 23px,
+  linear-gradient(142deg,#090909,#020202 62%)}
+body::before{position:fixed;z-index:-1;inset:0;content:"";pointer-events:none;background:linear-gradient(118deg,transparent 0 44%,rgba(255,255,255,.025) 44.2% 44.45%,transparent 44.7%)}
+button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline-color:#fff}
+.app-shell{grid-template-columns:248px 1fr}
+.sidebar{border-color:rgba(255,255,255,.11);background:linear-gradient(180deg,rgba(8,8,9,.985),rgba(3,3,4,.99));box-shadow:20px 0 70px rgba(0,0,0,.24)}
+.sidebar::after{height:210px;background:radial-gradient(circle at 42% -16%,rgba(255,255,255,.11),transparent 67%)}
+.brand{gap:12px;padding-bottom:20px}.brand-mark,.mobile-mark{overflow:hidden;border:0;border-radius:0;color:transparent;background:transparent;box-shadow:none;transform:none}.brand-mark img,.mobile-mark img{display:block;width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 7px 18px rgba(255,255,255,.1))}
+.brand strong{color:#fff;font-size:14px;letter-spacing:.17em}.brand small{color:#9b9ba1;letter-spacing:.28em}
+.sidebar nav{gap:4px}.sidebar nav button{min-height:43px;border-radius:7px;color:#77777e}.sidebar nav button:hover{color:#eee;background:rgba(255,255,255,.045)}.sidebar nav button.active{border-color:rgba(255,255,255,.17);color:#fff;background:linear-gradient(90deg,rgba(255,255,255,.1),rgba(255,255,255,.025))}.sidebar nav button.active::before{border-radius:0;background:#fff;box-shadow:0 0 12px rgba(255,255,255,.45)}
+.plan-pill{border-color:rgba(255,255,255,.15);border-radius:7px;background:rgba(255,255,255,.035)}.plan-pill span{color:#fff}.plan-pill small,.profile-row small{color:#73737a}.profile-row{border-radius:7px}.profile-avatar{border:1px solid rgba(255,255,255,.1);border-radius:6px;color:#e1e1e2;background:#151517}
+.main-surface{background:linear-gradient(135deg,rgba(255,255,255,.012),transparent 36%)}
+.topbar{min-height:72px;border-color:rgba(255,255,255,.105);background:rgba(4,4,5,.83);backdrop-filter:blur(24px) saturate(.5)}.topbar-title small{color:#74747b}.topbar-title strong{color:#f8f8f6;letter-spacing:-.015em}
+.search-box{border-color:rgba(255,255,255,.12);border-radius:7px;color:#77777e;background:rgba(255,255,255,.025)}.search-box:focus-within{border-color:rgba(255,255,255,.4);background:rgba(255,255,255,.04)}.search-box input{color:#eee}.search-box kbd{border-color:rgba(255,255,255,.12);border-radius:4px;color:#7f7f86;background:#0b0b0c}
+.top-actions>button{border-color:rgba(255,255,255,.13);border-radius:7px;color:#a1a1a7;background:rgba(255,255,255,.03)}.top-actions>.update-button.available{border-color:#fff;color:#050505;background:#f4f4f2;box-shadow:0 0 18px rgba(255,255,255,.14)}.system-ready{color:#85858b}.system-ready i,.status-dot{border:1px solid #fff;background:#fff;box-shadow:0 0 8px rgba(255,255,255,.38)}
+.page-content{width:min(1390px,calc(100% - 54px));padding-top:38px}.eyebrow{color:#fff;letter-spacing:.22em}.welcome-band h1{max-width:780px;color:#fff}.welcome-band h1 em{color:#b8b8bd}.welcome-band p{color:#98989f}
+.primary-button,.secondary-button,.live-button,.record-button{border-radius:7px}.primary-button{border-color:#fff;color:#050505;background:linear-gradient(110deg,#fff,#d4d4d7);box-shadow:0 12px 30px rgba(0,0,0,.3)}.primary-button:hover{color:#050505;background:#d7d7da}.secondary-button{border-color:rgba(255,255,255,.15);color:#dedee0;background:rgba(255,255,255,.035)}.secondary-button:hover:not(:disabled){border-color:rgba(255,255,255,.34);background:rgba(255,255,255,.065)}
+.metric-card,.glass-panel,.dashboard-card,.feature-card,.feature-hero,.insight-panel,.evidence-card,.note-panel,.idea-panel,.detail-panel,.workspace-card,.special-workspace>section{border-color:rgba(255,255,255,.105)!important;border-radius:10px!important;background:linear-gradient(145deg,rgba(17,17,19,.88),rgba(7,7,8,.9))!important;box-shadow:inset 0 1px rgba(255,255,255,.04),0 18px 48px rgba(0,0,0,.14)}
+.metric-card.green{color:#f4f4f2}.metric-card.purple{color:#d0d0d3}.metric-card.cyan{color:#a8a8ad}.metric-card.amber{color:#85858b}
+.metric-card span,.metric-card small{color:#7e7e85}.metric-card i{opacity:.055;background:#fff}.feature-card:hover{border-color:rgba(255,255,255,.27)!important;background:linear-gradient(145deg,#1a1a1c,#09090a)!important;transform:translateY(-2px)}
+.feature-count,.plan-badge,.source-live-badge{border-color:rgba(255,255,255,.25)!important;border-radius:5px!important;color:#fff!important;background:rgba(255,255,255,.065)!important}.feature-card .feature-icon,.unified-event-list i,.sound-grid b{border-radius:6px;color:#050505;background:#e7e7e8}
+.progress-label,.local-badge,.offline-badge.live{border-color:rgba(255,255,255,.2);color:#fff;background:rgba(255,255,255,.05)}.check{border-color:rgba(255,255,255,.18);border-radius:5px}.check.done{border-color:#fff;color:#050505;background:#fff}.empty-orbit>span{border-color:rgba(255,255,255,.18);color:#fff;background:rgba(255,255,255,.035);box-shadow:0 0 30px rgba(255,255,255,.045)}
+.drawer-backdrop,.studio-modal-backdrop{background:rgba(0,0,0,.78);backdrop-filter:blur(12px)}.feature-drawer,.studio-settings-modal{border-color:rgba(255,255,255,.17);border-radius:13px;background:linear-gradient(145deg,#151517,#070708);box-shadow:0 30px 100px #000c}.drawer-close{border-color:rgba(255,255,255,.13);border-radius:6px;background:rgba(255,255,255,.035)}
+input,select,textarea,.settings-grid input,.settings-grid select,.special-fields input,.special-fields select,.story-form input,.media-kit-about,.repurpose-form input,.repurpose-form textarea,.vault-import select,.layout-workspace input{border-color:rgba(255,255,255,.13)!important;border-radius:7px!important;color:#eee!important;background:#070708!important}.settings-grid input:focus,.settings-grid select:focus{border-color:rgba(255,255,255,.42)!important}
+.studio-settings-modal,.scene-settings-heading,.source-stack-heading,.settings-security,.special-message,.wellbeing-status,.alert-result,.live-event-status,.after-stream-card,.currency-totals article{border-color:rgba(255,255,255,.13);background:rgba(255,255,255,.03)}
+.scene-settings-heading span,.layer-title>span,.layer-toggle span,.source-stack-heading span,.story-stage small,.alert-result small,.live-event-status span,.after-stream-card>span,.currency-totals span,.repurpose-grid small{color:#fff}
+.profile-create button,.insider-switch button.active{border-color:rgba(255,255,255,.3);color:#fff;background:rgba(255,255,255,.075)}
+.session-graph span{background:#f3f3f3}.session-graph i{background:#77777d}.transition-preview{background:linear-gradient(135deg,#050505,color-mix(in srgb,var(--overlay-color) 13%,#050505))}
+@media(max-width:1050px){.app-shell{grid-template-columns:76px 1fr}}
+@media(max-width:760px){.app-shell{display:block}.sidebar{border-color:rgba(255,255,255,.12);background:rgba(5,5,6,.96)}.page-content{width:calc(100% - 26px)}}
+@media(prefers-reduced-motion:no-preference){body::before{animation:psDesktopAmbient 16s ease-in-out infinite alternate}.brand-mark img{animation:psDesktopLogo 6s ease-in-out infinite}}
+@keyframes psDesktopAmbient{to{opacity:.42;transform:translate3d(14px,-9px,0)}}
+@keyframes psDesktopLogo{50%{transform:translateY(-2px)}}

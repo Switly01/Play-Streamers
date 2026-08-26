@@ -4,10 +4,10 @@ Bu doküman; Play Streamers web uygulaması, Cloudflare Worker API'si ve Play Co
 
 ## Güncel sürümler
 
-- Web uygulaması / ürün bağlamı: **5.0**
-- Play Connect: **1.11.0**
-- Desktop: **0.13.0**
-- Worker kaynak sabiti: **5.0**
+- Web uygulaması / ürün bağlamı: **5.1**
+- Play Connect: **1.13.0**
+- Desktop: **0.14.0**
+- Worker kaynak sabiti: **5.1**
 
 > Yayın öncesinde Worker'daki bildirim sürüm sabiti ile bu sürüm geçmişi aynı numaraya yükseltilmelidir.
 
@@ -21,7 +21,7 @@ Bu doküman; Play Streamers web uygulaması, Cloudflare Worker API'si ve Play Co
   özeti otomatik tamamlanır.
 - Üye ana sayfası sunucu veri hattını gösterir; genel açılış ekranı daha
   kompakt iki sütunlu düzene taşındı.
-- Desktop 0.13.0 ve Microsoft Store 0.13.0.0 tek Windows 10/11 paket sürümüne
+- Desktop 0.14.0 ve Microsoft Store 0.14.0.0 tek Windows 10/11 paket sürümüne
   eşitlendi; kamera ve mikrofon yetkileri dağıtım bildiriminden çıkarıldı.
 
 ### 1.0–1.2 · Kullanıcı ana sayfası

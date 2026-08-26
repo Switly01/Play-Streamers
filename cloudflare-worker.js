@@ -773,13 +773,13 @@ async function runScheduledPlayBotAudit(env) {
   await ensurePlayBotMetadataStorage(env);
   const resources = [
     ["Ana sayfa", "https://pstreamers.com/", "document"],
-    ["Ana uygulama betiği", "https://pstreamers.com/app.js?v=5.1", "script"],
-    ["Uygulama betiği", "https://pstreamers.com/app-final.js?v=5.4", "script"],
-    ["Site davranış betiği", "https://pstreamers.com/site-v7.js?v=9.0", "script"],
-    ["Premium stil dosyası", "https://pstreamers.com/site-v7.css?v=9.0.2", "style"],
+    ["Ana uygulama betiği", "https://pstreamers.com/app.js?v=5.2", "script"],
+    ["Uygulama betiği", "https://pstreamers.com/app-final.js?v=5.5", "script"],
+    ["Site davranış betiği", "https://pstreamers.com/site-v7.js?v=9.1", "script"],
+    ["Premium stil dosyası", "https://pstreamers.com/site-v7.css?v=9.1.0", "style"],
     ["Gizlilik sayfası", "https://pstreamers.com/privacy.html", "document"],
     ["Kullanım koşulları", "https://pstreamers.com/terms.html", "document"],
-    ["PS marka amblemi", "https://pstreamers.com/play-streamers-ps-logo.svg?v=9.0", "image"],
+    ["PS marka amblemi", "https://pstreamers.com/play-streamers-ps-logo.svg?v=9.1", "image"],
     ["Windows kurucusu", "https://pstreamers.com/downloads/Play-Streamers-Setup.exe", "binary"],
     ["Türkçe bayrağı", "https://pstreamers.com/assets/flags/tr.svg", "image"],
     ["İngilizce bayrağı", "https://pstreamers.com/assets/flags/gb.svg", "image"],
@@ -841,11 +841,11 @@ async function runScheduledPlayBotAudit(env) {
   const homeDocument = results.find(result => result.type === "document");
   if (homeDocument?.ok) {
     const documentContracts = [
-      ["site-v7.css?v=9.0.2", "Güncel premium stil dosyası"],
-      ["app.js?v=5.1", "Güncel ana uygulama betiği"],
-      ["app-final.js?v=5.4", "Güncel onarım betiği"],
-      ["site-v7.js?v=9.0", "Güncel site davranış betiği"],
-      ["play-streamers-build\" content=\"2026-08-26-site-9.0.3", "Site 9.0.3 sürüm işareti"],
+      ["site-v7.css?v=9.1.0", "Güncel premium stil dosyası"],
+      ["app.js?v=5.2", "Güncel ana uygulama betiği"],
+      ["app-final.js?v=5.5", "Güncel onarım betiği"],
+      ["site-v7.js?v=9.1", "Güncel site davranış betiği"],
+      ["play-streamers-build\" content=\"2026-08-26-site-9.1.0", "Site 9.0.3 sürüm işareti"],
     ];
     for (const [token, label] of documentContracts) {
       if (!homeDocument.body.includes(token)) issues.push(`${label} canlı ana sayfaya bağlanmamış.`);

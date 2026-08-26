@@ -1,6 +1,6 @@
 # Play Streamers — Kalıcı Proje Bağlamı
 
-Site 9.0.3 / Platform 5.1 / Desktop 0.13.0 / Play Connect 1.12.0: Ana sayfa,
+Site 9.1.0 / Platform 5.1 / Desktop 0.14.0 / Play Connect 1.13.0: Ana sayfa,
 Klyze referansının güçlü ürün sunumu örnek alınarak ancak özgün bir Play
 Streamers kimliğiyle tamamen siyah-beyaz düzene geçirildi. Yeni PS monogramı,
 katmanlı Desktop ön izlemesi, web/uygulama görev ayrımı, masaüstü indirme
@@ -20,14 +20,17 @@ oturum oluşturur. Site, masaüstü uygulaması ve eklenti kapalıyken de izleyi
 örnekleri toplanır; yayın kapanınca ortalama/tepe izleyici, takip, abonelik,
 bağış ve etkileşim özeti D1 üzerinde tamamlanır. Site; ziyaretçi, üye, hesap ve
 Dashboard yüzeylerini ortak monokrom tasarım sisteminde birleştirdi. Desktop aynı özeti açılışta
-ve dakikada bir yeniler. Windows 10/11 tek 0.13.0 uygulama ve 0.13.0.0 Store
+ve dakikada bir yeniler. Windows 10/11 tek 0.14.0 uygulama ve 0.14.0.0 Store
 paketini kullanır; Store bildiriminde artık kamera/mikrofon yetkisi yoktur.
-Chrome ve Firefox Play Connect paketleri 1.12.0 sürümünde eşitlenmiştir. Popup;
+Chrome ve Firefox Play Connect paketleri 1.13.0 sürümünde eşitlenmiştir. Popup;
 normal, dar ve kapalı panel genişliklerinde yatay taşma veya yalnız kaydırma
 çubuğuna dönüşmeden güvenli bir responsive görünüm kullanır.
-Chrome/Chromium mağaza paketi `play-connect-chromium-v1.12.0.zip`, Firefox/AMO
-paketi `play-connect-gecko-v1.12.0.zip`, site indirme paketi ise
-`play-connect-v1.12.0.zip` ve geriye uyumlu `play-connect.zip` adlarıyla tutulur.
+Chrome/Chromium mağaza paketi `play-connect-chromium-v1.13.0.zip`, Firefox/AMO
+paketi `play-connect-gecko-v1.13.0.zip`, site indirme paketi ise
+`play-connect-v1.13.0.zip` ve geriye uyumlu `play-connect.zip` adlarıyla tutulur.
+Play Connect açılır paneli ve yönetim ekranı ile Desktop 0.14.0; Site 9'un
+keskin siyah/beyaz amblemleri, teknik ızgarası, monokrom kartları ve erişilebilir
+odak durumlarını paylaşır. Eklenti 240–392 piksel aralığında yatay taşma üretmez.
 
 Site 8.3 görsel denetimi: yıldız/parçacık/meteor hızları artırıldı, işaretçi ve
 kaydırma paralaksı ile PLAY.STREAMERS ışık taraması eklendi. Masaüstü özellik
@@ -64,6 +67,8 @@ kontroller, hedefsiz bağlantılar, bozuk `aria-expanded` ve açılır katman
 açıklaması üretir; geçersiz/başarısız AI çıktısında deterministik Türkçe özet
 ve güvenli sonraki adım kullanılır. Aynı sorun kümesi değişmedikçe AI sonucu
 önbellekten tekrar kullanılır.
+
+Site 9.1 ana sayfa akış onarımı: genel sayfa dikey kaydırma alanı açık biçimde korunur. Hakkımızda, Ürünlerimiz ve Nasıl Çalışır bağlantıları ayrı tam ekran katman açmak yerine aynı sinematik ana sayfadaki ilgili bölümlere yumuşak kaydırır. Yeni Hakkımızda bölümü ürün tasarım diliyle bütünleşir; doğrudan `/about`, `/products` ve `/how-it-works` rotaları da aynı ana sayfa bölümlerine bağlanır. PS amblemi daha temiz, keskin, iç içe geçen P/S geometrisine ve teknik asimetrik çerçeveye geçirilmiştir.
 
 Site 9.0.2 etkileşim onarımı: `showDialog` kullanan destek, güncelleme,
 grafik, hesap güvenliği, çıkış ve sıfırlama pencereleri ortak sabit modal

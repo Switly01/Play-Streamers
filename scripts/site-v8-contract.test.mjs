@@ -11,12 +11,12 @@ test('site 10 assets are cache-busted and use fluid monochrome glass', async () 
     read('site-v7.css'),
     read('play-streamers-ps-logo.svg'),
   ]);
-  assert.match(html, /play-streamers-build" content="2026-08-27-site-10\.1\.3"/);
-  assert.match(html, /site-v7\.css\?v=10\.1\.3/);
-  assert.match(html, /app\.js\?v=5\.3\.2/);
-  assert.match(html, /site-v7\.js\?v=10\.1\.3/);
-  assert.match(html, /app-final\.js\?v=5\.7\.7/);
-  assert.match(html, /live-i18n\.js\?v=4\.1/);
+  assert.match(html, /play-streamers-build" content="2026-08-27-site-10\.2\.0"/);
+  assert.match(html, /site-v7\.css\?v=10\.2\.0/);
+  assert.match(html, /app\.js\?v=5\.3\.4/);
+  assert.match(html, /site-v7\.js\?v=10\.2\.0/);
+  assert.match(html, /app-final\.js\?v=5\.7\.8/);
+  assert.match(html, /live-i18n\.js\?v=4\.3/);
   assert.match(css, /html\[data-ps-site-version="8"\]/);
   assert.match(css, /--signal: #f5f5f2/);
   assert.match(css, /@keyframes ps82-meteor/);
@@ -31,8 +31,9 @@ test('site 10 assets are cache-busted and use fluid monochrome glass', async () 
   assert.match(css, /ps9-surface-in/);
   assert.match(css, /ps9-sw-ai-summary/);
   assert.doesNotMatch(css, /body\.ps-v9\s*>\s*:not\(#ps9Ambient\)/);
-  assert.match(logo, /aria-label="Play Streamers PS akış amblemi"/);
-  assert.match(logo, /id="shell"/);
+  assert.match(logo, /Saf beyaz beşgen çerçeve/);
+  assert.match(logo, /M80 8 147 56 122 145H38L13 56 80 8Z/);
+  assert.doesNotMatch(logo, /linearGradient|circle|polygon/);
   assert.match(css, /@keyframes ps92-warp/);
   assert.match(css, /--ps92-glass/);
   assert.match(css, /@keyframes ps101-astronaut-descend/);
@@ -73,7 +74,8 @@ test('public home promotes the desktop app without restoring legacy hero', async
   assert.match(source, /Play Streamers Web/);
   assert.match(source, /Play Streamers App/);
   assert.match(source, /scheduleAstronaut/);
-  assert.match(source, /Hey, <b>geleceğin yayıncısı!/);
+  assert.match(source, /Hey, geleceğin yayıncısı burada mısın\?/);
+  assert.match(source, /Buradaysan ben gidiyorum\./);
   assert.match(source, /play-streamers-pixel-astronaut-v2\.png/);
   assert.doesNotMatch(source, />01 · NEDEN VARIZ\?</);
   assert.doesNotMatch(source, /<article class="ps8-feature-large"><span>01<\/span>/);
@@ -100,7 +102,7 @@ test('SW Bot audits the whole interface and explains issues with SW AI', async (
   assert.match(worker, /sw-bot:global-status:v12/);
   assert.match(worker, /explainSwBotIssuesWithAi/);
   assert.match(worker, /swBotDeterministicReport/);
-  assert.match(worker, /site-v7\.css\?v=10\.1\.3/);
+  assert.match(worker, /site-v7\.css\?v=10\.2\.0/);
   assert.match(worker, /\/api\/i18n\/translate/);
   assert.match(worker, /LEGACY_PLAY_STREAMERS_AUTH_PATHS/);
   assert.match(worker, /SW_IDENTITY_REQUIRED/);
@@ -122,7 +124,12 @@ test('SW Identity owns direct login and registration without legacy account leak
   assert.match(app, /setTimeout\(\(\)=>location\.reload\(\),180\)/);
   assert.match(app, /adoptAuthenticatedUser\(data\.user\);state\.settings\.userSession=activeUserSession/);
   assert.match(identityWorker, /hostname === \"pstreamers\.com\"/);
-  assert.match(i18n, /ps-live-i18n-v4-1/);
+  assert.match(app, /installIdentityCalendar/);
+  assert.match(app, /productRedirectUrl/);
+  assert.match(identityWorker, /SW_IDENTITY_VERSION = "1\.8\.0"/);
+  assert.match(identityWorker, /createProductHandoffTarget/);
+  assert.match(i18n, /ps-live-i18n-v4-3/);
+  assert.match(i18n, /Her şey tek platformda\./);
   assert.match(i18n, /index \+= 12/);
   assert.match(i18n, /requestTranslations\(strings\.slice\(0, middle\), depth \+ 1\)/);
   assert.match(i18n, /Promise\.all\(group\.map\(strings => requestTranslations\(strings\)\)\)/);

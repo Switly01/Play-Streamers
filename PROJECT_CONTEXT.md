@@ -99,8 +99,13 @@ Arapçada genel yerleşim LTR kalır. SW Bot kaydırılabilir sabit panelde çal
 yenileme sırasında eski sonucu silmez, kaydırılabilir ana sayfanın aşağıdaki
 kontrollerini yanlış taşma olarak raporlamaz ve SW AI kullanıcıya işlem talimatı
 vermek yerine sorunu sade biçimde açıklar. Destek, Gizlilik ve Kullanım
-Koşulları ortak monokrom sıvı cam tasarımına geçirildi. Site sürümü 10.1.3,
-ana betik 5.3.2, son onarım betiği 5.7.7 ve canlı çeviri önbelleği v4.1'dir.
+Koşulları ortak monokrom sıvı cam tasarımına geçirildi. Site sürümü 10.2.0,
+ana betik 5.3.4, son onarım betiği 5.7.8 ve canlı çeviri önbelleği v4.3'tür.
+10.2 ile ana kahraman alanındaki dikdörtgen blur kaldırıldı; cam yüzeyler yansıma,
+kenar kırılması ve katmanlı saydamlıkla yeniden kuruldu. Saf beyaz beşgen PS
+monogramı, sabit canlı metrik kapsülü, kancalı halat astronotu, özel doğum tarihi
+takvimi ve yenilenen destek ekranı eklendi. SW Identity 1.8 doğrudan ürün geçiş
+kodu üreterek parola ve 2FA akışını Play Streamers içinde tutar.
 Canlı çeviri, uzun AI JSON paketlerinin eksik kalmasını önlemek için görünür
 metinleri 12'li paketler hâlinde işler; geçersiz paketleri kontrollü biçimde
 böler, en fazla dört küçük paketi paralel işler ve başarılı her paketi sayfaya

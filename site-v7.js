@@ -231,12 +231,11 @@
     const position = () => {
       const astronaut = home.querySelector('.ps10-astronaut-visitor');
       const hero = home.querySelector('.ps81-hero');
-      const download = home.querySelector('.ps8-download');
-      if (!astronaut || !hero || !download) return;
+      if (!astronaut || !hero) return;
       const heroBox = hero.getBoundingClientRect();
-      const downloadBox = download.getBoundingClientRect();
-      astronaut.style.top = `${Math.max(210, downloadBox.top - heroBox.top + 8)}px`;
-      astronaut.style.left = `${Math.min(heroBox.width - 58, downloadBox.right - heroBox.left + 20)}px`;
+      astronaut.style.top = 'auto';
+      astronaut.style.bottom = `${Math.max(18, Math.min(34, heroBox.height * .028))}px`;
+      astronaut.style.left = `${Math.max(58, Math.min(98, heroBox.width * .066))}px`;
     };
     const reveal = () => {
       const root = document.getElementById('authOverlay');
@@ -250,15 +249,20 @@
       astronaut.classList.add('is-visible');
       astronaut.setAttribute('aria-hidden', 'false');
       astronaut.tabIndex = 0;
+      window.setTimeout(() => { if (astronaut.classList.contains('is-visible')) astronaut.classList.add('is-settled'); }, 2500);
       const depart = () => {
         if (astronaut.classList.contains('is-departing')) return;
-        astronaut.classList.add('is-departing');
+        const bubble = astronaut.querySelector('.ps10-astronaut-bubble');
+        if (bubble) bubble.textContent = 'Buradaysan ben gidiyorum.';
+        astronaut.classList.add('is-leaving-message');
         astronaut.setAttribute('aria-label', 'Astronot yukarı çıkıyor');
+        window.setTimeout(() => astronaut.classList.add('is-hook-returning'), 850);
+        window.setTimeout(() => astronaut.classList.add('is-departing'), 1800);
         window.setTimeout(() => {
-          astronaut.classList.remove('is-visible', 'is-departing');
+          astronaut.classList.remove('is-visible', 'is-settled', 'is-leaving-message', 'is-hook-returning', 'is-departing');
           astronaut.setAttribute('aria-hidden', 'true');
           astronaut.tabIndex = -1;
-        }, 2100);
+        }, 4100);
       };
       if (astronaut.dataset.ps10DepartBound !== '1') {
         astronaut.dataset.ps10DepartBound = '1';
@@ -315,7 +319,7 @@
         <div class="ps82-motion-field" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><span></span><span></span></div>
         <div class="ps82-orbits" aria-hidden="true"><i></i><i></i></div>
         <div class="ps8-hero-copy">
-          <span class="ps8-version"><i></i> PLAY STREAMERS WEB · v10.1.3</span>
+          <span class="ps8-version"><i></i> PLAY STREAMERS WEB · v10.2.0</span>
           <h1 id="ps8-title" aria-label="PLAY STREAMERS"><span>PLAY</span><span>STREAMERS</span></h1>
           <h2>Profesyonel Yayıncı Kontrol Platformu</h2>
           <p>Canlı analiz · İçerik planlama · Topluluk · Marka · Play Connect</p>
@@ -331,8 +335,8 @@
         </div>
         <button class="ps10-astronaut-visitor" type="button" aria-hidden="true" aria-label="Astronotu yukarı gönder" tabindex="-1">
           <span class="ps10-astronaut-rope" aria-hidden="true"></span>
-          <span class="ps10-astronaut-bubble">Hey, <b>geleceğin yayıncısı!</b></span>
-          <img src="./assets/play-streamers-pixel-astronaut-v2.png?v=10.1" alt="El sallayan piksel astronot">
+          <span class="ps10-astronaut-bubble">Hey, geleceğin yayıncısı burada mısın?</span>
+          <img src="./assets/play-streamers-pixel-astronaut-v2.png?v=10.2" alt="El sallayan piksel astronot">
         </button>
         <div class="ps81-scroll-cue" aria-hidden="true"><i></i><span>KEŞFET</span></div>
       </section>
@@ -344,7 +348,7 @@
         <div class="ps8-app-stage" aria-label="Play Streamers masaüstü uygulaması ön izlemesi">
           <div class="ps8-app-halo" aria-hidden="true"></div>
           <article class="ps8-app-window">
-            <header><span class="ps8-window-brand"><img src="./play-streamers-ps-logo.svg?v=10.1" alt=""><b>PLAY STREAMERS</b></span><span class="ps8-window-controls">— □ ×</span></header>
+            <header><span class="ps8-window-brand"><img src="./play-streamers-ps-logo.svg?v=10.2" alt=""><b>PLAY STREAMERS</b></span><span class="ps8-window-controls">— □ ×</span></header>
             <div class="ps8-app-body">
               <aside><i class="active"></i><i></i><i></i><i></i><i></i><i></i></aside>
               <div class="ps8-app-content">
@@ -370,7 +374,7 @@
         <header><span>HAKKIMIZDA</span><h2 id="ps8-about-title">Yayıncı için çalışan,<br>yayın bitince durmayan sistem.</h2><p>Play Streamers, dağınık yayın araçlarını çoğaltmak yerine veriyi, üretimi ve hesap yönetimini tek anlaşılır düzende birleştirir.</p></header>
         <div class="ps8-about-grid">
           <article class="ps8-about-manifesto"><span>NEDEN VARIZ?</span><h3>Yayıncının dikkatini pencerelere değil, topluluğuna geri vermek için.</h3><p>Yayın açıkken oluşan önemli hareketler sunucuda izlenir; daha sonra geri döndüğünde geçmişin, ortalaman ve değişimin hazır olur.</p><div><b>OTOMATİK</b><b>ANLAŞILIR</b><b>YAYINCI ODAKLI</b></div></article>
-          <article class="ps8-about-system"><span>TEK EKOSİSTEM</span><div class="ps8-about-orbit" aria-hidden="true"><i><img src="./play-streamers-ps-logo.svg?v=10.1" alt=""></i><b>WEB</b><b>APP</b><b>CONNECT</b></div><p>Site hesap ve bağlantıları, masaüstü uygulaması günlük üretimi, Play Connect ise tarayıcı akışını taşır. Hepsi aynı SW Identity hesabında birleşir.</p></article>
+          <article class="ps8-about-system"><span>TEK EKOSİSTEM</span><div class="ps8-about-orbit" aria-hidden="true"><i><img src="./play-streamers-ps-logo.svg?v=10.2" alt=""></i><b>WEB</b><b>APP</b><b>CONNECT</b></div><p>Site hesap ve bağlantıları, masaüstü uygulaması günlük üretimi, Play Connect ise tarayıcı akışını taşır. Hepsi aynı SW Identity hesabında birleşir.</p></article>
         </div>
       </section>
 
@@ -414,7 +418,7 @@
       </section>
 
       <section class="ps8-final-cta" aria-labelledby="ps8-final-title">
-        <img src="./play-streamers-ps-logo.svg?v=10.1" alt="Play Streamers PS logosu">
+        <img src="./play-streamers-ps-logo.svg?v=10.2" alt="Play Streamers PS logosu">
         <span>WINDOWS 10/11 · SÜRÜM 0.14.2</span>
         <h2 id="ps8-final-title">Yayınını değil,<br>sistemini büyüt.</h2>
         <p>Hesabını ücretsiz oluştur. Play Streamers Desktop'ı indir ve üretim araçlarını tek sade merkezde kullanmaya başla.</p>

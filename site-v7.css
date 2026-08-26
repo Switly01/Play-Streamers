@@ -2615,3 +2615,99 @@ body.ps-v9 :is(.landing-nav,.ps8-hero-copy,.ps8-app-window,.ps8-float,.ps9-float
   .ps10-astronaut-bubble { right:70px; left:auto; bottom:70px; }
   #ps44StatusPopover { max-height:calc(100dvh - 28px) !important; }
 }
+
+/* Site 10.2 — gerçek sıvı cam, yeni pentagon marka ve etkileşim onarımları. */
+:root { --ps102-glass-edge:rgba(255,255,255,.25); --ps102-glass-shadow:0 28px 74px rgba(0,0,0,.48),inset 0 1px 0 rgba(255,255,255,.34),inset 0 -1px 0 rgba(255,255,255,.06); }
+body.ps-v9 #authOverlay .ps81-hero::after,
+body.ps-v9 #authOverlay .ps81-hero .ps8-hero-copy::before,
+body.ps-v9 #authOverlay .ps81-hero .ps8-hero-copy::after { display:none !important; content:none !important; }
+body.ps-v9 #authOverlay .ps81-hero .ps8-hero-copy { overflow:visible !important; border:0 !important; background:none !important; box-shadow:none !important; -webkit-backdrop-filter:none !important; backdrop-filter:none !important; }
+body.ps-v9 :is(.landing-nav,.ps61-site-metrics,.ps8-app-window,.ps8-float,.ps9-float-chip,.ps92-plan-tabs,.ps8-about-grid article,.ps8-feature-grid article,.ps92-plan-panel article,.ps8-steps li,.ps8-final-cta,#ps44StatusPopover,#ps44HomeMenu,#ps44HomeConnection,.auth-dialog,.ps44-dialog,.ps27-dialog,.ps20-member-header,.ps20-card,.card,.ps51-account-pane,.app .topbar,.workspace-tabs) {
+  border:1px solid var(--ps102-glass-edge) !important;
+  background:radial-gradient(145% 95% at 4% -8%,rgba(255,255,255,.25),transparent 34%),radial-gradient(100% 130% at 102% 110%,rgba(255,255,255,.105),transparent 48%),linear-gradient(138deg,rgba(255,255,255,.115),rgba(255,255,255,.025) 46%,rgba(255,255,255,.075)) !important;
+  box-shadow:var(--ps102-glass-shadow) !important;
+  -webkit-backdrop-filter:blur(26px) saturate(190%) contrast(112%) !important;
+  backdrop-filter:blur(26px) saturate(190%) contrast(112%) !important;
+}
+body.ps-v9 :is(.landing-nav,.ps61-site-metrics,.ps8-app-window,.ps92-plan-tabs,.auth-dialog,.ps44-dialog,.ps27-dialog,.ps20-member-header,.ps20-card,.card,.ps51-account-pane) { position:relative; isolation:isolate; }
+body.ps-v9 :is(.landing-nav,.ps61-site-metrics,.ps8-app-window,.ps92-plan-tabs,.auth-dialog,.ps44-dialog,.ps27-dialog,.ps20-member-header,.ps20-card,.card,.ps51-account-pane)::before { position:absolute; z-index:-1; inset:0; border-radius:inherit; pointer-events:none; background:linear-gradient(108deg,rgba(255,255,255,.24),rgba(255,255,255,.045) 15%,transparent 34%),radial-gradient(60% 38% at 76% 2%,rgba(255,255,255,.19),transparent 72%); box-shadow:inset 1px 1px 0 rgba(255,255,255,.19),inset -1px -1px 0 rgba(255,255,255,.03); content:""; }
+body.ps-v9 :is(button,.ps51-primary,.ps8-download,.ps81-nav-download):not(.ps10-astronaut-visitor) { -webkit-backdrop-filter:blur(15px) saturate(175%); backdrop-filter:blur(15px) saturate(175%); }
+body.ps-v9 :is(.landing-brand img,.ps-identity-wordmark img,.ps8-window-brand img,.ps8-about-orbit img) { filter:drop-shadow(0 0 12px rgba(255,255,255,.16)); }
+
+#authOverlay .ps10-hero-metrics { position:absolute !important; z-index:12 !important; top:22px !important; right:24px !important; bottom:auto !important; left:auto !important; display:grid !important; width:min(390px,calc(100vw - 48px)) !important; grid-template-columns:repeat(3,minmax(0,1fr)) !important; gap:0 !important; overflow:hidden !important; border-radius:23px !important; padding:8px !important; }
+#authOverlay .ps10-hero-metrics .ps61-metrics-head { display:flex !important; min-height:26px !important; align-items:center !important; grid-column:1/-1 !important; padding:2px 8px 7px !important; }
+#authOverlay .ps10-hero-metrics .ps61-metrics-head > span { display:flex; align-items:center; gap:7px; color:#d9d9dc !important; }
+#authOverlay .ps10-hero-metrics .ps61-metrics-head > span::before { width:6px; height:6px; border-radius:50%; background:#fff; box-shadow:0 0 13px rgba(255,255,255,.85); content:""; animation:ps102-live-pulse 1.8s ease-in-out infinite; }
+#authOverlay .ps10-hero-metrics .ps61-metrics-head > :is(b,small) { display:none !important; }
+#authOverlay .ps10-hero-metrics .ps61-metric { display:grid !important; min-width:0 !important; min-height:57px !important; align-content:center !important; gap:5px !important; border:0 !important; border-radius:14px !important; padding:8px 10px !important; background:linear-gradient(145deg,rgba(255,255,255,.075),rgba(255,255,255,.018)) !important; }
+#authOverlay .ps10-hero-metrics .ps61-metric + .ps61-metric { margin-left:5px !important; border-left:0 !important; }
+#authOverlay .ps10-hero-metrics .ps61-metric strong { color:#fff !important; font:760 19px/1 var(--display) !important; }
+#authOverlay .ps10-hero-metrics .ps61-metric span { overflow:hidden; color:#999 !important; font:720 6px/1.25 var(--body) !important; letter-spacing:.08em !important; text-overflow:ellipsis; white-space:nowrap; }
+@keyframes ps102-live-pulse { 50% { opacity:.35; transform:scale(.72); } }
+
+.ps10-astronaut-visitor { position:absolute !important; top:auto !important; width:112px !important; transform:translate3d(-50%,-92vh,0) scale(.88); }
+.ps10-astronaut-visitor img { width:112px !important; }
+.ps10-astronaut-rope { bottom:calc(100% - 11px) !important; left:50% !important; width:6px !important; height:112vh !important; border-radius:5px; background:repeating-linear-gradient(45deg,#ece8dc 0 3px,#716d63 3px 6px,#c9c4b7 6px 9px) !important; box-shadow:inset 1px 0 rgba(255,255,255,.7),inset -1px 0 rgba(0,0,0,.45),0 0 7px rgba(255,255,255,.14) !important; transform:translateX(-50%); transform-origin:top center; }
+.ps10-astronaut-rope::after { position:absolute; right:50%; bottom:-19px; width:14px; height:18px; border:4px solid #f6f4eb; border-top:0; border-radius:0 0 12px 12px; content:""; filter:drop-shadow(0 2px 3px #000); transform:translateX(52%) rotate(-24deg); }
+.ps10-astronaut-visitor.is-visible { animation:ps102-astronaut-descend 2.35s cubic-bezier(.18,.77,.22,1) forwards,ps102-astronaut-idle 4.8s ease-in-out 2.35s infinite !important; }
+.ps10-astronaut-visitor.is-settled:not(.is-hook-returning):not(.is-departing) .ps10-astronaut-rope { animation:ps102-rope-retract .8s ease-in forwards; }
+.ps10-astronaut-visitor.is-leaving-message .ps10-astronaut-bubble { opacity:1 !important; animation:ps102-bubble-answer .35s ease both !important; }
+.ps10-astronaut-visitor.is-hook-returning:not(.is-departing) .ps10-astronaut-rope { animation:ps102-hook-return 1s cubic-bezier(.2,.72,.2,1) forwards !important; }
+.ps10-astronaut-visitor.is-departing { animation:ps102-astronaut-ascend 2.25s cubic-bezier(.55,.02,.82,.3) forwards !important; }
+.ps10-astronaut-bubble { right:auto !important; bottom:84px !important; left:99px !important; width:max-content; max-width:230px !important; border:1px solid rgba(255,255,255,.3) !important; border-radius:18px 18px 18px 5px !important; padding:12px 14px !important; color:#fff !important; background:linear-gradient(145deg,rgba(255,255,255,.18),rgba(15,15,18,.64)) !important; box-shadow:0 18px 44px rgba(0,0,0,.52),inset 0 1px rgba(255,255,255,.28) !important; -webkit-backdrop-filter:blur(20px) saturate(180%); backdrop-filter:blur(20px) saturate(180%); }
+@keyframes ps102-astronaut-descend { 0%{opacity:0;transform:translate3d(-50%,-92vh,0) rotate(-5deg) scale(.88)} 10%{opacity:1} 82%{transform:translate3d(-48%,-12px,0) rotate(3deg)} 100%{opacity:1;transform:translate3d(-50%,0,0) rotate(0)} }
+@keyframes ps102-astronaut-idle { 50%{transform:translate3d(-50%,-7px,0) rotate(1.2deg)} }
+@keyframes ps102-rope-retract { to{opacity:0;transform:translateX(-50%) scaleY(0)} }
+@keyframes ps102-hook-return { from{opacity:1;transform:translateX(-50%) scaleY(0)} to{opacity:1;transform:translateX(-50%) scaleY(1)} }
+@keyframes ps102-astronaut-ascend { 0%{opacity:1;transform:translate3d(-50%,0,0)} 14%{transform:translate3d(-52%,8px,0)} 100%{opacity:0;transform:translate3d(-50%,-96vh,0) rotate(4deg)} }
+@keyframes ps102-bubble-answer { from{transform:translateY(5px) scale(.94)} to{transform:none} }
+
+#ps47MailDialog { padding:20px !important; background:radial-gradient(circle at 50% 14%,rgba(255,255,255,.08),transparent 36%),rgba(0,0,0,.72) !important; -webkit-backdrop-filter:blur(18px); backdrop-filter:blur(18px); }
+#ps47MailDialog .ps44-dialog { width:min(760px,calc(100vw - 32px)) !important; max-height:min(92vh,880px) !important; overflow-x:hidden !important; overflow-y:auto !important; resize:none !important; border-radius:34px !important; padding:clamp(24px,4vw,42px) !important; }
+#ps47MailDialog .ps44-dialog::after { position:absolute; z-index:-1; top:-38%; right:-18%; width:54%; aspect-ratio:1; border:1px solid rgba(255,255,255,.12); border-radius:50%; background:radial-gradient(circle,rgba(255,255,255,.1),transparent 64%); content:""; }
+#ps47MailDialog .ps44-panel-title { display:inline-flex; border:1px solid rgba(255,255,255,.2); border-radius:999px; padding:7px 11px; background:rgba(255,255,255,.06); }
+#ps47MailDialog h2 { margin-top:18px !important; font-size:clamp(34px,6vw,58px) !important; letter-spacing:-.065em !important; }
+#ps47MailDialog .ps47-mail-form { display:grid !important; grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px !important; margin-top:26px !important; }
+#ps47MailDialog .ps47-mail-form > label { display:grid; gap:7px; min-width:0; color:#a9a9ad; font:720 8px var(--body); letter-spacing:.08em; text-transform:uppercase; }
+#ps47MailDialog .ps47-mail-form > label:nth-of-type(n+3),#ps47MailDialog .ps49-file-list,#ps47MailDialog .ps49-mail-status,#ps47MailDialog .ps44-dialog-actions { grid-column:1/-1; }
+#ps47MailDialog .ps47-mail-form :is(input,textarea) { width:100%; border:1px solid rgba(255,255,255,.19) !important; border-radius:16px !important; padding:14px 15px !important; color:#fff; background:linear-gradient(145deg,rgba(255,255,255,.09),rgba(255,255,255,.025)) !important; box-shadow:inset 0 1px rgba(255,255,255,.13); outline:0; }
+#ps47MailDialog .ps47-mail-form textarea { min-height:150px; resize:vertical; }
+#ps47MailDialog .ps47-mail-form :is(input,textarea):focus { border-color:rgba(255,255,255,.5) !important; box-shadow:0 0 0 4px rgba(255,255,255,.065),inset 0 1px rgba(255,255,255,.18) !important; }
+#ps47MailDialog .ps49-file-drop { min-height:118px; place-items:center; border:1px dashed rgba(255,255,255,.31) !important; border-radius:21px !important; background:linear-gradient(135deg,rgba(255,255,255,.08),rgba(255,255,255,.015)) !important; }
+#ps47MailDialog .ps49-file-drop:hover { border-color:rgba(255,255,255,.58) !important; background:rgba(255,255,255,.09) !important; }
+
+.ps102-provider-logo { display:block; max-width:48px; max-height:32px; object-fit:contain; }
+.ps102-kick-logo { width:47px; }
+.ps102-sw-logo { width:34px; height:34px; }
+.ps-identity-credential-form.is-sw-selected { animation:ps102-sw-focus .55s ease; }
+@keyframes ps102-sw-focus { 50%{filter:drop-shadow(0 0 18px rgba(255,255,255,.2));transform:translateY(-2px)} }
+.ps28-password-host > .ps28-eye svg { transform-origin:center; transition:opacity .24s ease,transform .34s cubic-bezier(.2,.9,.2,1.25); }
+.ps28-password-host > .ps28-eye .ps47-eye-closed { opacity:1; transform:scale(1) rotate(0); }
+.ps28-password-host > .ps28-eye .ps47-eye-open { opacity:0; transform:scale(.48) rotate(-18deg); }
+.ps28-password-host > .ps28-eye.is-open .ps47-eye-closed { opacity:0; transform:scale(.5) rotate(18deg); }
+.ps28-password-host > .ps28-eye.is-open .ps47-eye-open { opacity:1; transform:scale(1) rotate(0); }
+.ps28-password-host > .ps28-eye.is-switching { animation:ps102-eye-blink .34s ease; }
+@keyframes ps102-eye-blink { 50%{transform:scaleY(.25)} }
+
+.ps102-date-field { position:relative; }
+.ps102-date-field > input { padding-right:48px !important; cursor:pointer; }
+.ps102-date-field::after { position:absolute; right:15px; bottom:15px; width:17px; height:17px; border:1px solid rgba(255,255,255,.5); border-radius:5px; content:""; pointer-events:none; box-shadow:inset 0 4px 0 rgba(255,255,255,.16); }
+.ps102-calendar { position:absolute; z-index:40; top:calc(100% + 9px); left:0; width:min(312px,calc(100vw - 76px)); border:1px solid rgba(255,255,255,.28); border-radius:22px; padding:14px; color:#fff; background:radial-gradient(circle at 10% 0,rgba(255,255,255,.2),transparent 35%),linear-gradient(145deg,rgba(32,32,38,.86),rgba(7,7,10,.82)); box-shadow:0 28px 70px rgba(0,0,0,.7),inset 0 1px rgba(255,255,255,.28); -webkit-backdrop-filter:blur(32px) saturate(190%); backdrop-filter:blur(32px) saturate(190%); text-transform:none; }
+.ps102-calendar[hidden] { display:none !important; }
+.ps102-calendar header { display:grid; grid-template-columns:36px 1fr 36px; align-items:center; gap:8px; margin-bottom:12px; }
+.ps102-calendar header strong { text-align:center; font:700 12px var(--body); text-transform:capitalize; }
+.ps102-calendar header button { width:36px; height:36px; border:1px solid rgba(255,255,255,.16); border-radius:12px; color:#fff; background:rgba(255,255,255,.06); }
+.ps102-calendar-week,.ps102-calendar-grid { display:grid; grid-template-columns:repeat(7,1fr); gap:4px; }
+.ps102-calendar-week span { padding:5px 0; color:#7e7e84; font:700 7px var(--body); text-align:center; }
+.ps102-calendar-grid :is(button,i) { aspect-ratio:1; }
+.ps102-calendar-grid button { border:1px solid transparent; border-radius:10px; color:#d7d7da; background:rgba(255,255,255,.035); font:650 9px var(--body); }
+.ps102-calendar-grid button:hover,.ps102-calendar-grid button.is-selected { border-color:rgba(255,255,255,.45); color:#050506; background:#fff; }
+.ps102-calendar-grid button:disabled { opacity:.2; pointer-events:none; }
+
+@media(max-width:760px) {
+  #authOverlay .ps10-hero-metrics { top:88px !important; right:12px !important; bottom:auto !important; left:12px !important; width:auto !important; }
+  .ps10-astronaut-visitor { left:62px !important; bottom:18px !important; }
+  .ps10-astronaut-bubble { right:auto !important; left:88px !important; max-width:180px !important; font-size:8px !important; }
+  #ps47MailDialog .ps47-mail-form { grid-template-columns:1fr; }
+  #ps47MailDialog .ps47-mail-form > label { grid-column:1 !important; }
+}

@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="SW Identity logosu">
+  <defs><linearGradient id="swShield" x1="22" y1="12" x2="108" y2="116" gradientUnits="userSpaceOnUse"><stop stop-color="#03e0d1"/><stop offset="1" stop-color="#ecff3c"/></linearGradient><radialGradient id="swCore" cx="0" cy="0" r="1" gradientTransform="translate(64 56) rotate(90) scale(58)" gradientUnits="userSpaceOnUse"><stop stop-color="#102733"/><stop offset="1" stop-color="#050a10"/></radialGradient></defs>
+  <path d="M64 7 108 23v34c0 29-17 50-44 64-27-14-44-35-44-64V23L64 7Z" fill="url(#swCore)" stroke="url(#swShield)" stroke-width="4"/>
+  <path d="M64 16 99 29v28c0 23-12 40-35 53-23-13-35-30-35-53V29l35-13Z" fill="none" stroke="#03e0d1" stroke-opacity=".16"/>
+  <path d="M57 43H40c-5 0-8 3-8 8s3 8 8 8h9c5 0 8 3 8 8s-3 8-8 8H31" fill="none" stroke="#03e0d1" stroke-width="9" stroke-linecap="square" stroke-linejoin="round"/>
+  <path d="m64 43 7 32 9-22 9 22 8-32" fill="none" stroke="#ecff3c" stroke-width="9" stroke-linecap="square" stroke-linejoin="round"/>
+  <circle cx="64" cy="94" r="4" fill="#03e0d1"/><path d="M64 98v7" stroke="#03e0d1" stroke-width="3" stroke-linecap="round"/>
+</svg>

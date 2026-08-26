@@ -13,13 +13,13 @@ const SKIP_ATTRIBUTE_SELECTOR = [
 ].join(",");
 
 const critical = Object.freeze({
-  en: { "Giriş yap": "Sign in", "Kayıt ol": "Create account", "Beni hatırla": "Remember me", "Hakkımızda": "About", "Ürünlerimiz": "Products", "Nasıl çalışır?": "How it works", "Windows için indir": "Download for Windows", "Sistem durumu": "System status", "Dil seçimi": "Language" },
-  de: { "Giriş yap": "Anmelden", "Kayıt ol": "Konto erstellen", "Beni hatırla": "Angemeldet bleiben", "Hakkımızda": "Über uns", "Ürünlerimiz": "Produkte", "Nasıl çalışır?": "So funktioniert es", "Windows için indir": "Für Windows herunterladen", "Sistem durumu": "Systemstatus", "Dil seçimi": "Sprache" },
-  es: { "Giriş yap": "Iniciar sesión", "Kayıt ol": "Crear cuenta", "Beni hatırla": "Recordarme", "Hakkımızda": "Sobre nosotros", "Ürünlerimiz": "Productos", "Nasıl çalışır?": "Cómo funciona", "Windows için indir": "Descargar para Windows", "Sistem durumu": "Estado del sistema", "Dil seçimi": "Idioma" },
-  fr: { "Giriş yap": "Se connecter", "Kayıt ol": "Créer un compte", "Beni hatırla": "Se souvenir de moi", "Hakkımızda": "À propos", "Ürünlerimiz": "Produits", "Nasıl çalışır?": "Fonctionnement", "Windows için indir": "Télécharger pour Windows", "Sistem durumu": "État du système", "Dil seçimi": "Langue" },
-  ru: { "Giriş yap": "Войти", "Kayıt ol": "Создать аккаунт", "Beni hatırla": "Запомнить меня", "Hakkımızda": "О нас", "Ürünlerimiz": "Продукты", "Nasıl çalışır?": "Как это работает", "Windows için indir": "Скачать для Windows", "Sistem durumu": "Состояние системы", "Dil seçimi": "Язык" },
-  ar: { "Giriş yap": "تسجيل الدخول", "Kayıt ol": "إنشاء حساب", "Beni hatırla": "تذكرني", "Hakkımızda": "من نحن", "Ürünlerimiz": "منتجاتنا", "Nasıl çalışır?": "كيف يعمل", "Windows için indir": "تنزيل لنظام Windows", "Sistem durumu": "حالة النظام", "Dil seçimi": "اللغة" },
-  ja: { "Giriş yap": "ログイン", "Kayıt ol": "アカウント作成", "Beni hatırla": "ログイン状態を保持", "Hakkımızda": "私たちについて", "Ürünlerimiz": "製品", "Nasıl çalışır?": "仕組み", "Windows için indir": "Windows版をダウンロード", "Sistem durumu": "システム状態", "Dil seçimi": "言語" },
+  en: { "Giriş yap": "Sign in", "Kayıt ol": "Create account", "Beni hatırla": "Remember me", "Hakkımızda": "About", "Ürünlerimiz": "Products", "Nasıl çalışır?": "How it works", "Windows için indir": "Download for Windows", "Sistem durumu": "System status", "Dil seçimi": "Language", "Her şey tek platformda.": "Everything in one platform.", "Canlı site verileri": "Live site data", "Toplam ziyaretçi": "Total visitors", "Kayıtlı hesap": "Registered accounts", "Şu anda aktif": "Active now", "Hey, geleceğin yayıncısı burada mısın?": "Hey, future streamer, are you there?", "Buradaysan ben gidiyorum.": "If you're there, I'm heading out." },
+  de: { "Giriş yap": "Anmelden", "Kayıt ol": "Konto erstellen", "Beni hatırla": "Angemeldet bleiben", "Hakkımızda": "Über uns", "Ürünlerimiz": "Produkte", "Nasıl çalışır?": "So funktioniert es", "Windows için indir": "Für Windows herunterladen", "Sistem durumu": "Systemstatus", "Dil seçimi": "Sprache", "Her şey tek platformda.": "Alles auf einer Plattform.", "Canlı site verileri": "Live-Sitedaten", "Toplam ziyaretçi": "Besucher insgesamt", "Kayıtlı hesap": "Registrierte Konten", "Şu anda aktif": "Jetzt aktiv" },
+  es: { "Giriş yap": "Iniciar sesión", "Kayıt ol": "Crear cuenta", "Beni hatırla": "Recordarme", "Hakkımızda": "Sobre nosotros", "Ürünlerimiz": "Productos", "Nasıl çalışır?": "Cómo funciona", "Windows için indir": "Descargar para Windows", "Sistem durumu": "Estado del sistema", "Dil seçimi": "Idioma", "Her şey tek platformda.": "Todo en una sola plataforma.", "Canlı site verileri": "Datos del sitio en vivo", "Toplam ziyaretçi": "Visitantes totales", "Kayıtlı hesap": "Cuentas registradas", "Şu anda aktif": "Activos ahora" },
+  fr: { "Giriş yap": "Se connecter", "Kayıt ol": "Créer un compte", "Beni hatırla": "Se souvenir de moi", "Hakkımızda": "À propos", "Ürünlerimiz": "Produits", "Nasıl çalışır?": "Fonctionnement", "Windows için indir": "Télécharger pour Windows", "Sistem durumu": "État du système", "Dil seçimi": "Langue", "Her şey tek platformda.": "Tout sur une seule plateforme.", "Canlı site verileri": "Données du site en direct", "Toplam ziyaretçi": "Visiteurs au total", "Kayıtlı hesap": "Comptes inscrits", "Şu anda aktif": "Actifs maintenant" },
+  ru: { "Giriş yap": "Войти", "Kayıt ol": "Создать аккаунт", "Beni hatırla": "Запомнить меня", "Hakkımızda": "О нас", "Ürünlerimiz": "Продукты", "Nasıl çalışır?": "Как это работает", "Windows için indir": "Скачать для Windows", "Sistem durumu": "Состояние системы", "Dil seçimi": "Язык", "Her şey tek platformda.": "Всё на одной платформе.", "Canlı site verileri": "Данные сайта в реальном времени", "Toplam ziyaretçi": "Всего посетителей", "Kayıtlı hesap": "Зарегистрированные аккаунты", "Şu anda aktif": "Сейчас активны" },
+  ar: { "Giriş yap": "تسجيل الدخول", "Kayıt ol": "إنشاء حساب", "Beni hatırla": "تذكرني", "Hakkımızda": "من نحن", "Ürünlerimiz": "منتجاتنا", "Nasıl çalışır?": "كيف يعمل", "Windows için indir": "تنزيل لنظام Windows", "Sistem durumu": "حالة النظام", "Dil seçimi": "اللغة", "Her şey tek platformda.": "كل شيء في منصة واحدة.", "Canlı site verileri": "بيانات الموقع المباشرة", "Toplam ziyaretçi": "إجمالي الزوار", "Kayıtlı hesap": "الحسابات المسجلة", "Şu anda aktif": "النشطون الآن" },
+  ja: { "Giriş yap": "ログイン", "Kayıt ol": "アカウント作成", "Beni hatırla": "ログイン状態を保持", "Hakkımızda": "私たちについて", "Ürünlerimiz": "製品", "Nasıl çalışır?": "仕組み", "Windows için indir": "Windows版をダウンロード", "Sistem durumu": "システム状態", "Dil seçimi": "言語", "Her şey tek platformda.": "すべてを一つのプラットフォームで。", "Canlı site verileri": "サイトのライブデータ", "Toplam ziyaretçi": "総訪問者数", "Kayıtlı hesap": "登録アカウント", "Şu anda aktif": "現在アクティブ" },
 });
 
 function clean(value) { return String(value || "").replace(/\s+/g, " ").trim(); }
@@ -45,7 +45,7 @@ export function installLiveI18n({ localeKey = "ps15-locale", getLocale, root = d
   document.documentElement.dataset.psLiveLocale = language;
   if (language === "tr" || !root) return { language, refresh() {} };
 
-  const cacheKey = `ps-live-i18n-v4-1:${language}`;
+  const cacheKey = `ps-live-i18n-v4-3:${language}`;
   const cache = { ...(critical[language] || {}), ...cacheRead(cacheKey) };
   const textState = new WeakMap();
   const attributeState = new WeakMap();
@@ -117,7 +117,14 @@ export function installLiveI18n({ localeKey = "ps15-locale", getLocale, root = d
         if (translatable(source)) targets.push({ type: "attribute", element, name, source });
       });
     });
-    return targets;
+    const priority = target => {
+      const element = target.type === "text" ? target.node.parentElement : target.element;
+      if (!element) return 3;
+      if (element.closest("#landingAuthModal:not([hidden]),#authOverlay .ps8-home")) return 0;
+      if (element.getClientRects().length && !element.closest("[hidden]")) return 1;
+      return 2;
+    };
+    return targets.sort((left, right) => priority(left) - priority(right));
   };
 
   const translate = async () => {
@@ -126,6 +133,15 @@ export function installLiveI18n({ localeKey = "ps15-locale", getLocale, root = d
     running = true;
     try {
       const targets = collect();
+      // Statik sözlükte veya önceki ziyaret önbelleğinde bulunan metinleri ağ
+      // isteğini bekletmeden ilk karede uygula. Böylece büyük sayfalarda
+      // görünür bölüm, arka plandaki uzun çeviri kuyruğunun arkasında kalmaz.
+      targets.forEach(target => {
+        const translated = cache[target.source];
+        if (!translated) return;
+        if (target.type === "text" && target.node.isConnected) applyText(target.node, translated);
+        else if (target.type === "attribute" && target.element.isConnected) applyAttribute(target.element, target.name, translated, target.source);
+      });
       const missing = [...new Set(targets.map(item => item.source).filter(source => !cache[source]))];
       // On iki öğelik paketler hem AI JSON yanıtını güvenilir tutar hem de ilk
       // ekranın çevirisini büyük bir paketin tamamlanmasını beklemeden gösterir.

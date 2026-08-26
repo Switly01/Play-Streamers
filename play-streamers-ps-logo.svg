@@ -1,22 +1,7 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" role="img" aria-label="Play Streamers PS akış amblemi">
-  <defs>
-    <linearGradient id="shell" x1="24" y1="18" x2="140" y2="145" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#fff"/><stop offset=".24" stop-color="#8f929b"/><stop offset=".52" stop-color="#f7f7f4"/><stop offset="1" stop-color="#5d6069"/>
-    </linearGradient>
-    <linearGradient id="glass" x1="39" y1="27" x2="125" y2="137" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#2c2e36"/><stop offset=".46" stop-color="#0c0d11"/><stop offset="1" stop-color="#030304"/>
-    </linearGradient>
-    <linearGradient id="mark" x1="47" y1="38" x2="116" y2="123" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#fff"/><stop offset=".45" stop-color="#d9dadd"/><stop offset="1" stop-color="#858891"/>
-    </linearGradient>
-    <filter id="softGlow" x="-35%" y="-35%" width="170%" height="170%"><feGaussianBlur stdDeviation="2.4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
-  </defs>
-  <path d="M80 6 113 17 143 48 153 81 141 116 111 144 75 153 40 140 14 110 7 74 21 40 48 15Z" fill="url(#glass)" stroke="url(#shell)" stroke-width="3.2"/>
-  <path d="m80 15 28 9 26 27 9 30-10 30-25 24-32 8-30-11-23-26-6-31 12-29 23-23Z" fill="none" stroke="#fff" stroke-opacity=".17" stroke-width="1.5"/>
-  <path d="M31 117 22 89m111-48 8 27M43 24l-16 22m90 88 18-19" fill="none" stroke="#fff" stroke-opacity=".45" stroke-width="3" stroke-linecap="square"/>
-  <path d="M46 121V45c0-7 5-12 12-12h28c22 0 36 12 36 31 0 17-11 27-30 31l-15 3c-7 2-10 5-10 10 0 8 7 12 18 12 13 0 23-5 32-16" fill="none" stroke="url(#mark)" stroke-width="14" stroke-linecap="square" stroke-linejoin="miter"/>
-  <path d="M60 48h25c12 0 19 6 19 15 0 8-6 13-17 16l-17 4" fill="none" stroke="#08090c" stroke-width="7" stroke-linecap="square"/>
-  <path d="m72 60 25 20-25 20Z" fill="#f7f7f4" filter="url(#softGlow)"/>
-  <path d="M54 127h17m35-94h13M29 62h9m80 63h11" fill="none" stroke="#fff" stroke-opacity=".55" stroke-width="2"/>
-  <circle cx="28" cy="83" r="3" fill="#fff"/><circle cx="128" cy="91" r="2" fill="#b9bbc2"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" role="img" aria-labelledby="title desc">
+  <title id="title">Play Streamers PS logosu</title>
+  <desc id="desc">Saf beyaz beşgen çerçeve içinde birleşik P ve S monogramı</desc>
+  <path d="M80 8 147 56 122 145H38L13 56 80 8Z" fill="none" stroke="#fff" stroke-width="5.5" stroke-linejoin="round"/>
+  <path d="M48 122V43h35c21 0 34 10 34 28 0 15-10 24-29 28l-13 2c-9 2-13 5-13 11 0 8 8 12 20 12 16 0 28-7 35-18" fill="none" stroke="#fff" stroke-width="12" stroke-linecap="square" stroke-linejoin="round"/>
+  <path d="M61 59h21c11 0 17 4 17 12 0 7-6 11-18 13H61" fill="none" stroke="#fff" stroke-width="10" stroke-linecap="square" stroke-linejoin="round"/>
 </svg>

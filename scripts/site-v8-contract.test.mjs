@@ -11,10 +11,10 @@ test('site 10 assets are cache-busted and use fluid monochrome glass', async () 
     read('site-v7.css'),
     read('play-streamers-ps-logo.svg'),
   ]);
-  assert.match(html, /play-streamers-build" content="2026-08-27-site-10\.2\.2"/);
-  assert.match(html, /site-v7\.css\?v=10\.2\.0/);
+  assert.match(html, /play-streamers-build" content="2026-08-27-site-10\.2\.3"/);
+  assert.match(html, /site-v7\.css\?v=10\.2\.1/);
   assert.match(html, /app\.js\?v=5\.3\.6/);
-  assert.match(html, /site-v7\.js\?v=10\.2\.2/);
+  assert.match(html, /site-v7\.js\?v=10\.2\.3/);
   assert.match(html, /app-final\.js\?v=5\.7\.8/);
   assert.match(html, /live-i18n\.js\?v=4\.3/);
   assert.match(css, /html\[data-ps-site-version="8"\]/);
@@ -102,7 +102,7 @@ test('SW Bot audits the whole interface and explains issues with SW AI', async (
   assert.match(worker, /sw-bot:global-status:v12/);
   assert.match(worker, /explainSwBotIssuesWithAi/);
   assert.match(worker, /swBotDeterministicReport/);
-  assert.match(worker, /site-v7\.css\?v=10\.2\.0/);
+  assert.match(worker, /site-v7\.css\?v=10\.2\.1/);
   assert.match(worker, /\/api\/i18n\/translate/);
   assert.match(worker, /LEGACY_PLAY_STREAMERS_AUTH_PATHS/);
   assert.match(worker, /SW_IDENTITY_REQUIRED/);

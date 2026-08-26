@@ -906,7 +906,7 @@ body.ps-v9 :is(.brand-logo,.ps20-logo,.ps51-account-brand i,.ps53-products-brand
   width: 46px;
   height: 46px;
   flex-basis: 46px;
-  background: transparent url("./play-streamers-ps-logo.svg?v=9.2") center/contain no-repeat !important;
+  background: transparent url("./play-streamers-ps-logo.svg?v=10.2.2") center/contain no-repeat !important;
   filter: drop-shadow(0 9px 20px rgba(0,0,0,.38));
 }
 #ps9Ambient {
@@ -1170,7 +1170,7 @@ body.ps-v8 :is(.brand-logo,.ps20-logo,.ps51-account-brand i,.ps53-products-brand
   flex-basis: 44px;
   border-radius: 0;
   color: transparent !important;
-  background: transparent url("./play-streamers-ps-logo.svg?v=9.2") center/contain no-repeat !important;
+  background: transparent url("./play-streamers-ps-logo.svg?v=10.2.2") center/contain no-repeat !important;
   font-size: 0 !important;
   box-shadow: none !important;
 }
@@ -1861,7 +1861,7 @@ body.ps-v8 #authOverlay .landing-brand .brand-logo { transition: transform .22s 
    compatibility rule that still ships for existing accounts. */
 html[data-ps-site-version="9"] body.ps-v9 :is(.brand-logo,.ps20-logo,.ps51-account-brand i,.ps53-products-brand i) {
   width:46px !important;height:46px !important;flex-basis:46px !important;border:0 !important;border-radius:0 !important;
-  color:transparent !important;background:transparent url("./play-streamers-ps-logo.svg?v=9.2") center/contain no-repeat !important;
+  color:transparent !important;background:transparent url("./play-streamers-ps-logo.svg?v=10.2.2") center/contain no-repeat !important;
   box-shadow:none !important;filter:drop-shadow(0 9px 20px rgba(0,0,0,.38)) !important;font-size:0 !important;
 }
 html[data-ps-site-version="9"] body.ps-v9 :is(#authOverlay .landing-nav,#psSecondHome .ps20-nav,.app .topbar,#ps49InfoPage .landing-nav,.ps53-products-nav) {

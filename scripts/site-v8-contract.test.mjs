@@ -106,6 +106,7 @@ test('SW Bot audits the whole interface and explains issues with SW AI', async (
   assert.match(worker, /swBotDeterministicReport/);
   assert.match(worker, /site-v7\.css\?v=10\.2\.1/);
   assert.match(worker, /\/api\/i18n\/translate/);
+  assert.match(worker, /i18n:v3/);
   assert.match(worker, /LEGACY_PLAY_STREAMERS_AUTH_PATHS/);
   assert.match(worker, /SW_IDENTITY_REQUIRED/);
   assert.match(worker, /terms\.html/);

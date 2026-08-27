@@ -1074,7 +1074,7 @@ async function translateInterfaceStrings(request, env) {
     return apiResponse(request, { error: "Canlı çeviri sınırına ulaşıldı. Kısa süre sonra yeniden dene." }, 429);
   }
   const signature = await sha256Hex(JSON.stringify([language, strings]));
-  const cacheKey = `i18n:v2:${language}:${signature}`;
+  const cacheKey = `i18n:v3:${language}:${signature}`;
   if (env.SESSIONS) {
     const cached = await env.SESSIONS.get(cacheKey, "json").catch(() => null);
     if (Array.isArray(cached) && cached.length === strings.length) {
@@ -1108,6 +1108,16 @@ async function translateInterfaceStrings(request, env) {
     return apiResponse(request, { error: "Canlı çeviri güvenli biçimde doğrulanamadı." }, 502);
   }
   translations = translations.map(value => value.trim());
+  const turkishInterfaceCopy = /(?:[çğıöşü]|\b(?:giriş|kayıt|hakkımızda|ürünlerimiz|nasıl|çalışır|içerik|planlama|canlı|analiz|topluluk|marka|araçları|gelir|görünümleri|yayın|yayıncı|hesap|şifre|doğrula|indir|destek|sistem|durumu|ziyaretçi|şu anda|aktif|hemen|başla|keşfet|daha fazla|burada mısın|beni hatırla)\b)/iu;
+  const incompleteTranslation = translations.some((value, index) => {
+    const source = strings[index];
+    if (!turkishInterfaceCopy.test(source)) return false;
+    if (source.localeCompare(value, undefined, { sensitivity: "base" }) === 0 || turkishInterfaceCopy.test(value)) return true;
+    if (language === "ar" && !/[\u0600-\u06ff]/u.test(value)) return true;
+    if (language === "ru" && !/[\u0400-\u04ff]/u.test(value)) return true;
+    return language === "ja" && !/[\u3040-\u30ff\u3400-\u9fff]/u.test(value);
+  });
+  if (incompleteTranslation) return apiResponse(request, { error: "Canlı çeviri bazı arayüz metinlerini eksik bıraktı; paket yeniden denenmeli." }, 502);
   if (env.SESSIONS) await env.SESSIONS.put(cacheKey, JSON.stringify(translations), { expirationTtl: 30 * 24 * 60 * 60 }).catch(() => {});
   return apiResponse(request, { ok: true, language, translations, cached: false });
 }

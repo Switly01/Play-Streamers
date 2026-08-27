@@ -23,14 +23,19 @@ const critical = Object.freeze({
 });
 
 function clean(value) { return String(value || "").replace(/\s+/g, " ").trim(); }
-const TURKISH_COPY = /(?:[çğıöşü]|\b(?:giriş|kayıt|hakkımızda|ürünlerimiz|nasıl|çalışır|içerik|planlama|canlı|analiz|topluluk|marka|araçları|gelir|görünümleri|yayın|yayıncı|hesap|şifre|doğrula|indir|destek|sistem|durumu|ziyaretçi|şu anda|aktif|hemen|başla|keşfet|daha fazla|burada mısın|beni hatırla)\b)/iu;
-function needsTranslation(value) { return TURKISH_COPY.test(clean(value)); }
+const TURKISH_TERMS = new Set(["giriş", "kayıt", "hakkımızda", "ürünlerimiz", "nasıl", "çalışır", "içerik", "planlama", "canlı", "analiz", "topluluk", "marka", "araçları", "gelir", "görünümleri", "yayın", "yayıncı", "hesap", "şifre", "doğrula", "indir", "destek", "sistem", "durumu", "ziyaretçi", "şu", "anda", "aktif", "hemen", "başla", "keşfet", "daha", "fazla", "burada", "mısın", "beni", "hatırla"]);
+function containsTurkishCopy(value) {
+  const normalized = clean(value).toLocaleLowerCase("tr-TR");
+  if (/[çğıöşü]/u.test(normalized)) return true;
+  return normalized.split(/[^a-zçğıöşü]+/u).some(word => TURKISH_TERMS.has(word));
+}
+function needsTranslation(value) { return containsTurkishCopy(value); }
 function translationLooksComplete(source, translated, language) {
   const output = clean(translated);
   if (!output) return false;
   if (!needsTranslation(source)) return true;
   if (clean(source).localeCompare(output, undefined, { sensitivity: "base" }) === 0) return false;
-  if (TURKISH_COPY.test(output)) return false;
+  if (containsTurkishCopy(output)) return false;
   if (language === "ar" && !/[\u0600-\u06ff]/u.test(output)) return false;
   if (language === "ru" && !/[\u0400-\u04ff]/u.test(output)) return false;
   if (language === "ja" && !/[\u3040-\u30ff\u3400-\u9fff]/u.test(output)) return false;
@@ -61,7 +66,7 @@ export function installLiveI18n({ localeKey = "ps15-locale", getLocale, root = d
     return { language, refresh() {} };
   }
 
-  const cacheKey = `ps-live-i18n-v4-6:${language}`;
+  const cacheKey = `ps-live-i18n-v4-7:${language}`;
   const cache = { ...(critical[language] || {}), ...cacheRead(cacheKey) };
   const textState = new WeakMap();
   const attributeState = new WeakMap();
@@ -196,7 +201,7 @@ export function installLiveI18n({ localeKey = "ps15-locale", getLocale, root = d
       // Küçük paketler hem AI JSON yanıtını güvenilir tutar hem de ilk
       // ekranın çevirisini büyük bir paketin tamamlanmasını beklemeden gösterir.
       const chunks = [];
-      for (let index = 0; index < missing.length; index += 16) chunks.push(missing.slice(index, index + 16));
+      for (let index = 0; index < missing.length; index += 30) chunks.push(missing.slice(index, index + 30));
       // Aktif yüzeyin küçük paketleri aynı anda çevrilir. Gizli panel ve
       // pencereler açıldıkları anda ayrıca işlendiği için bu istek grubu hem
       // sınırlı kalır hem de dil değişiminden sonra ilk ekranı tek dalgada bitirir.

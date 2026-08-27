@@ -1061,6 +1061,17 @@ const INTERFACE_LANGUAGES = Object.freeze({
   en: "English", de: "German", es: "Spanish", fr: "French",
   ru: "Russian", ar: "Arabic", ja: "Japanese",
 });
+const INTERFACE_LANGUAGE_REQUIREMENTS = Object.freeze({
+  en: "English", de: "German (Deutsch)", es: "Spanish (Español)", fr: "French (Français)",
+  ru: "Russian written in Cyrillic (Русский)", ar: "Modern Standard Arabic written in Arabic script (العربية)",
+  ja: "Japanese written in Japanese script (日本語)",
+});
+const TURKISH_INTERFACE_TERMS = new Set(["giriş", "kayıt", "hakkımızda", "ürünlerimiz", "nasıl", "çalışır", "içerik", "planlama", "canlı", "analiz", "topluluk", "marka", "araçları", "gelir", "görünümleri", "yayın", "yayıncı", "hesap", "şifre", "doğrula", "indir", "destek", "sistem", "durumu", "ziyaretçi", "şu", "anda", "aktif", "hemen", "başla", "keşfet", "daha", "fazla", "burada", "mısın", "beni", "hatırla"]);
+function containsTurkishInterfaceCopy(value) {
+  const normalized = String(value || "").toLocaleLowerCase("tr-TR");
+  if (/[çğıöşü]/u.test(normalized)) return true;
+  return normalized.split(/[^a-zçğıöşü]+/u).some(word => TURKISH_INTERFACE_TERMS.has(word));
+}
 
 async function translateInterfaceStrings(request, env) {
   const input = await requestJson(request);
@@ -1086,14 +1097,14 @@ async function translateInterfaceStrings(request, env) {
     messages: [
       {
         role: "system",
-        content: `You translate every Turkish word in software interface copy into ${INTERFACE_LANGUAGES[language]}. Preserve only these names exactly: Play Streamers, Play Connect, SW Create, SW Identity, SW Bot, SW AI and Product Pro. Also preserve URLs, versions, numbers and keyboard shortcuts. Never omit a word, leave Turkish UI wording behind, summarize, or add advice. Translate uppercase labels too. Keep the same item order and return only valid JSON.`,
+        content: `TARGET LANGUAGE: ${INTERFACE_LANGUAGE_REQUIREMENTS[language]}. Translate every Turkish interface string into that target language, never into English unless English is the target. Preserve only these names exactly: Play Streamers, Play Connect, SW Create, SW Identity, SW Bot, SW AI and Product Pro. Also preserve URLs, versions, numbers and keyboard shortcuts. Never omit a word, leave Turkish UI wording behind, summarize, or add advice. Translate uppercase labels too. Every non-brand result for Arabic, Russian or Japanese must visibly use that language's native script. Keep the same item order and return only valid JSON.`,
       },
       {
         role: "user",
         content: `Translate this JSON array. Return {"translations":["..."]}: ${JSON.stringify(strings)}`,
       },
     ],
-    max_tokens: 2400,
+    max_tokens: 7000,
     temperature: 0.05,
   });
   const text = typeof payload?.response === "string" ? payload.response
@@ -1108,11 +1119,10 @@ async function translateInterfaceStrings(request, env) {
     return apiResponse(request, { error: "Canlı çeviri güvenli biçimde doğrulanamadı." }, 502);
   }
   translations = translations.map(value => value.trim());
-  const turkishInterfaceCopy = /(?:[çğıöşü]|\b(?:giriş|kayıt|hakkımızda|ürünlerimiz|nasıl|çalışır|içerik|planlama|canlı|analiz|topluluk|marka|araçları|gelir|görünümleri|yayın|yayıncı|hesap|şifre|doğrula|indir|destek|sistem|durumu|ziyaretçi|şu anda|aktif|hemen|başla|keşfet|daha fazla|burada mısın|beni hatırla)\b)/iu;
   const incompleteTranslationIndexes = translations.map((value, index) => {
     const source = strings[index];
-    if (!turkishInterfaceCopy.test(source)) return -1;
-    if (source.localeCompare(value, undefined, { sensitivity: "base" }) === 0 || turkishInterfaceCopy.test(value)) return index;
+    if (!containsTurkishInterfaceCopy(source)) return -1;
+    if (source.localeCompare(value, undefined, { sensitivity: "base" }) === 0 || containsTurkishInterfaceCopy(value)) return index;
     if (language === "ar" && !/[\u0600-\u06ff]/u.test(value)) return index;
     if (language === "ru" && !/[\u0400-\u04ff]/u.test(value)) return index;
     return language === "ja" && !/[\u3040-\u30ff\u3400-\u9fff]/u.test(value) ? index : -1;

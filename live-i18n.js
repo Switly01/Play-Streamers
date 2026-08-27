@@ -75,6 +75,7 @@ export function installLiveI18n({ localeKey = "ps15-locale", getLocale, root = d
   let ready = false;
   let recoveryPasses = 0;
   let needsRecovery = false;
+  let initialHold = true;
   const finishBoot = () => {
     if (ready) return;
     ready = true;
@@ -249,12 +250,17 @@ export function installLiveI18n({ localeKey = "ps15-locale", getLocale, root = d
     }
   };
   const schedule = () => {
+    if (initialHold) { queued = true; return; }
     if (queued) return;
     queued = true;
     window.setTimeout(translate, 140);
   };
   new MutationObserver(schedule).observe(root, { childList: true, subtree: true, characterData: true, attributes: true, attributeFilter: ["placeholder", "title", "aria-label", "hidden"] });
-  schedule();
+  window.setTimeout(() => {
+    initialHold = false;
+    queued = false;
+    schedule();
+  }, 900);
   return { language, refresh: schedule };
 }
 

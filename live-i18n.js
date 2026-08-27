@@ -69,6 +69,23 @@ Object.entries(swBotFeatureCopy).forEach(([language, values]) => Object.assign(c
   "Arayüzü, bağlantıları ve canlı dosyaları denetler; teknik sorunları anlaşılır bir Türkçe açıklamaya dönüştürür.": values[0],
   "SİSTEM TARAMASI": values[1],
 }));
+const systemStatusCopy = Object.freeze({
+  en: ["System normal", "No technical issues detected. Login, registration, dashboard, and connection flows are being monitored.", "Refresh scan", "Interface audit", "System under observation", "SW Bot regularly monitors the user area, Dashboard, menus, and data connections in the background."],
+  de: ["System normal", "Keine technischen Probleme erkannt. Anmeldung, Registrierung, Übersicht und Verbindungen werden überwacht.", "Prüfung aktualisieren", "Oberflächenprüfung", "System wird überwacht", "SW Bot überwacht den Benutzerbereich, die Übersicht, Menüs und Datenverbindungen regelmäßig im Hintergrund."],
+  es: ["Sistema normal", "No se detectaron problemas técnicos. Se supervisan el inicio de sesión, el registro, el panel y las conexiones.", "Actualizar análisis", "Auditoría de interfaz", "Sistema en observación", "SW Bot supervisa periódicamente en segundo plano el área de usuario, el panel, los menús y las conexiones de datos."],
+  fr: ["Système normal", "Aucun problème technique détecté. Les flux de connexion, d’inscription, de tableau de bord et de liaison sont surveillés.", "Actualiser l’analyse", "Audit de l’interface", "Système sous surveillance", "SW Bot surveille régulièrement en arrière-plan l’espace utilisateur, le tableau de bord, les menus et les connexions de données."],
+  ru: ["Система работает нормально", "Технических проблем не обнаружено. Вход, регистрация, панель управления и подключения находятся под наблюдением.", "Обновить проверку", "Проверка интерфейса", "Система под наблюдением", "SW Bot регулярно проверяет в фоновом режиме пользовательскую область, панель управления, меню и подключения к данным."],
+  ar: ["النظام يعمل بصورة طبيعية", "لم يتم اكتشاف مشكلات تقنية. تتم مراقبة تسجيل الدخول والتسجيل ولوحة التحكم ومسارات الاتصال.", "تحديث الفحص", "تدقيق الواجهة", "النظام قيد المراقبة", "يراقب SW Bot بانتظام منطقة المستخدم ولوحة التحكم والقوائم واتصالات البيانات في الخلفية."],
+  ja: ["システムは正常です", "技術的な問題は検出されていません。ログイン、登録、ダッシュボード、接続フローを監視しています。", "スキャンを更新", "インターフェース監査", "システム監視中", "SW Bot はユーザー領域、ダッシュボード、メニュー、データ接続をバックグラウンドで定期的に監視します。"],
+});
+Object.entries(systemStatusCopy).forEach(([language, values]) => Object.assign(critical[language], {
+  "Sistem normal": values[0],
+  "Teknik sorun görünmüyor. Giriş, kayıt, panel ve bağlantı akışları denetleniyor.": values[1],
+  "Taramayı yenile": values[2],
+  "Arayüz denetimi": values[3],
+  "Sistem gözlemde": values[4],
+  "SW Bot; kullanıcı alanını, Dashboard’u, menüleri ve veri bağlantılarını arka planda düzenli olarak denetliyor.": values[5],
+}));
 
 function clean(value) { return String(value || "").replace(/\s+/g, " ").trim(); }
 const TURKISH_TERMS = new Set(["giriş", "kayıt", "hakkımızda", "ürünlerimiz", "nasıl", "çalışır", "içerik", "planlama", "canlı", "analiz", "topluluk", "marka", "araçları", "gelir", "görünümleri", "yayın", "yayıncı", "hesap", "şifre", "doğrula", "indir", "destek", "sistem", "durumu", "ziyaretçi", "şu", "anda", "aktif", "hemen", "başla", "keşfet", "daha", "fazla", "burada", "mısın", "beni", "hatırla"]);

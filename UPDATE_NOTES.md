@@ -4,7 +4,7 @@ Bu doküman; Play Streamers web uygulaması, Cloudflare Worker API'si ve Play Co
 
 ## Güncel sürümler
 
-- Web sitesi: **10.5.2**
+- Web sitesi: **10.5.3**
 - Web uygulaması / ürün bağlamı: **5.2**
 - Play Connect: **1.15.1**
 - Desktop: **0.14.3**
@@ -14,7 +14,7 @@ Bu doküman; Play Streamers web uygulaması, Cloudflare Worker API'si ve Play Co
 
 ## Play Streamers web uygulaması
 
-### Site 10.5.2 · Sabit eklenti paneli, tam dil ve akıcı sıvı cam
+### Site 10.5.3 · Sabit eklenti paneli, tam dil ve akıcı sıvı cam
 
 - Play Connect popup'ı 392 piksel gerçek genişlikte açılır; araç çubuğunda
   yalnız iki küçük simgeye çökmez. Chrome ve Firefox mağaza paketleri 1.15.1'e

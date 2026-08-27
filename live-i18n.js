@@ -56,6 +56,19 @@ Object.entries(criticalStatus).forEach(([language, values]) => Object.assign(cri
   "Son kontrol:": values[1],
   "Ekibimiz sorun üzerinde çalışıyor.": values[2],
 }));
+const swBotFeatureCopy = Object.freeze({
+  en: ["It audits the interface, connections, and live files, then turns technical issues into clear explanations.", "SYSTEM SCAN"],
+  de: ["Es prüft die Oberfläche, Verbindungen und Live-Dateien und erklärt technische Probleme verständlich.", "SYSTEMSCAN"],
+  es: ["Audita la interfaz, las conexiones y los archivos activos, y convierte los problemas técnicos en explicaciones claras.", "ANÁLISIS DEL SISTEMA"],
+  fr: ["Il contrôle l’interface, les connexions et les fichiers en ligne, puis transforme les problèmes techniques en explications claires.", "ANALYSE DU SYSTÈME"],
+  ru: ["Он проверяет интерфейс, подключения и рабочие файлы, а затем понятно объясняет технические проблемы.", "ПРОВЕРКА СИСТЕМЫ"],
+  ar: ["يفحص الواجهة والاتصالات والملفات المباشرة، ثم يحوّل المشكلات التقنية إلى شروحات واضحة.", "فحص النظام"],
+  ja: ["インターフェース、接続、公開ファイルを監査し、技術的な問題を分かりやすく説明します。", "システムスキャン"],
+});
+Object.entries(swBotFeatureCopy).forEach(([language, values]) => Object.assign(critical[language], {
+  "Arayüzü, bağlantıları ve canlı dosyaları denetler; teknik sorunları anlaşılır bir Türkçe açıklamaya dönüştürür.": values[0],
+  "SİSTEM TARAMASI": values[1],
+}));
 
 function clean(value) { return String(value || "").replace(/\s+/g, " ").trim(); }
 const TURKISH_TERMS = new Set(["giriş", "kayıt", "hakkımızda", "ürünlerimiz", "nasıl", "çalışır", "içerik", "planlama", "canlı", "analiz", "topluluk", "marka", "araçları", "gelir", "görünümleri", "yayın", "yayıncı", "hesap", "şifre", "doğrula", "indir", "destek", "sistem", "durumu", "ziyaretçi", "şu", "anda", "aktif", "hemen", "başla", "keşfet", "daha", "fazla", "burada", "mısın", "beni", "hatırla"]);
@@ -85,6 +98,7 @@ function translationLooksComplete(source, translated, language) {
 }
 function translatable(value) {
   const text = clean(value);
+  if (isPassthroughCopy(text)) return false;
   if (text.length < 2 || text.length > 1200 || !/[A-Za-zÇĞİÖŞÜçğıöşü]/.test(text)) return false;
   if (/^(https?:|www\.|[\w.+-]+@[\w.-]+\.|[\d\s.,:%+\-/]+$)/i.test(text)) return false;
   return true;

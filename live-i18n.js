@@ -35,6 +35,13 @@ Object.entries({
   en: "Dashboard", de: "Übersicht", es: "Panel", fr: "Tableau de bord",
   ru: "Панель управления", ar: "لوحة التحكم", ja: "ダッシュボード",
 }).forEach(([language, translation]) => { critical[language].Dashboard = translation; });
+Object.assign(critical.fr, {
+  "ETKİLEŞİM": "INTERACTION",
+  "TOPLULUK": "COMMUNAUTÉ",
+  "MARKA ARAÇLARI": "OUTILS DE MARQUE",
+  "MASAÜSTÜ UYGULAMASI": "APPLICATION DE BUREAU",
+  "ÇALIŞMA ALANLARI": "ESPACES DE TRAVAIL",
+});
 const criticalStatus = Object.freeze({
   en: ["SW Bot completed all checks. No issues were detected.", "Last check:", "Our team is working on the issue."],
   de: ["SW Bot hat alle Prüfungen abgeschlossen. Es wurden keine Probleme erkannt.", "Letzte Prüfung:", "Unser Team arbeitet an dem Problem."],
@@ -128,7 +135,7 @@ export function installLiveI18n({ localeKey = "ps15-locale", getLocale, root = d
     return { language, refresh() {} };
   }
 
-  const cacheKey = `ps-live-i18n-v6:${language}`;
+  const cacheKey = `ps-live-i18n-v8:${language}`;
   const cache = { ...cacheRead(cacheKey), ...(critical[language] || {}) };
   const textState = new WeakMap();
   const attributeState = new WeakMap();
@@ -271,13 +278,13 @@ export function installLiveI18n({ localeKey = "ps15-locale", getLocale, root = d
       // Küçük paketler hem AI JSON yanıtını güvenilir tutar hem de ilk
       // ekranın çevirisini büyük bir paketin tamamlanmasını beklemeden gösterir.
       const chunks = [];
-      for (let index = 0; index < missing.length; index += 10) chunks.push(missing.slice(index, index + 10));
+      for (let index = 0; index < missing.length; index += 20) chunks.push(missing.slice(index, index + 20));
       // Aktif yüzeyin küçük paketleri aynı anda çevrilir. Gizli panel ve
       // pencereler açıldıkları anda ayrıca işlendiği için bu istek grubu hem
       // sınırlı kalır hem de dil değişiminden sonra ilk ekranı tek dalgada bitirir.
       if (!chunks.length) finishBoot();
-      for (let groupIndex = 0; groupIndex < chunks.length; groupIndex += 3) {
-        const group = chunks.slice(groupIndex, groupIndex + 3);
+      for (let groupIndex = 0; groupIndex < chunks.length; groupIndex += 4) {
+        const group = chunks.slice(groupIndex, groupIndex + 4);
         await Promise.all(group.map(async strings => {
           const translations = await requestTranslations(strings);
           strings.forEach((source, itemIndex) => {

@@ -809,10 +809,10 @@ async function runScheduledPlayBotAudit(env) {
   const resources = [
     ["Ana sayfa", "https://pstreamers.com/", "document"],
     ["Ana uygulama betiği", "https://pstreamers.com/app.js?v=5.4.0", "script"],
-    ["Uygulama betiği", "https://pstreamers.com/app-final.js?v=5.9.1", "script"],
-    ["Site davranış betiği", "https://pstreamers.com/site-v7.js?v=10.5.0", "script"],
-    ["Canlı çeviri betiği", "https://pstreamers.com/live-i18n.js?v=6.0", "script"],
-    ["Premium stil dosyası", "https://pstreamers.com/site-v7.css?v=10.5.0", "style"],
+    ["Uygulama betiği", "https://pstreamers.com/app-final.js?v=5.9.2", "script"],
+    ["Site davranış betiği", "https://pstreamers.com/site-v7.js?v=10.5.1", "script"],
+    ["Canlı çeviri betiği", "https://pstreamers.com/live-i18n.js?v=8.0", "script"],
+    ["Premium stil dosyası", "https://pstreamers.com/site-v7.css?v=10.5.1", "style"],
     ["Oturum başlangıç betiği", "https://pstreamers.com/session-bootstrap.js?v=1.1", "script"],
     ["Site yönlendiricisi", "https://pstreamers.com/site-router.js?v=1.1", "script"],
     ["Sunucu analiz betiği", "https://pstreamers.com/server-analytics.js?v=6.0", "script"],
@@ -891,12 +891,12 @@ async function runScheduledPlayBotAudit(env) {
   const homeDocument = results.find(result => result.type === "document");
   if (homeDocument?.ok) {
     const documentContracts = [
-      ["site-v7.css?v=10.5.0", "Güncel premium stil dosyası"],
+      ["site-v7.css?v=10.5.1", "Güncel premium stil dosyası"],
       ["app.js?v=5.4.0", "Güncel ana uygulama betiği"],
-      ["app-final.js?v=5.9.1", "Güncel onarım betiği"],
-      ["site-v7.js?v=10.5.0", "Güncel site davranış betiği"],
-      ["live-i18n.js?v=6.0", "Güncel canlı çeviri betiği"],
-      ["play-streamers-build\" content=\"2026-08-27-site-10.5.0", "Site 10.5.0 sürüm işareti"],
+      ["app-final.js?v=5.9.2", "Güncel onarım betiği"],
+      ["site-v7.js?v=10.5.1", "Güncel site davranış betiği"],
+      ["live-i18n.js?v=8.0", "Güncel canlı çeviri betiği"],
+      ["play-streamers-build\" content=\"2026-08-27-site-10.5.1", "Site 10.5.1 sürüm işareti"],
     ];
     for (const [token, label] of documentContracts) {
       if (!homeDocument.body.includes(token)) issues.push(`${label} canlı ana sayfaya bağlanmamış.`);
@@ -1133,19 +1133,20 @@ function validInterfaceTranslation(source, value, language) {
 
 async function generateInterfaceTranslations(env, language, sources) {
   if (!sources.length) return [];
-  const payload = await env.AI.run("@cf/meta/llama-3.1-8b-instruct-fp8", {
+  const payload = await env.AI.run("@cf/meta/llama-3.1-70b-instruct", {
     messages: [
       {
         role: "system",
-        content: `TARGET LANGUAGE: ${INTERFACE_LANGUAGE_REQUIREMENTS[language]}. Translate every Turkish interface string into that target language, never into English unless English is the target. Preserve only these names exactly: Play Streamers, Play Connect, SW Create, SW Identity, SW Bot, SW AI and Product Pro. Also preserve URLs, versions, numbers and keyboard shortcuts. Never omit a word, leave Turkish UI wording behind, summarize, or add advice. Translate uppercase labels too. Every non-brand result for Arabic, Russian or Japanese must visibly use that language's native script. Keep the same item order and return only valid JSON.`,
+        content: `You are a professional software localization engine. Translate every Turkish UI string into ${INTERFACE_LANGUAGE_REQUIREMENTS[language]}. Context: Play Streamers is a livestreaming creator dashboard. Use these meanings: yayıncı = streamer/content creator; yayın = livestream/broadcast; topluluk = community; marka araçları = brand tools; masaüstü uygulaması = desktop app; etkileşim = engagement; çalışma alanları = workspaces; panel = dashboard. Preserve Play Streamers, Play Connect, SW Create, SW Identity, SW Bot, SW AI, Product Pro, URLs, versions, numbers and shortcuts exactly. Translate headings and uppercase labels naturally, keep punctuation and item order, never summarize, and leave no Turkish UI wording. Return only valid JSON.`,
       },
       {
         role: "user",
-        content: `Translate this JSON array. Return {"translations":["..."]}: ${JSON.stringify(sources)}`,
+        content: `Return {"translations":["..."]} for this array: ${JSON.stringify(sources)}`,
       },
     ],
-    max_tokens: Math.min(7000, Math.max(1200, sources.length * 420)),
-    temperature: 0.02,
+    response_format: { type: "json_object" },
+    max_tokens: Math.min(7000, Math.max(1400, sources.length * 460)),
+    temperature: 0,
   });
   const text = typeof payload?.response === "string" ? payload.response
     : typeof payload?.result?.response === "string" ? payload.result.response
@@ -1170,7 +1171,7 @@ async function translateInterfaceStrings(request, env) {
   if (!(await allowInterfaceTranslationRequest(request, env, language))) {
     return apiResponse(request, { error: "Canlı çeviri sınırına ulaşıldı. Kısa süre sonra yeniden dene." }, 429);
   }
-  const cacheKeys = await Promise.all(strings.map(source => sha256Hex(`i18n:v6:${language}:${source}`)));
+  const cacheKeys = await Promise.all(strings.map(source => sha256Hex(`i18n:v8:${language}:${source}`)));
   const cachedByKey = new Map();
   if (env.DB) {
     try {

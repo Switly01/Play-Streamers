@@ -809,10 +809,10 @@ async function runScheduledPlayBotAudit(env) {
   const resources = [
     ["Ana sayfa", "https://pstreamers.com/", "document"],
     ["Ana uygulama betiği", "https://pstreamers.com/app.js?v=5.4.0", "script"],
-    ["Uygulama betiği", "https://pstreamers.com/app-final.js?v=5.9.3", "script"],
-    ["Site davranış betiği", "https://pstreamers.com/site-v7.js?v=10.5.4", "script"],
+    ["Uygulama betiği", "https://pstreamers.com/app-final.js?v=5.9.4", "script"],
+    ["Site davranış betiği", "https://pstreamers.com/site-v7.js?v=10.5.5", "script"],
     ["Canlı çeviri betiği", "https://pstreamers.com/live-i18n.js?v=8.3", "script"],
-    ["Premium stil dosyası", "https://pstreamers.com/site-v7.css?v=10.5.4", "style"],
+    ["Premium stil dosyası", "https://pstreamers.com/site-v7.css?v=10.5.5", "style"],
     ["Oturum başlangıç betiği", "https://pstreamers.com/session-bootstrap.js?v=1.1", "script"],
     ["Site yönlendiricisi", "https://pstreamers.com/site-router.js?v=1.1", "script"],
     ["Sunucu analiz betiği", "https://pstreamers.com/server-analytics.js?v=6.0", "script"],
@@ -891,12 +891,12 @@ async function runScheduledPlayBotAudit(env) {
   const homeDocument = results.find(result => result.type === "document");
   if (homeDocument?.ok) {
     const documentContracts = [
-      ["site-v7.css?v=10.5.4", "Güncel premium stil dosyası"],
+      ["site-v7.css?v=10.5.5", "Güncel premium stil dosyası"],
       ["app.js?v=5.4.0", "Güncel ana uygulama betiği"],
-      ["app-final.js?v=5.9.3", "Güncel onarım betiği"],
-      ["site-v7.js?v=10.5.4", "Güncel site davranış betiği"],
+      ["app-final.js?v=5.9.4", "Güncel onarım betiği"],
+      ["site-v7.js?v=10.5.5", "Güncel site davranış betiği"],
       ["live-i18n.js?v=8.3", "Güncel canlı çeviri betiği"],
-      ["play-streamers-build\" content=\"2026-08-27-site-10.5.4", "Site 10.5.4 sürüm işareti"],
+      ["play-streamers-build\" content=\"2026-08-27-site-10.5.5", "Site 10.5.5 sürüm işareti"],
     ];
     for (const [token, label] of documentContracts) {
       if (!homeDocument.body.includes(token)) issues.push(`${label} canlı ana sayfaya bağlanmamış.`);

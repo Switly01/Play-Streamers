@@ -2501,7 +2501,9 @@
     }
     const currentLocale = String(document.documentElement.dataset.psLiveLocale || document.documentElement.lang || 'tr').toLowerCase();
     if (currentLocale !== 'tr' && document.documentElement.dataset.psI18nReady === '1') {
-      const visibleCopy = $$('h1,h2,h3,p,button,a,span,small,label').filter(visible).map(node => String(node.textContent || '').replace(/\s+/g, ' ').trim());
+      const visibleCopy = $$('h1,h2,h3,p,button,a,span,small,label')
+        .filter(node => visible(node) && !node.closest('#ps44StatusPopover'))
+        .map(node => String(node.textContent || '').replace(/\s+/g, ' ').trim());
       const turkishTerms = new Set(['giriş','kayıt','hakkımızda','ürünlerimiz','nasıl','çalışır','içerik','planlama','canlı','analiz','topluluk','yayın','yayıncı','hesap','şifre','doğrula','indir','destek','sistem','durumu','ziyaretçi','aktif','keşfet','gizlilik','kullanım','koşulları']);
       const turkishLeak = visibleCopy.filter(text => /[ÇĞİÖŞÜçğıöşü]/u.test(text) || text.toLocaleLowerCase('tr-TR').split(/[^a-zçğıöşü]+/u).some(word => turkishTerms.has(word)));
       if (turkishLeak.length) issues.push(`Canlı çeviri eksik: ${turkishLeak.length} görünür temel metin seçilen dile çevrilmemiş.`);

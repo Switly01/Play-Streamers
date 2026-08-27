@@ -1068,8 +1068,9 @@ const INTERFACE_LANGUAGE_REQUIREMENTS = Object.freeze({
 });
 const TURKISH_INTERFACE_TERMS = new Set(["giriş", "kayıt", "hakkımızda", "ürünlerimiz", "nasıl", "çalışır", "içerik", "planlama", "canlı", "analiz", "topluluk", "marka", "araçları", "gelir", "görünümleri", "yayın", "yayıncı", "hesap", "şifre", "doğrula", "indir", "destek", "sistem", "durumu", "ziyaretçi", "şu", "anda", "aktif", "hemen", "başla", "keşfet", "daha", "fazla", "burada", "mısın", "beni", "hatırla"]);
 function containsTurkishInterfaceCopy(value) {
-  const normalized = String(value || "").toLocaleLowerCase("tr-TR");
-  if (/[çğıöşü]/u.test(normalized)) return true;
+  const source = String(value || "");
+  if (/[ÇĞİÖŞÜçğıöşü]/u.test(source)) return true;
+  const normalized = source.toLocaleLowerCase("tr-TR");
   return normalized.split(/[^a-zçğıöşü]+/u).some(word => TURKISH_INTERFACE_TERMS.has(word));
 }
 

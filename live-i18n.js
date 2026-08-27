@@ -25,8 +25,9 @@ const critical = Object.freeze({
 function clean(value) { return String(value || "").replace(/\s+/g, " ").trim(); }
 const TURKISH_TERMS = new Set(["giriş", "kayıt", "hakkımızda", "ürünlerimiz", "nasıl", "çalışır", "içerik", "planlama", "canlı", "analiz", "topluluk", "marka", "araçları", "gelir", "görünümleri", "yayın", "yayıncı", "hesap", "şifre", "doğrula", "indir", "destek", "sistem", "durumu", "ziyaretçi", "şu", "anda", "aktif", "hemen", "başla", "keşfet", "daha", "fazla", "burada", "mısın", "beni", "hatırla"]);
 function containsTurkishCopy(value) {
-  const normalized = clean(value).toLocaleLowerCase("tr-TR");
-  if (/[çğıöşü]/u.test(normalized)) return true;
+  const source = clean(value);
+  if (/[ÇĞİÖŞÜçğıöşü]/u.test(source)) return true;
+  const normalized = source.toLocaleLowerCase("tr-TR");
   return normalized.split(/[^a-zçğıöşü]+/u).some(word => TURKISH_TERMS.has(word));
 }
 function needsTranslation(value) { return containsTurkishCopy(value); }

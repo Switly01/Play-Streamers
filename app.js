@@ -2217,7 +2217,7 @@
         sitekey: state.siteKey,
         action: 'sw-auth',
         theme: 'dark',
-        size: 'invisible',
+        size: 'normal',
         appearance: 'interaction-only',
         callback(token) { if (state.pending) state.pending.resolve(token); state.pending = null; },
         'error-callback'() { if (state.pending) state.pending.reject(new Error('Güvenlik kontrolü yüklenemedi.')); state.pending = null; },

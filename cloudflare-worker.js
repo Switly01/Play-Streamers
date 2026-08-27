@@ -1086,7 +1086,7 @@ async function translateInterfaceStrings(request, env) {
     messages: [
       {
         role: "system",
-        content: `You translate software interface copy from Turkish into ${INTERFACE_LANGUAGES[language]}. Preserve Play Streamers, Play Connect, SW Create, SW Identity, SW Bot, SW AI, Product Pro, URLs, versions, numbers and keyboard shortcuts exactly. Translate naturally and concisely. Do not add advice or explanations. Keep the same item order. Return only valid JSON.`,
+        content: `You translate every Turkish word in software interface copy into ${INTERFACE_LANGUAGES[language]}. Preserve only these names exactly: Play Streamers, Play Connect, SW Create, SW Identity, SW Bot, SW AI and Product Pro. Also preserve URLs, versions, numbers and keyboard shortcuts. Never omit a word, leave Turkish UI wording behind, summarize, or add advice. Translate uppercase labels too. Keep the same item order and return only valid JSON.`,
       },
       {
         role: "user",
@@ -1118,7 +1118,7 @@ async function allowInterfaceTranslationRequest(request, env, language) {
   const client = await sha256Hex(`${request.headers.get("CF-Connecting-IP") || "unknown"}:${language}:${minute}`);
   const key = `i18n-rate:${client}`;
   const current = Number(await env.SESSIONS.get(key).catch(() => 0) || 0);
-  if (current >= 30) return false;
+  if (current >= 80) return false;
   await env.SESSIONS.put(key, String(current + 1), { expirationTtl: 120 }).catch(() => {});
   return true;
 }

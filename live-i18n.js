@@ -23,6 +23,19 @@ const critical = Object.freeze({
 });
 
 function clean(value) { return String(value || "").replace(/\s+/g, " ").trim(); }
+const TURKISH_COPY = /(?:[çğıöşü]|\b(?:giriş|kayıt|hakkımızda|ürünlerimiz|nasıl|çalışır|içerik|planlama|canlı|analiz|topluluk|marka|araçları|gelir|görünümleri|yayın|yayıncı|hesap|şifre|doğrula|indir|destek|sistem|durumu|ziyaretçi|şu anda|aktif|hemen|başla|keşfet|daha fazla|burada mısın|beni hatırla)\b)/iu;
+function needsTranslation(value) { return TURKISH_COPY.test(clean(value)); }
+function translationLooksComplete(source, translated, language) {
+  const output = clean(translated);
+  if (!output) return false;
+  if (!needsTranslation(source)) return true;
+  if (clean(source).localeCompare(output, undefined, { sensitivity: "base" }) === 0) return false;
+  if (TURKISH_COPY.test(output)) return false;
+  if (language === "ar" && !/[\u0600-\u06ff]/u.test(output)) return false;
+  if (language === "ru" && !/[\u0400-\u04ff]/u.test(output)) return false;
+  if (language === "ja" && !/[\u3040-\u30ff\u3400-\u9fff]/u.test(output)) return false;
+  return true;
+}
 function translatable(value) {
   const text = clean(value);
   if (text.length < 2 || text.length > 520 || !/[A-Za-zÇĞİÖŞÜçğıöşü]/.test(text)) return false;
@@ -48,13 +61,14 @@ export function installLiveI18n({ localeKey = "ps15-locale", getLocale, root = d
     return { language, refresh() {} };
   }
 
-  const cacheKey = `ps-live-i18n-v4-4:${language}`;
+  const cacheKey = `ps-live-i18n-v4-5:${language}`;
   const cache = { ...(critical[language] || {}), ...cacheRead(cacheKey) };
   const textState = new WeakMap();
   const attributeState = new WeakMap();
   let queued = false;
   let running = false;
   let ready = false;
+  let recoveryPasses = 0;
   const finishBoot = () => {
     if (ready) return;
     ready = true;
@@ -77,7 +91,7 @@ export function installLiveI18n({ localeKey = "ps15-locale", getLocale, root = d
     attributeState.set(element, record);
   };
 
-  const requestTranslations = async (strings, depth = 0) => {
+  const requestTranslations = async (strings, depth = 0, retry = 0) => {
     if (!strings.length) return [];
     try {
       const response = await fetch(API, {
@@ -88,13 +102,34 @@ export function installLiveI18n({ localeKey = "ps15-locale", getLocale, root = d
       });
       const result = await response.json().catch(() => ({}));
       if (response.ok && Array.isArray(result.translations) && result.translations.length === strings.length) {
-        return result.translations.map(value => clean(value));
+        const translated = result.translations.map(value => clean(value));
+        const invalid = translated
+          .map((value, index) => translationLooksComplete(strings[index], value, language) ? -1 : index)
+          .filter(index => index >= 0);
+        if (!invalid.length) return translated;
+        if (retry < 2) {
+          const repaired = await Promise.all(invalid.map(index => requestTranslations([strings[index]], depth + 1, retry + 1)));
+          invalid.forEach((index, repairIndex) => { translated[index] = clean(repaired[repairIndex]?.[0]); });
+        }
+        return translated.map((value, index) => translationLooksComplete(strings[index], value, language) ? value : "");
       }
       // Küçük modeller uzun JSON listelerinde zaman zaman eksik bir öğe
       // döndürebiliyor. 429 durumunda bekleriz; diğer geçersiz yanıtlarda paketi
       // kontrollü biçimde bölerek görünür metinlerin yarım kalmasını önleriz.
-      if (response.status === 429 || strings.length === 1 || depth >= 3) return strings.map(() => "");
+      if (response.status === 429 && retry < 2) {
+        await new Promise(resolve => window.setTimeout(resolve, 900 * (retry + 1)));
+        return requestTranslations(strings, depth, retry + 1);
+      }
+      if (strings.length === 1 && retry < 2) {
+        await new Promise(resolve => window.setTimeout(resolve, 350 * (retry + 1)));
+        return requestTranslations(strings, depth + 1, retry + 1);
+      }
+      if (strings.length === 1 || depth >= 3) return strings.map(() => "");
     } catch {
+      if (strings.length === 1 && retry < 2) {
+        await new Promise(resolve => window.setTimeout(resolve, 350 * (retry + 1)));
+        return requestTranslations(strings, depth + 1, retry + 1);
+      }
       if (strings.length === 1 || depth >= 3) return strings.map(() => "");
     }
     const middle = Math.ceil(strings.length / 2);
@@ -109,6 +144,7 @@ export function installLiveI18n({ localeKey = "ps15-locale", getLocale, root = d
     for (let node = walker.nextNode(); node; node = walker.nextNode()) {
       const parent = node.parentElement;
       if (!parent || parent.closest(SKIP_TEXT_SELECTOR)) continue;
+      if (parent.closest("[hidden],[inert],template")) continue;
       const value = clean(node.nodeValue);
       const previous = textState.get(node);
       if (previous?.translated === value) continue;
@@ -118,6 +154,7 @@ export function installLiveI18n({ localeKey = "ps15-locale", getLocale, root = d
     }
     root.querySelectorAll("[placeholder],[title],[aria-label],[value]").forEach(element => {
       if (element.closest(SKIP_ATTRIBUTE_SELECTOR)) return;
+      if (element.closest("[hidden],[inert],template")) return;
       ["placeholder", "title", "aria-label", "value"].forEach(name => {
         if (!element.hasAttribute(name)) return;
         if (name === "value" && !element.matches('input[type="button"],input[type="submit"],input[type="reset"]')) return;
@@ -154,7 +191,7 @@ export function installLiveI18n({ localeKey = "ps15-locale", getLocale, root = d
         else if (target.type === "attribute" && target.element.isConnected) applyAttribute(target.element, target.name, translated, target.source);
       });
       const missing = [...new Set(targets.map(item => item.source).filter(source => !cache[source]))];
-      // On iki öğelik paketler hem AI JSON yanıtını güvenilir tutar hem de ilk
+      // Küçük paketler hem AI JSON yanıtını güvenilir tutar hem de ilk
       // ekranın çevirisini büyük bir paketin tamamlanmasını beklemeden gösterir.
       const chunks = [];
       for (let index = 0; index < missing.length; index += 16) chunks.push(missing.slice(index, index + 16));
@@ -186,10 +223,17 @@ export function installLiveI18n({ localeKey = "ps15-locale", getLocale, root = d
         if (target.type === "text" && target.node.isConnected) applyText(target.node, translated);
         else if (target.type === "attribute" && target.element.isConnected) applyAttribute(target.element, target.name, translated, target.source);
       });
+      const unresolved = targets.some(target => !cache[target.source]);
+      if (unresolved && recoveryPasses < 3) {
+        recoveryPasses += 1;
+        queued = true;
+      } else if (!unresolved) {
+        recoveryPasses = 0;
+      }
     } finally {
       running = false;
       finishBoot();
-      if (queued) window.setTimeout(translate, 120);
+      if (queued) window.setTimeout(translate, recoveryPasses ? 1600 : 120);
     }
   };
   const schedule = () => {

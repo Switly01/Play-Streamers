@@ -78,7 +78,7 @@ const DONATE_OAUTH_PROVIDERS = Object.freeze({
     clientSecretVariable: "TIPEEESTREAM_CLIENT_SECRET",
   }),
 });
-const CURRENT_RELEASE_VERSION = "5.3";
+const CURRENT_RELEASE_VERSION = "5.4";
 const CURRENT_RELEASE_PUBLISHED_AT = "2026-08-25T12:00:00+03:00";
 const SW_IDENTITY_ORIGIN = "https://api.swcreate.com";
 const DESKTOP_IDENTITY_REDIRECT = "playstreamers://identity/callback";
@@ -324,9 +324,12 @@ export default {
       }
 
       if (url.pathname === "/api/public-config" && request.method === "GET") {
+        const country = String(request.cf?.country || request.headers.get("CF-IPCountry") || "").trim().toUpperCase();
         return apiResponse(request, {
           turnstileEnabled: isTurnstileEnabled(env),
           turnstileSiteKey: isTurnstileEnabled(env) ? env.TURNSTILE_SITE_KEY : null,
+          country: /^[A-Z]{2}$/.test(country) ? country : null,
+          suggestedLocale: INTERFACE_COUNTRY_LOCALES[country] || "en",
         });
       }
 
@@ -805,11 +808,11 @@ async function runScheduledPlayBotAudit(env) {
   await ensurePlayBotMetadataStorage(env);
   const resources = [
     ["Ana sayfa", "https://pstreamers.com/", "document"],
-    ["Ana uygulama betiği", "https://pstreamers.com/app.js?v=5.3.9", "script"],
-    ["Uygulama betiği", "https://pstreamers.com/app-final.js?v=5.9.0", "script"],
-    ["Site davranış betiği", "https://pstreamers.com/site-v7.js?v=10.4.2", "script"],
-    ["Canlı çeviri betiği", "https://pstreamers.com/live-i18n.js?v=5.0", "script"],
-    ["Premium stil dosyası", "https://pstreamers.com/site-v7.css?v=10.4.2", "style"],
+    ["Ana uygulama betiği", "https://pstreamers.com/app.js?v=5.4.0", "script"],
+    ["Uygulama betiği", "https://pstreamers.com/app-final.js?v=5.9.1", "script"],
+    ["Site davranış betiği", "https://pstreamers.com/site-v7.js?v=10.5.0", "script"],
+    ["Canlı çeviri betiği", "https://pstreamers.com/live-i18n.js?v=6.0", "script"],
+    ["Premium stil dosyası", "https://pstreamers.com/site-v7.css?v=10.5.0", "style"],
     ["Oturum başlangıç betiği", "https://pstreamers.com/session-bootstrap.js?v=1.1", "script"],
     ["Site yönlendiricisi", "https://pstreamers.com/site-router.js?v=1.1", "script"],
     ["Sunucu analiz betiği", "https://pstreamers.com/server-analytics.js?v=6.0", "script"],
@@ -820,7 +823,7 @@ async function runScheduledPlayBotAudit(env) {
     ["SW Create amblemi", "https://pstreamers.com/swcreate-sw-logo-transparent.png", "image"],
     ["Windows kurucusu", "https://pstreamers.com/downloads/Play-Streamers-Setup.exe", "binary"],
     ["Windows güncelleme bildirimi", "https://pstreamers.com/downloads/latest.json", "json"],
-    ["Play Connect paketi", "https://pstreamers.com/play-connect-v1.15.0.zip", "binary"],
+    ["Play Connect paketi", "https://pstreamers.com/play-connect-v1.15.1.zip", "binary"],
     ["Türkçe bayrağı", "https://pstreamers.com/assets/flags/tr.svg", "image"],
     ["İngilizce bayrağı", "https://pstreamers.com/assets/flags/gb.svg", "image"],
     ["Almanca bayrağı", "https://pstreamers.com/assets/flags/de.svg", "image"],
@@ -888,12 +891,12 @@ async function runScheduledPlayBotAudit(env) {
   const homeDocument = results.find(result => result.type === "document");
   if (homeDocument?.ok) {
     const documentContracts = [
-      ["site-v7.css?v=10.4.2", "Güncel premium stil dosyası"],
-      ["app.js?v=5.3.9", "Güncel ana uygulama betiği"],
-      ["app-final.js?v=5.9.0", "Güncel onarım betiği"],
-      ["site-v7.js?v=10.4.2", "Güncel site davranış betiği"],
-      ["live-i18n.js?v=5.0", "Güncel canlı çeviri betiği"],
-      ["play-streamers-build\" content=\"2026-08-27-site-10.4.2", "Site 10.4.2 sürüm işareti"],
+      ["site-v7.css?v=10.5.0", "Güncel premium stil dosyası"],
+      ["app.js?v=5.4.0", "Güncel ana uygulama betiği"],
+      ["app-final.js?v=5.9.1", "Güncel onarım betiği"],
+      ["site-v7.js?v=10.5.0", "Güncel site davranış betiği"],
+      ["live-i18n.js?v=6.0", "Güncel canlı çeviri betiği"],
+      ["play-streamers-build\" content=\"2026-08-27-site-10.5.0", "Site 10.5.0 sürüm işareti"],
     ];
     for (const [token, label] of documentContracts) {
       if (!homeDocument.body.includes(token)) issues.push(`${label} canlı ana sayfaya bağlanmamış.`);
@@ -1077,6 +1080,13 @@ const INTERFACE_LANGUAGES = Object.freeze({
   en: "English", de: "German", es: "Spanish", fr: "French",
   ru: "Russian", ar: "Arabic", ja: "Japanese",
 });
+const INTERFACE_COUNTRY_LOCALES = Object.freeze({
+  TR: "tr", JP: "ja", DE: "de", AT: "de", CH: "de", LI: "de",
+  FR: "fr", BE: "fr", LU: "fr", MC: "fr",
+  ES: "es", MX: "es", AR: "es", CL: "es", CO: "es", PE: "es", VE: "es", UY: "es", PY: "es", BO: "es", EC: "es", CR: "es", PA: "es", GT: "es", HN: "es", SV: "es", NI: "es", DO: "es", CU: "es",
+  RU: "ru", BY: "ru", KZ: "ru",
+  SA: "ar", AE: "ar", QA: "ar", KW: "ar", BH: "ar", OM: "ar", YE: "ar", EG: "ar", JO: "ar", LB: "ar", IQ: "ar", SY: "ar", DZ: "ar", MA: "ar", TN: "ar", LY: "ar", SD: "ar",
+});
 const INTERFACE_LANGUAGE_REQUIREMENTS = Object.freeze({
   en: "English", de: "German (Deutsch)", es: "Spanish (Español)", fr: "French (Français)",
   ru: "Russian written in Cyrillic (Русский)", ar: "Modern Standard Arabic written in Arabic script (العربية)",
@@ -1093,6 +1103,13 @@ function containsTurkishInterfaceCopy(value) {
   return normalized.split(/[^a-zçğıöşü]+/u).some(word => TURKISH_INTERFACE_TERMS.has(word));
 }
 
+function isInterfaceTranslationPassthrough(value) {
+  const source = String(value || "").replace(/\s+/g, " ").trim();
+  return /^(?:PLAY STREAMERS|PLAY CONNECT|SW CREATE|SW IDENTITY|SW BOT|SW AI|PRODUCT PRO|FREE|PRO|PC|PS|APP|WEB|CONNECT|HTTP|HTTPS|API|OBS|KICK|WINDOWS)(?:\s*[·+:/-].*)?$/i.test(source)
+    || /^(?:https?:\/\/|www\.|[\w.+-]+@[\w.-]+\.)/i.test(source)
+    || /^[\d\s.,:%+\-/–—()]+$/.test(source);
+}
+
 function interfaceTranslationText(value) {
   if (typeof value === "string") return value.trim();
   if (!value || typeof value !== "object" || Array.isArray(value)) return "";
@@ -1104,9 +1121,9 @@ function interfaceTranslationText(value) {
 
 function validInterfaceTranslation(source, value, language) {
   const translated = interfaceTranslationText(value);
-  if (!translated || translated.length > 700) return false;
-  if (containsTurkishInterfaceCopy(source)) {
-    if (source.localeCompare(translated, undefined, { sensitivity: "base" }) === 0 || containsTurkishInterfaceCopy(translated)) return false;
+  if (!translated || translated.length > 1600) return false;
+  if (!isInterfaceTranslationPassthrough(source)) {
+    if (String(source).trim().localeCompare(translated, undefined, { sensitivity: "base" }) === 0 || containsTurkishInterfaceCopy(translated)) return false;
     if (language === "ar" && !/[\u0600-\u06ff]/u.test(translated)) return false;
     if (language === "ru" && !/[\u0400-\u04ff]/u.test(translated)) return false;
     if (language === "ja" && !/[\u3040-\u30ff\u3400-\u9fff]/u.test(translated)) return false;
@@ -1149,11 +1166,11 @@ async function translateInterfaceStrings(request, env) {
   if (!INTERFACE_LANGUAGES[language]) return apiResponse(request, { error: "Desteklenmeyen arayüz dili." }, 400);
   if (!rawStrings.length || rawStrings.length > 60) return apiResponse(request, { error: "Çeviri paketi 1 ile 60 metin içermelidir." }, 400);
   const strings = rawStrings.map(value => String(value || "").replace(/[\u0000-\u001f\u007f]+/g, " ").replace(/\s+/g, " ").trim());
-  if (strings.some(value => !value || value.length > 520)) return apiResponse(request, { error: "Çevrilecek arayüz metni geçersiz." }, 400);
+  if (strings.some(value => !value || value.length > 1200)) return apiResponse(request, { error: "Çevrilecek arayüz metni geçersiz." }, 400);
   if (!(await allowInterfaceTranslationRequest(request, env, language))) {
     return apiResponse(request, { error: "Canlı çeviri sınırına ulaşıldı. Kısa süre sonra yeniden dene." }, 429);
   }
-  const cacheKeys = await Promise.all(strings.map(source => sha256Hex(`i18n:v5:${language}:${source}`)));
+  const cacheKeys = await Promise.all(strings.map(source => sha256Hex(`i18n:v6:${language}:${source}`)));
   const cachedByKey = new Map();
   if (env.DB) {
     try {

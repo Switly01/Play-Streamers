@@ -4,15 +4,34 @@ Bu doküman; Play Streamers web uygulaması, Cloudflare Worker API'si ve Play Co
 
 ## Güncel sürümler
 
-- Web sitesi: **10.4.2**
+- Web sitesi: **10.5.0**
 - Web uygulaması / ürün bağlamı: **5.2**
-- Play Connect: **1.15.0**
+- Play Connect: **1.15.1**
 - Desktop: **0.14.3**
-- Worker kaynak sabiti: **5.2**
+- Worker kaynak sabiti: **5.4**
 
 > Yayın öncesinde Worker'daki bildirim sürüm sabiti ile bu sürüm geçmişi aynı numaraya yükseltilmelidir.
 
 ## Play Streamers web uygulaması
+
+### Site 10.5.0 · Sabit eklenti paneli, tam dil ve akıcı sıvı cam
+
+- Play Connect popup'ı 392 piksel gerçek genişlikte açılır; araç çubuğunda
+  yalnız iki küçük simgeye çökmez. Chrome ve Firefox mağaza paketleri 1.15.1'e
+  yükseltildi ve 38 otomatik testten geçti.
+- Giriş ve kayıt ekranı açılır açılmaz güvenlik doğrulamasını hazırlar. Mevcut
+  hesap girişinde gereksiz şifre uzunluğu engeli kaldırıldı; kayıt için güçlü
+  şifre koşulu korunur.
+- Dil tercihi yoksa desteklenen ülkeler kendi diline, diğer ülkeler İngilizceye
+  yönelir. Yasal sayfalar, Dashboard, açılır yüzeyler ve SW Bot sonuçları aynı
+  canlı çeviri hattına dahildir.
+- Sıvı cam görünümü güçlendirilirken tekrarlanan kartlardaki pahalı blur yükü
+  kaldırıldı; yıldız sayısı ve görünmeyen bölüm çizimleri azaltıldı. Fare ışığı,
+  sabit dil/göz ikonları, yükseltilmiş astronot ve daha ayrık PS monogramı
+  uygulandı.
+- Desktop 0.14.3 kurucusu yeniden üretildi ve Tauri updater `.sig` dosyasıyla
+  doğrulandı. Doğrudan kurucunun Windows yayımlayıcı adı için ayrıca
+  Authenticode sertifikası gerekir.
 
 ### Site 10.4.2 · Tam çeviri, SW Bot kapsamı ve tek katmanlı marka
 

@@ -1,5 +1,12 @@
 const API = "https://api.pstreamers.com/api/i18n/translate";
 const SUPPORTED = new Set(["tr", "en", "de", "es", "fr", "ru", "ar", "ja"]);
+const COUNTRY_LOCALES = Object.freeze({
+  TR: "tr", JP: "ja", DE: "de", AT: "de", CH: "de", LI: "de",
+  FR: "fr", BE: "fr", LU: "fr", MC: "fr",
+  ES: "es", MX: "es", AR: "es", CL: "es", CO: "es", PE: "es", VE: "es", UY: "es", PY: "es", BO: "es", EC: "es", CR: "es", PA: "es", GT: "es", HN: "es", SV: "es", NI: "es", DO: "es", CU: "es",
+  RU: "ru", BY: "ru", KZ: "ru",
+  SA: "ar", AE: "ar", QA: "ar", KW: "ar", BH: "ar", OM: "ar", YE: "ar", EG: "ar", JO: "ar", LB: "ar", IQ: "ar", SY: "ar", DZ: "ar", MA: "ar", TN: "ar", LY: "ar", SD: "ar",
+});
 const SKIP_TEXT_SELECTOR = [
   "script", "style", "noscript", "code", "pre", "textarea",
   "[contenteditable]", "[data-no-translate]", ".entries", ".event-message",
@@ -24,6 +31,25 @@ const critical = Object.freeze({
   ja: { "Giriş yap": "ログイン", "Kayıt ol": "アカウント作成", "Beni hatırla": "ログイン状態を保持", "Hakkımızda": "私たちについて", "Ürünlerimiz": "製品", "Nasıl çalışır?": "仕組み", "Windows için indir": "Windows版をダウンロード", "Sistem durumu": "システム状態", "Dil seçimi": "言語", "Her şey tek platformda.": "すべてを一つのプラットフォームで。", "Canlı site verileri": "サイトのライブデータ", "Toplam ziyaretçi": "総訪問者数", "Kayıtlı hesap": "登録アカウント", "Şu anda aktif": "現在アクティブ", "Site hesap ve bağlantıları, masaüstü uygulaması günlük üretimi, Play Connect ise tarayıcı akışını taşır. Hepsi aynı SW Identity hesabında birleşir.": "サイトはアカウントと接続、デスクトップアプリは日々の制作、Play Connectはブラウザの流れを担います。すべて同じSW Identityアカウントに集約されます。", "Derin analiz, SW AI açıklamaları ve gelişmiş iş akışlarıyla veriyi karara çevirmek için.": "詳細な分析、SW AIの説明、高度なワークフローでデータを意思決定につなげます。", "SW Identity ile güvenli merkezini aç.": "SW Identityで安全な拠点を開きましょう。", "Gizlilik": "プライバシー", "Kullanım Koşulları": "利用規約", "Güvenli bağlantılar · Kişisel panel · Ücretsiz başlangıç": "安全な接続 · 個人用ダッシュボード · 無料で開始" },
 });
 
+Object.entries({
+  en: "Dashboard", de: "Übersicht", es: "Panel", fr: "Tableau de bord",
+  ru: "Панель управления", ar: "لوحة التحكم", ja: "ダッシュボード",
+}).forEach(([language, translation]) => { critical[language].Dashboard = translation; });
+const criticalStatus = Object.freeze({
+  en: ["SW Bot completed all checks. No issues were detected.", "Last check:", "Our team is working on the issue."],
+  de: ["SW Bot hat alle Prüfungen abgeschlossen. Es wurden keine Probleme erkannt.", "Letzte Prüfung:", "Unser Team arbeitet an dem Problem."],
+  es: ["SW Bot completó todas las comprobaciones. No se detectaron problemas.", "Última comprobación:", "Nuestro equipo está trabajando en el problema."],
+  fr: ["SW Bot a terminé toutes les vérifications. Aucun problème n’a été détecté.", "Dernière vérification :", "Notre équipe travaille sur le problème."],
+  ru: ["SW Bot завершил все проверки. Проблем не обнаружено.", "Последняя проверка:", "Наша команда работает над проблемой."],
+  ar: ["أكمل SW Bot جميع عمليات التحقق. لم يتم اكتشاف أي مشكلة.", "آخر تحقق:", "يعمل فريقنا على حل المشكلة."],
+  ja: ["SW Bot はすべてのチェックを完了しました。問題は検出されませんでした。", "最終チェック:", "チームが問題の解決に取り組んでいます。"],
+});
+Object.entries(criticalStatus).forEach(([language, values]) => Object.assign(critical[language], {
+  "SW Bot tüm denetimleri tamamladı. Sorun tespit edilmedi.": values[0],
+  "Son kontrol:": values[1],
+  "Ekibimiz sorun üzerinde çalışıyor.": values[2],
+}));
+
 function clean(value) { return String(value || "").replace(/\s+/g, " ").trim(); }
 const TURKISH_TERMS = new Set(["giriş", "kayıt", "hakkımızda", "ürünlerimiz", "nasıl", "çalışır", "içerik", "planlama", "canlı", "analiz", "topluluk", "marka", "araçları", "gelir", "görünümleri", "yayın", "yayıncı", "hesap", "şifre", "doğrula", "indir", "destek", "sistem", "durumu", "ziyaretçi", "şu", "anda", "aktif", "hemen", "başla", "keşfet", "daha", "fazla", "burada", "mısın", "beni", "hatırla"]);
 function containsTurkishCopy(value) {
@@ -32,7 +58,13 @@ function containsTurkishCopy(value) {
   const normalized = source.toLocaleLowerCase("tr-TR");
   return normalized.split(/[^a-zçğıöşü]+/u).some(word => TURKISH_TERMS.has(word));
 }
-function needsTranslation(value) { return containsTurkishCopy(value); }
+function isPassthroughCopy(value) {
+  const source = clean(value);
+  return /^(?:PLAY STREAMERS|PLAY CONNECT|SW CREATE|SW IDENTITY|SW BOT|SW AI|PRODUCT PRO|FREE|PRO|PC|PS|APP|WEB|CONNECT|HTTP|HTTPS|API|OBS|KICK|WINDOWS)(?:\s*[·+:/-].*)?$/i.test(source)
+    || /^(?:https?:\/\/|www\.|[\w.+-]+@[\w.-]+\.)/i.test(source)
+    || /^[\d\s.,:%+\-/–—()]+$/.test(source);
+}
+function needsTranslation(value) { return !isPassthroughCopy(value); }
 function translationLooksComplete(source, translated, language) {
   const output = clean(translated);
   if (!output) return false;
@@ -46,7 +78,7 @@ function translationLooksComplete(source, translated, language) {
 }
 function translatable(value) {
   const text = clean(value);
-  if (text.length < 2 || text.length > 520 || !/[A-Za-zÇĞİÖŞÜçğıöşü]/.test(text)) return false;
+  if (text.length < 2 || text.length > 1200 || !/[A-Za-zÇĞİÖŞÜçğıöşü]/.test(text)) return false;
   if (/^(https?:|www\.|[\w.+-]+@[\w.-]+\.|[\d\s.,:%+\-/]+$)/i.test(text)) return false;
   return true;
 }
@@ -58,9 +90,36 @@ function cacheWrite(key, value) {
   } catch { /* Translation remains usable without persistent cache. */ }
 }
 
+function browserLocale() {
+  return (navigator.languages || [navigator.language || ""])
+    .map(value => String(value).toLowerCase().split("-")[0])
+    .find(value => SUPPORTED.has(value)) || "en";
+}
+
+async function detectCountryLocale(current, localeKey) {
+  if (localStorage.getItem("ps-locale-source") === "user" || sessionStorage.getItem("ps-country-locale-checked") === "1") return;
+  sessionStorage.setItem("ps-country-locale-checked", "1");
+  try {
+    const response = await fetch("https://api.pstreamers.com/api/public-config", { cache: "no-store", credentials: "omit" });
+    const config = await response.json().catch(() => ({}));
+    const country = String(config.country || "").toUpperCase();
+    const suggested = SUPPORTED.has(config.suggestedLocale) ? config.suggestedLocale : (COUNTRY_LOCALES[country] || "en");
+    localStorage.setItem("ps-locale-source", "auto");
+    if (suggested && suggested !== current) {
+      localStorage.setItem(localeKey, suggested);
+      document.documentElement.classList.add("ps-i18n-booting");
+      location.reload();
+    }
+  } catch { /* Browser language remains the privacy-safe fallback. */ }
+}
+
 export function installLiveI18n({ localeKey = "ps15-locale", getLocale, root = document.body } = {}) {
-  const selected = String(getLocale?.() || localStorage.getItem(localeKey) || "tr").toLowerCase();
-  const language = SUPPORTED.has(selected) ? selected : "tr";
+  const stored = String(getLocale?.() || localStorage.getItem(localeKey) || "").toLowerCase();
+  const language = SUPPORTED.has(stored) ? stored : browserLocale();
+  if (!SUPPORTED.has(stored)) {
+    localStorage.setItem(localeKey, language);
+    localStorage.setItem("ps-locale-source", "auto");
+  }
   document.documentElement.lang = language;
   document.documentElement.dir = "ltr";
   document.documentElement.dataset.psLiveLocale = language;
@@ -69,7 +128,7 @@ export function installLiveI18n({ localeKey = "ps15-locale", getLocale, root = d
     return { language, refresh() {} };
   }
 
-  const cacheKey = `ps-live-i18n-v5:${language}`;
+  const cacheKey = `ps-live-i18n-v6:${language}`;
   const cache = { ...cacheRead(cacheKey), ...(critical[language] || {}) };
   const textState = new WeakMap();
   const attributeState = new WeakMap();
@@ -87,7 +146,7 @@ export function installLiveI18n({ localeKey = "ps15-locale", getLocale, root = d
     document.documentElement.dataset.psI18nReady = "1";
     window.dispatchEvent(new CustomEvent("ps:i18n-ready", { detail: { language } }));
   };
-  const bootSafetyTimer = window.setTimeout(finishBoot, 1600);
+  const bootSafetyTimer = window.setTimeout(finishBoot, 900);
 
   const applyText = (node, translated) => {
     const current = String(node.nodeValue || "");
@@ -212,13 +271,13 @@ export function installLiveI18n({ localeKey = "ps15-locale", getLocale, root = d
       // Küçük paketler hem AI JSON yanıtını güvenilir tutar hem de ilk
       // ekranın çevirisini büyük bir paketin tamamlanmasını beklemeden gösterir.
       const chunks = [];
-      for (let index = 0; index < missing.length; index += 16) chunks.push(missing.slice(index, index + 16));
+      for (let index = 0; index < missing.length; index += 10) chunks.push(missing.slice(index, index + 10));
       // Aktif yüzeyin küçük paketleri aynı anda çevrilir. Gizli panel ve
       // pencereler açıldıkları anda ayrıca işlendiği için bu istek grubu hem
       // sınırlı kalır hem de dil değişiminden sonra ilk ekranı tek dalgada bitirir.
       if (!chunks.length) finishBoot();
-      for (let groupIndex = 0; groupIndex < chunks.length; groupIndex += 6) {
-        const group = chunks.slice(groupIndex, groupIndex + 6);
+      for (let groupIndex = 0; groupIndex < chunks.length; groupIndex += 3) {
+        const group = chunks.slice(groupIndex, groupIndex + 3);
         await Promise.all(group.map(async strings => {
           const translations = await requestTranslations(strings);
           strings.forEach((source, itemIndex) => {
@@ -272,5 +331,8 @@ export function installLiveI18n({ localeKey = "ps15-locale", getLocale, root = d
 }
 
 if (typeof window !== "undefined" && document.body && !location.protocol.startsWith("chrome-extension")) {
-  installLiveI18n();
+  const liveI18n = installLiveI18n();
+  window.psLiveI18n = liveI18n;
+  window.addEventListener("ps:i18n-refresh", () => liveI18n.refresh());
+  void detectCountryLocale(liveI18n.language, "ps15-locale");
 }

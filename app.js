@@ -46,9 +46,16 @@
     submit.disabled=true;submit.dataset.originalText=submit.textContent;submit.textContent=isLogin?'Giriş yapılıyor…':'Hesap oluşturuluyor…';error.textContent='';
     try{
       const product=identityProductRequest();
+      let turnstileToken='';
+      if(form.psAuthVerification?.token&&form.psAuthVerification.expiresAt>Date.now())turnstileToken=form.psAuthVerification.token;
+      else if(form.psAuthVerificationPromise)turnstileToken=await form.psAuthVerificationPromise;
+      else if(typeof window.ps32RequestTurnstileToken==='function')turnstileToken=await window.ps32RequestTurnstileToken()||'';
+      const verificationAge=Date.now()-startedAt;
+      if(verificationAge<700)await new Promise(resolve=>window.setTimeout(resolve,700-verificationAge));
+      form.psAuthVerification=null;form.psAuthVerificationPromise=null;
       const payload=isLogin
-        ?{identity:form.elements.identity.value.trim(),password:form.elements.password.value,remember:form.elements.remember.checked,startedAt,website:'',product}
-        :{username:form.elements.username.value.trim(),password:form.elements.password.value,passwordRepeat:form.elements.passwordRepeat.value,birthDate:form.elements.birthDate.value,remember:form.elements.remember.checked,startedAt,website:'',product};
+        ?{identity:form.elements.identity.value.trim(),password:form.elements.password.value,remember:form.elements.remember.checked,startedAt,website:'',product,turnstileToken}
+        :{username:form.elements.username.value.trim(),password:form.elements.password.value,passwordRepeat:form.elements.passwordRepeat.value,birthDate:form.elements.birthDate.value,remember:form.elements.remember.checked,startedAt,website:'',product,turnstileToken};
       const response=await fetch(`${SW_IDENTITY_ORIGIN}/api/auth/${isLogin?'login':'register'}`,{method:'POST',credentials:'include',headers:{'content-type':'application/json'},body:JSON.stringify(payload)});
       const data=await response.json().catch(()=>({}));
       if(response.status===202&&data.twoFactorRequired){
@@ -57,7 +64,26 @@
       if(!response.ok)throw new Error(data.error||`${isLogin?'Giriş':'Kayıt'} tamamlanamadı.`);
       sessionStorage.setItem('ps48RememberChoice',payload.remember?'1':'0');
       continueProductSignIn(data,product);
-    }catch(failure){error.textContent=failure.message||'SW Identity hizmetine ulaşılamadı.';submit.disabled=false;submit.textContent=submit.dataset.originalText||'Devam et'}
+    }catch(failure){error.textContent=failure.message||'SW Identity hizmetine ulaşılamadı.';submit.disabled=false;submit.textContent=submit.dataset.originalText||'Devam et';prepareAuthVerification(form,true)}
+  }
+  function prepareAuthVerification(form,force=false){
+    if(!form||typeof window.ps32RequestTurnstileToken!=='function')return Promise.resolve('');
+    if(!force&&form.psAuthVerification?.token&&form.psAuthVerification.expiresAt>Date.now())return Promise.resolve(form.psAuthVerification.token);
+    if(!force&&form.psAuthVerificationPromise)return form.psAuthVerificationPromise;
+    const status=$('.ps-auth-verification-state',form);
+    if(status){status.classList.remove('is-ready','is-error');status.innerHTML='<i></i><span>Güvenlik doğrulaması hazırlanıyor…</span>'}
+    form.psAuthVerificationPromise=window.ps32RequestTurnstileToken().then(token=>{
+      const clean=String(token||'').trim();
+      if(!clean)throw new Error('Güvenlik doğrulaması hazırlanamadı.');
+      form.psAuthVerification={token:clean,expiresAt:Date.now()+240000};
+      if(status){status.classList.add('is-ready');status.innerHTML='<i></i><span>Güvenlik doğrulaması hazır</span>'}
+      return clean;
+    }).catch(error=>{
+      if(status){status.classList.add('is-error');status.innerHTML='<i></i><span>Güvenlik doğrulaması yüklenemedi; tekrar denenecek.</span>'}
+      throw error;
+    }).finally(()=>{form.psAuthVerificationPromise=null});
+    form.psAuthVerificationPromise.catch(()=>{});
+    return form.psAuthVerificationPromise;
   }
   function installIdentityCalendar(input){
     if(!input||input.dataset.ps102Calendar==='1')return;input.dataset.ps102Calendar='1';input.readOnly=true;input.inputMode='none';input.placeholder='Tarih seç';
@@ -75,13 +101,13 @@
     const googleIcon='<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#4285F4" d="M21.6 12.2c0-.7-.1-1.4-.2-2.1H12v4h5.4a4.6 4.6 0 0 1-2 3v2.6h3.2c1.9-1.8 3-4.3 3-7.5Z"/><path fill="#34A853" d="M12 22c2.7 0 5-.9 6.6-2.3l-3.2-2.6c-.9.6-2 1-3.4 1-2.6 0-4.8-1.8-5.6-4.1H3.1v2.7A10 10 0 0 0 12 22Z"/><path fill="#FBBC05" d="M6.4 14a6 6 0 0 1 0-4V7.3H3.1a10 10 0 0 0 0 9.4L6.4 14Z"/><path fill="#EA4335" d="M12 5.9c1.5 0 2.8.5 3.8 1.5l2.9-2.8A9.7 9.7 0 0 0 3.1 7.3L6.4 10c.8-2.3 3-4.1 5.6-4.1Z"/></svg>';
     const kickIcon='<img class="ps102-provider-logo ps102-kick-logo" src="./assets/kick-logo.svg?v=10.2" alt="">';
     const fields=isLogin
-      ?'<label class="auth-field">Kullanıcı adı veya e-posta<input name="identity" autocomplete="username" minlength="3" maxlength="160" required placeholder="kullaniciadi veya e-posta"></label><label class="auth-field">Şifre<input name="password" type="password" autocomplete="current-password" minlength="10" required placeholder="Şifren"></label>'
+      ?'<label class="auth-field">Kullanıcı adı veya e-posta<input name="identity" autocomplete="username" minlength="3" maxlength="160" required placeholder="kullaniciadi veya e-posta"></label><label class="auth-field">Şifre<input name="password" type="password" autocomplete="current-password" required placeholder="Şifren"></label>'
       :'<label class="auth-field">Kullanıcı adı<input name="username" autocomplete="username" minlength="3" maxlength="32" pattern="[A-Za-z0-9._-]+" required placeholder="ornek.kullanici"></label><label class="auth-field">Şifre<input name="password" type="password" autocomplete="new-password" minlength="10" required placeholder="En az 10 karakter"></label><label class="auth-field">Şifre tekrar<input name="passwordRepeat" type="password" autocomplete="new-password" minlength="10" required placeholder="Şifreni yeniden yaz"></label><label class="auth-field">Doğum tarihi<input name="birthDate" type="text" min="1900-01-01" max="'+adultBirthDate()+'" required aria-haspopup="dialog" placeholder="Tarih seç"></label>';
-    layer.innerHTML=`<section class="auth-dialog" data-sw-identity-auth="1"><button class="auth-close" type="button" aria-label="Kapat">×</button><div class="ps-identity-wordmark" aria-label="Play Streamers"><img src="./play-streamers-ps-logo.svg?v=10.3" alt=""><span>Play Streamers</span></div><span class="eyebrow">SW IDENTITY İLE KORUNUR</span><h2>${isLogin?'Hesabına giriş yap':'SW hesabını oluştur'}</h2><p>${isLogin?'Kullanıcı adın veya e-postanla giriş yap.':'Bu kayıt doğrudan SW Identity hesabını oluşturur; ayrıca bir Play Streamers hesabı açılmaz.'}</p><form class="auth-form ps-identity-credential-form">${fields}<label class="ps48-remember ps-identity-remember"><input type="checkbox" name="remember"><span>Beni hatırla</span></label><input class="ps-identity-honeypot" name="website" tabindex="-1" autocomplete="off" aria-hidden="true"><p class="auth-error ps-identity-form-error" aria-live="polite"></p><button class="auth-submit ps-identity-form-submit" type="submit">${isLogin?'Giriş yap':'SW Identity hesabı oluştur'}</button></form><div class="auth-divider"><span>veya</span></div><div class="ps-identity-providers ${isLogin?'has-sw-provider':''}"><button type="button" data-provider="google" aria-label="Google ile devam et">${googleIcon}</button><button type="button" data-provider="kick" aria-label="Kick ile devam et">${kickIcon}</button>${isLogin?'<button type="button" data-provider="sw" aria-label="SW hesabı ile hızlı giriş"><img class="ps102-provider-logo ps102-sw-logo" src="./swcreate-sw-logo-transparent.png?v=10.3" alt=""></button>':''}</div><div class="ps-identity-trust"><i></i><span>SW Identity güvenlik ve plan altyapısı</span></div></section>`;
-    document.body.append(layer);const form=$('.ps-identity-credential-form',layer);const identityMark=$('.ps-identity-wordmark img',layer);if(identityMark)identityMark.src='./play-streamers-ps-logo.svg?v=10.2.2';
+    layer.innerHTML=`<section class="auth-dialog" data-sw-identity-auth="1"><button class="auth-close" type="button" aria-label="Kapat">×</button><div class="ps-identity-wordmark" aria-label="Play Streamers"><img src="./play-streamers-ps-logo.svg?v=10.5" alt=""><span>Play Streamers</span></div><span class="eyebrow">SW IDENTITY İLE KORUNUR</span><h2>${isLogin?'Hesabına giriş yap':'SW hesabını oluştur'}</h2><p>${isLogin?'Kullanıcı adın veya e-postanla giriş yap.':'Bu kayıt doğrudan SW Identity hesabını oluşturur; ayrıca bir Play Streamers hesabı açılmaz.'}</p><form class="auth-form ps-identity-credential-form">${fields}<label class="ps48-remember ps-identity-remember"><input type="checkbox" name="remember"><span>Beni hatırla</span></label><input class="ps-identity-honeypot" name="website" tabindex="-1" autocomplete="off" aria-hidden="true"><div class="ps-auth-verification-state" aria-live="polite"><i></i><span>Güvenlik doğrulaması hazırlanıyor…</span></div><p class="auth-error ps-identity-form-error" aria-live="polite"></p><button class="auth-submit ps-identity-form-submit" type="submit">${isLogin?'Giriş yap':'SW Identity hesabı oluştur'}</button></form><div class="auth-divider"><span>veya</span></div><div class="ps-identity-providers ${isLogin?'has-sw-provider':''}"><button type="button" data-provider="google" aria-label="Google ile devam et">${googleIcon}</button><button type="button" data-provider="kick" aria-label="Kick ile devam et">${kickIcon}</button>${isLogin?'<button type="button" data-provider="sw" aria-label="SW hesabı ile hızlı giriş"><img class="ps102-provider-logo ps102-sw-logo" src="./swcreate-sw-logo-transparent.png?v=10.3" alt=""></button>':''}</div><div class="ps-identity-trust"><i></i><span>SW Identity güvenlik ve plan altyapısı</span></div></section>`;
+    document.body.append(layer);const form=$('.ps-identity-credential-form',layer);const identityMark=$('.ps-identity-wordmark img',layer);if(identityMark)identityMark.src='./play-streamers-ps-logo.svg?v=10.5';
     $('.auth-close',layer).onclick=removeLandingAuth;layer.onclick=event=>{if(event.target===layer)removeLandingAuth()};
     form.onsubmit=event=>{event.preventDefault();submitSwIdentityCredentials(form,isLogin,startedAt)};
-    $('[data-provider="google"]',layer).onclick=()=>startSwIdentityLogin('google');$('[data-provider="kick"]',layer).onclick=()=>startSwIdentityLogin('kick');$('[data-provider="sw"]',layer)?.addEventListener('click',()=>startSwIdentityLogin());if(!isLogin)installIdentityCalendar(form.elements.birthDate);
+    $('[data-provider="google"]',layer).onclick=()=>startSwIdentityLogin('google');$('[data-provider="kick"]',layer).onclick=()=>startSwIdentityLogin('kick');$('[data-provider="sw"]',layer)?.addEventListener('click',()=>startSwIdentityLogin());if(!isLogin)installIdentityCalendar(form.elements.birthDate);prepareAuthVerification(form);
   }
   function openAccountFlow(mode){if(activeUserSession&&state.settings.user){landingMode=false;removeLandingAuth();renderUserAuth();return}showLandingAuthV101(mode)}
   window.psOpenLandingAuth = openAccountFlow;
@@ -1551,7 +1577,7 @@
     if(!menu.hidden){menuClose(menu);return;}
     const lang=currentLang();menu.innerHTML=`<span class="ps15-locale-title">DİL SEÇİMİ</span>${Object.entries(langs).map(([code,item])=>`<button type="button" data-ps15-lang="${code}" ${code===lang?'aria-current="true"':''}><span class="ps15-locale-flag">${item.flag}</span>${item.name}</button>`).join('')}`;
     const rect=button.getBoundingClientRect(), width=Math.min(245,innerWidth-24); menu.style.width=width+'px';menu.style.left=Math.max(12,Math.min(innerWidth-width-12,rect.left))+'px';menu.style.top=Math.min(innerHeight-215,rect.bottom+8)+'px';menu.hidden=false;menu.classList.remove('ps15-closing');menu.classList.add('ps15-open');setTimeout(()=>menu.classList.remove('ps15-open'),180);
-    $$('[data-ps15-lang]',menu).forEach(item=>item.onclick=()=>{ const selected=item.dataset.ps15Lang; localStorage.setItem('ps15-locale',selected); document.documentElement.classList.add('ps-i18n-booting'); location.reload(); });
+    $$('[data-ps15-lang]',menu).forEach(item=>item.onclick=()=>{ const selected=item.dataset.ps15Lang; localStorage.setItem('ps15-locale',selected); localStorage.setItem('ps-locale-source','user'); document.documentElement.classList.add('ps-i18n-booting'); location.reload(); });
   }
   function localeButton(root=document){
     /* Keep the old select hidden in DOM so older repair code does not recreate it. */
@@ -3576,6 +3602,7 @@
     menu.classList.add('ps15-open');
     $$('[data-language]', menu).forEach(choice => choice.onclick = () => {
       localStorage.setItem('ps15-locale', choice.dataset.language);
+      localStorage.setItem('ps-locale-source', 'user');
       document.documentElement.classList.add('ps-i18n-booting');
       location.reload();
     });

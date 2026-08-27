@@ -234,7 +234,7 @@
       if (!astronaut || !hero) return;
       const heroBox = hero.getBoundingClientRect();
       astronaut.style.top = 'auto';
-      astronaut.style.bottom = `${Math.max(46, Math.min(62, heroBox.height * .055))}px`;
+      astronaut.style.bottom = `${Math.max(180, Math.min(224, heroBox.height * .2))}px`;
       astronaut.style.left = `${Math.max(58, Math.min(98, heroBox.width * .066))}px`;
     };
     const reveal = () => {
@@ -298,7 +298,7 @@
       scheduleAstronaut(current);
       return;
     }
-    const warpStars = Array.from({ length: 72 }, (_, index) => {
+    const warpStars = Array.from({ length: 40 }, (_, index) => {
       const x = (5 + ((index * 37) % 91)).toFixed(2);
       const y = (7 + ((index * 53) % 86)).toFixed(2);
       const delay = (-((index * .73) % 11)).toFixed(2);
@@ -319,14 +319,14 @@
         <div class="ps82-motion-field" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><span></span><span></span></div>
         <div class="ps82-orbits" aria-hidden="true"><i></i><i></i></div>
         <div class="ps8-hero-copy">
-          <span class="ps8-version"><i></i> PLAY STREAMERS WEB · v10.4.2</span>
+          <span class="ps8-version"><i></i> PLAY STREAMERS WEB · v10.5.0</span>
           <h1 id="ps8-title" aria-label="PLAY STREAMERS"><span>PLAY</span><span>STREAMERS</span></h1>
           <h2>Profesyonel Yayıncı Kontrol Platformu</h2>
           <p>Canlı analiz · İçerik planlama · Topluluk · Marka · Play Connect</p>
           <div class="ps8-hero-actions">
             <a class="ps8-download" href="./downloads/Play-Streamers-Setup.exe" download>
               <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4.5 10.5 3v8.2H3V4.5Zm8.5-1.7L21 1v10.2h-9.5V2.8ZM3 12.2h7.5V21L3 19.5v-7.3Zm8.5 0H21V23l-9.5-1.8v-9Z"/></svg>
-              <span><b>Windows için indir</b><small>APP v0.14.2 · Windows 10/11 · 64 bit</small></span>
+              <span><b>Windows için indir</b><small>APP v0.14.3 · Windows 10/11 · 64 bit</small></span>
               <i>↓</i>
             </a>
           </div>
@@ -396,7 +396,7 @@
         </div>
         <nav class="ps92-brand-directory" aria-label="Play Streamers ürün bağlantıları">
           <a class="ps92-swcreate-link" href="https://swcreate.com" target="_blank" rel="noopener noreferrer"><span>GELİŞTİREN EKOSİSTEM</span><b>SW CREATE</b><i>↗</i></a>
-          <div><a href="https://pstreamers.com">Play Streamers Web <i>↗</i></a><a href="./play-connect-v1.15.0.zip" download>Play Connect <i>↓</i></a><a href="./downloads/Play-Streamers-Setup.exe" download>Play Streamers App <i>↓</i></a></div>
+          <div><a href="https://pstreamers.com">Play Streamers Web <i>↗</i></a><a href="./play-connect-v1.15.1.zip" download>Play Connect <i>↓</i></a><a href="./downloads/Play-Streamers-Setup.exe" download>Play Streamers App <i>↓</i></a></div>
         </nav>
       </section>
 
@@ -419,7 +419,7 @@
 
       <section class="ps8-final-cta" aria-labelledby="ps8-final-title">
         <img src="./play-streamers-ps-logo.svg?v=10.4" alt="Play Streamers PS logosu">
-        <span>WINDOWS 10/11 · SÜRÜM 0.14.2</span>
+        <span>WINDOWS 10/11 · SÜRÜM 0.14.3</span>
         <h2 id="ps8-final-title">Yayınını değil,<br>sistemini büyüt.</h2>
         <p>Hesabını ücretsiz oluştur. Play Streamers Desktop'ı indir ve üretim araçlarını tek sade merkezde kullanmaya başla.</p>
         <div><a href="./downloads/Play-Streamers-Setup.exe" download>Uygulamayı ücretsiz indir <i>↓</i></a><button type="button" data-ps8-action="register">Hesap oluştur</button></div>

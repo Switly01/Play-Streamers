@@ -206,3 +206,11 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline-color:#fff}
 @media(prefers-reduced-motion:no-preference){body::before{animation:pcAmbient 12s ease-in-out infinite alternate}.brand-mark{animation:pcLogoFloat 5.5s ease-in-out infinite}}
 @keyframes pcAmbient{to{opacity:.42;transform:translate3d(8px,-5px,0)}}
 @keyframes pcLogoFloat{50%{transform:translateY(-1.5px)}}
+
+/* 1.15.1: Extension action popups are shrink-to-fit documents. Using 100vw
+   while Chrome is calculating that preferred width creates a circular layout
+   and can collapse the panel to the 48px toolbar icon width. */
+html,body{width:392px!important;min-width:392px!important;max-width:392px!important}
+body{min-height:520px}
+.narrow-notice{display:none!important}
+main{display:block!important}

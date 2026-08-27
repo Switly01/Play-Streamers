@@ -2,7 +2,30 @@
 
 ## Güncel geliştirme durumu · 27 Ağustos 2026
 
-Site 10.4.2 / Desktop 0.14.3 / Play Connect 1.15.0 kaynakları hazırlandı.
+Site 10.5.0 / Worker 5.4 / Desktop 0.14.3 / Play Connect 1.15.1 kaynakları
+hazırlandı. Play Connect popup'ı Chromium'un içerik kadar küçültme davranışına
+karşı 392 piksel gerçek panel genişliğinde sabitlendi; yalnız iki simgeye
+çökmez. Chromium ve Firefox 1.15.1 paketleri ortak test sözleşmesini geçer.
+Giriş/kayıt penceresi açıldığı anda Turnstile doğrulaması hazırlanmaya başlar;
+mevcut hesap girişinde eski şifreleri tarayıcı tarafında engelleyen gereksiz
+minimum uzunluk kaldırılmıştır.
+
+Canlı çeviri Site 10.5 ile tüm arayüz metinlerini, yasal sayfaları ve sonradan
+oluşan SW Bot/SW AI sonuçlarını kapsar. Kullanıcının açık dil seçimi korunur;
+seçim yoksa Cloudflare ülke kodu desteklenen dile, diğer ülkeler İngilizceye
+yönelir. Ülke bilgisi saklanmaz. Çeviri D1 önbelleği `v6` ad alanını kullanır;
+Worker yapılandırmasında KV binding'i bulunmaz.
+
+Site 10.5 cam görünümünü korurken tekrarlanan kart ve düğmelerdeki pahalı
+backdrop blur işlemlerini kaldırır; yalnız navigasyon, modal ve popover
+yüzeylerinde sınırlı blur kullanır. Yıldız sayısı azaltılmış, alt bölümlere
+`content-visibility` eklenmiş, fare ışığı geri getirilmiş, dil/göz kontrolleri
+sabitlenmiş, astronot yükseltilmiş ve PS harfleri ayrıştırılmıştır. Desktop
+0.14.3 doğrudan kurucusu Tauri updater anahtarıyla yeniden imzalanmıştır;
+Tauri `.sig` dosyası Windows Authenticode yayımlayıcı sertifikasının yerine
+geçmez.
+
+Önceki Site 10.4.2 / Desktop 0.14.3 / Play Connect 1.15.0 durumu:
 Play Connect paneli artık eklenti simgesinden doğrudan yeni sekmede açılır ve
 sağlayıcı seçimini URL üzerinden korur. Desktop özellik kartları erişilebilir
 bir sıvı cam çekmece açar; Escape ve kapatma düğmesiyle kapanır. Microsoft Store

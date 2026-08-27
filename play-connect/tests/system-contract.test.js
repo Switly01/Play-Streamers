@@ -17,16 +17,15 @@ test("manual page detection controls are removed", async () => {
   assert.match(background, /streamer\/donate\/incoming/);
 });
 
-test("popup dar tarayici panellerinde tasma ve kaydirma cubugu seridine donusmez", async () => {
+test("popup Chrome arac cubugunda 48 piksele cokmeden tam arayuzu acar", async () => {
   const html = await read("../popup/popup.html");
   const css = await read("../popup/popup.css");
 
   assert.match(html, /class="narrow-notice"/);
-  assert.match(css, /@media\(max-width:319px\)/);
-  assert.match(css, /@media\(max-width:139px\)/);
-  assert.match(css, /@media\(max-width:48px\)/);
+  assert.match(css, /html,body\{width:392px!important;min-width:392px!important;max-width:392px!important\}/);
+  assert.match(css, /\.narrow-notice\{display:none!important\}/);
+  assert.match(css, /main\{display:block!important\}/);
   assert.match(css, /overflow-x:hidden/);
-  assert.match(css, /\.narrow-notice\{display:grid/);
 });
 
 test("popup ana paneli dogrudan eklenti sekmesinde acar", async () => {

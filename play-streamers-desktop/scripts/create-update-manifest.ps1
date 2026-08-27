@@ -10,7 +10,7 @@ if (-not (Test-Path -LiteralPath $installerPath) -or -not (Test-Path -LiteralPat
   throw "Kurucu veya Tauri updater imzası bulunamadı."
 }
 
-$releaseNotesJson = '"Play Streamers Desktop __VERSION__: Aray\u00fcz Site 9 ile ayn\u0131 keskin siyah-beyaz premium tasar\u0131m diline ge\u00e7irildi. Kick yay\u0131nlar\u0131 site veya uygulama kapal\u0131yken de sunucuda otomatik \u00f6l\u00e7\u00fcl\u00fcr. Windows 10 ve 11 ayn\u0131 sade, CMD penceresiz uygulama paketini kullan\u0131r."'
+$releaseNotesJson = '"Play Streamers Desktop __VERSION__: Giri\u015f ve SW Identity ge\u00e7i\u015fleri sa\u011flamla\u015ft\u0131r\u0131ld\u0131; aray\u00fcz daha ak\u0131c\u0131 s\u0131v\u0131 cam y\u00fczeyleri ve ayr\u0131\u015ft\u0131r\u0131lm\u0131\u015f PS logosuyla g\u00fcncellendi. Kick yay\u0131nlar\u0131 site veya uygulama kapal\u0131yken de sunucuda otomatik \u00f6l\u00e7\u00fcl\u00fcr. Windows 10 ve 11 ayn\u0131 sade, CMD penceresiz imzal\u0131 g\u00fcncelleme paketini kullan\u0131r."'
 $releaseNotes = ($releaseNotesJson.Replace('__VERSION__', $Version) | ConvertFrom-Json)
 
 $manifest = [ordered]@{

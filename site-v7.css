@@ -2817,3 +2817,108 @@ html[data-ps-site-version="9"] body.ps-v9 .brand-logo:has(>.ps103-brand-image),h
 @keyframes ps104-loader-orbit{50%{filter:drop-shadow(0 0 18px rgba(255,255,255,.34));transform:translateY(-5px) rotate(3deg)}100%{transform:rotate(0)}}
 @media(prefers-reduced-motion:reduce){#ps28Loader .ps28-loader-card::before,#ps28Loader>div::before,#ps20Loader>div::before,.ps14-loader-box::before{animation:none}}
 @media(max-width:760px){.ps10-astronaut-visitor{bottom:44px!important}#ps47MailDialog{padding:9px!important}#ps47MailDialog .ps44-dialog.ps68-resizable-dialog{width:calc(100vw - 18px)!important;max-height:calc(100dvh - 18px)!important;border-radius:25px!important;padding:22px 18px!important}#ps47MailDialog .ps47-mail-form{max-height:calc(100dvh - 170px);padding-right:6px!important}}
+
+/* Site 10.5 — okunaklı sıvı cam, sabit kontroller ve daha düşük GPU yükü. */
+:root {
+  --ps105-glass:linear-gradient(132deg,rgba(255,255,255,.145),rgba(255,255,255,.035) 42%,rgba(255,255,255,.075));
+  --ps105-glass-edge:rgba(255,255,255,.24);
+  --ps105-glass-shadow:0 22px 58px rgba(0,0,0,.38),inset 0 1px 0 rgba(255,255,255,.28),inset 0 -1px 0 rgba(255,255,255,.055);
+}
+body.ps-v9 #authOverlay .ps81-hero::after {
+  display:block!important;
+  position:absolute!important;
+  z-index:1!important;
+  top:var(--ps82-y,42%)!important;
+  left:var(--ps82-x,50%)!important;
+  width:min(650px,72vw)!important;
+  height:min(650px,72vw)!important;
+  inset:auto!important;
+  border-radius:50%!important;
+  opacity:1!important;
+  background:radial-gradient(circle,rgba(255,255,255,.16),rgba(255,255,255,.07) 28%,transparent 70%)!important;
+  mix-blend-mode:screen;
+  transform:translate3d(-50%,-50%,0)!important;
+  transition:none!important;
+  content:""!important;
+  pointer-events:none!important;
+  will-change:transform;
+}
+#ps9Ambient>b {
+  width:min(42rem,88vw)!important;
+  height:min(42rem,88vw)!important;
+  opacity:.9!important;
+  background:radial-gradient(circle,rgba(255,255,255,.125),rgba(255,255,255,.04) 38%,transparent 70%)!important;
+}
+body.ps-v9 :is(button,.ps51-primary,.ps8-download,.ps81-nav-download):not(.ps10-astronaut-visitor) {
+  -webkit-backdrop-filter:none!important;
+  backdrop-filter:none!important;
+}
+body.ps-v9 :is(.ps92-plan-panel article,.ps8-about-grid article,.ps8-feature-grid article,.ps8-steps li,.ps8-final-cta,.ps20-card,.card,.ps51-account-pane,.ps61-site-metrics) {
+  border-color:var(--ps105-glass-edge)!important;
+  background:radial-gradient(110% 90% at 4% 0,rgba(255,255,255,.16),transparent 36%),var(--ps105-glass)!important;
+  box-shadow:var(--ps105-glass-shadow)!important;
+  -webkit-backdrop-filter:none!important;
+  backdrop-filter:none!important;
+}
+body.ps-v9 :is(.landing-nav,.app .topbar,.auth-dialog,.ps44-dialog,#ps44StatusPopover,#ps44HomeMenu,#ps44HomeConnection,#ps41LocaleMenu,#ps15LocaleMenu,.ps15-locale-menu) {
+  border-color:var(--ps105-glass-edge)!important;
+  background:radial-gradient(120% 100% at 0 0,rgba(255,255,255,.17),transparent 38%),rgba(8,8,10,.76)!important;
+  box-shadow:var(--ps105-glass-shadow)!important;
+  -webkit-backdrop-filter:blur(18px) saturate(145%)!important;
+  backdrop-filter:blur(18px) saturate(145%)!important;
+}
+#authOverlay :is(.ps81-showcase,.ps8-about,.ps8-boundary,.ps8-features,.ps8-steps,.ps8-final-cta) {
+  content-visibility:auto;
+  contain-intrinsic-size:auto 760px;
+}
+.ps15-locale-button,.ps41-locale-button,#ps66MemberLocale,#ps66DashboardLocale {
+  width:42px!important;
+  min-width:42px!important;
+  max-width:42px!important;
+  height:42px!important;
+  min-height:42px!important;
+  max-height:42px!important;
+  flex:0 0 42px!important;
+  transform:none!important;
+  translate:none!important;
+  scale:none!important;
+  filter:none!important;
+  -webkit-backdrop-filter:none!important;
+  backdrop-filter:none!important;
+  contain:layout paint!important;
+  transition:color .16s ease,border-color .16s ease,background-color .16s ease!important;
+}
+.ps15-locale-button:hover,.ps41-locale-button:hover,#ps66MemberLocale:hover,#ps66DashboardLocale:hover {
+  transform:none!important;
+  translate:none!important;
+  scale:none!important;
+  filter:none!important;
+}
+.ps15-locale-button svg,.ps41-locale-button svg,#ps66MemberLocale svg,#ps66DashboardLocale svg {
+  width:18px!important;
+  height:18px!important;
+  transform:none!important;
+}
+.ps28-password-host>.ps28-eye {
+  overflow:hidden!important;
+  transform:none!important;
+  translate:none!important;
+  animation:none!important;
+}
+.ps28-password-host>.ps28-eye::before { display:none!important; content:none!important; animation:none!important; }
+.ps28-password-host>.ps28-eye.is-switching { animation:none!important; }
+.ps28-password-host>.ps28-eye.is-switching svg { animation:none!important; }
+html[data-ps-site-version="9"] body.ps-v9 #authOverlay .landing-brand>.brand-logo {
+  width:56px!important;
+  min-width:56px!important;
+  height:56px!important;
+  flex-basis:56px!important;
+}
+#authOverlay .landing-brand>.brand-logo>.ps103-brand-image { width:88%!important; height:88%!important; }
+.ps-auth-verification-state { display:flex; min-height:24px; align-items:center; gap:9px; color:#a9a9ad; font-size:10px; }
+.ps-auth-verification-state>i { width:7px; height:7px; flex:0 0 7px; border-radius:50%; background:#fff; box-shadow:0 0 0 4px rgba(255,255,255,.08); animation:ps105-verify 1s ease-in-out infinite; }
+.ps-auth-verification-state.is-ready>i { background:#8ef0b4; animation:none; }
+.ps9-sw-ai-summary>small { color:inherit!important; font:inherit!important; }
+@keyframes ps105-verify{50%{opacity:.35;transform:scale(.72)}}
+@media(max-width:760px){.ps10-astronaut-visitor{bottom:132px!important}}
+@media(prefers-reduced-motion:reduce){body.ps-v9 #authOverlay .ps81-hero::after{will-change:auto}.ps-auth-verification-state>i{animation:none}}

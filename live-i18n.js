@@ -66,7 +66,7 @@ export function installLiveI18n({ localeKey = "ps15-locale", getLocale, root = d
     return { language, refresh() {} };
   }
 
-  const cacheKey = `ps-live-i18n-v4-7:${language}`;
+  const cacheKey = `ps-live-i18n-v4-8:${language}`;
   const cache = { ...(critical[language] || {}), ...cacheRead(cacheKey) };
   const textState = new WeakMap();
   const attributeState = new WeakMap();
@@ -99,13 +99,17 @@ export function installLiveI18n({ localeKey = "ps15-locale", getLocale, root = d
 
   const requestTranslations = async (strings, depth = 0, retry = 0) => {
     if (!strings.length) return [];
+    const controller = new AbortController();
+    const timeout = window.setTimeout(() => controller.abort(), 22000);
     try {
       const response = await fetch(API, {
         method: "POST",
         credentials: "omit",
         headers: { "content-type": "application/json" },
         body: JSON.stringify({ language, strings }),
+        signal: controller.signal,
       });
+      window.clearTimeout(timeout);
       const result = await response.json().catch(() => ({}));
       if (response.ok && Array.isArray(result.translations) && result.translations.length === strings.length) {
         const translated = result.translations.map(value => clean(value));
@@ -132,6 +136,7 @@ export function installLiveI18n({ localeKey = "ps15-locale", getLocale, root = d
       }
       if (strings.length === 1 || depth >= 3) return strings.map(() => "");
     } catch {
+      window.clearTimeout(timeout);
       if (strings.length === 1 && retry < 2) {
         await new Promise(resolve => window.setTimeout(resolve, 350 * (retry + 1)));
         return requestTranslations(strings, depth + 1, retry + 1);
@@ -201,28 +206,27 @@ export function installLiveI18n({ localeKey = "ps15-locale", getLocale, root = d
       // Küçük paketler hem AI JSON yanıtını güvenilir tutar hem de ilk
       // ekranın çevirisini büyük bir paketin tamamlanmasını beklemeden gösterir.
       const chunks = [];
-      for (let index = 0; index < missing.length; index += 30) chunks.push(missing.slice(index, index + 30));
+      for (let index = 0; index < missing.length; index += 20) chunks.push(missing.slice(index, index + 20));
       // Aktif yüzeyin küçük paketleri aynı anda çevrilir. Gizli panel ve
       // pencereler açıldıkları anda ayrıca işlendiği için bu istek grubu hem
       // sınırlı kalır hem de dil değişiminden sonra ilk ekranı tek dalgada bitirir.
       for (let groupIndex = 0; groupIndex < chunks.length; groupIndex += 12) {
         const group = chunks.slice(groupIndex, groupIndex + 12);
-        const translatedGroups = await Promise.all(group.map(strings => requestTranslations(strings)));
-        const groupSources = new Set(group.flat());
-        group.forEach((strings, chunkIndex) => {
-          const translations = translatedGroups[chunkIndex] || [];
+        await Promise.all(group.map(async strings => {
+          const translations = await requestTranslations(strings);
           strings.forEach((source, itemIndex) => {
             const value = clean(translations[itemIndex]);
             if (value) cache[source] = value;
           });
-        });
-        cacheWrite(cacheKey, cache);
-        targets.forEach(target => {
-          const translated = cache[target.source];
-          if (!translated || !groupSources.has(target.source)) return;
-          if (target.type === "text" && target.node.isConnected) applyText(target.node, translated);
-          else if (target.type === "attribute" && target.element.isConnected) applyAttribute(target.element, target.name, translated, target.source);
-        });
+          cacheWrite(cacheKey, cache);
+          const chunkSources = new Set(strings);
+          targets.forEach(target => {
+            const translated = cache[target.source];
+            if (!translated || !chunkSources.has(target.source)) return;
+            if (target.type === "text" && target.node.isConnected) applyText(target.node, translated);
+            else if (target.type === "attribute" && target.element.isConnected) applyAttribute(target.element, target.name, translated, target.source);
+          });
+        }));
       }
       targets.forEach(target => {
         const translated = cache[target.source];

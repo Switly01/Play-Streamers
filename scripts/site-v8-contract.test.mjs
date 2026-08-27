@@ -11,12 +11,12 @@ test('site 10 assets are cache-busted and use fluid monochrome glass', async () 
     read('site-v7.css'),
     read('play-streamers-ps-logo.svg'),
   ]);
-  assert.match(html, /play-streamers-build" content="2026-08-27-site-10\.3\.3"/);
+  assert.match(html, /play-streamers-build" content="2026-08-27-site-10\.3\.4"/);
   assert.match(html, /site-v7\.css\?v=10\.3\.1/);
   assert.match(html, /app\.js\?v=5\.3\.8/);
-  assert.match(html, /site-v7\.js\?v=10\.3\.3/);
+  assert.match(html, /site-v7\.js\?v=10\.3\.4/);
   assert.match(html, /app-final\.js\?v=5\.8\.0/);
-  assert.match(html, /live-i18n\.js\?v=4\.7/);
+  assert.match(html, /live-i18n\.js\?v=4\.8/);
   assert.match(css, /html\[data-ps-site-version="8"\]/);
   assert.match(css, /--signal: #f5f5f2/);
   assert.match(css, /@keyframes ps82-meteor/);
@@ -133,11 +133,11 @@ test('SW Identity owns direct login and registration without legacy account leak
   assert.match(app, /productRedirectUrl/);
   assert.match(identityWorker, /SW_IDENTITY_VERSION = "1\.8\.0"/);
   assert.match(identityWorker, /createProductHandoffTarget/);
-  assert.match(i18n, /ps-live-i18n-v4-7/);
+  assert.match(i18n, /ps-live-i18n-v4-8/);
   assert.match(i18n, /Her şey tek platformda\./);
-  assert.match(i18n, /index \+= 30/);
+  assert.match(i18n, /index \+= 20/);
   assert.match(i18n, /requestTranslations\(strings\.slice\(0, middle\), depth \+ 1\)/);
-  assert.match(i18n, /Promise\.all\(group\.map\(strings => requestTranslations\(strings\)\)\)/);
+  assert.match(i18n, /Promise\.all\(group\.map\(async strings =>/);
   assert.match(i18n, /SKIP_ATTRIBUTE_SELECTOR/);
   assert.match(identityAccount, /https:\/\/pstreamers\.com/);
   assert.match(callback, /sw_identity_callback/);

@@ -1,6 +1,32 @@
 # Play Streamers — Kalıcı Proje Bağlamı
 
-Site 9.2.0 / Platform 5.2 / Desktop 0.14.1 / Play Connect 1.13.0: Ana sayfa,
+## Güncel geliştirme durumu · 27 Ağustos 2026
+
+Site 10.4.2 / Desktop 0.14.3 / Play Connect 1.15.0 kaynakları hazırlandı.
+Play Connect paneli artık eklenti simgesinden doğrudan yeni sekmede açılır ve
+sağlayıcı seçimini URL üzerinden korur. Desktop özellik kartları erişilebilir
+bir sıvı cam çekmece açar; Escape ve kapatma düğmesiyle kapanır. Microsoft Store
+derlemesi uygulama içi Tauri güncelleyicisini içermez, güncellemeyi Store'a
+bırakır ve `0.14.3.0` MSIX olarak paketlenir.
+
+Canlı çeviri görünür/gizli Dashboard yüzeyleri ile placeholder, başlık, erişim
+etiketi ve düğme değerlerini kapsar. Önce yerel tarayıcı önbelleği uygulanır;
+küçük gruplar paralel çevrilir ve eksik AI yanıtları tekil güvenli yeniden
+denemelerle tamamlanır. Worker'daki çeviri KV önbelleği kaldırılmıştır. Ortak
+çeviri sonuçları D1 `interface_translation_cache` tablosunda metin/dil bazında,
+istemci sonuçları ise cihazın yerel önbelleğinde tutulur. Çeviri oran sınırı
+Worker örneğinin sınırlı belleğinde en iyi çaba yöntemiyle uygulanır; bu akışta
+KV binding'i yoktur.
+
+SW Bot kaynak sözleşmeleri Site 10.4.2 ile eşitlendi; router, analitik, logolar,
+masaüstü güncelleme bildirimi ve Play Connect 1.15.0 paketi denetime eklendi.
+İstemci denetimi ayrıca etiketsiz form alanlarını, güvenli olmayan dış
+bağlantıları ve birden fazla görünür ana içeriği kontrol eder. Kullanıcıya
+gösterilen açıklama başlığı yalnız `SW AI` olur. PS logosu tek dış çerçeve ve
+daha küçük/dengeli monogram kullanır; mağaza görselleri monokrom sıvı cam
+kimliğiyle yenilenmiştir.
+
+Site 9.2.0 / Platform 5.2 / Desktop 0.14.1 / Play Connect 1.13.0 tarihsel durumu: Ana sayfa,
 Klyze referansının güçlü ürün sunumu örnek alınarak ancak özgün bir Play
 Streamers kimliğiyle tamamen siyah-beyaz düzene geçirildi. Yeni PS monogramı,
 katmanlı Desktop ön izlemesi, web/uygulama görev ayrımı, masaüstü indirme

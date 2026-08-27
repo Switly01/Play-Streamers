@@ -69,7 +69,7 @@ export function installLiveI18n({ localeKey = "ps15-locale", getLocale, root = d
     return { language, refresh() {} };
   }
 
-  const cacheKey = `ps-live-i18n-v4-8:${language}`;
+  const cacheKey = `ps-live-i18n-v5:${language}`;
   const cache = { ...cacheRead(cacheKey), ...(critical[language] || {}) };
   const textState = new WeakMap();
   const attributeState = new WeakMap();
@@ -82,10 +82,12 @@ export function installLiveI18n({ localeKey = "ps15-locale", getLocale, root = d
   const finishBoot = () => {
     if (ready) return;
     ready = true;
+    window.clearTimeout(bootSafetyTimer);
     document.documentElement.classList.remove("ps-i18n-booting");
     document.documentElement.dataset.psI18nReady = "1";
     window.dispatchEvent(new CustomEvent("ps:i18n-ready", { detail: { language } }));
   };
+  const bootSafetyTimer = window.setTimeout(finishBoot, 1600);
 
   const applyText = (node, translated) => {
     const current = String(node.nodeValue || "");
@@ -159,7 +161,7 @@ export function installLiveI18n({ localeKey = "ps15-locale", getLocale, root = d
     for (let node = walker.nextNode(); node; node = walker.nextNode()) {
       const parent = node.parentElement;
       if (!parent || parent.closest(SKIP_TEXT_SELECTOR)) continue;
-      if (parent.closest("[hidden],[inert],template")) continue;
+      if (parent.closest("template")) continue;
       const value = clean(node.nodeValue);
       const previous = textState.get(node);
       if (previous?.translated === value) continue;
@@ -167,10 +169,10 @@ export function installLiveI18n({ localeKey = "ps15-locale", getLocale, root = d
       if (!translatable(source)) continue;
       targets.push({ type: "text", node, source });
     }
-    root.querySelectorAll("[placeholder],[title],[aria-label],[value]").forEach(element => {
+    root.querySelectorAll("[placeholder],[title],[aria-label],[aria-description],[alt],[data-ps-tooltip],[value]").forEach(element => {
       if (element.closest(SKIP_ATTRIBUTE_SELECTOR)) return;
-      if (element.closest("[hidden],[inert],template")) return;
-      ["placeholder", "title", "aria-label", "value"].forEach(name => {
+      if (element.closest("template")) return;
+      ["placeholder", "title", "aria-label", "aria-description", "alt", "data-ps-tooltip", "value"].forEach(name => {
         if (!element.hasAttribute(name)) return;
         if (name === "value" && !element.matches('input[type="button"],input[type="submit"],input[type="reset"]')) return;
         const value = clean(element.getAttribute(name));
@@ -210,12 +212,13 @@ export function installLiveI18n({ localeKey = "ps15-locale", getLocale, root = d
       // Küçük paketler hem AI JSON yanıtını güvenilir tutar hem de ilk
       // ekranın çevirisini büyük bir paketin tamamlanmasını beklemeden gösterir.
       const chunks = [];
-      for (let index = 0; index < missing.length; index += 20) chunks.push(missing.slice(index, index + 20));
+      for (let index = 0; index < missing.length; index += 16) chunks.push(missing.slice(index, index + 16));
       // Aktif yüzeyin küçük paketleri aynı anda çevrilir. Gizli panel ve
       // pencereler açıldıkları anda ayrıca işlendiği için bu istek grubu hem
       // sınırlı kalır hem de dil değişiminden sonra ilk ekranı tek dalgada bitirir.
-      for (let groupIndex = 0; groupIndex < chunks.length; groupIndex += 12) {
-        const group = chunks.slice(groupIndex, groupIndex + 12);
+      if (!chunks.length) finishBoot();
+      for (let groupIndex = 0; groupIndex < chunks.length; groupIndex += 6) {
+        const group = chunks.slice(groupIndex, groupIndex + 6);
         await Promise.all(group.map(async strings => {
           const translations = await requestTranslations(strings);
           strings.forEach((source, itemIndex) => {
@@ -231,6 +234,7 @@ export function installLiveI18n({ localeKey = "ps15-locale", getLocale, root = d
             else if (target.type === "attribute" && target.element.isConnected) applyAttribute(target.element, target.name, translated, target.source);
           });
         }));
+        if (groupIndex === 0) finishBoot();
       }
       targets.forEach(target => {
         const translated = cache[target.source];
@@ -263,8 +267,8 @@ export function installLiveI18n({ localeKey = "ps15-locale", getLocale, root = d
     initialHold = false;
     queued = false;
     schedule();
-  }, 900);
-  return { language, refresh: schedule };
+  }, 80);
+  return { language, refresh: schedule, dispose() { window.clearTimeout(bootSafetyTimer); } };
 }
 
 if (typeof window !== "undefined" && document.body && !location.protocol.startsWith("chrome-extension")) {

@@ -29,6 +29,14 @@ test("popup dar tarayici panellerinde tasma ve kaydirma cubugu seridine donusmez
   assert.match(css, /\.narrow-notice\{display:grid/);
 });
 
+test("popup ana paneli dogrudan eklenti sekmesinde acar", async () => {
+  const manifest = JSON.parse(await read("../manifest.json"));
+  const popup = await read("../popup/popup.js");
+  assert.equal(manifest.options_ui?.page, "options/options.html");
+  assert.equal(manifest.options_ui?.open_in_tab, true);
+  assert.match(popup, /chrome\.tabs\.create\(\{ url, active: true \}\)/);
+});
+
 test("OBS alert bağlantısı ve teslimat kuyruğu manifestte etkin", async () => {
   const manifest = JSON.parse(await read("../manifest.json"));
   const background = await read("../src/background.js");

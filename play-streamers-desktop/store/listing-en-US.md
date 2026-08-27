@@ -15,11 +15,11 @@ Play Streamers is a Windows creator workspace that brings stream analytics, cont
 
 The app is free to download and its core workspace remains available through Play Streamers Free. Play Streamers Pro and Product Pro are optional paid subscriptions managed outside the Microsoft Store and unlock additional tools. Locked features are clearly labeled in the app. This is not a time-limited trial; customers can continue using Free without purchasing.
 
-Play Streamers 0.14.2 does not stream, record, capture camera or microphone input, provide a virtual camera, or include Studio. It does not collect or upload raw media. Live channel events and stream history are displayed only from verified data associated with the connected account.
+Play Streamers 0.14.3 does not stream, record, capture camera or microphone input, provide a virtual camera, or include Studio. It does not collect or upload raw media. Live channel events and stream history are displayed only from verified data associated with the connected account.
 
 ## What's new
 
-Version 0.14.2 adds live interface translation across eight languages, refreshes the liquid-glass visual system, and improves the SW Identity-centered account experience while retaining Windows 10 compatibility.
+Version 0.14.3 makes every tool workspace open reliably, applies faster and more complete translation across eight languages, improves the liquid-glass visual system, and separates Microsoft Store updates from the direct-download channel.
 
 ## Short description
 

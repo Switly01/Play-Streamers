@@ -19,9 +19,6 @@
     "TIPEEESTREAM_CLIENT_ID": "15443_1jepgvoekhlw0ws40koo48w4sc0koc0ksgso8csg4ssco8okgo",
     "TURNSTILE_SITE_KEY": "0x4AAAAAAD4Mr0GZFyPQkCSj"
   },
-  "kv_namespaces": [
-    { "binding": "SESSIONS", "id": "f6a081a28f76437f85a631abbd0b254b" }
-  ],
   "d1_databases": [
     {
       "binding": "DB",

@@ -767,7 +767,7 @@ export default {
   },
 };
 
-const PLAY_BOT_GLOBAL_STATUS_KEY = "sw-bot:global-status:v12";
+const PLAY_BOT_GLOBAL_STATUS_KEY = "sw-bot:global-status:v13";
 
 async function ensurePlayBotMetadataStorage(env) {
   if (!env.DB) throw new Error("Worker is missing the DB binding");
@@ -805,15 +805,22 @@ async function runScheduledPlayBotAudit(env) {
   await ensurePlayBotMetadataStorage(env);
   const resources = [
     ["Ana sayfa", "https://pstreamers.com/", "document"],
-    ["Ana uygulama betiği", "https://pstreamers.com/app.js?v=5.3.6", "script"],
-    ["Uygulama betiği", "https://pstreamers.com/app-final.js?v=5.7.8", "script"],
-    ["Site davranış betiği", "https://pstreamers.com/site-v7.js?v=10.2.3", "script"],
-    ["Canlı çeviri betiği", "https://pstreamers.com/live-i18n.js?v=4.3", "script"],
-    ["Premium stil dosyası", "https://pstreamers.com/site-v7.css?v=10.2.1", "style"],
+    ["Ana uygulama betiği", "https://pstreamers.com/app.js?v=5.3.9", "script"],
+    ["Uygulama betiği", "https://pstreamers.com/app-final.js?v=5.9.0", "script"],
+    ["Site davranış betiği", "https://pstreamers.com/site-v7.js?v=10.4.2", "script"],
+    ["Canlı çeviri betiği", "https://pstreamers.com/live-i18n.js?v=5.0", "script"],
+    ["Premium stil dosyası", "https://pstreamers.com/site-v7.css?v=10.4.2", "style"],
+    ["Oturum başlangıç betiği", "https://pstreamers.com/session-bootstrap.js?v=1.1", "script"],
+    ["Site yönlendiricisi", "https://pstreamers.com/site-router.js?v=1.1", "script"],
+    ["Sunucu analiz betiği", "https://pstreamers.com/server-analytics.js?v=6.0", "script"],
     ["Gizlilik sayfası", "https://pstreamers.com/privacy.html", "document"],
     ["Kullanım koşulları", "https://pstreamers.com/terms.html", "document"],
-    ["PS marka amblemi", "https://pstreamers.com/play-streamers-ps-logo.svg?v=10.2.2", "image"],
+    ["PS marka amblemi", "https://pstreamers.com/play-streamers-ps-logo.svg?v=10.4", "image"],
+    ["Kick giriş amblemi", "https://pstreamers.com/assets/kick-logo.svg", "image"],
+    ["SW Create amblemi", "https://pstreamers.com/swcreate-sw-logo-transparent.png", "image"],
     ["Windows kurucusu", "https://pstreamers.com/downloads/Play-Streamers-Setup.exe", "binary"],
+    ["Windows güncelleme bildirimi", "https://pstreamers.com/downloads/latest.json", "json"],
+    ["Play Connect paketi", "https://pstreamers.com/play-connect-v1.15.0.zip", "binary"],
     ["Türkçe bayrağı", "https://pstreamers.com/assets/flags/tr.svg", "image"],
     ["İngilizce bayrağı", "https://pstreamers.com/assets/flags/gb.svg", "image"],
     ["Almanca bayrağı", "https://pstreamers.com/assets/flags/de.svg", "image"],
@@ -868,18 +875,21 @@ async function runScheduledPlayBotAudit(env) {
     if (result.type === "json") {
       let payload = null;
       try { payload = JSON.parse(result.body); } catch (_) { payload = null; }
-      if (!payload?.ok) issues.push(`${result.label} sağlık denetimi geçerli bir yanıt döndürmüyor.`);
+      const validPayload = result.label === "Windows güncelleme bildirimi"
+        ? Boolean(payload?.version && Array.isArray(payload?.platforms) && payload.platforms.length)
+        : Boolean(payload?.ok);
+      if (!validPayload) issues.push(`${result.label} geçerli bir JSON yanıtı döndürmüyor.`);
     }
   }
   const homeDocument = results.find(result => result.type === "document");
   if (homeDocument?.ok) {
     const documentContracts = [
-      ["site-v7.css?v=10.2.1", "Güncel premium stil dosyası"],
-      ["app.js?v=5.3.6", "Güncel ana uygulama betiği"],
-      ["app-final.js?v=5.7.8", "Güncel onarım betiği"],
-      ["site-v7.js?v=10.2.3", "Güncel site davranış betiği"],
-      ["live-i18n.js?v=4.3", "Güncel canlı çeviri betiği"],
-      ["play-streamers-build\" content=\"2026-08-27-site-10.2.3", "Site 10.2.3 sürüm işareti"],
+      ["site-v7.css?v=10.4.2", "Güncel premium stil dosyası"],
+      ["app.js?v=5.3.9", "Güncel ana uygulama betiği"],
+      ["app-final.js?v=5.9.0", "Güncel onarım betiği"],
+      ["site-v7.js?v=10.4.2", "Güncel site davranış betiği"],
+      ["live-i18n.js?v=5.0", "Güncel canlı çeviri betiği"],
+      ["play-streamers-build\" content=\"2026-08-27-site-10.4.2", "Site 10.4.2 sürüm işareti"],
     ];
     for (const [token, label] of documentContracts) {
       if (!homeDocument.body.includes(token)) issues.push(`${label} canlı ana sayfaya bağlanmamış.`);
@@ -918,7 +928,9 @@ async function runScheduledPlayBotAudit(env) {
       ["ps61DisplayedValue", "Canlı site sayacının ekrandaki değerden devam etmesi"],
       ["SW BOT", "SW Bot kullanıcı arayüzü"],
       ["/api/sw-bot/status", "SW Bot sunucu denetimi"],
-      ["SW AI AÇIKLAMASI", "SW AI anlaşılır sorun açıklaması"],
+      ["<b>SW AI</b>", "SW AI anlaşılır sorun açıklaması"],
+      ["unlabeledFields", "Form alanı erişilebilirlik denetimi"],
+      ["unsafeExternalLinks", "Yeni sekme bağlantı güvenliği denetimi"],
       ["Kullanım Koşulları", "Yasal koşullar bağlantısı"],
     ];
     for (const [token, label] of contracts) {
@@ -1067,11 +1079,63 @@ const INTERFACE_LANGUAGE_REQUIREMENTS = Object.freeze({
   ja: "Japanese written in Japanese script (日本語)",
 });
 const TURKISH_INTERFACE_TERMS = new Set(["giriş", "kayıt", "hakkımızda", "ürünlerimiz", "nasıl", "çalışır", "içerik", "planlama", "canlı", "analiz", "topluluk", "marka", "araçları", "gelir", "görünümleri", "yayın", "yayıncı", "hesap", "şifre", "doğrula", "indir", "destek", "sistem", "durumu", "ziyaretçi", "şu", "anda", "aktif", "hemen", "başla", "keşfet", "daha", "fazla", "burada", "mısın", "beni", "hatırla"]);
+const interfaceTranslationRateBuckets = new Map();
+let interfaceTranslationSchemaReady = false;
+let interfaceTranslationSchemaPromise = null;
 function containsTurkishInterfaceCopy(value) {
   const source = String(value || "");
   if (/[ÇĞİÖŞÜçğıöşü]/u.test(source)) return true;
   const normalized = source.toLocaleLowerCase("tr-TR");
   return normalized.split(/[^a-zçğıöşü]+/u).some(word => TURKISH_INTERFACE_TERMS.has(word));
+}
+
+function interfaceTranslationText(value) {
+  if (typeof value === "string") return value.trim();
+  if (!value || typeof value !== "object" || Array.isArray(value)) return "";
+  for (const key of ["translation", "text", "value", "content"]) {
+    if (typeof value[key] === "string") return value[key].trim();
+  }
+  return "";
+}
+
+function validInterfaceTranslation(source, value, language) {
+  const translated = interfaceTranslationText(value);
+  if (!translated || translated.length > 700) return false;
+  if (containsTurkishInterfaceCopy(source)) {
+    if (source.localeCompare(translated, undefined, { sensitivity: "base" }) === 0 || containsTurkishInterfaceCopy(translated)) return false;
+    if (language === "ar" && !/[\u0600-\u06ff]/u.test(translated)) return false;
+    if (language === "ru" && !/[\u0400-\u04ff]/u.test(translated)) return false;
+    if (language === "ja" && !/[\u3040-\u30ff\u3400-\u9fff]/u.test(translated)) return false;
+  }
+  return true;
+}
+
+async function generateInterfaceTranslations(env, language, sources) {
+  if (!sources.length) return [];
+  const payload = await env.AI.run("@cf/meta/llama-3.1-8b-instruct-fp8", {
+    messages: [
+      {
+        role: "system",
+        content: `TARGET LANGUAGE: ${INTERFACE_LANGUAGE_REQUIREMENTS[language]}. Translate every Turkish interface string into that target language, never into English unless English is the target. Preserve only these names exactly: Play Streamers, Play Connect, SW Create, SW Identity, SW Bot, SW AI and Product Pro. Also preserve URLs, versions, numbers and keyboard shortcuts. Never omit a word, leave Turkish UI wording behind, summarize, or add advice. Translate uppercase labels too. Every non-brand result for Arabic, Russian or Japanese must visibly use that language's native script. Keep the same item order and return only valid JSON.`,
+      },
+      {
+        role: "user",
+        content: `Translate this JSON array. Return {"translations":["..."]}: ${JSON.stringify(sources)}`,
+      },
+    ],
+    max_tokens: Math.min(7000, Math.max(1200, sources.length * 420)),
+    temperature: 0.02,
+  });
+  const text = typeof payload?.response === "string" ? payload.response
+    : typeof payload?.result?.response === "string" ? payload.result.response
+      : typeof payload?.choices?.[0]?.message?.content === "string" ? payload.choices[0].message.content : "";
+  const cleaned = text.trim().replace(/^```(?:json)?\s*/i, "").replace(/\s*```$/i, "");
+  const start = cleaned.indexOf("{");
+  const end = cleaned.lastIndexOf("}");
+  let generated = null;
+  try { generated = JSON.parse(cleaned.slice(start, end + 1))?.translations; } catch { generated = null; }
+  if (!Array.isArray(generated) || generated.length !== sources.length) return null;
+  return generated.map((value, index) => validInterfaceTranslation(sources[index], value, language) ? interfaceTranslationText(value) : "");
 }
 
 async function translateInterfaceStrings(request, env) {
@@ -1085,65 +1149,85 @@ async function translateInterfaceStrings(request, env) {
   if (!(await allowInterfaceTranslationRequest(request, env, language))) {
     return apiResponse(request, { error: "Canlı çeviri sınırına ulaşıldı. Kısa süre sonra yeniden dene." }, 429);
   }
-  const signature = await sha256Hex(JSON.stringify([language, strings]));
-  const cacheKey = `i18n:v3:${language}:${signature}`;
-  if (env.SESSIONS) {
-    const cached = await env.SESSIONS.get(cacheKey, "json").catch(() => null);
-    if (Array.isArray(cached) && cached.length === strings.length) {
-      return apiResponse(request, { ok: true, language, translations: cached, cached: true });
-    }
+  const cacheKeys = await Promise.all(strings.map(source => sha256Hex(`i18n:v5:${language}:${source}`)));
+  const cachedByKey = new Map();
+  if (env.DB) {
+    try {
+      await ensureInterfaceTranslationStorage(env);
+      const placeholders = cacheKeys.map((_, index) => `?${index + 1}`).join(",");
+      const cachedRows = await env.DB.prepare(`SELECT cache_key, translation FROM interface_translation_cache WHERE cache_key IN (${placeholders})`)
+        .bind(...cacheKeys)
+        .all();
+      const sourceIndexByKey = new Map(cacheKeys.map((key, index) => [key, index]));
+      for (const row of cachedRows?.results || []) {
+        const key = String(row.cache_key);
+        const sourceIndex = sourceIndexByKey.get(key);
+        const translation = interfaceTranslationText(row.translation);
+        if (sourceIndex !== undefined && validInterfaceTranslation(strings[sourceIndex], translation, language)) {
+          cachedByKey.set(key, translation);
+        }
+      }
+    } catch (_) { cachedByKey.clear(); }
   }
+  const translations = strings.map((_, index) => cachedByKey.get(cacheKeys[index]) || "");
+  const missingIndexes = translations.map((value, index) => value ? -1 : index).filter(index => index >= 0);
+  if (!missingIndexes.length) return apiResponse(request, { ok: true, language, translations, cached: true, cache: "d1" });
   if (!env.AI || typeof env.AI.run !== "function") return apiResponse(request, { error: "Canlı çeviri şu anda kullanılamıyor." }, 503);
-  const payload = await env.AI.run("@cf/meta/llama-3.1-8b-instruct-fp8", {
-    messages: [
-      {
-        role: "system",
-        content: `TARGET LANGUAGE: ${INTERFACE_LANGUAGE_REQUIREMENTS[language]}. Translate every Turkish interface string into that target language, never into English unless English is the target. Preserve only these names exactly: Play Streamers, Play Connect, SW Create, SW Identity, SW Bot, SW AI and Product Pro. Also preserve URLs, versions, numbers and keyboard shortcuts. Never omit a word, leave Turkish UI wording behind, summarize, or add advice. Translate uppercase labels too. Every non-brand result for Arabic, Russian or Japanese must visibly use that language's native script. Keep the same item order and return only valid JSON.`,
-      },
-      {
-        role: "user",
-        content: `Translate this JSON array. Return {"translations":["..."]}: ${JSON.stringify(strings)}`,
-      },
-    ],
-    max_tokens: 7000,
-    temperature: 0.05,
-  });
-  const text = typeof payload?.response === "string" ? payload.response
-    : typeof payload?.result?.response === "string" ? payload.result.response
-      : typeof payload?.choices?.[0]?.message?.content === "string" ? payload.choices[0].message.content : "";
-  const cleaned = text.trim().replace(/^```(?:json)?\s*/i, "").replace(/\s*```$/i, "");
-  const start = cleaned.indexOf("{");
-  const end = cleaned.lastIndexOf("}");
-  let translations = null;
-  try { translations = JSON.parse(cleaned.slice(start, end + 1))?.translations; } catch { translations = null; }
-  if (!Array.isArray(translations) || translations.length !== strings.length || translations.some(value => typeof value !== "string" || !value.trim() || value.length > 700)) {
-    return apiResponse(request, { error: "Canlı çeviri güvenli biçimde doğrulanamadı." }, 502);
+  const missingStrings = missingIndexes.map(index => strings[index]);
+  const generated = new Array(missingStrings.length).fill("");
+  const groups = [];
+  for (let index = 0; index < missingStrings.length; index += 8) groups.push({ index, sources: missingStrings.slice(index, index + 8) });
+  await Promise.all(groups.map(async group => {
+    const values = await generateInterfaceTranslations(env, language, group.sources).catch(() => null);
+    if (values) values.forEach((value, offset) => { generated[group.index + offset] = value; });
+  }));
+  const retryIndexes = generated.map((value, index) => value ? -1 : index).filter(index => index >= 0);
+  for (let index = 0; index < retryIndexes.length; index += 4) {
+    await Promise.all(retryIndexes.slice(index, index + 4).map(async generatedIndex => {
+      const values = await generateInterfaceTranslations(env, language, [missingStrings[generatedIndex]]).catch(() => null);
+      if (values?.[0]) generated[generatedIndex] = values[0];
+    }));
   }
-  translations = translations.map(value => value.trim());
-  const incompleteTranslationIndexes = translations.map((value, index) => {
-    const source = strings[index];
-    if (!containsTurkishInterfaceCopy(source)) return -1;
-    if (source.localeCompare(value, undefined, { sensitivity: "base" }) === 0 || containsTurkishInterfaceCopy(value)) return index;
-    if (language === "ar" && !/[\u0600-\u06ff]/u.test(value)) return index;
-    if (language === "ru" && !/[\u0400-\u04ff]/u.test(value)) return index;
-    return language === "ja" && !/[\u3040-\u30ff\u3400-\u9fff]/u.test(value) ? index : -1;
-  }).filter(index => index >= 0);
-  if (incompleteTranslationIndexes.length) {
-    const partial = translations.map((value, index) => incompleteTranslationIndexes.includes(index) ? "" : value);
-    return apiResponse(request, { ok: true, language, translations: partial, partial: true, cached: false });
+  missingIndexes.forEach((sourceIndex, generatedIndex) => { translations[sourceIndex] = generated[generatedIndex]; });
+  if (env.DB) {
+    const writes = missingIndexes
+      .map((sourceIndex, generatedIndex) => ({ sourceIndex, value: generated[generatedIndex] }))
+      .filter(item => item.value)
+      .map(item => env.DB.prepare(`INSERT INTO interface_translation_cache (cache_key, language, source_text, translation, created_at)
+        VALUES (?1, ?2, ?3, ?4, datetime('now'))
+        ON CONFLICT(cache_key) DO UPDATE SET translation = excluded.translation`)
+        .bind(cacheKeys[item.sourceIndex], language, strings[item.sourceIndex], item.value));
+    if (writes.length) await env.DB.batch(writes).catch(() => {});
   }
-  if (env.SESSIONS) await env.SESSIONS.put(cacheKey, JSON.stringify(translations), { expirationTtl: 30 * 24 * 60 * 60 }).catch(() => {});
-  return apiResponse(request, { ok: true, language, translations, cached: false });
+  return apiResponse(request, { ok: true, language, translations, partial: translations.some(value => !value), cached: false, cache: "d1" });
 }
 
-async function allowInterfaceTranslationRequest(request, env, language) {
-  if (!env.SESSIONS) return true;
+async function ensureInterfaceTranslationStorage(env) {
+  if (interfaceTranslationSchemaReady || !env.DB) return;
+  if (!interfaceTranslationSchemaPromise) {
+    interfaceTranslationSchemaPromise = env.DB.prepare(`CREATE TABLE IF NOT EXISTS interface_translation_cache (
+      cache_key TEXT PRIMARY KEY,
+      language TEXT NOT NULL,
+      source_text TEXT NOT NULL,
+      translation TEXT NOT NULL,
+      created_at TEXT NOT NULL
+    )`).run().then(() => { interfaceTranslationSchemaReady = true; }).finally(() => { interfaceTranslationSchemaPromise = null; });
+  }
+  await interfaceTranslationSchemaPromise;
+}
+
+async function allowInterfaceTranslationRequest(request, _env, language) {
   const minute = Math.floor(Date.now() / 60000);
   const client = await sha256Hex(`${request.headers.get("CF-Connecting-IP") || "unknown"}:${language}:${minute}`);
-  const key = `i18n-rate:${client}`;
-  const current = Number(await env.SESSIONS.get(key).catch(() => 0) || 0);
-  if (current >= 80) return false;
-  await env.SESSIONS.put(key, String(current + 1), { expirationTtl: 120 }).catch(() => {});
+  const current = interfaceTranslationRateBuckets.get(client);
+  if (Number(current?.count || 0) >= 80) return false;
+  interfaceTranslationRateBuckets.set(client, { count: Number(current?.count || 0) + 1, minute });
+  if (interfaceTranslationRateBuckets.size > 2000) {
+    for (const [key, bucket] of interfaceTranslationRateBuckets) {
+      if (Number(bucket?.minute || 0) < minute - 1) interfaceTranslationRateBuckets.delete(key);
+    }
+    while (interfaceTranslationRateBuckets.size > 2000) interfaceTranslationRateBuckets.delete(interfaceTranslationRateBuckets.keys().next().value);
+  }
   return true;
 }
 

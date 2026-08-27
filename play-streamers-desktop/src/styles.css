@@ -289,3 +289,9 @@ input,select,textarea,.settings-grid input,.settings-grid select,.special-fields
 @keyframes psDesktopAmbient{to{opacity:.42;transform:translate3d(14px,-9px,0)}}
 @keyframes psDesktopLogo{50%{transform:translateY(-2px)}}
 .desktop-locale{display:flex;min-height:31px;align-items:center;gap:6px;border:1px solid rgba(255,255,255,.13);border-radius:10px;padding:0 8px;color:#9b9b9f;background:linear-gradient(145deg,rgba(255,255,255,.075),rgba(255,255,255,.02));box-shadow:inset 0 1px 0 rgba(255,255,255,.1);backdrop-filter:blur(18px)}.desktop-locale span{font-size:11px}.desktop-locale select{max-width:88px;border:0;outline:0;color:#d7d7d5;background:transparent;font-size:7px;font-weight:800}.desktop-locale option{color:#eee;background:#111}.desktop-locale:hover{border-color:rgba(255,255,255,.3)}
+
+/* 0.14.3 — çalışma alanı her kart tıklamasında ana pencerenin üstünde
+   görünür kalır; Store/WebView katmanlarının kendi yığın bağlamları onu örtemez. */
+.drawer-backdrop{z-index:1000;isolation:isolate}.feature-drawer{outline:none}.feature-drawer:focus-visible{box-shadow:-25px 0 70px #0008,inset 0 0 0 1px rgba(255,255,255,.32)}
+body.feature-workspace-visible{overflow:hidden}
+@supports (backdrop-filter:blur(1px)){.feature-drawer{background:linear-gradient(135deg,rgba(255,255,255,.12),transparent 24%),rgba(8,8,10,.8);backdrop-filter:blur(28px) saturate(155%)}}

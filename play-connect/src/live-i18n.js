@@ -1,9 +1,11 @@
 const API = "https://api.pstreamers.com/api/i18n/translate";
 const LANGUAGES = new Set(["tr", "en", "de", "es", "fr", "ru", "ar", "ja"]);
 const records = new WeakMap();
+const attributeRecords = new WeakMap();
 let observer = null;
 let timer = 0;
 let busy = false;
+let recoveryPasses = 0;
 
 function clean(value) { return String(value || "").replace(/\s+/g, " ").trim(); }
 function eligible(value) {
@@ -11,8 +13,8 @@ function eligible(value) {
   return text.length > 1 && text.length <= 240 && /[A-Za-zÇĞİÖŞÜçğıöşü]/.test(text)
     && !/^(?:https?:|[\d\s.,:%+\-/]+$)/i.test(text);
 }
-function readCache(locale) { try { return JSON.parse(localStorage.getItem(`pc-i18n-v2:${locale}`) || "{}"); } catch { return {}; } }
-function writeCache(locale, value) { try { localStorage.setItem(`pc-i18n-v2:${locale}`, JSON.stringify(Object.fromEntries(Object.entries(value).slice(-900)))); } catch {} }
+function readCache(locale) { try { return JSON.parse(localStorage.getItem(`pc-i18n-v3:${locale}`) || "{}"); } catch { return {}; } }
+function writeCache(locale, value) { try { localStorage.setItem(`pc-i18n-v3:${locale}`, JSON.stringify(Object.fromEntries(Object.entries(value).slice(-1400)))); } catch {} }
 
 export function installLiveI18n({ locale = localStorage.getItem("play-connect-locale") || "tr", root = document.body } = {}) {
   const selected = LANGUAGES.has(locale) ? locale : "tr";
@@ -20,13 +22,26 @@ export function installLiveI18n({ locale = localStorage.getItem("play-connect-lo
   document.documentElement.dir = "ltr";
   document.documentElement.dataset.pcLocale = selected;
   observer?.disconnect();
-  if (selected === "tr" || !root) return { refresh() {} };
+  if (!root) return { refresh() {} };
+  if (selected === "tr") {
+    const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+    for (let node = walker.nextNode(); node; node = walker.nextNode()) {
+      const source = records.get(node)?.source;
+      if (source) node.nodeValue = source;
+    }
+    root.querySelectorAll("*").forEach(element => {
+      const record = attributeRecords.get(element);
+      if (record) Object.entries(record).forEach(([name, source]) => element.setAttribute(name, source));
+    });
+    return { refresh() {} };
+  }
   const cache = readCache(selected);
   const run = async () => {
     if (busy) return;
     busy = true;
     try {
       const targets = [];
+      const attributes = [];
       const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
       for (let node = walker.nextNode(); node; node = walker.nextNode()) {
         const host = node.parentElement;
@@ -37,9 +52,25 @@ export function installLiveI18n({ locale = localStorage.getItem("play-connect-lo
         const source = record?.translated && record.translated !== value ? value : record?.source || value;
         if (eligible(source)) targets.push({ node, source });
       }
-      const missing = [...new Set(targets.map(item => item.source).filter(source => !cache[source]))];
-      for (let index = 0; index < missing.length; index += 45) {
-        const strings = missing.slice(index, index + 45);
+      root.querySelectorAll("[placeholder],[title],[aria-label],[aria-description],[alt]").forEach(element => {
+        if (element.closest("[data-no-translate],.locale-menu")) return;
+        for (const name of ["placeholder", "title", "aria-label", "aria-description", "alt"]) {
+          const value = clean(element.getAttribute(name));
+          if (!eligible(value)) continue;
+          const record = attributeRecords.get(element) || {};
+          record[name] ||= value;
+          attributeRecords.set(element, record);
+          attributes.push({ element, name, source: record[name] });
+        }
+      });
+      targets.forEach(({ node, source }) => {
+        const translated = cache[source];
+        if (translated && node.isConnected) node.nodeValue = translated;
+      });
+      attributes.forEach(({ element, name, source }) => { if (cache[source] && element.isConnected) element.setAttribute(name, cache[source]); });
+      const missing = [...new Set([...targets.map(item => item.source), ...attributes.map(item => item.source)].filter(source => !cache[source]))];
+      for (let index = 0; index < missing.length; index += 16) {
+        const strings = missing.slice(index, index + 16);
         try {
           const response = await fetch(API, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ language: selected, strings }) });
           const result = await response.json().catch(() => ({}));
@@ -55,6 +86,14 @@ export function installLiveI18n({ locale = localStorage.getItem("play-connect-lo
         node.nodeValue = `${raw.match(/^\s*/)?.[0] || ""}${translated}${raw.match(/\s*$/)?.[0] || ""}`;
         records.set(node, { source, translated });
       });
+      attributes.forEach(({ element, name, source }) => { if (cache[source] && element.isConnected) element.setAttribute(name, cache[source]); });
+      const unresolved = missing.some(source => !cache[source]);
+      if (unresolved && recoveryPasses < 3) {
+        recoveryPasses += 1;
+        window.setTimeout(schedule, 900 * recoveryPasses);
+      } else if (!unresolved) {
+        recoveryPasses = 0;
+      }
     } finally { busy = false; }
   };
   const schedule = () => { window.clearTimeout(timer); timer = window.setTimeout(run, 120); };

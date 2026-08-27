@@ -26,6 +26,7 @@ const STATUS_LABELS = {
 } as const;
 
 const API_BASE = "https://api.pstreamers.com";
+const IS_STORE_BUILD = import.meta.env.VITE_DISTRIBUTION_CHANNEL === "store";
 
 interface DesktopSessionSummary {
   id: string;
@@ -115,10 +116,21 @@ export function App() {
   }, []);
 
   useEffect(() => {
-    if (!window.playStreamersNative) return;
+    if (!window.playStreamersNative || IS_STORE_BUILD) return;
     const timer = window.setTimeout(() => void checkDesktopUpdate(true), 3500);
     return () => window.clearTimeout(timer);
   }, []);
+
+  useEffect(() => {
+    if (!selectedFeature) return;
+    const closeOnEscape = (event: KeyboardEvent) => { if (event.key === "Escape") setSelectedFeature(null); };
+    document.body.classList.add("feature-workspace-visible");
+    document.addEventListener("keydown", closeOnEscape);
+    return () => {
+      document.body.classList.remove("feature-workspace-visible");
+      document.removeEventListener("keydown", closeOnEscape);
+    };
+  }, [selectedFeature]);
 
   async function checkDesktopUpdate(silent = false) {
     if (!window.playStreamersNative) {
@@ -229,7 +241,7 @@ export function App() {
         <header className="topbar">
           <div className="topbar-title"><span className="mobile-mark"><img src="./play-streamers-ps-logo.svg" alt="" /></span><div><small>PLAY STREAMERS</small><strong>{search ? "Arama sonuçları" : sectionLabels[section]}</strong></div></div>
           <label className="search-box"><span>⌕</span><input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Bir araç veya özellik ara…" /><kbd>Ctrl K</kbd></label>
-          <div className="top-actions"><label className="desktop-locale" title="Dil seçimi"><span>◎</span><select aria-label="Dil seçimi" value={locale} onChange={(event) => setLocale(event.target.value)}><option value="tr">Türkçe</option><option value="en">English</option><option value="de">Deutsch</option><option value="es">Español</option><option value="fr">Français</option><option value="ru">Русский</option><option value="ar">العربية</option><option value="ja">日本語</option></select></label><button className={`update-button ${updateState.phase}`} aria-label={updateState.message} title={updateState.message} disabled={updateState.phase === "checking" || updateState.phase === "installing"} onClick={() => void (updateState.phase === "available" ? installDesktopUpdate() : checkDesktopUpdate(false))}>{updateState.phase === "available" ? "↑" : updateState.phase === "installing" || updateState.phase === "checking" ? "…" : "↻"}</button><span className="system-ready"><i /> {updateState.phase === "available" ? `Sürüm ${updateState.version} hazır` : "Sistem hazır"}</span></div>
+          <div className="top-actions"><label className="desktop-locale" title="Dil seçimi"><span>◎</span><select aria-label="Dil seçimi" value={locale} onChange={(event) => setLocale(event.target.value)}><option value="tr">Türkçe</option><option value="en">English</option><option value="de">Deutsch</option><option value="es">Español</option><option value="fr">Français</option><option value="ru">Русский</option><option value="ar">العربية</option><option value="ja">日本語</option></select></label>{!IS_STORE_BUILD && <button className={`update-button ${updateState.phase}`} aria-label={updateState.message} title={updateState.message} disabled={updateState.phase === "checking" || updateState.phase === "installing"} onClick={() => void (updateState.phase === "available" ? installDesktopUpdate() : checkDesktopUpdate(false))}>{updateState.phase === "available" ? "↑" : updateState.phase === "installing" || updateState.phase === "checking" ? "…" : "↻"}</button>}<span className="system-ready"><i /> {IS_STORE_BUILD ? "Microsoft Store ile güncel" : updateState.phase === "available" ? `Sürüm ${updateState.version} hazır` : "Sistem hazır"}</span></div>
         </header>
 
         {section === "home" && !search ? (
@@ -342,7 +354,7 @@ function FeatureCard({ feature, plan, onSelect }: { feature: FeatureDefinition; 
 function FeatureDrawer({ feature, plan, onClose }: { feature: FeatureDefinition; plan: PlanTier; onClose: () => void }) {
   const unlocked = canUseFeature(plan, feature);
   const usable = unlocked && feature.status !== "planned";
-  return <div className="drawer-backdrop" onMouseDown={(event) => { if (event.target === event.currentTarget) onClose(); }}><aside className={`feature-drawer ${usable ? "workspace-open" : ""}`}><button className="drawer-close" onClick={onClose}>×</button><span className="eyebrow">{sectionLabels[feature.section].toLocaleUpperCase("tr-TR")}</span><div className="drawer-symbol">{feature.ai ? "AI" : feature.localFirst ? "PC" : "PS"}</div><h2>{feature.title}</h2><p>{feature.description}</p><div className="drawer-details"><div><span>Plan</span><strong>{planLabels[feature.minimumTier]}</strong></div><div><span>Durum</span><strong>{STATUS_LABELS[feature.status]}</strong></div><div><span>Veri</span><strong>{feature.localFirst ? "Önce bu cihaz" : feature.ai ? "Sayısal özet" : "Hesapla eşitlenir"}</strong></div></div>{usable ? <FeatureWorkspace feature={feature} /> : <button className="secondary-button full" disabled>{unlocked ? "Yerel motor entegrasyonu hazırlanıyor" : `${planLabels[feature.minimumTier]} ile açılır`}</button>}<small className="drawer-note">Araçlar açıklanan kapsamda çalışır. Dış platform verileri yalnız SW Identity üzerinden doğrulanabildiğinde gösterilir; bilinmeyen değerler üretilmez.</small></aside></div>;
+  return <div className="drawer-backdrop" role="presentation" onMouseDown={(event) => { if (event.target === event.currentTarget) onClose(); }}><aside className={`feature-drawer ${usable ? "workspace-open" : ""}`} role="dialog" aria-modal="true" aria-labelledby="featureDrawerTitle" tabIndex={-1}><button className="drawer-close" aria-label="Çalışma alanını kapat" onClick={onClose}>×</button><span className="eyebrow">{sectionLabels[feature.section].toLocaleUpperCase("tr-TR")}</span><div className="drawer-symbol">{feature.ai ? "AI" : feature.localFirst ? "PC" : "PS"}</div><h2 id="featureDrawerTitle">{feature.title}</h2><p>{feature.description}</p><div className="drawer-details"><div><span>Plan</span><strong>{planLabels[feature.minimumTier]}</strong></div><div><span>Durum</span><strong>{STATUS_LABELS[feature.status]}</strong></div><div><span>Veri</span><strong>{feature.localFirst ? "Önce bu cihaz" : feature.ai ? "Sayısal özet" : "Hesapla eşitlenir"}</strong></div></div>{usable ? <FeatureWorkspace feature={feature} /> : <button className="secondary-button full" disabled>{unlocked ? "Yerel motor entegrasyonu hazırlanıyor" : `${planLabels[feature.minimumTier]} ile açılır`}</button>}<small className="drawer-note">Araçlar açıklanan kapsamda çalışır. Dış platform verileri yalnız SW Identity üzerinden doğrulanabildiğinde gösterilir; bilinmeyen değerler üretilmez.</small></aside></div>;
 }
 
 function sectionIntro(section: AppSection) {

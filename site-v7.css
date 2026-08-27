@@ -2791,5 +2791,29 @@ body.ps-v9 :is(.landing-brand img,.ps-identity-wordmark img,.ps8-window-brand im
 #ps47MailDialog label.ps49-file-drop>input[type="file"]{position:absolute!important;width:1px!important;min-width:1px!important;height:1px!important;min-height:1px!important;margin:0!important;border:0!important;padding:0!important;opacity:0!important;clip-path:inset(50%)!important;pointer-events:none!important}
 .ps102-kick-logo{width:24px!important;height:28px!important}.ps102-sw-logo{width:36px!important;height:36px!important;filter:drop-shadow(0 0 8px rgba(32,255,194,.2))}
 .ps28-password-host>.ps28-eye.is-switching{animation:ps103-eye-orbit .48s cubic-bezier(.2,.78,.2,1)!important}.ps28-password-host>.ps28-eye.is-switching::before{animation:ps103-eye-ripple .48s ease-out}.ps28-password-host>.ps28-eye.is-switching svg{animation:ps103-eye-lid .48s cubic-bezier(.2,.8,.2,1)}
-.brand-logo>.ps103-brand-image,#psSecondHome .ps20-logo>.ps103-brand-image,#psSecondHome .ps-second-brand>b>.ps103-brand-image,#psSecondHome #ps12HomeBrand>b>.ps103-brand-image,.ps30-brand-mark>.ps103-brand-image,.ps44-auth-logo>.ps103-brand-image{display:block!important;width:82%!important;height:82%!important;margin:auto!important;object-fit:contain!important;filter:drop-shadow(0 0 8px rgba(255,255,255,.16))}
+html[data-ps-site-version="9"] body.ps-v9 .brand-logo:has(>.ps103-brand-image),html[data-ps-site-version="9"] body.ps-v9 .brand-logo[data-ps15-source="PS"],#psSecondHome .ps20-logo:has(>.ps103-brand-image),#psSecondHome .ps-second-brand>b:has(>.ps103-brand-image),#psSecondHome #ps12HomeBrand>b:has(>.ps103-brand-image),.ps30-brand-mark:has(>.ps103-brand-image),.ps44-auth-logo:has(>.ps103-brand-image){background:none!important}
+.brand-logo>.ps103-brand-image,#psSecondHome .ps20-logo>.ps103-brand-image,#psSecondHome .ps-second-brand>b>.ps103-brand-image,#psSecondHome #ps12HomeBrand>b>.ps103-brand-image,.ps30-brand-mark>.ps103-brand-image,.ps44-auth-logo>.ps103-brand-image{display:block!important;width:70%!important;height:70%!important;margin:auto!important;object-fit:contain!important;filter:drop-shadow(0 0 8px rgba(255,255,255,.16))}
+
+/* 10.4 — tek marka katmanı ve hafif gerçek sıvı cam. Yalnız destekleyen
+   tarayıcılarda kırılma/renk karışımı etkinleşir; eski GPU'lar sade camı korur. */
+@supports (backdrop-filter:blur(1px)) {
+  body.ps-v9 :is(.ps92-plan-tabs,.ps92-plan-panel article,.ps8-feature-grid article,.ps51-account-shell,.ps44-dialog,.ps69-play-bot,.ps61-site-metrics){
+    background:
+      linear-gradient(118deg,rgba(255,255,255,.13),transparent 25% 72%,rgba(255,255,255,.05)),
+      rgba(10,10,12,.62)!important;
+    box-shadow:0 24px 68px rgba(0,0,0,.42),inset 0 1px 0 rgba(255,255,255,.28),inset 0 -1px 0 rgba(255,255,255,.06)!important;
+    -webkit-backdrop-filter:blur(22px) saturate(145%) contrast(108%)!important;
+    backdrop-filter:blur(22px) saturate(145%) contrast(108%)!important;
+  }
+}
+
+/* Ortak geçiş yükleyicisi video yerine hızlı, erişilebilir bir cam portal
+   kullanır. Böylece ilk karede medya çözme maliyeti ve eski yeşil animasyon yoktur. */
+#ps28Loader,#ps20Loader,.ps14-loader{background:radial-gradient(circle at 50% 43%,rgba(255,255,255,.08),transparent 26%),rgba(0,0,0,.84)!important;-webkit-backdrop-filter:blur(18px)!important;backdrop-filter:blur(18px)!important}
+#ps28Loader .ps28-loader-card,#ps28Loader>div,#ps20Loader>div,.ps14-loader-box{position:relative;border:1px solid rgba(255,255,255,.2)!important;border-radius:28px!important;padding:30px 36px!important;background:linear-gradient(145deg,rgba(255,255,255,.12),rgba(7,7,9,.72))!important;box-shadow:0 34px 90px #000b,inset 0 1px 0 rgba(255,255,255,.28)!important;overflow:hidden}
+#ps28Loader .ps28-loader-card::before,#ps28Loader>div::before,#ps20Loader>div::before,.ps14-loader-box::before{display:block;width:58px;height:58px;margin:0 auto 18px;background:url('./play-streamers-ps-logo.svg?v=10.4') center/contain no-repeat;content:"";animation:ps104-loader-orbit 1.35s cubic-bezier(.45,.05,.3,1) infinite}
+#ps28Loader :is(video,.ps14-loader-mark),#ps20Loader i{display:none!important}
+#ps28Loader b,#ps20Loader span,.ps14-loader-box span{color:#fff!important;font:800 10px/1.3 "Space Grotesk","Segoe UI",sans-serif!important;letter-spacing:.22em!important}
+@keyframes ps104-loader-orbit{50%{filter:drop-shadow(0 0 18px rgba(255,255,255,.34));transform:translateY(-5px) rotate(3deg)}100%{transform:rotate(0)}}
+@media(prefers-reduced-motion:reduce){#ps28Loader .ps28-loader-card::before,#ps28Loader>div::before,#ps20Loader>div::before,.ps14-loader-box::before{animation:none}}
 @media(max-width:760px){.ps10-astronaut-visitor{bottom:44px!important}#ps47MailDialog{padding:9px!important}#ps47MailDialog .ps44-dialog.ps68-resizable-dialog{width:calc(100vw - 18px)!important;max-height:calc(100dvh - 18px)!important;border-radius:25px!important;padding:22px 18px!important}#ps47MailDialog .ps47-mail-form{max-height:calc(100dvh - 170px);padding-right:6px!important}}

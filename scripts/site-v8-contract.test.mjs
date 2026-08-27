@@ -11,12 +11,12 @@ test('site 10 assets are cache-busted and use fluid monochrome glass', async () 
     read('site-v7.css'),
     read('play-streamers-ps-logo.svg'),
   ]);
-  assert.match(html, /play-streamers-build" content="2026-08-27-site-10\.3\.9"/);
-  assert.match(html, /site-v7\.css\?v=10\.3\.1/);
+  assert.match(html, /play-streamers-build" content="2026-08-27-site-10\.4\.2"/);
+  assert.match(html, /site-v7\.css\?v=10\.4\.2/);
   assert.match(html, /app\.js\?v=5\.3\.9/);
-  assert.match(html, /site-v7\.js\?v=10\.3\.9/);
-  assert.match(html, /app-final\.js\?v=5\.8\.1/);
-  assert.match(html, /live-i18n\.js\?v=4\.12/);
+  assert.match(html, /site-v7\.js\?v=10\.4\.2/);
+  assert.match(html, /app-final\.js\?v=5\.9\.0/);
+  assert.match(html, /live-i18n\.js\?v=5\.0/);
   assert.match(css, /html\[data-ps-site-version="8"\]/);
   assert.match(css, /--signal: #f5f5f2/);
   assert.match(css, /@keyframes ps82-meteor/);
@@ -24,14 +24,15 @@ test('site 10 assets are cache-busted and use fluid monochrome glass', async () 
   assert.match(css, /@keyframes ps82-window-float/);
   assert.match(css, /@keyframes ps83-title-scan/);
   assert.match(css, /grid-template-columns: repeat\(12,minmax\(0,1fr\)\)/);
-  assert.doesNotMatch(css, /prefers-reduced-motion: reduce/);
+  assert.match(css, /prefers-reduced-motion:reduce/);
   assert.doesNotMatch(logo, /53fc18|ff7043/i);
   assert.match(css, /html\[data-ps-site-version="9"\]/);
   assert.match(css, /#ps9Ambient/);
   assert.match(css, /ps9-surface-in/);
   assert.match(css, /ps9-sw-ai-summary/);
   assert.doesNotMatch(css, /body\.ps-v9\s*>\s*:not\(#ps9Ambient\)/);
-  assert.match(logo, /Saf beyaz beşgen çerçeve/);
+  assert.match(logo, /Tek beyaz beşgen çerçeve/);
+  assert.match(logo, /translate\(14\.4 14\.4\) scale\(\.82\)/);
   assert.match(logo, /M80 8 147 56 122 145H38L13 56 80 8Z/);
   assert.doesNotMatch(logo, /linearGradient|circle|polygon/);
   assert.match(css, /@keyframes ps92-warp/);
@@ -101,12 +102,14 @@ test('SW Bot audits the whole interface and explains issues with SW AI', async (
   assert.match(app, /inertLinks/);
   assert.match(app, /clippedControls/);
   assert.match(app, /visibleFloaters/);
-  assert.match(worker, /sw-bot:global-status:v12/);
+  assert.match(worker, /sw-bot:global-status:v13/);
   assert.match(worker, /explainSwBotIssuesWithAi/);
   assert.match(worker, /swBotDeterministicReport/);
-  assert.match(worker, /site-v7\.css\?v=10\.2\.1/);
+  assert.match(worker, /site-v7\.css\?v=10\.4\.2/);
   assert.match(worker, /\/api\/i18n\/translate/);
-  assert.match(worker, /i18n:v3/);
+  assert.match(worker, /i18n:v5/);
+  assert.match(worker, /interface_translation_cache/);
+  assert.doesNotMatch(worker, /env\.SESSIONS/);
   assert.match(worker, /LEGACY_PLAY_STREAMERS_AUTH_PATHS/);
   assert.match(worker, /SW_IDENTITY_REQUIRED/);
   assert.match(worker, /terms\.html/);
@@ -133,9 +136,9 @@ test('SW Identity owns direct login and registration without legacy account leak
   assert.match(app, /productRedirectUrl/);
   assert.match(identityWorker, /SW_IDENTITY_VERSION = "1\.8\.0"/);
   assert.match(identityWorker, /createProductHandoffTarget/);
-  assert.match(i18n, /ps-live-i18n-v4-8/);
+  assert.match(i18n, /ps-live-i18n-v5/);
   assert.match(i18n, /Her şey tek platformda\./);
-  assert.match(i18n, /index \+= 20/);
+  assert.match(i18n, /index \+= 16/);
   assert.match(i18n, /requestTranslations\(strings\.slice\(0, middle\), depth \+ 1\)/);
   assert.match(i18n, /Promise\.all\(group\.map\(async strings =>/);
   assert.match(i18n, /SKIP_ATTRIBUTE_SELECTOR/);

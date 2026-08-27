@@ -319,7 +319,7 @@
         <div class="ps82-motion-field" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><span></span><span></span></div>
         <div class="ps82-orbits" aria-hidden="true"><i></i><i></i></div>
         <div class="ps8-hero-copy">
-          <span class="ps8-version"><i></i> PLAY STREAMERS WEB · v10.3.9</span>
+          <span class="ps8-version"><i></i> PLAY STREAMERS WEB · v10.4.2</span>
           <h1 id="ps8-title" aria-label="PLAY STREAMERS"><span>PLAY</span><span>STREAMERS</span></h1>
           <h2>Profesyonel Yayıncı Kontrol Platformu</h2>
           <p>Canlı analiz · İçerik planlama · Topluluk · Marka · Play Connect</p>
@@ -348,7 +348,7 @@
         <div class="ps8-app-stage" aria-label="Play Streamers masaüstü uygulaması ön izlemesi">
           <div class="ps8-app-halo" aria-hidden="true"></div>
           <article class="ps8-app-window">
-            <header><span class="ps8-window-brand"><img src="./play-streamers-ps-logo.svg?v=10.3" alt=""><b>PLAY STREAMERS</b></span><span class="ps8-window-controls">— □ ×</span></header>
+            <header><span class="ps8-window-brand"><img src="./play-streamers-ps-logo.svg?v=10.4" alt=""><b>PLAY STREAMERS</b></span><span class="ps8-window-controls">— □ ×</span></header>
             <div class="ps8-app-body">
               <aside><i class="active"></i><i></i><i></i><i></i><i></i><i></i></aside>
               <div class="ps8-app-content">
@@ -374,7 +374,7 @@
         <header><span>HAKKIMIZDA</span><h2 id="ps8-about-title">Yayıncı için çalışan,<br>yayın bitince durmayan sistem.</h2><p>Play Streamers, dağınık yayın araçlarını çoğaltmak yerine veriyi, üretimi ve hesap yönetimini tek anlaşılır düzende birleştirir.</p></header>
         <div class="ps8-about-grid">
           <article class="ps8-about-manifesto"><span>NEDEN VARIZ?</span><h3>Yayıncının dikkatini pencerelere değil, topluluğuna geri vermek için.</h3><p>Yayın açıkken oluşan önemli hareketler sunucuda izlenir; daha sonra geri döndüğünde geçmişin, ortalaman ve değişimin hazır olur.</p><div><b>OTOMATİK</b><b>ANLAŞILIR</b><b>YAYINCI ODAKLI</b></div></article>
-          <article class="ps8-about-system"><span>TEK EKOSİSTEM</span><div class="ps8-about-orbit" aria-hidden="true"><i><img src="./play-streamers-ps-logo.svg?v=10.3" alt=""></i><b>WEB</b><b>APP</b><b>CONNECT</b></div><p>Site hesap ve bağlantıları, masaüstü uygulaması günlük üretimi, Play Connect ise tarayıcı akışını taşır. Hepsi aynı SW Identity hesabında birleşir.</p></article>
+          <article class="ps8-about-system"><span>TEK EKOSİSTEM</span><div class="ps8-about-orbit" aria-hidden="true"><i><img src="./play-streamers-ps-logo.svg?v=10.4" alt=""></i><b>WEB</b><b>APP</b><b>CONNECT</b></div><p>Site hesap ve bağlantıları, masaüstü uygulaması günlük üretimi, Play Connect ise tarayıcı akışını taşır. Hepsi aynı SW Identity hesabında birleşir.</p></article>
         </div>
       </section>
 
@@ -396,7 +396,7 @@
         </div>
         <nav class="ps92-brand-directory" aria-label="Play Streamers ürün bağlantıları">
           <a class="ps92-swcreate-link" href="https://swcreate.com" target="_blank" rel="noopener noreferrer"><span>GELİŞTİREN EKOSİSTEM</span><b>SW CREATE</b><i>↗</i></a>
-          <div><a href="https://pstreamers.com">Play Streamers Web <i>↗</i></a><a href="./play-connect-v1.14.0.zip" download>Play Connect <i>↓</i></a><a href="./downloads/Play-Streamers-Setup.exe" download>Play Streamers App <i>↓</i></a></div>
+          <div><a href="https://pstreamers.com">Play Streamers Web <i>↗</i></a><a href="./play-connect-v1.15.0.zip" download>Play Connect <i>↓</i></a><a href="./downloads/Play-Streamers-Setup.exe" download>Play Streamers App <i>↓</i></a></div>
         </nav>
       </section>
 
@@ -418,7 +418,7 @@
       </section>
 
       <section class="ps8-final-cta" aria-labelledby="ps8-final-title">
-        <img src="./play-streamers-ps-logo.svg?v=10.3" alt="Play Streamers PS logosu">
+        <img src="./play-streamers-ps-logo.svg?v=10.4" alt="Play Streamers PS logosu">
         <span>WINDOWS 10/11 · SÜRÜM 0.14.2</span>
         <h2 id="ps8-final-title">Yayınını değil,<br>sistemini büyüt.</h2>
         <p>Hesabını ücretsiz oluştur. Play Streamers Desktop'ı indir ve üretim araçlarını tek sade merkezde kullanmaya başla.</p>
@@ -475,7 +475,17 @@
     queued = true;
     requestAnimationFrame(() => { queued = false; normalize(); });
   };
-  new MutationObserver(queue).observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['hidden','aria-hidden'] });
+  const normalizationObserver = new MutationObserver((records) => {
+    const relevant = records.some((record) => {
+      const target = record.target instanceof Element ? record.target : record.target.parentElement;
+      if (!target) return false;
+      if (target.closest('.ps61-site-metrics,#ps44StatusPopover,#ps55Notifications,.ps-tooltip')) return false;
+      if (record.type === 'attributes') return target.matches('#authOverlay,#psSecondHome,.app,#ps49InfoPage,#ps51AccountCenter,.landing-auth-modal');
+      return [...record.addedNodes, ...record.removedNodes].some((node) => node.nodeType === Node.ELEMENT_NODE && (node.matches?.('#authOverlay,#psSecondHome,.app,#ps49InfoPage,#ps51AccountCenter,.landing-auth-modal') || node.querySelector?.('#authOverlay,#psSecondHome,.app,#ps49InfoPage,#ps51AccountCenter,.landing-auth-modal')));
+    });
+    if (relevant) queue();
+  });
+  normalizationObserver.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['hidden','aria-hidden'] });
   const infoPaths = { about: '#hakkimizda', products: '#urunlerimiz', how: '#nasil-calisir' };
   document.addEventListener('click', (event) => {
     const publicBrand = event.target instanceof Element ? event.target.closest('#authOverlay .landing-brand') : null;

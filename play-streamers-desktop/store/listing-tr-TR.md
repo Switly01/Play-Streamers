@@ -15,11 +15,11 @@ Play Streamers; yayın analizini, içerik planlamasını, topluluk yönetimini, 
 
 Uygulamayı indirmek ve Play Streamers Free ile temel çalışma alanını kullanmak ücretsizdir. Play Streamers Pro ve Product Pro, Microsoft Store dışında yönetilen isteğe bağlı ücretli aboneliklerdir ve ek araçların kilidini açar. Kilitli özellikler uygulamada açıkça etiketlenir. Bu, süreli bir deneme değildir; kullanıcı satın alma yapmadan Free planı kullanmaya devam edebilir.
 
-Play Streamers 0.14.2 kamera, mikrofon veya medya yakalamaz; yayın açma, yerel video kaydı, sanal kamera ya da Studio içermez. Ham medya dosyaları sunucuya gönderilmez. Canlı kanal olayları ve yayın geçmişi yalnız bağlı hesaptan doğrulanan verilerle gösterilir.
+Play Streamers 0.14.3 kamera, mikrofon veya medya yakalamaz; yayın açma, yerel video kaydı, sanal kamera ya da Studio içermez. Ham medya dosyaları sunucuya gönderilmez. Canlı kanal olayları ve yayın geçmişi yalnız bağlı hesaptan doğrulanan verilerle gösterilir.
 
 ## Bu sürümdeki yenilikler
 
-0.14.2; sekiz dil için canlı arayüz çevirisini, yenilenen sıvı cam görünümünü ve SW Identity odaklı hesap deneyimini ekler; Windows 10 uyumluluğunu korur.
+0.14.3; araç kartlarının çalışma alanını güvenilir biçimde açar, sekiz dilde daha hızlı ve eksiksiz çeviri uygular, sıvı cam görünümünü iyileştirir ve Microsoft Store güncelleme kanalını doğrudan kurulum kanalından ayırır.
 
 ## Kısa açıklama
 

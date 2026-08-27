@@ -19,9 +19,24 @@ function providerStatus(provider, config) {
   return "";
 }
 
+async function openPanel(providerId = "") {
+  if (providerId) await chrome.storage.session?.set?.({ openProviderId: providerId }).catch(() => {});
+  const query = providerId ? `?provider=${encodeURIComponent(providerId)}` : "";
+  const url = chrome.runtime.getURL(`options/options.html${query}`);
+  try {
+    await chrome.tabs.create({ url, active: true });
+    window.close();
+  } catch {
+    await chrome.runtime.openOptionsPage();
+  }
+}
+
 async function openProvider(providerId) {
-  await chrome.storage.session?.set?.({ openProviderId: providerId }).catch(() => {});
-  await chrome.runtime.openOptionsPage();
+  try { await openPanel(providerId); }
+  catch (error) {
+    $("#pairStatus").className = "status error";
+    $("#pairStatus").textContent = error?.message || "Play Connect paneli açılamadı.";
+  }
 }
 
 function renderProvider(provider, config, compact = false) {
@@ -179,5 +194,8 @@ $("#scanNow").addEventListener("click", async () => {
   button.disabled = false;
 });
 
-$("#openSettings").addEventListener("click", () => chrome.runtime.openOptionsPage());
+$("#openSettings").addEventListener("click", () => { void openPanel().catch(error => {
+  $("#pairStatus").className = "status error";
+  $("#pairStatus").textContent = error?.message || "Play Connect paneli açılamadı.";
+}); });
 load();

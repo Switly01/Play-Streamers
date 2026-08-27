@@ -4,14 +4,44 @@ Bu doküman; Play Streamers web uygulaması, Cloudflare Worker API'si ve Play Co
 
 ## Güncel sürümler
 
+- Web sitesi: **10.4.2**
 - Web uygulaması / ürün bağlamı: **5.2**
-- Play Connect: **1.13.0**
-- Desktop: **0.14.1**
+- Play Connect: **1.15.0**
+- Desktop: **0.14.3**
 - Worker kaynak sabiti: **5.2**
 
 > Yayın öncesinde Worker'daki bildirim sürüm sabiti ile bu sürüm geçmişi aynı numaraya yükseltilmelidir.
 
 ## Play Streamers web uygulaması
+
+### Site 10.4.2 · Tam çeviri, SW Bot kapsamı ve tek katmanlı marka
+
+- Dashboard dahil dinamik/gizli yüzeyler, form açıklamaları ve erişilebilirlik
+  etiketleri sekiz dilde arka planda hazırlanır; önbellek ilk karede uygulanır.
+- Worker uzun AI yanıtını sekizli gruplara böler, başarısız öğeleri tek tek
+  yeniden dener ve başarılı sonuçları D1'e yazar. Çeviri için KV kullanılmaz.
+- SW Bot güncel dosya sürümlerini, ek logoları, router/analitik dosyalarını,
+  etiketsiz alanları ve güvenli olmayan dış bağlantıları da denetler.
+- Yükleme ekranı hızlı monokrom cam portalına geçirildi; geniş MutationObserver
+  ve gereksiz kaydırma konumlandırmaları sınırlandırıldı.
+- PS logosundaki çift görünüm kaldırıldı; tek dış hat ve daha küçük monogram
+  site ile masaüstü ikonlarına uygulandı.
+
+### Desktop 0.14.3 / Store 0.14.3.0
+
+- Özellik arayüzü güvenilir, odaklanabilir ve Escape ile kapanan sıvı cam
+  çekmecede açılır.
+- Store kanalı uygulama içi güncelleyiciyi çalıştırmaz; Store paketleme yolu
+  özel Tauri updater anahtarı istemeden gerçek MSIX üretir.
+- Dil değişiminde cihaz önbelleği önce uygulanır ve eksik metinler kontrollü
+  yeniden denemelerle tamamlanır.
+
+### Play Connect 1.15.0
+
+- Popup, yönetim panelini doğrudan yeni eklenti sekmesinde açar; başarısız
+  durumda tarayıcının standart seçenek sayfasına geri döner.
+- Chromium ve Firefox paketleri ile mağaza görselleri yeni monokrom sıvı cam
+  kimliğinde eşitlendi.
 
 ### 5.2 · Sıvı cam vitrin ve ürün planları
 

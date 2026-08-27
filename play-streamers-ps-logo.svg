@@ -1,7 +1,9 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" role="img" aria-labelledby="title desc">
   <title id="title">Play Streamers PS logosu</title>
-  <desc id="desc">Saf beyaz beşgen çerçeve içinde birleşik P ve S monogramı</desc>
+  <desc id="desc">Tek beyaz beşgen çerçeve içinde dengeli P ve S monogramı</desc>
   <path d="M80 8 147 56 122 145H38L13 56 80 8Z" fill="none" stroke="#fff" stroke-width="5.5" stroke-linejoin="round"/>
-  <path fill="#fff" fill-rule="evenodd" d="M31 124V37h36c22 0 35 11 35 30S89 98 67 98H54v26H31Zm23-66v19h12c9 0 14-3 14-10s-5-9-14-9H54Z"/>
-  <path fill="#fff" d="M129 50c-9-8-19-12-31-12-17 0-29 9-29 23 0 15 10 21 29 25 11 2 15 5 15 10 0 7-6 11-16 11-10 0-19-4-27-11l-12 17c11 9 24 14 39 14 23 0 38-13 38-33 0-16-10-24-29-28-11-3-15-5-15-10 0-5 5-8 13-8 8 0 16 3 24 10l11-18Z"/>
+  <g transform="translate(14.4 14.4) scale(.82)">
+    <path fill="#fff" fill-rule="evenodd" d="M31 124V37h36c22 0 35 11 35 30S89 98 67 98H54v26H31Zm23-66v19h12c9 0 14-3 14-10s-5-9-14-9H54Z"/>
+    <path fill="#fff" d="M129 50c-9-8-19-12-31-12-17 0-29 9-29 23 0 15 10 21 29 25 11 2 15 5 15 10 0 7-6 11-16 11-10 0-19-4-27-11l-12 17c11 9 24 14 39 14 23 0 38-13 38-33 0-16-10-24-29-28-11-3-15-5-15-10 0-5 5-8 13-8 8 0 16 3 24 10l11-18Z"/>
+  </g>
 </svg>

@@ -1,0 +1,1115 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet type='text/xsl' href='C:\ProgramData\Windows App Certification Kit\results.xsl'?>
+<REPORT xml:lang="tr-TR" OVERALL_RESULT="PASS" VERSION="10.0.26100.7705" LATEST_VERSION="" UPDATE_DOWNLOAD_URL="" TOOLSET_ARCHITECTURE="x64" SecureBoot="FALSE" APP_TYPE="Centennial" PUBLISHER_DISPLAY_NAME="CN=C7E10994-8739-4CF7-9F8C-2F23700A5BDC" APP_NAME="Switly.PlayStreamers" APP_VERSION="0.14.3.0" OSVERSION="10.0.26200.0" OS="Microsoft Windows 11 Pro" PER_USER_APPLICATION="" PARTIAL_RUN="FALSE" LCID="1055" X64_ONLY="TRUE" VALIDATION_TYPE="CommandLine" ReportGenerationTime="27.08.2026 18:41:03" ID="807c8638147de0453b08d474e8e46ff9">
+  <REQUIREMENTS>
+    <REQUIREMENT NUMBER="3" TITLE="Dijital olarak imzalanmış dosya sınaması" RATIONALE="Authenticode dijital imzası kullanıcıların yazılımın orijinal olduğundan emin olmasına olanak tanır. Ayrıca, bir dosyayla oynandığını, örneğin dosyaya virüs bulaştığını algılamayı da sağlar.">
+      <TEST INDEX="2" NAME="İmzalı sürücü ve yürütülebilir dosyaları yükle" DESCRIPTION="İmzalı sürücüyü ve yürütülebilir dosyaları yükleyin." EXECUTIONTIME="00h:00m:01s.79ms" OPTIONAL="TRUE">
+        <MESSAGES />
+        <RESULT><![CDATA[PASS]]></RESULT>
+      </TEST>
+    </REQUIREMENT>
+    <REQUIREMENT NUMBER="6" TITLE="Kullanıcı hesabı denetimi (UAC) sınaması" RATIONALE="Çoğu uygulama çalıştırma zamanında yönetici ayrıcalıkları gerektirmez ve standart kullanıcı olarak sorunsuz çalışmalıdır. Windows uygulamalarında, uygulamayı çalıştırmak için gereken ayrıcalıkları işletim sistemine bildiren yürütme düzeyini tanımlamaya yönelik bir bildirim (katıştırılmış veya dış) bulunmalıdır.">
+      <TEST INDEX="11" NAME="Kullanıcı hesabı denetimi çalıştırma düzeyi" DESCRIPTION="Windows® uygulamalarının, uygulamayı çalıştırmak için gereken ayrıcalıkları işletim sistemine bildiren yürütme düzeyini tanımlamak için bir bildirimi (katıştırılmış veya dış) olmalıdır." EXECUTIONTIME="00h:00m:01s.61ms" OPTIONAL="TRUE">
+        <MESSAGES />
+        <RESULT><![CDATA[PASS]]></RESULT>
+      </TEST>
+    </REQUIREMENT>
+    <REQUIREMENT NUMBER="12" TITLE="Paket uyumluluğu sınaması" RATIONALE="Paket, Store uyumluluk kurallarına uymuyor.">
+      <TEST INDEX="77" NAME="Uygulama sayısı" DESCRIPTION="Bir paket, bildirimdeki uygulamalardan yalnızca bir tanesini tanımlamalıdır." EXECUTIONTIME="00h:00m:01s.64ms" OPTIONAL="TRUE">
+        <MESSAGES />
+        <RESULT><![CDATA[PASS]]></RESULT>
+      </TEST>
+      <TEST INDEX="31" NAME="Uygulama bildirimi" DESCRIPTION="Uygulama bildiriminde tüm gerekli alanlar için geçerli girdiler bulunmalıdır." EXECUTIONTIME="00h:00m:01s.80ms" OPTIONAL="FALSE">
+        <MESSAGES />
+        <RESULT><![CDATA[PASS]]></RESULT>
+      </TEST>
+      <TEST INDEX="87" NAME="Dosya ilişkilendirmesi fiilleri" DESCRIPTION="Dosya ilişkilendirmesi fiillerinin kaydedilmediği kayıt defteri doğrulaması yüklendi." EXECUTIONTIME="00h:00m:01s.72ms" OPTIONAL="TRUE">
+        <MESSAGES />
+        <RESULT><![CDATA[PASS]]></RESULT>
+      </TEST>
+      <TEST INDEX="86" NAME="Kayıt defteri denetimleri" DESCRIPTION="Sürücülerin yüklenmediği kayıt defteri doğrulaması ve NT Hizmetleri yüklenmedi." EXECUTIONTIME="00h:00m:01s.57ms" OPTIONAL="TRUE">
+        <MESSAGES />
+        <RESULT><![CDATA[PASS]]></RESULT>
+      </TEST>
+      <TEST INDEX="91" NAME="Kurumsal Özellikler" DESCRIPTION="Pakette kuruma mahsus özelliklerin olup olmadığını kontrol edin." EXECUTIONTIME="00h:00m:01s.58ms" OPTIONAL="FALSE">
+        <MESSAGES />
+        <RESULT><![CDATA[PASS]]></RESULT>
+      </TEST>
+      <TEST INDEX="90" NAME="Kaynak Paketleri" DESCRIPTION="Herhangi bir kaynak paketinin PE dosyaları içerip içermediğini kontrol edin." EXECUTIONTIME="00h:00m:01s.62ms" OPTIONAL="FALSE">
+        <MESSAGES />
+        <RESULT><![CDATA[PASS]]></RESULT>
+      </TEST>
+    </REQUIREMENT>
+    <REQUIREMENT NUMBER="14" TITLE="Windows güvenliği özellikleri testi" RATIONALE="Uygulamalar, Windows güvenliği özelliklerini kabul etmelidir.">
+      <TEST INDEX="70" NAME="Yasaklanmış dosya çözümleyicisi" DESCRIPTION="Bilinen güvensiz dosyaları algılama amaçlı uygulama çözümlemesi" EXECUTIONTIME="00h:00m:01s.59ms" OPTIONAL="FALSE">
+        <MESSAGES />
+        <RESULT><![CDATA[PASS]]></RESULT>
+      </TEST>
+      <TEST INDEX="62" NAME="Özel kod imzalama" DESCRIPTION="Uygulama özel kod imzalama anahtar dosyalarını paketlememelidir." EXECUTIONTIME="00h:00m:01s.60ms" OPTIONAL="FALSE">
+        <MESSAGES />
+        <RESULT><![CDATA[PASS]]></RESULT>
+      </TEST>
+    </REQUIREMENT>
+    <REQUIREMENT NUMBER="19" TITLE="Uygulama bildirim kaynakları testleri" RATIONALE="Appx Paket Bildirimi'nin resources.pri dosyasında tanımlanan kaynakları Appx Paketleme Belirtimi ve Appx Bildirim Şeması'na uygun olarak geçerli kaynaklar olmalıdır.">
+      <TEST INDEX="45" NAME="Uygulama kaynakları" DESCRIPTION="Paketin resources.pri dosyasında tanımlanmış geçerli kaynakları olmalıdır." EXECUTIONTIME="00h:00m:01s.63ms" OPTIONAL="TRUE">
+        <MESSAGES />
+        <RESULT><![CDATA[PASS]]></RESULT>
+      </TEST>
+      <TEST INDEX="61" NAME="Markalama" DESCRIPTION="Uygulama, windows SDK örnekleri veya Visual Studio tarafından paketlenen varsayılan görüntüleri kullanmamalıdır." EXECUTIONTIME="00h:00m:02s.02ms" OPTIONAL="FALSE">
+        <MESSAGES />
+        <RESULT><![CDATA[PASS]]></RESULT>
+      </TEST>
+    </REQUIREMENT>
+    <REQUIREMENT NUMBER="20" TITLE="Hata ayıklama yapılandırması sınaması" RATIONALE="Uygulama hiçbir hata ayıklama ikili dosyası yüklememelidir.">
+      <TEST INDEX="46" NAME="Hata ayıklama yapılandırması" DESCRIPTION="Uygulama hiçbir hata ayıklama ikili dosyası yüklememelidir." EXECUTIONTIME="00h:00m:01s.71ms" OPTIONAL="TRUE">
+        <MESSAGES />
+        <RESULT><![CDATA[PASS]]></RESULT>
+      </TEST>
+    </REQUIREMENT>
+    <REQUIREMENT NUMBER="23" TITLE="Uygulama Özellikleri testi" RATIONALE="Özel kullanım özellikleri bildiren paketlerin ekleme işlemi sırasında gerekçelendirmeler sağlaması gerekecektir.">
+      <TEST INDEX="52" NAME="Özel kullanım özellikleri" DESCRIPTION="Özel kullanım özellikleri bildiren paketlerin ekleme işlemi sırasında gerekçelendirmeler sağlaması gerekecektir." EXECUTIONTIME="00h:00m:01s.59ms" OPTIONAL="FALSE">
+        <MESSAGES />
+        <RESULT><![CDATA[PASS]]></RESULT>
+      </TEST>
+    </REQUIREMENT>
+    <REQUIREMENT NUMBER="24" TITLE="Windows Çalışma Zamanı meta veri doğrulama" RATIONALE="Meta verilerin tüm oluşturma kaynaklarında uyumlu ve tutarlı olması gerekir.">
+      <TEST INDEX="56" NAME="ExclusiveTo özniteliği" DESCRIPTION="Bir sınıf, başka ExclusiveTo sınıfı olarak işaretlenen bir arabirim uygulamamalıdır." EXECUTIONTIME="00h:00m:19s.26ms" OPTIONAL="FALSE">
+        <MESSAGES />
+        <RESULT><![CDATA[PASS]]></RESULT>
+      </TEST>
+      <TEST INDEX="57" NAME="Tür konumu" DESCRIPTION="Türler eşleşen en uzun ad alanıyla meta veri dosyasında tanımlanmalıdır." EXECUTIONTIME="00h:00m:02s.02ms" OPTIONAL="FALSE">
+        <MESSAGES />
+        <RESULT><![CDATA[PASS]]></RESULT>
+      </TEST>
+      <TEST INDEX="55" NAME="Tür adı büyük/küçük harfe duyarlılığı" DESCRIPTION="Ad alanı ve tür adları yalnızca büyük/küçük harfe göre değişiklik göstermemelidir." EXECUTIONTIME="00h:00m:01s.69ms" OPTIONAL="FALSE">
+        <MESSAGES />
+        <RESULT><![CDATA[PASS]]></RESULT>
+      </TEST>
+      <TEST INDEX="54" NAME="Tür adı doğruluğu" DESCRIPTION="Yalnızca sistem türleri Windows ad alanında olabilir ve türler genel ad alanında olamaz." EXECUTIONTIME="00h:00m:01s.69ms" OPTIONAL="FALSE">
+        <MESSAGES />
+        <RESULT><![CDATA[PASS]]></RESULT>
+      </TEST>
+      <TEST INDEX="58" NAME="Genel meta verileri doğruluğu" DESCRIPTION="Meta veri dosyalarının geçerli ve doğru olabilmesi için çeşitli gereksinimleri karşılaması gerekir." EXECUTIONTIME="00h:00m:16s.50ms" OPTIONAL="TRUE">
+        <MESSAGES />
+        <RESULT><![CDATA[PASS]]></RESULT>
+      </TEST>
+      <TEST INDEX="53" NAME="Özellikler" DESCRIPTION="Yalnızca yazma ve dizin oluşturucu özellikleri kullanılamayabilir. İlgili alıcı ve ayarlayıcı yöntemleri tür olarak eşleşmelidir." EXECUTIONTIME="00h:00m:01s.63ms" OPTIONAL="FALSE">
+        <MESSAGES />
+        <RESULT><![CDATA[PASS]]></RESULT>
+      </TEST>
+    </REQUIREMENT>
+    <REQUIREMENT NUMBER="25" TITLE="Paket sağlamlık testi" RATIONALE="Doğruluğu güvence altına almak için uygulama paketi içeriğini doğrulama.">
+      <TEST INDEX="89" NAME="Arşiv dosyaları kullanımı" DESCRIPTION="Paketler, arşiv dosyaları içindeki PE dosyalarını içermemelidir." EXECUTIONTIME="00h:00m:01s.62ms" OPTIONAL="TRUE">
+        <MESSAGES />
+        <RESULT><![CDATA[PASS]]></RESULT>
+      </TEST>
+      <TEST INDEX="88" NAME="Engellenen yürütülebilir dosyalar" DESCRIPTION="İşlem başlatma API'lerine ve engellenmiş yürütülebilir dosyalara referans olup olmadığını algılar" EXECUTIONTIME="00h:00m:02s.84ms" OPTIONAL="TRUE">
+        <MESSAGES>
+          <MESSAGE TEXT="Dosya Play Streamers.exe, &quot;İşlem Başlatma&quot; ilişkili API kernel32.dll!CreateProcessW için bir referans içeriyor" />
+          <MESSAGE TEXT="Dosya Play Streamers.exe, &quot;İşlem Başlatma&quot; ilişkili API shell32.dll!ShellExecuteW için bir referans içeriyor" />
+          <MESSAGE TEXT="Dosya Play Streamers.exe, &quot;İşlem Başlatma&quot; ilişkili API shell32.dll!ShellExecuteExW için bir referans içeriyor" />
+          <MESSAGE TEXT="Dosya Play Streamers.exe, &quot;basH&quot; için engellenmiş bir yürütülebilir dosya referansı içeriyor." />
+          <MESSAGE TEXT="Dosya Play Streamers.exe, &quot;cmd&quot; için engellenmiş bir yürütülebilir dosya referansı içeriyor." />
+          <MESSAGE TEXT="Dosya Play Streamers.exe, &quot;cmd.exe&quot; için engellenmiş bir yürütülebilir dosya referansı içeriyor." />
+          <MESSAGE TEXT="Dosya Play Streamers.exe, &quot;\cmd.exe&quot; için engellenmiş bir yürütülebilir dosya referansı içeriyor." />
+        </MESSAGES>
+        <RESULT><![CDATA[FAIL]]></RESULT>
+      </TEST>
+      <TEST INDEX="63" NAME="Platforma uygun dosyalar" DESCRIPTION="Uygulama, hedef işlemci mimarisiyle eşleşmeyen dosyaları yüklememelidir." EXECUTIONTIME="00h:00m:01s.58ms" OPTIONAL="TRUE">
+        <MESSAGES />
+        <RESULT><![CDATA[PASS]]></RESULT>
+      </TEST>
+    </REQUIREMENT>
+    <REQUIREMENT NUMBER="26" TITLE="Yüksek DPI desteği" RATIONALE="Kullanıcı arabiriminin çok çeşitli yüksek DPI görüntü ayarlarında tutarlı bir şekilde düzgün görünmesi için, uygulama DPI kullanılır olarak ayarlanmalıdır.">
+      <TEST INDEX="92" NAME="DPIAwarenessValidation" DESCRIPTION="Kullanıcı arabiriminin çok çeşitli yüksek DPI görüntü ayarlarında tutarlı bir şekilde düzgün görünmesi için uygulamalar DPI kullanır olarak ayarlanmalıdır." EXECUTIONTIME="00h:00m:01s.68ms" OPTIONAL="FALSE">
+        <MESSAGES />
+        <RESULT><![CDATA[PASS]]></RESULT>
+      </TEST>
+    </REQUIREMENT>
+  </REQUIREMENTS>
+  <APPLICATIONS>
+    <Installed_Programs>
+      <Program Name="Switly.PlayStreamers" Type="Application" Source="AppxPackage" Publisher="CN=C7E10994-8739-4CF7-9F8C-2F23700A5BDC" Version="0.14.3.0" Language="1055" InstallDate="" RootDirPath="C:\WINDOWS\temp\appcert_4A34\Switly.PlayStreamers_0.14.3.0_x64__fq2q3wfq8d1r6" Id="00003bba95f86f5bed58cae5d773adec8f9b00001f04" HiddenArp="false">
+        <Indicators>
+          <WindowsStoreAppManifestIndicators>
+            <PackageManifest PackageFullName="Switly.PlayStreamers_0.14.3.0_x64__fq2q3wfq8d1r6">
+              <Package>
+                <Identity Name="Switly.PlayStreamers" Publisher="CN=C7E10994-8739-4CF7-9F8C-2F23700A5BDC" Version="0.14.3.0" ProcessorArchitecture="x64"></Identity>
+                <Properties>
+                  <DisplayName>Play Streamers</DisplayName>
+                  <PublisherDisplayName>Switly</PublisherDisplayName>
+                  <Logo>Assets\StoreLogo.png</Logo>
+                  <Description>Analiz, içerik, topluluk ve marka araçları için yayıncı çalışma alanı.</Description>
+                </Properties>
+                <Dependencies>
+                  <TargetDeviceFamily Name="Windows.Desktop" MinVersion="10.0.19041.0" MaxVersionTested="10.0.26100.0"></TargetDeviceFamily>
+                </Dependencies>
+                <Resources>
+                  <Resource Language="tr-TR"></Resource>
+                  <Resource Language="en-US"></Resource>
+                </Resources>
+                <Applications>
+                  <Application Id="PlayStreamers" Executable="Play Streamers.exe" EntryPoint="Windows.FullTrustApplication">
+                    <VisualElements AppListEntry="default" DisplayName="Play Streamers" Description="Analiz, içerik, topluluk ve marka araçları için yayıncı çalışma alanı" BackgroundColor="#050506" Square44x44Logo="Assets\Square44x44Logo.png" Square150x150Logo="Assets\Square150x150Logo.png" ForegroundText="light"></VisualElements>
+                    <Extensions>
+                      <Extension Category="windows.protocol">
+                        <Protocol Name="playstreamers"></Protocol>
+                      </Extension>
+                    </Extensions>
+                  </Application>
+                </Applications>
+                <Capabilities>
+                  <Capability Name="internetClient"></Capability>
+                  <Capability Name="runFullTrust"></Capability>
+                </Capabilities>
+              </Package>
+            </PackageManifest>
+          </WindowsStoreAppManifestIndicators>
+        </Indicators>
+        <StaticProperties>
+          <Files Id="">
+            <File Id="000073b2eb73826f1bf8ae7bfa31901178f9c09c2ea8" Name="Play Streamers.exe" ProductName="play streamers" CompanyName="swcreate" ProductVersion="0.14.3" VerLanguage="0" SwitchBackContext="0" FileVersion="0.14.3" OriginalFileName="" InternalName="" Size="12638208" SizeOfImage="12660736" PeHeaderHash="0101f275fcf11f32294d32d1208c4017ed1a451b3a12" PeChecksum="0" CrcChecksum="501903822" BinProductVersion="0.14.3" BinFileVersion="0.14.3.0" FileDescription="play streamers" LegalCopyright="" LinkDate="08/27/2026 15:40:08" BinaryType="pe64_amd64" LowerCaseLongPath="c:\windows\temp\appcert_4a34\switly.playstreamers_0.14.3.0_x64__fq2q3wfq8d1r6\play streamers.exe" SigPublisherName="" PeSubsystem="2" PeCharacteristics="34" Sha256="991ed25c1d4e617f66bbf111b7d1e153cd5f6a11d4d1b241a9e49575ee7ca39e" />
+          </Files>
+        </StaticProperties>
+      </Program>
+    </Installed_Programs>
+  </APPLICATIONS>
+  <DEPENDENCY_INFORMATION>
+    <AitStaticAnalysis ProgramId="0000da39a3ee5e6b4b0d3255bfef95601890afd80709" AnalysisVersion="1.80" DictionaryVersion="3.7" Type="Max" Id="C:\WINDOWS\temp\appcert_4A34\Switly.PlayStreamers_0.14.3.0_x64__fq2q3wfq8d1r6">
+      <AitFile ErrorCode="0" Name="Play Streamers.exe" Id="000073b2eb73826f1bf8ae7bfa31901178f9c09c2ea8">
+        <AitCategory Id="Com">
+          <AitFeature Name="{00000000-0000-0000-0000-000000000001}" />
+          <AitFeature Name="{00000000-0000-0000-0000-000000000002}" />
+          <AitFeature Name="{00000000-0000-0000-0000-000000000003}" />
+          <AitFeature Name="{00000000-0000-0000-0000-000000000004}" />
+          <AitFeature Name="{00000000-0000-0000-0000-000000000005}" />
+          <AitFeature Name="{00000000-0000-0000-0000-000000000006}" />
+          <AitFeature Name="{00000000-0000-0000-0000-000000000010}" />
+          <AitFeature Name="{00000000-0000-0000-0000-000000000011}" />
+          <AitFeature Name="{00000000-0000-0000-0000-000000000013}" />
+          <AitFeature Name="{00000000-0000-0000-0000-000000000019}" />
+          <AitFeature Name="{00000000-0000-0000-0000-000000000021}" />
+          <AitFeature Name="{00000003-0000-0000-c000-000000000046}" />
+          <AitFeature Name="{0000000c-0000-0000-c000-000000000046}" />
+          <AitFeature Name="{11111111-0000-0000-0000-000000000000}" />
+          <AitFeature Name="{18989b1d-99b5-455b-841c-ab7c74e4ddfc}" />
+          <AitFeature Name="{33e28130-4e1e-4676-835a-98395c3bc3bb}" />
+          <AitFeature Name="{374de290-123f-4565-9164-39c4925e467b}" />
+          <AitFeature Name="{3eb685db-65f9-4cf6-a03a-e3ef65729f3d}" />
+          <AitFeature Name="{4bd8d571-6d19-48d3-be97-422220080e43}" />
+          <AitFeature Name="{4f50731a-89cf-4782-b3e0-dce8c90476ba}" />
+          <AitFeature Name="{56fdf344-fd6d-11d0-958a-006097c9a090}" />
+          <AitFeature Name="{5e6c858f-0e22-4760-9afe-ea3317b67173}" />
+          <AitFeature Name="{602d4995-b13a-429b-a66e-1935e44f4317}" />
+          <AitFeature Name="{82ba7092-4c88-427d-a7bc-16dd93feb67e}" />
+          <AitFeature Name="{a63293e8-664e-48db-a079-df759e0509f7}" />
+          <AitFeature Name="{b4bfcc3a-db2c-424c-b029-7fe99a87c641}" />
+          <AitFeature Name="{c43dc798-95d1-4bea-9030-bb99e2983a1a}" />
+          <AitFeature Name="{dfdf76a2-c82a-4d63-906a-5644ac457385}" />
+          <AitFeature Name="{f1b32785-6fba-4fcf-9d55-7b8e7f157091}" />
+          <AitFeature Name="{fdd39ad0-238f-46af-adb4-6c85480369c7}" />
+        </AitCategory>
+        <AitCategory Id="ApiStatic">
+          <AitFeature Name="api-ms-win-crt-locale-l1-1-0.dll!_configthreadlocale" />
+          <AitFeature Name="api-ms-win-crt-runtime-l1-1-0.dll!__p___argc" />
+          <AitFeature Name="api-ms-win-crt-runtime-l1-1-0.dll!__p___argv" />
+          <AitFeature Name="api-ms-win-crt-runtime-l1-1-0.dll!_c_exit" />
+          <AitFeature Name="api-ms-win-crt-runtime-l1-1-0.dll!_cexit" />
+          <AitFeature Name="api-ms-win-crt-runtime-l1-1-0.dll!_configure_narrow_argv" />
+          <AitFeature Name="api-ms-win-crt-runtime-l1-1-0.dll!_crt_atexit" />
+          <AitFeature Name="api-ms-win-crt-runtime-l1-1-0.dll!_exit" />
+          <AitFeature Name="api-ms-win-crt-runtime-l1-1-0.dll!_get_initial_narrow_environment" />
+          <AitFeature Name="api-ms-win-crt-runtime-l1-1-0.dll!_initialize_narrow_environment" />
+          <AitFeature Name="api-ms-win-crt-runtime-l1-1-0.dll!_initialize_onexit_table" />
+          <AitFeature Name="api-ms-win-crt-runtime-l1-1-0.dll!_initterm" />
+          <AitFeature Name="api-ms-win-crt-runtime-l1-1-0.dll!_initterm_e" />
+          <AitFeature Name="api-ms-win-crt-runtime-l1-1-0.dll!_register_onexit_function" />
+          <AitFeature Name="api-ms-win-crt-runtime-l1-1-0.dll!_register_thread_local_exe_atexit_callback" />
+          <AitFeature Name="api-ms-win-crt-runtime-l1-1-0.dll!_seh_filter_exe" />
+          <AitFeature Name="api-ms-win-crt-runtime-l1-1-0.dll!_set_app_type" />
+          <AitFeature Name="api-ms-win-crt-runtime-l1-1-0.dll!abort" />
+          <AitFeature Name="api-ms-win-crt-runtime-l1-1-0.dll!exit" />
+          <AitFeature Name="api-ms-win-crt-runtime-l1-1-0.dll!terminate" />
+          <AitFeature Name="api-ms-win-crt-string-l1-1-0.dll!_wcsicmp" />
+          <AitFeature Name="api-ms-win-crt-string-l1-1-0.dll!strcmp" />
+          <AitFeature Name="api-ms-win-crt-string-l1-1-0.dll!strcpy_s" />
+          <AitFeature Name="api-ms-win-crt-string-l1-1-0.dll!strlen" />
+          <AitFeature Name="api-ms-win-crt-string-l1-1-0.dll!wcscmp" />
+          <AitFeature Name="api-ms-win-crt-string-l1-1-0.dll!wcslen" />
+          <AitFeature Name="api-ms-win-crt-string-l1-1-0.dll!wcsncmp" />
+          <AitFeature Name="api-ms-win-crt-math-l1-1-0.dll!__setusermatherr" />
+          <AitFeature Name="api-ms-win-crt-math-l1-1-0.dll!floor" />
+          <AitFeature Name="api-ms-win-crt-math-l1-1-0.dll!pow" />
+          <AitFeature Name="api-ms-win-crt-math-l1-1-0.dll!round" />
+          <AitFeature Name="api-ms-win-crt-math-l1-1-0.dll!roundf" />
+          <AitFeature Name="api-ms-win-crt-math-l1-1-0.dll!trunc" />
+          <AitFeature Name="api-ms-win-crt-stdio-l1-1-0.dll!__p__commode" />
+          <AitFeature Name="api-ms-win-crt-stdio-l1-1-0.dll!_set_fmode" />
+          <AitFeature Name="api-ms-win-crt-heap-l1-1-0.dll!_callnewh" />
+          <AitFeature Name="api-ms-win-crt-heap-l1-1-0.dll!_set_new_mode" />
+          <AitFeature Name="api-ms-win-crt-heap-l1-1-0.dll!calloc" />
+          <AitFeature Name="api-ms-win-crt-heap-l1-1-0.dll!free" />
+          <AitFeature Name="api-ms-win-crt-heap-l1-1-0.dll!malloc" />
+          <AitFeature Name="api-ms-win-crt-convert-l1-1-0.dll!_ultow_s" />
+          <AitFeature Name="api-ms-win-crt-convert-l1-1-0.dll!_wtoi" />
+          <AitFeature Name="api-ms-win-crt-convert-l1-1-0.dll!wcstol" />
+          <AitFeature Name="api-ms-win-core-synch-l1-2-0.dll!WaitOnAddress" />
+          <AitFeature Name="api-ms-win-core-synch-l1-2-0.dll!WakeByAddressAll" />
+          <AitFeature Name="api-ms-win-core-synch-l1-2-0.dll!WakeByAddressSingle" />
+          <AitFeature Name="ws2_32.dll!WSACleanup" />
+          <AitFeature Name="ws2_32.dll!WSAGetLastError" />
+          <AitFeature Name="ws2_32.dll!WSAIoctl" />
+          <AitFeature Name="ws2_32.dll!WSASend" />
+          <AitFeature Name="ws2_32.dll!WSASocketW" />
+          <AitFeature Name="ws2_32.dll!WSAStartup" />
+          <AitFeature Name="ws2_32.dll!bind" />
+          <AitFeature Name="ws2_32.dll!closesocket" />
+          <AitFeature Name="ws2_32.dll!connect" />
+          <AitFeature Name="ws2_32.dll!freeaddrinfo" />
+          <AitFeature Name="ws2_32.dll!getaddrinfo" />
+          <AitFeature Name="ws2_32.dll!getpeername" />
+          <AitFeature Name="ws2_32.dll!getsockname" />
+          <AitFeature Name="ws2_32.dll!getsockopt" />
+          <AitFeature Name="ws2_32.dll!ioctlsocket" />
+          <AitFeature Name="ws2_32.dll!recv" />
+          <AitFeature Name="ws2_32.dll!send" />
+          <AitFeature Name="ws2_32.dll!setsockopt" />
+          <AitFeature Name="ws2_32.dll!shutdown" />
+          <AitFeature Name="ole32.dll!CoCreateFreeThreadedMarshaler" />
+          <AitFeature Name="ole32.dll!CoCreateInstance" />
+          <AitFeature Name="ole32.dll!CoInitialize" />
+          <AitFeature Name="ole32.dll!CoInitializeEx" />
+          <AitFeature Name="ole32.dll!CoTaskMemAlloc" />
+          <AitFeature Name="ole32.dll!CoTaskMemFree" />
+          <AitFeature Name="ole32.dll!CoUninitialize" />
+          <AitFeature Name="ole32.dll!OleInitialize" />
+          <AitFeature Name="ole32.dll!RegisterDragDrop" />
+          <AitFeature Name="ole32.dll!RevokeDragDrop" />
+          <AitFeature Name="gdi32.dll!BitBlt" />
+          <AitFeature Name="gdi32.dll!CombineRgn" />
+          <AitFeature Name="gdi32.dll!CreateCompatibleDC" />
+          <AitFeature Name="gdi32.dll!CreateDIBSection" />
+          <AitFeature Name="gdi32.dll!CreateRectRgn" />
+          <AitFeature Name="gdi32.dll!CreateSolidBrush" />
+          <AitFeature Name="gdi32.dll!DeleteDC" />
+          <AitFeature Name="gdi32.dll!DeleteObject" />
+          <AitFeature Name="gdi32.dll!GetDeviceCaps" />
+          <AitFeature Name="gdi32.dll!SelectObject" />
+          <AitFeature Name="gdi32.dll!SetBkMode" />
+          <AitFeature Name="gdi32.dll!SetTextColor" />
+          <AitFeature Name="advapi32.dll!CredDeleteW" />
+          <AitFeature Name="advapi32.dll!CredFree" />
+          <AitFeature Name="advapi32.dll!CredReadW" />
+          <AitFeature Name="advapi32.dll!CredWriteW" />
+          <AitFeature Name="advapi32.dll!EventRegister" />
+          <AitFeature Name="advapi32.dll!EventSetInformation" />
+          <AitFeature Name="advapi32.dll!EventUnregister" />
+          <AitFeature Name="advapi32.dll!EventWriteTransfer" />
+          <AitFeature Name="advapi32.dll!RegCloseKey" />
+          <AitFeature Name="advapi32.dll!RegCreateKeyExW" />
+          <AitFeature Name="advapi32.dll!RegCreateKeyTransactedW" />
+          <AitFeature Name="advapi32.dll!RegDeleteTreeW" />
+          <AitFeature Name="advapi32.dll!RegGetValueW" />
+          <AitFeature Name="advapi32.dll!RegOpenKeyExW" />
+          <AitFeature Name="advapi32.dll!RegOpenKeyTransactedW" />
+          <AitFeature Name="advapi32.dll!RegQueryValueExW" />
+          <AitFeature Name="advapi32.dll!RegSetValueExW" />
+          <AitFeature Name="advapi32.dll!SystemFunction036" />
+          <AitFeature Name="kernel32.dll!AcquireSRWLockExclusive" />
+          <AitFeature Name="kernel32.dll!AddVectoredExceptionHandler" />
+          <AitFeature Name="kernel32.dll!CancelIoEx" />
+          <AitFeature Name="kernel32.dll!CloseHandle" />
+          <AitFeature Name="kernel32.dll!CompareStringOrdinal" />
+          <AitFeature Name="kernel32.dll!CreateDirectoryW" />
+          <AitFeature Name="kernel32.dll!CreateFileW" />
+          <AitFeature Name="kernel32.dll!CreateIoCompletionPort" />
+          <AitFeature Name="kernel32.dll!CreateMutexA" />
+          <AitFeature Name="kernel32.dll!CreateMutexW" />
+          <AitFeature Name="kernel32.dll!CreateProcessW" />
+          <AitFeature Name="kernel32.dll!CreateSymbolicLinkW" />
+          <AitFeature Name="kernel32.dll!CreateThread" />
+          <AitFeature Name="kernel32.dll!CreateWaitableTimerExW" />
+          <AitFeature Name="kernel32.dll!DeleteCriticalSection" />
+          <AitFeature Name="kernel32.dll!DeleteFileW" />
+          <AitFeature Name="kernel32.dll!DeviceIoControl" />
+          <AitFeature Name="kernel32.dll!DuplicateHandle" />
+          <AitFeature Name="kernel32.dll!EncodePointer" />
+          <AitFeature Name="kernel32.dll!ExitProcess" />
+          <AitFeature Name="kernel32.dll!FindClose" />
+          <AitFeature Name="kernel32.dll!FindFirstFileExW" />
+          <AitFeature Name="kernel32.dll!FindNextFileW" />
+          <AitFeature Name="kernel32.dll!FlsAlloc" />
+          <AitFeature Name="kernel32.dll!FlsFree" />
+          <AitFeature Name="kernel32.dll!FlsSetValue" />
+          <AitFeature Name="kernel32.dll!FormatMessageW" />
+          <AitFeature Name="kernel32.dll!FreeEnvironmentStringsW" />
+          <AitFeature Name="kernel32.dll!FreeLibrary" />
+          <AitFeature Name="kernel32.dll!GetCommandLineW" />
+          <AitFeature Name="kernel32.dll!GetConsoleMode" />
+          <AitFeature Name="kernel32.dll!GetConsoleOutputCP" />
+          <AitFeature Name="kernel32.dll!GetCurrentDirectoryW" />
+          <AitFeature Name="kernel32.dll!GetCurrentProcess" />
+          <AitFeature Name="kernel32.dll!GetCurrentProcessId" />
+          <AitFeature Name="kernel32.dll!GetCurrentThread" />
+          <AitFeature Name="kernel32.dll!GetCurrentThreadId" />
+          <AitFeature Name="kernel32.dll!GetEnvironmentStringsW" />
+          <AitFeature Name="kernel32.dll!GetEnvironmentVariableW" />
+          <AitFeature Name="kernel32.dll!GetFileAttributesW" />
+          <AitFeature Name="kernel32.dll!GetFileInformationByHandle" />
+          <AitFeature Name="kernel32.dll!GetFileInformationByHandleEx" />
+          <AitFeature Name="kernel32.dll!GetFinalPathNameByHandleW" />
+          <AitFeature Name="kernel32.dll!GetFullPathNameW" />
+          <AitFeature Name="kernel32.dll!GetLastError" />
+          <AitFeature Name="kernel32.dll!GetModuleFileNameW" />
+          <AitFeature Name="kernel32.dll!GetModuleHandleA" />
+          <AitFeature Name="kernel32.dll!GetModuleHandleExW" />
+          <AitFeature Name="kernel32.dll!GetModuleHandleW" />
+          <AitFeature Name="kernel32.dll!GetOverlappedResult" />
+          <AitFeature Name="kernel32.dll!GetProcAddress" />
+          <AitFeature Name="kernel32.dll!GetProcessHeap" />
+          <AitFeature Name="kernel32.dll!GetQueuedCompletionStatusEx" />
+          <AitFeature Name="kernel32.dll!GetStdHandle" />
+          <AitFeature Name="kernel32.dll!GetSystemDirectoryW" />
+          <AitFeature Name="kernel32.dll!GetSystemInfo" />
+          <AitFeature Name="kernel32.dll!GetSystemTimeAsFileTime" />
+          <AitFeature Name="kernel32.dll!GetSystemTimePreciseAsFileTime" />
+          <AitFeature Name="kernel32.dll!GetTempPathW" />
+          <AitFeature Name="kernel32.dll!GetUserDefaultUILanguage" />
+          <AitFeature Name="kernel32.dll!GetWindowsDirectoryW" />
+          <AitFeature Name="kernel32.dll!HeapAlloc" />
+          <AitFeature Name="kernel32.dll!HeapFree" />
+          <AitFeature Name="kernel32.dll!HeapReAlloc" />
+          <AitFeature Name="kernel32.dll!InitializeCriticalSectionAndSpinCount" />
+          <AitFeature Name="kernel32.dll!InitializeSListHead" />
+          <AitFeature Name="kernel32.dll!IsDebuggerPresent" />
+          <AitFeature Name="kernel32.dll!IsProcessorFeaturePresent" />
+          <AitFeature Name="kernel32.dll!IsThreadAFiber" />
+          <AitFeature Name="kernel32.dll!LCIDToLocaleName" />
+          <AitFeature Name="kernel32.dll!LoadLibraryA" />
+          <AitFeature Name="kernel32.dll!LoadLibraryExA" />
+          <AitFeature Name="kernel32.dll!LoadLibraryExW" />
+          <AitFeature Name="kernel32.dll!LoadLibraryW" />
+          <AitFeature Name="kernel32.dll!MultiByteToWideChar" />
+          <AitFeature Name="kernel32.dll!OutputDebugStringA" />
+          <AitFeature Name="kernel32.dll!OutputDebugStringW" />
+          <AitFeature Name="kernel32.dll!PostQueuedCompletionStatus" />
+          <AitFeature Name="kernel32.dll!QueryPerformanceCounter" />
+          <AitFeature Name="kernel32.dll!QueryPerformanceFrequency" />
+          <AitFeature Name="kernel32.dll!RaiseException" />
+          <AitFeature Name="kernel32.dll!ReadFile" />
+          <AitFeature Name="kernel32.dll!ReadFileEx" />
+          <AitFeature Name="kernel32.dll!ReleaseMutex" />
+          <AitFeature Name="kernel32.dll!ReleaseSRWLockExclusive" />
+          <AitFeature Name="kernel32.dll!RtlCaptureContext" />
+          <AitFeature Name="kernel32.dll!RtlLookupFunctionEntry" />
+          <AitFeature Name="kernel32.dll!RtlPcToFileHeader" />
+          <AitFeature Name="kernel32.dll!RtlUnwindEx" />
+          <AitFeature Name="kernel32.dll!RtlVirtualUnwind" />
+          <AitFeature Name="kernel32.dll!SetEnvironmentVariableW" />
+          <AitFeature Name="kernel32.dll!SetFileCompletionNotificationModes" />
+          <AitFeature Name="kernel32.dll!SetFileInformationByHandle" />
+          <AitFeature Name="kernel32.dll!SetFileTime" />
+          <AitFeature Name="kernel32.dll!SetHandleInformation" />
+          <AitFeature Name="kernel32.dll!SetLastError" />
+          <AitFeature Name="kernel32.dll!SetNamedPipeHandleState" />
+          <AitFeature Name="kernel32.dll!SetThreadStackGuarantee" />
+          <AitFeature Name="kernel32.dll!SetUnhandledExceptionFilter" />
+          <AitFeature Name="kernel32.dll!SetWaitableTimer" />
+          <AitFeature Name="kernel32.dll!Sleep" />
+          <AitFeature Name="kernel32.dll!SleepConditionVariableSRW" />
+          <AitFeature Name="kernel32.dll!SleepEx" />
+          <AitFeature Name="kernel32.dll!SwitchToThread" />
+          <AitFeature Name="kernel32.dll!TerminateProcess" />
+          <AitFeature Name="kernel32.dll!TlsAlloc" />
+          <AitFeature Name="kernel32.dll!TlsFree" />
+          <AitFeature Name="kernel32.dll!TlsGetValue" />
+          <AitFeature Name="kernel32.dll!TlsSetValue" />
+          <AitFeature Name="kernel32.dll!UnhandledExceptionFilter" />
+          <AitFeature Name="kernel32.dll!WaitForSingleObject" />
+          <AitFeature Name="kernel32.dll!WaitForSingleObjectEx" />
+          <AitFeature Name="kernel32.dll!WakeAllConditionVariable" />
+          <AitFeature Name="kernel32.dll!WideCharToMultiByte" />
+          <AitFeature Name="kernel32.dll!WriteConsoleW" />
+          <AitFeature Name="kernel32.dll!WriteFile" />
+          <AitFeature Name="kernel32.dll!WriteFileEx" />
+          <AitFeature Name="kernel32.dll!lstrlenW" />
+          <AitFeature Name="shell32.dll!DragFinish" />
+          <AitFeature Name="shell32.dll!DragQueryFileW" />
+          <AitFeature Name="shell32.dll!ILCreateFromPathW" />
+          <AitFeature Name="shell32.dll!ILFree" />
+          <AitFeature Name="shell32.dll!SHAppBarMessage" />
+          <AitFeature Name="shell32.dll!SHGetKnownFolderPath" />
+          <AitFeature Name="shell32.dll!SHOpenFolderAndSelectItems" />
+          <AitFeature Name="shell32.dll!ShellExecuteExW" />
+          <AitFeature Name="shell32.dll!ShellExecuteW" />
+          <AitFeature Name="comctl32.dll!DefSubclassProc" />
+          <AitFeature Name="comctl32.dll!RemoveWindowSubclass" />
+          <AitFeature Name="comctl32.dll!SetWindowSubclass" />
+          <AitFeature Name="comctl32.dll!TaskDialogIndirect" />
+          <AitFeature Name="user32.dll!AdjustWindowRect" />
+          <AitFeature Name="user32.dll!AdjustWindowRectEx" />
+          <AitFeature Name="user32.dll!AppendMenuW" />
+          <AitFeature Name="user32.dll!ChangeDisplaySettingsExW" />
+          <AitFeature Name="user32.dll!CheckMenuItem" />
+          <AitFeature Name="user32.dll!ClientToScreen" />
+          <AitFeature Name="user32.dll!ClipCursor" />
+          <AitFeature Name="user32.dll!CloseTouchInputHandle" />
+          <AitFeature Name="user32.dll!CreateAcceleratorTableW" />
+          <AitFeature Name="user32.dll!CreateIcon" />
+          <AitFeature Name="user32.dll!CreateMenu" />
+          <AitFeature Name="user32.dll!CreatePopupMenu" />
+          <AitFeature Name="user32.dll!CreateWindowExW" />
+          <AitFeature Name="user32.dll!DefWindowProcW" />
+          <AitFeature Name="user32.dll!DestroyAcceleratorTable" />
+          <AitFeature Name="user32.dll!DestroyIcon" />
+          <AitFeature Name="user32.dll!DestroyMenu" />
+          <AitFeature Name="user32.dll!DestroyWindow" />
+          <AitFeature Name="user32.dll!DispatchMessageA" />
+          <AitFeature Name="user32.dll!DispatchMessageW" />
+          <AitFeature Name="user32.dll!DrawIconEx" />
+          <AitFeature Name="user32.dll!DrawMenuBar" />
+          <AitFeature Name="user32.dll!DrawTextW" />
+          <AitFeature Name="user32.dll!EnableMenuItem" />
+          <AitFeature Name="user32.dll!EnableWindow" />
+          <AitFeature Name="user32.dll!EnumChildWindows" />
+          <AitFeature Name="user32.dll!EnumDisplayMonitors" />
+          <AitFeature Name="user32.dll!FillRect" />
+          <AitFeature Name="user32.dll!FindWindowExW" />
+          <AitFeature Name="user32.dll!FindWindowW" />
+          <AitFeature Name="user32.dll!FlashWindowEx" />
+          <AitFeature Name="user32.dll!GetActiveWindow" />
+          <AitFeature Name="user32.dll!GetAsyncKeyState" />
+          <AitFeature Name="user32.dll!GetClientRect" />
+          <AitFeature Name="user32.dll!GetClipCursor" />
+          <AitFeature Name="user32.dll!GetCursorPos" />
+          <AitFeature Name="user32.dll!GetDC" />
+          <AitFeature Name="user32.dll!GetForegroundWindow" />
+          <AitFeature Name="user32.dll!GetKeyState" />
+          <AitFeature Name="user32.dll!GetKeyboardLayout" />
+          <AitFeature Name="user32.dll!GetKeyboardState" />
+          <AitFeature Name="user32.dll!GetMenu" />
+          <AitFeature Name="user32.dll!GetMenuBarInfo" />
+          <AitFeature Name="user32.dll!GetMenuItemInfoW" />
+          <AitFeature Name="user32.dll!GetMessageA" />
+          <AitFeature Name="user32.dll!GetMessageW" />
+          <AitFeature Name="user32.dll!GetMonitorInfoW" />
+          <AitFeature Name="user32.dll!GetParent" />
+          <AitFeature Name="user32.dll!GetRawInputData" />
+          <AitFeature Name="user32.dll!GetSystemMenu" />
+          <AitFeature Name="user32.dll!GetSystemMetrics" />
+          <AitFeature Name="user32.dll!GetTouchInputInfo" />
+          <AitFeature Name="user32.dll!GetUpdateRect" />
+          <AitFeature Name="user32.dll!GetWindow" />
+          <AitFeature Name="user32.dll!GetWindowDC" />
+          <AitFeature Name="user32.dll!GetWindowLongPtrW" />
+          <AitFeature Name="user32.dll!GetWindowLongW" />
+          <AitFeature Name="user32.dll!GetWindowPlacement" />
+          <AitFeature Name="user32.dll!GetWindowRect" />
+          <AitFeature Name="user32.dll!GetWindowTextLengthW" />
+          <AitFeature Name="user32.dll!GetWindowTextW" />
+          <AitFeature Name="user32.dll!InsertMenuW" />
+          <AitFeature Name="user32.dll!InvalidateRect" />
+          <AitFeature Name="user32.dll!InvalidateRgn" />
+          <AitFeature Name="user32.dll!IsIconic" />
+          <AitFeature Name="user32.dll!IsProcessDPIAware" />
+          <AitFeature Name="user32.dll!IsWindow" />
+          <AitFeature Name="user32.dll!IsWindowEnabled" />
+          <AitFeature Name="user32.dll!IsWindowVisible" />
+          <AitFeature Name="user32.dll!LoadCursorW" />
+          <AitFeature Name="user32.dll!MapVirtualKeyExW" />
+          <AitFeature Name="user32.dll!MapVirtualKeyW" />
+          <AitFeature Name="user32.dll!MapWindowPoints" />
+          <AitFeature Name="user32.dll!MonitorFromPoint" />
+          <AitFeature Name="user32.dll!MonitorFromRect" />
+          <AitFeature Name="user32.dll!MonitorFromWindow" />
+          <AitFeature Name="user32.dll!MsgWaitForMultipleObjectsEx" />
+          <AitFeature Name="user32.dll!OffsetRect" />
+          <AitFeature Name="user32.dll!PeekMessageW" />
+          <AitFeature Name="user32.dll!PostMessageW" />
+          <AitFeature Name="user32.dll!PostQuitMessage" />
+          <AitFeature Name="user32.dll!PostThreadMessageW" />
+          <AitFeature Name="user32.dll!RedrawWindow" />
+          <AitFeature Name="user32.dll!RegisterClassExW" />
+          <AitFeature Name="user32.dll!RegisterRawInputDevices" />
+          <AitFeature Name="user32.dll!RegisterTouchWindow" />
+          <AitFeature Name="user32.dll!RegisterWindowMessageA" />
+          <AitFeature Name="user32.dll!ReleaseCapture" />
+          <AitFeature Name="user32.dll!ReleaseDC" />
+          <AitFeature Name="user32.dll!RemoveMenu" />
+          <AitFeature Name="user32.dll!ScreenToClient" />
+          <AitFeature Name="user32.dll!SendInput" />
+          <AitFeature Name="user32.dll!SendMessageW" />
+          <AitFeature Name="user32.dll!SetCapture" />
+          <AitFeature Name="user32.dll!SetCursor" />
+          <AitFeature Name="user32.dll!SetCursorPos" />
+          <AitFeature Name="user32.dll!SetFocus" />
+          <AitFeature Name="user32.dll!SetForegroundWindow" />
+          <AitFeature Name="user32.dll!SetMenu" />
+          <AitFeature Name="user32.dll!SetMenuItemInfoW" />
+          <AitFeature Name="user32.dll!SetParent" />
+          <AitFeature Name="user32.dll!SetPropW" />
+          <AitFeature Name="user32.dll!SetWindowDisplayAffinity" />
+          <AitFeature Name="user32.dll!SetWindowLongPtrW" />
+          <AitFeature Name="user32.dll!SetWindowLongW" />
+          <AitFeature Name="user32.dll!SetWindowPlacement" />
+          <AitFeature Name="user32.dll!SetWindowPos" />
+          <AitFeature Name="user32.dll!SetWindowRgn" />
+          <AitFeature Name="user32.dll!SetWindowTextW" />
+          <AitFeature Name="user32.dll!ShowCursor" />
+          <AitFeature Name="user32.dll!ShowWindow" />
+          <AitFeature Name="user32.dll!SystemParametersInfoA" />
+          <AitFeature Name="user32.dll!SystemParametersInfoW" />
+          <AitFeature Name="user32.dll!ToUnicodeEx" />
+          <AitFeature Name="user32.dll!TrackMouseEvent" />
+          <AitFeature Name="user32.dll!TrackPopupMenu" />
+          <AitFeature Name="user32.dll!TranslateAcceleratorW" />
+          <AitFeature Name="user32.dll!TranslateMessage" />
+          <AitFeature Name="user32.dll!UpdateWindow" />
+          <AitFeature Name="user32.dll!ValidateRect" />
+          <AitFeature Name="user32.dll!VkKeyScanW" />
+          <AitFeature Name="crypt32.dll!CertAddEncodedCertificateToStore" />
+          <AitFeature Name="crypt32.dll!CertCloseStore" />
+          <AitFeature Name="crypt32.dll!CertCreateCertificateChainEngine" />
+          <AitFeature Name="crypt32.dll!CertFreeCertificateChain" />
+          <AitFeature Name="crypt32.dll!CertFreeCertificateChainEngine" />
+          <AitFeature Name="crypt32.dll!CertFreeCertificateContext" />
+          <AitFeature Name="crypt32.dll!CertGetCertificateChain" />
+          <AitFeature Name="crypt32.dll!CertOpenStore" />
+          <AitFeature Name="crypt32.dll!CertSetCertificateContextProperty" />
+          <AitFeature Name="crypt32.dll!CertVerifyCertificateChainPolicy" />
+          <AitFeature Name="oleaut32.dll!GetErrorInfo" />
+          <AitFeature Name="oleaut32.dll!SetErrorInfo" />
+          <AitFeature Name="oleaut32.dll!SysFreeString" />
+          <AitFeature Name="oleaut32.dll!SysStringLen" />
+          <AitFeature Name="dwmapi.dll!DwmEnableBlurBehindWindow" />
+          <AitFeature Name="dwmapi.dll!DwmGetWindowAttribute" />
+          <AitFeature Name="dwmapi.dll!DwmSetWindowAttribute" />
+          <AitFeature Name="shlwapi.dll!SHCreateMemStream" />
+          <AitFeature Name="ntdll.dll!NtCancelIoFileEx" />
+          <AitFeature Name="ntdll.dll!NtCreateFile" />
+          <AitFeature Name="ntdll.dll!NtCreateNamedPipeFile" />
+          <AitFeature Name="ntdll.dll!NtDeviceIoControlFile" />
+          <AitFeature Name="ntdll.dll!NtOpenFile" />
+          <AitFeature Name="ntdll.dll!NtWriteFile" />
+          <AitFeature Name="ntdll.dll!RtlGetVersion" />
+          <AitFeature Name="ntdll.dll!RtlNtStatusToDosError" />
+          <AitFeature Name="bcryptprimitives.dll!ProcessPrng" />
+          <AitFeature Name="bcrypt.dll!BCryptGenRandom" />
+        </AitCategory>
+        <AitCategory Id="ApiDynamic">
+          <AitFeature Name="kernel32.dll!FlsGetValue" />
+          <AitFeature Name="kernel32.dll!GetCurrentApplicationUserModelId" />
+          <AitFeature Name="kernel32.dll!GetCurrentPackageInfo" />
+          <AitFeature Name="kernel32.dll!InitializeCriticalSectionEx" />
+          <AitFeature Name="kernel32.dll!SetThreadDescription" />
+          <AitFeature Name="shell32.dll!GetCurrentProcessExplicitAppUserModelID" />
+          <AitFeature Name="user32.dll!AdjustWindowRectExForDpi" />
+          <AitFeature Name="user32.dll!EnableNonClientDpiScaling" />
+          <AitFeature Name="user32.dll!GetPointerDeviceRects" />
+          <AitFeature Name="user32.dll!GetPointerFrameInfoHistory" />
+          <AitFeature Name="user32.dll!GetPointerTouchInfo" />
+          <AitFeature Name="user32.dll!GetSystemMetricsForDpi" />
+          <AitFeature Name="user32.dll!SetProcessDPIAware" />
+          <AitFeature Name="user32.dll!SetProcessDpiAwarenessContext" />
+          <AitFeature Name="user32.dll!SetWindowCompositionAttribute" />
+          <AitFeature Name="user32.dll!SkipPointerFrameMessages" />
+          <AitFeature Name="kernelbase.dll!AddPackageDependency" />
+          <AitFeature Name="kernelbase.dll!FlsGetValue" />
+          <AitFeature Name="kernelbase.dll!GetCurrentApplicationUserModelId" />
+          <AitFeature Name="kernelbase.dll!GetCurrentPackageInfo" />
+          <AitFeature Name="kernelbase.dll!GetFileVersionInfoSizeW" />
+          <AitFeature Name="kernelbase.dll!GetFileVersionInfoW" />
+          <AitFeature Name="kernelbase.dll!InitializeCriticalSectionEx" />
+          <AitFeature Name="kernelbase.dll!SetThreadDescription" />
+          <AitFeature Name="kernelbase.dll!TryCreatePackageDependency" />
+          <AitFeature Name="kernelbase.dll!VerQueryValueW" />
+          <AitFeature Name="ntdll.dll!NtCreateKeyedEvent" />
+          <AitFeature Name="ntdll.dll!NtReleaseKeyedEvent" />
+          <AitFeature Name="ntdll.dll!NtWaitForKeyedEvent" />
+          <AitFeature Name="version.dll!GetFileVersionInfoSizeW" />
+          <AitFeature Name="version.dll!GetFileVersionInfoW" />
+          <AitFeature Name="version.dll!VerQueryValueW" />
+          <AitFeature Name="dbghelp.dll!EnumerateLoadedModulesW64" />
+          <AitFeature Name="dbghelp.dll!SymAddrIncludeInlineTrace" />
+          <AitFeature Name="dbghelp.dll!SymFromInlineContextW" />
+          <AitFeature Name="dbghelp.dll!SymGetLineFromInlineContextW" />
+          <AitFeature Name="dbghelp.dll!SymGetOptions" />
+          <AitFeature Name="dbghelp.dll!SymGetSearchPathW" />
+          <AitFeature Name="dbghelp.dll!SymInitializeW" />
+          <AitFeature Name="dbghelp.dll!SymQueryInlineTrace" />
+          <AitFeature Name="dbghelp.dll!SymSetOptions" />
+          <AitFeature Name="dbghelp.dll!SymSetSearchPathW" />
+          <AitFeature Name="dbghelp.dll!dh" />
+        </AitCategory>
+      </AitFile>
+    </AitStaticAnalysis>
+    <AitStaticAnalysis ProgramId="0000da39a3ee5e6b4b0d3255bfef95601890afd80709" AnalysisVersion="1.80" DictionaryVersion="3.7" Type="Max" Id="C:\WINDOWS\temp\appcert_5470\Switly.PlayStreamers_0.14.1.0_x64__fq2q3wfq8d1r6">
+      <AitFile ErrorCode="0" Name="Play Streamers.exe" Id="0000ce642e24de831b5207b33ff1ea6f3207d23d8438">
+        <AitCategory Id="Com">
+          <AitFeature Name="{00000000-0000-0000-0000-000000000001}" />
+          <AitFeature Name="{00000000-0000-0000-0000-000000000002}" />
+          <AitFeature Name="{00000000-0000-0000-0000-000000000003}" />
+          <AitFeature Name="{00000000-0000-0000-0000-000000000004}" />
+          <AitFeature Name="{00000000-0000-0000-0000-000000000005}" />
+          <AitFeature Name="{00000000-0000-0000-0000-000000000006}" />
+          <AitFeature Name="{00000000-0000-0000-0000-000000000010}" />
+          <AitFeature Name="{00000000-0000-0000-0000-000000000011}" />
+          <AitFeature Name="{00000000-0000-0000-0000-000000000013}" />
+          <AitFeature Name="{00000000-0000-0000-0000-000000000019}" />
+          <AitFeature Name="{00000000-0000-0000-0000-000000000021}" />
+          <AitFeature Name="{00000003-0000-0000-c000-000000000046}" />
+          <AitFeature Name="{0000000c-0000-0000-c000-000000000046}" />
+          <AitFeature Name="{11111111-0000-0000-0000-000000000000}" />
+          <AitFeature Name="{18989b1d-99b5-455b-841c-ab7c74e4ddfc}" />
+          <AitFeature Name="{33e28130-4e1e-4676-835a-98395c3bc3bb}" />
+          <AitFeature Name="{374de290-123f-4565-9164-39c4925e467b}" />
+          <AitFeature Name="{3eb685db-65f9-4cf6-a03a-e3ef65729f3d}" />
+          <AitFeature Name="{4bd8d571-6d19-48d3-be97-422220080e43}" />
+          <AitFeature Name="{4f50731a-89cf-4782-b3e0-dce8c90476ba}" />
+          <AitFeature Name="{56fdf344-fd6d-11d0-958a-006097c9a090}" />
+          <AitFeature Name="{5e6c858f-0e22-4760-9afe-ea3317b67173}" />
+          <AitFeature Name="{602d4995-b13a-429b-a66e-1935e44f4317}" />
+          <AitFeature Name="{82ba7092-4c88-427d-a7bc-16dd93feb67e}" />
+          <AitFeature Name="{a63293e8-664e-48db-a079-df759e0509f7}" />
+          <AitFeature Name="{b4bfcc3a-db2c-424c-b029-7fe99a87c641}" />
+          <AitFeature Name="{c43dc798-95d1-4bea-9030-bb99e2983a1a}" />
+          <AitFeature Name="{dfdf76a2-c82a-4d63-906a-5644ac457385}" />
+          <AitFeature Name="{f1b32785-6fba-4fcf-9d55-7b8e7f157091}" />
+          <AitFeature Name="{fdd39ad0-238f-46af-adb4-6c85480369c7}" />
+        </AitCategory>
+        <AitCategory Id="ApiStatic">
+          <AitFeature Name="api-ms-win-crt-locale-l1-1-0.dll!_configthreadlocale" />
+          <AitFeature Name="api-ms-win-crt-runtime-l1-1-0.dll!__p___argc" />
+          <AitFeature Name="api-ms-win-crt-runtime-l1-1-0.dll!__p___argv" />
+          <AitFeature Name="api-ms-win-crt-runtime-l1-1-0.dll!_c_exit" />
+          <AitFeature Name="api-ms-win-crt-runtime-l1-1-0.dll!_cexit" />
+          <AitFeature Name="api-ms-win-crt-runtime-l1-1-0.dll!_configure_narrow_argv" />
+          <AitFeature Name="api-ms-win-crt-runtime-l1-1-0.dll!_crt_atexit" />
+          <AitFeature Name="api-ms-win-crt-runtime-l1-1-0.dll!_exit" />
+          <AitFeature Name="api-ms-win-crt-runtime-l1-1-0.dll!_get_initial_narrow_environment" />
+          <AitFeature Name="api-ms-win-crt-runtime-l1-1-0.dll!_initialize_narrow_environment" />
+          <AitFeature Name="api-ms-win-crt-runtime-l1-1-0.dll!_initialize_onexit_table" />
+          <AitFeature Name="api-ms-win-crt-runtime-l1-1-0.dll!_initterm" />
+          <AitFeature Name="api-ms-win-crt-runtime-l1-1-0.dll!_initterm_e" />
+          <AitFeature Name="api-ms-win-crt-runtime-l1-1-0.dll!_register_onexit_function" />
+          <AitFeature Name="api-ms-win-crt-runtime-l1-1-0.dll!_register_thread_local_exe_atexit_callback" />
+          <AitFeature Name="api-ms-win-crt-runtime-l1-1-0.dll!_seh_filter_exe" />
+          <AitFeature Name="api-ms-win-crt-runtime-l1-1-0.dll!_set_app_type" />
+          <AitFeature Name="api-ms-win-crt-runtime-l1-1-0.dll!abort" />
+          <AitFeature Name="api-ms-win-crt-runtime-l1-1-0.dll!exit" />
+          <AitFeature Name="api-ms-win-crt-runtime-l1-1-0.dll!terminate" />
+          <AitFeature Name="api-ms-win-crt-string-l1-1-0.dll!_wcsicmp" />
+          <AitFeature Name="api-ms-win-crt-string-l1-1-0.dll!strcmp" />
+          <AitFeature Name="api-ms-win-crt-string-l1-1-0.dll!strcpy_s" />
+          <AitFeature Name="api-ms-win-crt-string-l1-1-0.dll!strlen" />
+          <AitFeature Name="api-ms-win-crt-string-l1-1-0.dll!wcscmp" />
+          <AitFeature Name="api-ms-win-crt-string-l1-1-0.dll!wcslen" />
+          <AitFeature Name="api-ms-win-crt-string-l1-1-0.dll!wcsncmp" />
+          <AitFeature Name="api-ms-win-crt-math-l1-1-0.dll!__setusermatherr" />
+          <AitFeature Name="api-ms-win-crt-math-l1-1-0.dll!floor" />
+          <AitFeature Name="api-ms-win-crt-math-l1-1-0.dll!pow" />
+          <AitFeature Name="api-ms-win-crt-math-l1-1-0.dll!round" />
+          <AitFeature Name="api-ms-win-crt-math-l1-1-0.dll!roundf" />
+          <AitFeature Name="api-ms-win-crt-math-l1-1-0.dll!trunc" />
+          <AitFeature Name="api-ms-win-crt-stdio-l1-1-0.dll!__p__commode" />
+          <AitFeature Name="api-ms-win-crt-stdio-l1-1-0.dll!_set_fmode" />
+          <AitFeature Name="api-ms-win-crt-heap-l1-1-0.dll!_callnewh" />
+          <AitFeature Name="api-ms-win-crt-heap-l1-1-0.dll!_set_new_mode" />
+          <AitFeature Name="api-ms-win-crt-heap-l1-1-0.dll!calloc" />
+          <AitFeature Name="api-ms-win-crt-heap-l1-1-0.dll!free" />
+          <AitFeature Name="api-ms-win-crt-heap-l1-1-0.dll!malloc" />
+          <AitFeature Name="api-ms-win-crt-convert-l1-1-0.dll!_ultow_s" />
+          <AitFeature Name="api-ms-win-crt-convert-l1-1-0.dll!_wtoi" />
+          <AitFeature Name="api-ms-win-crt-convert-l1-1-0.dll!wcstol" />
+          <AitFeature Name="api-ms-win-core-synch-l1-2-0.dll!WaitOnAddress" />
+          <AitFeature Name="api-ms-win-core-synch-l1-2-0.dll!WakeByAddressAll" />
+          <AitFeature Name="api-ms-win-core-synch-l1-2-0.dll!WakeByAddressSingle" />
+          <AitFeature Name="ws2_32.dll!WSACleanup" />
+          <AitFeature Name="ws2_32.dll!WSAGetLastError" />
+          <AitFeature Name="ws2_32.dll!WSAIoctl" />
+          <AitFeature Name="ws2_32.dll!WSASend" />
+          <AitFeature Name="ws2_32.dll!WSASocketW" />
+          <AitFeature Name="ws2_32.dll!WSAStartup" />
+          <AitFeature Name="ws2_32.dll!bind" />
+          <AitFeature Name="ws2_32.dll!closesocket" />
+          <AitFeature Name="ws2_32.dll!connect" />
+          <AitFeature Name="ws2_32.dll!freeaddrinfo" />
+          <AitFeature Name="ws2_32.dll!getaddrinfo" />
+          <AitFeature Name="ws2_32.dll!getpeername" />
+          <AitFeature Name="ws2_32.dll!getsockname" />
+          <AitFeature Name="ws2_32.dll!getsockopt" />
+          <AitFeature Name="ws2_32.dll!ioctlsocket" />
+          <AitFeature Name="ws2_32.dll!recv" />
+          <AitFeature Name="ws2_32.dll!send" />
+          <AitFeature Name="ws2_32.dll!setsockopt" />
+          <AitFeature Name="ws2_32.dll!shutdown" />
+          <AitFeature Name="ole32.dll!CoCreateFreeThreadedMarshaler" />
+          <AitFeature Name="ole32.dll!CoCreateInstance" />
+          <AitFeature Name="ole32.dll!CoInitialize" />
+          <AitFeature Name="ole32.dll!CoInitializeEx" />
+          <AitFeature Name="ole32.dll!CoTaskMemAlloc" />
+          <AitFeature Name="ole32.dll!CoTaskMemFree" />
+          <AitFeature Name="ole32.dll!CoUninitialize" />
+          <AitFeature Name="ole32.dll!OleInitialize" />
+          <AitFeature Name="ole32.dll!RegisterDragDrop" />
+          <AitFeature Name="ole32.dll!RevokeDragDrop" />
+          <AitFeature Name="gdi32.dll!BitBlt" />
+          <AitFeature Name="gdi32.dll!CombineRgn" />
+          <AitFeature Name="gdi32.dll!CreateCompatibleDC" />
+          <AitFeature Name="gdi32.dll!CreateDIBSection" />
+          <AitFeature Name="gdi32.dll!CreateRectRgn" />
+          <AitFeature Name="gdi32.dll!CreateSolidBrush" />
+          <AitFeature Name="gdi32.dll!DeleteDC" />
+          <AitFeature Name="gdi32.dll!DeleteObject" />
+          <AitFeature Name="gdi32.dll!GetDeviceCaps" />
+          <AitFeature Name="gdi32.dll!SelectObject" />
+          <AitFeature Name="gdi32.dll!SetBkMode" />
+          <AitFeature Name="gdi32.dll!SetTextColor" />
+          <AitFeature Name="advapi32.dll!CredDeleteW" />
+          <AitFeature Name="advapi32.dll!CredFree" />
+          <AitFeature Name="advapi32.dll!CredReadW" />
+          <AitFeature Name="advapi32.dll!CredWriteW" />
+          <AitFeature Name="advapi32.dll!EventRegister" />
+          <AitFeature Name="advapi32.dll!EventSetInformation" />
+          <AitFeature Name="advapi32.dll!EventUnregister" />
+          <AitFeature Name="advapi32.dll!EventWriteTransfer" />
+          <AitFeature Name="advapi32.dll!RegCloseKey" />
+          <AitFeature Name="advapi32.dll!RegCreateKeyExW" />
+          <AitFeature Name="advapi32.dll!RegCreateKeyTransactedW" />
+          <AitFeature Name="advapi32.dll!RegDeleteTreeW" />
+          <AitFeature Name="advapi32.dll!RegGetValueW" />
+          <AitFeature Name="advapi32.dll!RegOpenKeyExW" />
+          <AitFeature Name="advapi32.dll!RegOpenKeyTransactedW" />
+          <AitFeature Name="advapi32.dll!RegQueryValueExW" />
+          <AitFeature Name="advapi32.dll!RegSetValueExW" />
+          <AitFeature Name="advapi32.dll!SystemFunction036" />
+          <AitFeature Name="kernel32.dll!AcquireSRWLockExclusive" />
+          <AitFeature Name="kernel32.dll!AddVectoredExceptionHandler" />
+          <AitFeature Name="kernel32.dll!CancelIoEx" />
+          <AitFeature Name="kernel32.dll!CloseHandle" />
+          <AitFeature Name="kernel32.dll!CompareStringOrdinal" />
+          <AitFeature Name="kernel32.dll!CreateDirectoryW" />
+          <AitFeature Name="kernel32.dll!CreateFileW" />
+          <AitFeature Name="kernel32.dll!CreateIoCompletionPort" />
+          <AitFeature Name="kernel32.dll!CreateMutexA" />
+          <AitFeature Name="kernel32.dll!CreateMutexW" />
+          <AitFeature Name="kernel32.dll!CreateProcessW" />
+          <AitFeature Name="kernel32.dll!CreateSymbolicLinkW" />
+          <AitFeature Name="kernel32.dll!CreateThread" />
+          <AitFeature Name="kernel32.dll!CreateWaitableTimerExW" />
+          <AitFeature Name="kernel32.dll!DeleteCriticalSection" />
+          <AitFeature Name="kernel32.dll!DeleteFileW" />
+          <AitFeature Name="kernel32.dll!DeviceIoControl" />
+          <AitFeature Name="kernel32.dll!DuplicateHandle" />
+          <AitFeature Name="kernel32.dll!EncodePointer" />
+          <AitFeature Name="kernel32.dll!ExitProcess" />
+          <AitFeature Name="kernel32.dll!FindClose" />
+          <AitFeature Name="kernel32.dll!FindFirstFileExW" />
+          <AitFeature Name="kernel32.dll!FindNextFileW" />
+          <AitFeature Name="kernel32.dll!FlsAlloc" />
+          <AitFeature Name="kernel32.dll!FlsFree" />
+          <AitFeature Name="kernel32.dll!FlsSetValue" />
+          <AitFeature Name="kernel32.dll!FormatMessageW" />
+          <AitFeature Name="kernel32.dll!FreeEnvironmentStringsW" />
+          <AitFeature Name="kernel32.dll!FreeLibrary" />
+          <AitFeature Name="kernel32.dll!GetCommandLineW" />
+          <AitFeature Name="kernel32.dll!GetConsoleMode" />
+          <AitFeature Name="kernel32.dll!GetConsoleOutputCP" />
+          <AitFeature Name="kernel32.dll!GetCurrentDirectoryW" />
+          <AitFeature Name="kernel32.dll!GetCurrentProcess" />
+          <AitFeature Name="kernel32.dll!GetCurrentProcessId" />
+          <AitFeature Name="kernel32.dll!GetCurrentThread" />
+          <AitFeature Name="kernel32.dll!GetCurrentThreadId" />
+          <AitFeature Name="kernel32.dll!GetEnvironmentStringsW" />
+          <AitFeature Name="kernel32.dll!GetEnvironmentVariableW" />
+          <AitFeature Name="kernel32.dll!GetFileAttributesW" />
+          <AitFeature Name="kernel32.dll!GetFileInformationByHandle" />
+          <AitFeature Name="kernel32.dll!GetFileInformationByHandleEx" />
+          <AitFeature Name="kernel32.dll!GetFinalPathNameByHandleW" />
+          <AitFeature Name="kernel32.dll!GetFullPathNameW" />
+          <AitFeature Name="kernel32.dll!GetLastError" />
+          <AitFeature Name="kernel32.dll!GetModuleFileNameW" />
+          <AitFeature Name="kernel32.dll!GetModuleHandleA" />
+          <AitFeature Name="kernel32.dll!GetModuleHandleExW" />
+          <AitFeature Name="kernel32.dll!GetModuleHandleW" />
+          <AitFeature Name="kernel32.dll!GetOverlappedResult" />
+          <AitFeature Name="kernel32.dll!GetProcAddress" />
+          <AitFeature Name="kernel32.dll!GetProcessHeap" />
+          <AitFeature Name="kernel32.dll!GetQueuedCompletionStatusEx" />
+          <AitFeature Name="kernel32.dll!GetStdHandle" />
+          <AitFeature Name="kernel32.dll!GetSystemDirectoryW" />
+          <AitFeature Name="kernel32.dll!GetSystemInfo" />
+          <AitFeature Name="kernel32.dll!GetSystemTimeAsFileTime" />
+          <AitFeature Name="kernel32.dll!GetSystemTimePreciseAsFileTime" />
+          <AitFeature Name="kernel32.dll!GetTempPathW" />
+          <AitFeature Name="kernel32.dll!GetUserDefaultUILanguage" />
+          <AitFeature Name="kernel32.dll!GetWindowsDirectoryW" />
+          <AitFeature Name="kernel32.dll!HeapAlloc" />
+          <AitFeature Name="kernel32.dll!HeapFree" />
+          <AitFeature Name="kernel32.dll!HeapReAlloc" />
+          <AitFeature Name="kernel32.dll!InitializeCriticalSectionAndSpinCount" />
+          <AitFeature Name="kernel32.dll!InitializeSListHead" />
+          <AitFeature Name="kernel32.dll!IsDebuggerPresent" />
+          <AitFeature Name="kernel32.dll!IsProcessorFeaturePresent" />
+          <AitFeature Name="kernel32.dll!IsThreadAFiber" />
+          <AitFeature Name="kernel32.dll!LCIDToLocaleName" />
+          <AitFeature Name="kernel32.dll!LoadLibraryA" />
+          <AitFeature Name="kernel32.dll!LoadLibraryExA" />
+          <AitFeature Name="kernel32.dll!LoadLibraryExW" />
+          <AitFeature Name="kernel32.dll!LoadLibraryW" />
+          <AitFeature Name="kernel32.dll!MultiByteToWideChar" />
+          <AitFeature Name="kernel32.dll!OutputDebugStringA" />
+          <AitFeature Name="kernel32.dll!OutputDebugStringW" />
+          <AitFeature Name="kernel32.dll!PostQueuedCompletionStatus" />
+          <AitFeature Name="kernel32.dll!QueryPerformanceCounter" />
+          <AitFeature Name="kernel32.dll!QueryPerformanceFrequency" />
+          <AitFeature Name="kernel32.dll!RaiseException" />
+          <AitFeature Name="kernel32.dll!ReadFile" />
+          <AitFeature Name="kernel32.dll!ReadFileEx" />
+          <AitFeature Name="kernel32.dll!ReleaseMutex" />
+          <AitFeature Name="kernel32.dll!ReleaseSRWLockExclusive" />
+          <AitFeature Name="kernel32.dll!RtlCaptureContext" />
+          <AitFeature Name="kernel32.dll!RtlLookupFunctionEntry" />
+          <AitFeature Name="kernel32.dll!RtlPcToFileHeader" />
+          <AitFeature Name="kernel32.dll!RtlUnwindEx" />
+          <AitFeature Name="kernel32.dll!RtlVirtualUnwind" />
+          <AitFeature Name="kernel32.dll!SetEnvironmentVariableW" />
+          <AitFeature Name="kernel32.dll!SetFileCompletionNotificationModes" />
+          <AitFeature Name="kernel32.dll!SetFileInformationByHandle" />
+          <AitFeature Name="kernel32.dll!SetFileTime" />
+          <AitFeature Name="kernel32.dll!SetHandleInformation" />
+          <AitFeature Name="kernel32.dll!SetLastError" />
+          <AitFeature Name="kernel32.dll!SetNamedPipeHandleState" />
+          <AitFeature Name="kernel32.dll!SetThreadStackGuarantee" />
+          <AitFeature Name="kernel32.dll!SetUnhandledExceptionFilter" />
+          <AitFeature Name="kernel32.dll!SetWaitableTimer" />
+          <AitFeature Name="kernel32.dll!Sleep" />
+          <AitFeature Name="kernel32.dll!SleepConditionVariableSRW" />
+          <AitFeature Name="kernel32.dll!SleepEx" />
+          <AitFeature Name="kernel32.dll!SwitchToThread" />
+          <AitFeature Name="kernel32.dll!TerminateProcess" />
+          <AitFeature Name="kernel32.dll!TlsAlloc" />
+          <AitFeature Name="kernel32.dll!TlsFree" />
+          <AitFeature Name="kernel32.dll!TlsGetValue" />
+          <AitFeature Name="kernel32.dll!TlsSetValue" />
+          <AitFeature Name="kernel32.dll!UnhandledExceptionFilter" />
+          <AitFeature Name="kernel32.dll!WaitForSingleObject" />
+          <AitFeature Name="kernel32.dll!WaitForSingleObjectEx" />
+          <AitFeature Name="kernel32.dll!WakeAllConditionVariable" />
+          <AitFeature Name="kernel32.dll!WideCharToMultiByte" />
+          <AitFeature Name="kernel32.dll!WriteConsoleW" />
+          <AitFeature Name="kernel32.dll!WriteFile" />
+          <AitFeature Name="kernel32.dll!WriteFileEx" />
+          <AitFeature Name="kernel32.dll!lstrlenW" />
+          <AitFeature Name="shell32.dll!DragFinish" />
+          <AitFeature Name="shell32.dll!DragQueryFileW" />
+          <AitFeature Name="shell32.dll!ILCreateFromPathW" />
+          <AitFeature Name="shell32.dll!ILFree" />
+          <AitFeature Name="shell32.dll!SHAppBarMessage" />
+          <AitFeature Name="shell32.dll!SHGetKnownFolderPath" />
+          <AitFeature Name="shell32.dll!SHOpenFolderAndSelectItems" />
+          <AitFeature Name="shell32.dll!ShellExecuteExW" />
+          <AitFeature Name="shell32.dll!ShellExecuteW" />
+          <AitFeature Name="comctl32.dll!DefSubclassProc" />
+          <AitFeature Name="comctl32.dll!RemoveWindowSubclass" />
+          <AitFeature Name="comctl32.dll!SetWindowSubclass" />
+          <AitFeature Name="comctl32.dll!TaskDialogIndirect" />
+          <AitFeature Name="user32.dll!AdjustWindowRect" />
+          <AitFeature Name="user32.dll!AdjustWindowRectEx" />
+          <AitFeature Name="user32.dll!AppendMenuW" />
+          <AitFeature Name="user32.dll!ChangeDisplaySettingsExW" />
+          <AitFeature Name="user32.dll!CheckMenuItem" />
+          <AitFeature Name="user32.dll!ClientToScreen" />
+          <AitFeature Name="user32.dll!ClipCursor" />
+          <AitFeature Name="user32.dll!CloseTouchInputHandle" />
+          <AitFeature Name="user32.dll!CreateAcceleratorTableW" />
+          <AitFeature Name="user32.dll!CreateIcon" />
+          <AitFeature Name="user32.dll!CreateMenu" />
+          <AitFeature Name="user32.dll!CreatePopupMenu" />
+          <AitFeature Name="user32.dll!CreateWindowExW" />
+          <AitFeature Name="user32.dll!DefWindowProcW" />
+          <AitFeature Name="user32.dll!DestroyAcceleratorTable" />
+          <AitFeature Name="user32.dll!DestroyIcon" />
+          <AitFeature Name="user32.dll!DestroyMenu" />
+          <AitFeature Name="user32.dll!DestroyWindow" />
+          <AitFeature Name="user32.dll!DispatchMessageA" />
+          <AitFeature Name="user32.dll!DispatchMessageW" />
+          <AitFeature Name="user32.dll!DrawIconEx" />
+          <AitFeature Name="user32.dll!DrawMenuBar" />
+          <AitFeature Name="user32.dll!DrawTextW" />
+          <AitFeature Name="user32.dll!EnableMenuItem" />
+          <AitFeature Name="user32.dll!EnableWindow" />
+          <AitFeature Name="user32.dll!EnumChildWindows" />
+          <AitFeature Name="user32.dll!EnumDisplayMonitors" />
+          <AitFeature Name="user32.dll!FillRect" />
+          <AitFeature Name="user32.dll!FindWindowExW" />
+          <AitFeature Name="user32.dll!FindWindowW" />
+          <AitFeature Name="user32.dll!FlashWindowEx" />
+          <AitFeature Name="user32.dll!GetActiveWindow" />
+          <AitFeature Name="user32.dll!GetAsyncKeyState" />
+          <AitFeature Name="user32.dll!GetClientRect" />
+          <AitFeature Name="user32.dll!GetClipCursor" />
+          <AitFeature Name="user32.dll!GetCursorPos" />
+          <AitFeature Name="user32.dll!GetDC" />
+          <AitFeature Name="user32.dll!GetForegroundWindow" />
+          <AitFeature Name="user32.dll!GetKeyState" />
+          <AitFeature Name="user32.dll!GetKeyboardLayout" />
+          <AitFeature Name="user32.dll!GetKeyboardState" />
+          <AitFeature Name="user32.dll!GetMenu" />
+          <AitFeature Name="user32.dll!GetMenuBarInfo" />
+          <AitFeature Name="user32.dll!GetMenuItemInfoW" />
+          <AitFeature Name="user32.dll!GetMessageA" />
+          <AitFeature Name="user32.dll!GetMessageW" />
+          <AitFeature Name="user32.dll!GetMonitorInfoW" />
+          <AitFeature Name="user32.dll!GetParent" />
+          <AitFeature Name="user32.dll!GetRawInputData" />
+          <AitFeature Name="user32.dll!GetSystemMenu" />
+          <AitFeature Name="user32.dll!GetSystemMetrics" />
+          <AitFeature Name="user32.dll!GetTouchInputInfo" />
+          <AitFeature Name="user32.dll!GetUpdateRect" />
+          <AitFeature Name="user32.dll!GetWindow" />
+          <AitFeature Name="user32.dll!GetWindowDC" />
+          <AitFeature Name="user32.dll!GetWindowLongPtrW" />
+          <AitFeature Name="user32.dll!GetWindowLongW" />
+          <AitFeature Name="user32.dll!GetWindowPlacement" />
+          <AitFeature Name="user32.dll!GetWindowRect" />
+          <AitFeature Name="user32.dll!GetWindowTextLengthW" />
+          <AitFeature Name="user32.dll!GetWindowTextW" />
+          <AitFeature Name="user32.dll!InsertMenuW" />
+          <AitFeature Name="user32.dll!InvalidateRect" />
+          <AitFeature Name="user32.dll!InvalidateRgn" />
+          <AitFeature Name="user32.dll!IsIconic" />
+          <AitFeature Name="user32.dll!IsProcessDPIAware" />
+          <AitFeature Name="user32.dll!IsWindow" />
+          <AitFeature Name="user32.dll!IsWindowEnabled" />
+          <AitFeature Name="user32.dll!IsWindowVisible" />
+          <AitFeature Name="user32.dll!LoadCursorW" />
+          <AitFeature Name="user32.dll!MapVirtualKeyExW" />
+          <AitFeature Name="user32.dll!MapVirtualKeyW" />
+          <AitFeature Name="user32.dll!MapWindowPoints" />
+          <AitFeature Name="user32.dll!MonitorFromPoint" />
+          <AitFeature Name="user32.dll!MonitorFromRect" />
+          <AitFeature Name="user32.dll!MonitorFromWindow" />
+          <AitFeature Name="user32.dll!MsgWaitForMultipleObjectsEx" />
+          <AitFeature Name="user32.dll!OffsetRect" />
+          <AitFeature Name="user32.dll!PeekMessageW" />
+          <AitFeature Name="user32.dll!PostMessageW" />
+          <AitFeature Name="user32.dll!PostQuitMessage" />
+          <AitFeature Name="user32.dll!PostThreadMessageW" />
+          <AitFeature Name="user32.dll!RedrawWindow" />
+          <AitFeature Name="user32.dll!RegisterClassExW" />
+          <AitFeature Name="user32.dll!RegisterRawInputDevices" />
+          <AitFeature Name="user32.dll!RegisterTouchWindow" />
+          <AitFeature Name="user32.dll!RegisterWindowMessageA" />
+          <AitFeature Name="user32.dll!ReleaseCapture" />
+          <AitFeature Name="user32.dll!ReleaseDC" />
+          <AitFeature Name="user32.dll!RemoveMenu" />
+          <AitFeature Name="user32.dll!ScreenToClient" />
+          <AitFeature Name="user32.dll!SendInput" />
+          <AitFeature Name="user32.dll!SendMessageW" />
+          <AitFeature Name="user32.dll!SetCapture" />
+          <AitFeature Name="user32.dll!SetCursor" />
+          <AitFeature Name="user32.dll!SetCursorPos" />
+          <AitFeature Name="user32.dll!SetFocus" />
+          <AitFeature Name="user32.dll!SetForegroundWindow" />
+          <AitFeature Name="user32.dll!SetMenu" />
+          <AitFeature Name="user32.dll!SetMenuItemInfoW" />
+          <AitFeature Name="user32.dll!SetParent" />
+          <AitFeature Name="user32.dll!SetPropW" />
+          <AitFeature Name="user32.dll!SetWindowDisplayAffinity" />
+          <AitFeature Name="user32.dll!SetWindowLongPtrW" />
+          <AitFeature Name="user32.dll!SetWindowLongW" />
+          <AitFeature Name="user32.dll!SetWindowPlacement" />
+          <AitFeature Name="user32.dll!SetWindowPos" />
+          <AitFeature Name="user32.dll!SetWindowRgn" />
+          <AitFeature Name="user32.dll!SetWindowTextW" />
+          <AitFeature Name="user32.dll!ShowCursor" />
+          <AitFeature Name="user32.dll!ShowWindow" />
+          <AitFeature Name="user32.dll!SystemParametersInfoA" />
+          <AitFeature Name="user32.dll!SystemParametersInfoW" />
+          <AitFeature Name="user32.dll!ToUnicodeEx" />
+          <AitFeature Name="user32.dll!TrackMouseEvent" />
+          <AitFeature Name="user32.dll!TrackPopupMenu" />
+          <AitFeature Name="user32.dll!TranslateAcceleratorW" />
+          <AitFeature Name="user32.dll!TranslateMessage" />
+          <AitFeature Name="user32.dll!UpdateWindow" />
+          <AitFeature Name="user32.dll!ValidateRect" />
+          <AitFeature Name="user32.dll!VkKeyScanW" />
+          <AitFeature Name="crypt32.dll!CertAddEncodedCertificateToStore" />
+          <AitFeature Name="crypt32.dll!CertCloseStore" />
+          <AitFeature Name="crypt32.dll!CertCreateCertificateChainEngine" />
+          <AitFeature Name="crypt32.dll!CertFreeCertificateChain" />
+          <AitFeature Name="crypt32.dll!CertFreeCertificateChainEngine" />
+          <AitFeature Name="crypt32.dll!CertFreeCertificateContext" />
+          <AitFeature Name="crypt32.dll!CertGetCertificateChain" />
+          <AitFeature Name="crypt32.dll!CertOpenStore" />
+          <AitFeature Name="crypt32.dll!CertSetCertificateContextProperty" />
+          <AitFeature Name="crypt32.dll!CertVerifyCertificateChainPolicy" />
+          <AitFeature Name="oleaut32.dll!GetErrorInfo" />
+          <AitFeature Name="oleaut32.dll!SetErrorInfo" />
+          <AitFeature Name="oleaut32.dll!SysFreeString" />
+          <AitFeature Name="oleaut32.dll!SysStringLen" />
+          <AitFeature Name="dwmapi.dll!DwmEnableBlurBehindWindow" />
+          <AitFeature Name="dwmapi.dll!DwmGetWindowAttribute" />
+          <AitFeature Name="dwmapi.dll!DwmSetWindowAttribute" />
+          <AitFeature Name="shlwapi.dll!SHCreateMemStream" />
+          <AitFeature Name="ntdll.dll!NtCancelIoFileEx" />
+          <AitFeature Name="ntdll.dll!NtCreateFile" />
+          <AitFeature Name="ntdll.dll!NtCreateNamedPipeFile" />
+          <AitFeature Name="ntdll.dll!NtDeviceIoControlFile" />
+          <AitFeature Name="ntdll.dll!NtOpenFile" />
+          <AitFeature Name="ntdll.dll!NtWriteFile" />
+          <AitFeature Name="ntdll.dll!RtlGetVersion" />
+          <AitFeature Name="ntdll.dll!RtlNtStatusToDosError" />
+          <AitFeature Name="bcryptprimitives.dll!ProcessPrng" />
+          <AitFeature Name="bcrypt.dll!BCryptGenRandom" />
+        </AitCategory>
+        <AitCategory Id="ApiDynamic">
+          <AitFeature Name="kernel32.dll!FlsGetValue" />
+          <AitFeature Name="kernel32.dll!GetCurrentApplicationUserModelId" />
+          <AitFeature Name="kernel32.dll!GetCurrentPackageInfo" />
+          <AitFeature Name="kernel32.dll!InitializeCriticalSectionEx" />
+          <AitFeature Name="kernel32.dll!SetThreadDescription" />
+          <AitFeature Name="shell32.dll!GetCurrentProcessExplicitAppUserModelID" />
+          <AitFeature Name="user32.dll!AdjustWindowRectExForDpi" />
+          <AitFeature Name="user32.dll!EnableNonClientDpiScaling" />
+          <AitFeature Name="user32.dll!GetPointerDeviceRects" />
+          <AitFeature Name="user32.dll!GetPointerFrameInfoHistory" />
+          <AitFeature Name="user32.dll!GetPointerTouchInfo" />
+          <AitFeature Name="user32.dll!GetSystemMetricsForDpi" />
+          <AitFeature Name="user32.dll!SetProcessDPIAware" />
+          <AitFeature Name="user32.dll!SetProcessDpiAwarenessContext" />
+          <AitFeature Name="user32.dll!SetWindowCompositionAttribute" />
+          <AitFeature Name="user32.dll!SkipPointerFrameMessages" />
+          <AitFeature Name="kernelbase.dll!AddPackageDependency" />
+          <AitFeature Name="kernelbase.dll!FlsGetValue" />
+          <AitFeature Name="kernelbase.dll!GetCurrentApplicationUserModelId" />
+          <AitFeature Name="kernelbase.dll!GetCurrentPackageInfo" />
+          <AitFeature Name="kernelbase.dll!GetFileVersionInfoSizeW" />
+          <AitFeature Name="kernelbase.dll!GetFileVersionInfoW" />
+          <AitFeature Name="kernelbase.dll!InitializeCriticalSectionEx" />
+          <AitFeature Name="kernelbase.dll!SetThreadDescription" />
+          <AitFeature Name="kernelbase.dll!TryCreatePackageDependency" />
+          <AitFeature Name="kernelbase.dll!VerQueryValueW" />
+          <AitFeature Name="ntdll.dll!NtCreateKeyedEvent" />
+          <AitFeature Name="ntdll.dll!NtReleaseKeyedEvent" />
+          <AitFeature Name="ntdll.dll!NtWaitForKeyedEvent" />
+          <AitFeature Name="version.dll!GetFileVersionInfoSizeW" />
+          <AitFeature Name="version.dll!GetFileVersionInfoW" />
+          <AitFeature Name="version.dll!VerQueryValueW" />
+          <AitFeature Name="dbghelp.dll!EnumerateLoadedModulesW64" />
+          <AitFeature Name="dbghelp.dll!SymAddrIncludeInlineTrace" />
+          <AitFeature Name="dbghelp.dll!SymFromInlineContextW" />
+          <AitFeature Name="dbghelp.dll!SymGetLineFromInlineContextW" />
+          <AitFeature Name="dbghelp.dll!SymGetOptions" />
+          <AitFeature Name="dbghelp.dll!SymGetSearchPathW" />
+          <AitFeature Name="dbghelp.dll!SymInitializeW" />
+          <AitFeature Name="dbghelp.dll!SymQueryInlineTrace" />
+          <AitFeature Name="dbghelp.dll!SymSetOptions" />
+          <AitFeature Name="dbghelp.dll!SymSetSearchPathW" />
+          <AitFeature Name="dbghelp.dll!dh" />
+        </AitCategory>
+      </AitFile>
+    </AitStaticAnalysis>
+  </DEPENDENCY_INFORMATION>
+</REPORT>

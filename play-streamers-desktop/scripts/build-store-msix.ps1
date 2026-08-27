@@ -14,6 +14,7 @@ param(
     [ValidateSet('10.0.19041.0', '10.0.22000.0')]
     [string]$MinimumWindowsVersion = '10.0.19041.0',
     [switch]$WithoutVirtualCameraRegistration,
+    [switch]$SkipStoreBuild,
     [string]$OutputPath
 )
 
@@ -33,6 +34,23 @@ if (-not $PackageVersion) {
 }
 if (-not $OutputPath) {
     $OutputPath = Join-Path $storeRelease "Play-Streamers-$PackageVersion-windows-x64.msix"
+}
+
+if (-not $SkipStoreBuild) {
+    $pnpm = Get-Command pnpm.cmd -ErrorAction SilentlyContinue
+    if (-not $pnpm) { $pnpm = Get-Command pnpm -ErrorAction SilentlyContinue }
+    if (-not $pnpm) { throw 'Store derlemesi için pnpm bulunamadı.' }
+    $previousChannel = $env:VITE_DISTRIBUTION_CHANNEL
+    try {
+        $env:VITE_DISTRIBUTION_CHANNEL = 'store'
+        # Microsoft Store MSIX kendi imzalama/güncelleme zincirini kullanır.
+        # Bu nedenle NSIS ve Tauri updater artefaktlarını üretmeden yalnızca
+        # Store paketine girecek uygulama ikilisini derle.
+        & $pnpm.Source exec tauri build --no-bundle
+        if ($LASTEXITCODE -ne 0) { throw 'Microsoft Store kanalına özel masaüstü derlemesi tamamlanamadı.' }
+    } finally {
+        $env:VITE_DISTRIBUTION_CHANNEL = $previousChannel
+    }
 }
 
 $requiredFiles = @((Join-Path $releaseRoot 'play-streamers.exe'))

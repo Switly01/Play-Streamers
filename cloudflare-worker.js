@@ -875,8 +875,12 @@ async function runScheduledPlayBotAudit(env) {
     if (result.type === "json") {
       let payload = null;
       try { payload = JSON.parse(result.body); } catch (_) { payload = null; }
+      const updaterPlatforms = payload?.platforms;
+      const hasUpdaterPlatforms = Array.isArray(updaterPlatforms)
+        ? updaterPlatforms.length > 0
+        : Boolean(updaterPlatforms && typeof updaterPlatforms === "object" && Object.keys(updaterPlatforms).length);
       const validPayload = result.label === "Windows güncelleme bildirimi"
-        ? Boolean(payload?.version && Array.isArray(payload?.platforms) && payload.platforms.length)
+        ? Boolean(payload?.version && hasUpdaterPlatforms)
         : Boolean(payload?.ok);
       if (!validPayload) issues.push(`${result.label} geçerli bir JSON yanıtı döndürmüyor.`);
     }

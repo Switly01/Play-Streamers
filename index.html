@@ -6,7 +6,7 @@
 <base href="/">
 <link rel="icon" type="image/svg+xml" sizes="any" href="play-streamers-ps-logo.svg?v=10.3">
 <link rel="shortcut icon" type="image/svg+xml" href="play-streamers-ps-logo.svg?v=10.3">
-<meta name="play-streamers-build" content="2026-08-27-site-10.3.1">
+<meta name="play-streamers-build" content="2026-08-27-site-10.3.2">
 <meta name="theme-color" content="#050505">
 <meta name="description" content="Play Streamers; yayın verilerini sunucuda otomatik toplayan, hesap ve ürün yönetimini tek merkezde birleştiren yayıncı platformu.">
 <title>Play Streamers — Yayıncı Merkezi</title>
@@ -21,12 +21,12 @@
     document.documentElement.dataset.psLiveLocale = language;
     if (language !== 'tr') {
       document.documentElement.classList.add('ps-i18n-booting');
-      window.setTimeout(() => document.documentElement.classList.remove('ps-i18n-booting'), 12000);
+      window.setTimeout(() => document.documentElement.classList.remove('ps-i18n-booting'), 20000);
     }
   } catch (_) {}
 })();
 </script>
-<style>html.ps-i18n-booting body{opacity:0}html:not(.ps-i18n-booting) body{transition:opacity .22s ease}</style>
+<style>html.ps-i18n-booting body{opacity:0}html.ps-i18n-booting::before{position:fixed;inset:0;z-index:2147483646;display:grid;place-items:center;background:#050505;color:#f7f7f4;content:"PLAY STREAMERS";font:800 clamp(18px,3vw,30px)/1 "Space Grotesk","Segoe UI",sans-serif;letter-spacing:.22em}html.ps-i18n-booting::after{position:fixed;left:50%;top:calc(50% + 42px);z-index:2147483647;width:min(220px,52vw);height:2px;border-radius:999px;background:linear-gradient(90deg,transparent,#fff,transparent);content:"";transform:translateX(-50%);animation:ps-i18n-load 1.1s ease-in-out infinite}@keyframes ps-i18n-load{0%,100%{opacity:.2;transform:translateX(-50%) scaleX(.2)}50%{opacity:1;transform:translateX(-50%) scaleX(1)}}html:not(.ps-i18n-booting) body{transition:opacity .22s ease}</style>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preconnect" href="https://api.pstreamers.com" crossorigin>
@@ -175,8 +175,8 @@
   <script src="app-final.js?v=5.8.0"></script>
   <script src="site-router.js?v=1.1"></script><meta id="ps44-final-interface-repair-script" data-bundled-script="true">
   <script src="server-analytics.js?v=6.0"></script>
-  <script src="site-v7.js?v=10.3.1"></script>
-  <script type="module" src="live-i18n.js?v=4.5"></script>
+  <script src="site-v7.js?v=10.3.2"></script>
+  <script type="module" src="live-i18n.js?v=4.6"></script>
 <style id="ps66-hybrid-donate-styles" data-bundled-style></style>
 <script id="sw-product-activity-pulse">
 (() => {

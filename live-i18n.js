@@ -61,7 +61,7 @@ export function installLiveI18n({ localeKey = "ps15-locale", getLocale, root = d
     return { language, refresh() {} };
   }
 
-  const cacheKey = `ps-live-i18n-v4-5:${language}`;
+  const cacheKey = `ps-live-i18n-v4-6:${language}`;
   const cache = { ...(critical[language] || {}), ...cacheRead(cacheKey) };
   const textState = new WeakMap();
   const attributeState = new WeakMap();
@@ -69,6 +69,7 @@ export function installLiveI18n({ localeKey = "ps15-locale", getLocale, root = d
   let running = false;
   let ready = false;
   let recoveryPasses = 0;
+  let needsRecovery = false;
   const finishBoot = () => {
     if (ready) return;
     ready = true;
@@ -179,6 +180,7 @@ export function installLiveI18n({ localeKey = "ps15-locale", getLocale, root = d
     if (running) { queued = true; return; }
     queued = false;
     running = true;
+    needsRecovery = false;
     try {
       const targets = collect();
       // Statik sözlükte veya önceki ziyaret önbelleğinde bulunan metinleri ağ
@@ -195,11 +197,11 @@ export function installLiveI18n({ localeKey = "ps15-locale", getLocale, root = d
       // ekranın çevirisini büyük bir paketin tamamlanmasını beklemeden gösterir.
       const chunks = [];
       for (let index = 0; index < missing.length; index += 16) chunks.push(missing.slice(index, index + 16));
-      // Dört küçük paket paralel çalışır. Böylece ilk kez dil değiştiren kişi
-      // bütün sayfanın çevrilmesi için dakikalarca beklemez; Worker'ın sınırını
-      // aşmadan görünür içerik yaklaşık bir ekran yenileme süresinde tamamlanır.
-      for (let groupIndex = 0; groupIndex < chunks.length; groupIndex += 4) {
-        const group = chunks.slice(groupIndex, groupIndex + 4);
+      // Aktif yüzeyin küçük paketleri aynı anda çevrilir. Gizli panel ve
+      // pencereler açıldıkları anda ayrıca işlendiği için bu istek grubu hem
+      // sınırlı kalır hem de dil değişiminden sonra ilk ekranı tek dalgada bitirir.
+      for (let groupIndex = 0; groupIndex < chunks.length; groupIndex += 12) {
+        const group = chunks.slice(groupIndex, groupIndex + 12);
         const translatedGroups = await Promise.all(group.map(strings => requestTranslations(strings)));
         const groupSources = new Set(group.flat());
         group.forEach((strings, chunkIndex) => {
@@ -224,6 +226,7 @@ export function installLiveI18n({ localeKey = "ps15-locale", getLocale, root = d
         else if (target.type === "attribute" && target.element.isConnected) applyAttribute(target.element, target.name, translated, target.source);
       });
       const unresolved = targets.some(target => !cache[target.source]);
+      needsRecovery = unresolved;
       if (unresolved && recoveryPasses < 3) {
         recoveryPasses += 1;
         queued = true;
@@ -232,7 +235,7 @@ export function installLiveI18n({ localeKey = "ps15-locale", getLocale, root = d
       }
     } finally {
       running = false;
-      finishBoot();
+      if (!needsRecovery || recoveryPasses >= 3) finishBoot();
       if (queued) window.setTimeout(translate, recoveryPasses ? 1600 : 120);
     }
   };

@@ -1109,15 +1109,18 @@ async function translateInterfaceStrings(request, env) {
   }
   translations = translations.map(value => value.trim());
   const turkishInterfaceCopy = /(?:[çğıöşü]|\b(?:giriş|kayıt|hakkımızda|ürünlerimiz|nasıl|çalışır|içerik|planlama|canlı|analiz|topluluk|marka|araçları|gelir|görünümleri|yayın|yayıncı|hesap|şifre|doğrula|indir|destek|sistem|durumu|ziyaretçi|şu anda|aktif|hemen|başla|keşfet|daha fazla|burada mısın|beni hatırla)\b)/iu;
-  const incompleteTranslation = translations.some((value, index) => {
+  const incompleteTranslationIndexes = translations.map((value, index) => {
     const source = strings[index];
-    if (!turkishInterfaceCopy.test(source)) return false;
-    if (source.localeCompare(value, undefined, { sensitivity: "base" }) === 0 || turkishInterfaceCopy.test(value)) return true;
-    if (language === "ar" && !/[\u0600-\u06ff]/u.test(value)) return true;
-    if (language === "ru" && !/[\u0400-\u04ff]/u.test(value)) return true;
-    return language === "ja" && !/[\u3040-\u30ff\u3400-\u9fff]/u.test(value);
-  });
-  if (incompleteTranslation) return apiResponse(request, { error: "Canlı çeviri bazı arayüz metinlerini eksik bıraktı; paket yeniden denenmeli." }, 502);
+    if (!turkishInterfaceCopy.test(source)) return -1;
+    if (source.localeCompare(value, undefined, { sensitivity: "base" }) === 0 || turkishInterfaceCopy.test(value)) return index;
+    if (language === "ar" && !/[\u0600-\u06ff]/u.test(value)) return index;
+    if (language === "ru" && !/[\u0400-\u04ff]/u.test(value)) return index;
+    return language === "ja" && !/[\u3040-\u30ff\u3400-\u9fff]/u.test(value) ? index : -1;
+  }).filter(index => index >= 0);
+  if (incompleteTranslationIndexes.length) {
+    const partial = translations.map((value, index) => incompleteTranslationIndexes.includes(index) ? "" : value);
+    return apiResponse(request, { ok: true, language, translations: partial, partial: true, cached: false });
+  }
   if (env.SESSIONS) await env.SESSIONS.put(cacheKey, JSON.stringify(translations), { expirationTtl: 30 * 24 * 60 * 60 }).catch(() => {});
   return apiResponse(request, { ok: true, language, translations, cached: false });
 }

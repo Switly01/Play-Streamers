@@ -809,10 +809,10 @@ async function runScheduledPlayBotAudit(env) {
   const resources = [
     ["Ana sayfa", "https://pstreamers.com/", "document"],
     ["Ana uygulama betiği", "https://pstreamers.com/app.js?v=5.4.0", "script"],
-    ["Uygulama betiği", "https://pstreamers.com/app-final.js?v=5.9.2", "script"],
-    ["Site davranış betiği", "https://pstreamers.com/site-v7.js?v=10.5.1", "script"],
-    ["Canlı çeviri betiği", "https://pstreamers.com/live-i18n.js?v=8.0", "script"],
-    ["Premium stil dosyası", "https://pstreamers.com/site-v7.css?v=10.5.1", "style"],
+    ["Uygulama betiği", "https://pstreamers.com/app-final.js?v=5.9.3", "script"],
+    ["Site davranış betiği", "https://pstreamers.com/site-v7.js?v=10.5.2", "script"],
+    ["Canlı çeviri betiği", "https://pstreamers.com/live-i18n.js?v=8.1", "script"],
+    ["Premium stil dosyası", "https://pstreamers.com/site-v7.css?v=10.5.2", "style"],
     ["Oturum başlangıç betiği", "https://pstreamers.com/session-bootstrap.js?v=1.1", "script"],
     ["Site yönlendiricisi", "https://pstreamers.com/site-router.js?v=1.1", "script"],
     ["Sunucu analiz betiği", "https://pstreamers.com/server-analytics.js?v=6.0", "script"],
@@ -891,12 +891,12 @@ async function runScheduledPlayBotAudit(env) {
   const homeDocument = results.find(result => result.type === "document");
   if (homeDocument?.ok) {
     const documentContracts = [
-      ["site-v7.css?v=10.5.1", "Güncel premium stil dosyası"],
+      ["site-v7.css?v=10.5.2", "Güncel premium stil dosyası"],
       ["app.js?v=5.4.0", "Güncel ana uygulama betiği"],
-      ["app-final.js?v=5.9.2", "Güncel onarım betiği"],
-      ["site-v7.js?v=10.5.1", "Güncel site davranış betiği"],
-      ["live-i18n.js?v=8.0", "Güncel canlı çeviri betiği"],
-      ["play-streamers-build\" content=\"2026-08-27-site-10.5.1", "Site 10.5.1 sürüm işareti"],
+      ["app-final.js?v=5.9.3", "Güncel onarım betiği"],
+      ["site-v7.js?v=10.5.2", "Güncel site davranış betiği"],
+      ["live-i18n.js?v=8.1", "Güncel canlı çeviri betiği"],
+      ["play-streamers-build\" content=\"2026-08-27-site-10.5.2", "Site 10.5.2 sürüm işareti"],
     ];
     for (const [token, label] of documentContracts) {
       if (!homeDocument.body.includes(token)) issues.push(`${label} canlı ana sayfaya bağlanmamış.`);
@@ -1105,7 +1105,7 @@ function containsTurkishInterfaceCopy(value) {
 
 function isInterfaceTranslationPassthrough(value) {
   const source = String(value || "").replace(/\s+/g, " ").trim();
-  return /^(?:PLAY STREAMERS|PLAY CONNECT|SW CREATE|SW IDENTITY|SW BOT|SW AI|PRODUCT PRO|FREE|PRO|PC|PS|APP|WEB|CONNECT|HTTP|HTTPS|API|OBS|KICK|WINDOWS)(?:\s*[·+:/-].*)?$/i.test(source)
+  return /^(?:PLAY STREAMERS|PLAY CONNECT|PLAY|STREAMERS|SW CREATE|SW IDENTITY|SW BOT|SW AI|PRODUCT PRO|FREE|PRO|PC|PS|APP|WEB|CONNECT|HTTP|HTTPS|API|OBS|KICK|WINDOWS)(?:\s*[·+:/-].*)?$/i.test(source)
     || /^(?:https?:\/\/|www\.|[\w.+-]+@[\w.-]+\.)/i.test(source)
     || /^[\d\s.,:%+\-/–—()]+$/.test(source);
 }

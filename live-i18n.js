@@ -67,7 +67,7 @@ function containsTurkishCopy(value) {
 }
 function isPassthroughCopy(value) {
   const source = clean(value);
-  return /^(?:PLAY STREAMERS|PLAY CONNECT|SW CREATE|SW IDENTITY|SW BOT|SW AI|PRODUCT PRO|FREE|PRO|PC|PS|APP|WEB|CONNECT|HTTP|HTTPS|API|OBS|KICK|WINDOWS)(?:\s*[·+:/-].*)?$/i.test(source)
+  return /^(?:PLAY STREAMERS|PLAY CONNECT|PLAY|STREAMERS|SW CREATE|SW IDENTITY|SW BOT|SW AI|PRODUCT PRO|FREE|PRO|PC|PS|APP|WEB|CONNECT|HTTP|HTTPS|API|OBS|KICK|WINDOWS)(?:\s*[·+:/-].*)?$/i.test(source)
     || /^(?:https?:\/\/|www\.|[\w.+-]+@[\w.-]+\.)/i.test(source)
     || /^[\d\s.,:%+\-/–—()]+$/.test(source);
 }
@@ -258,8 +258,15 @@ export function installLiveI18n({ localeKey = "ps15-locale", getLocale, root = d
     return targets.sort((left, right) => priority(left) - priority(right));
   };
 
+  const applyCachedTargets = targets => targets.forEach(target => {
+    const translated = cache[target.source];
+    if (!translated) return;
+    if (target.type === "text" && target.node.isConnected) applyText(target.node, translated);
+    else if (target.type === "attribute" && target.element.isConnected) applyAttribute(target.element, target.name, translated, target.source);
+  });
+
   const translate = async () => {
-    if (running) { queued = true; return; }
+    if (running) { applyCachedTargets(collect()); queued = true; return; }
     queued = false;
     running = true;
     needsRecovery = false;
@@ -268,12 +275,7 @@ export function installLiveI18n({ localeKey = "ps15-locale", getLocale, root = d
       // Statik sözlükte veya önceki ziyaret önbelleğinde bulunan metinleri ağ
       // isteğini bekletmeden ilk karede uygula. Böylece büyük sayfalarda
       // görünür bölüm, arka plandaki uzun çeviri kuyruğunun arkasında kalmaz.
-      targets.forEach(target => {
-        const translated = cache[target.source];
-        if (!translated) return;
-        if (target.type === "text" && target.node.isConnected) applyText(target.node, translated);
-        else if (target.type === "attribute" && target.element.isConnected) applyAttribute(target.element, target.name, translated, target.source);
-      });
+      applyCachedTargets(targets);
       const missing = [...new Set(targets.map(item => item.source).filter(source => !cache[source]))];
       // Küçük paketler hem AI JSON yanıtını güvenilir tutar hem de ilk
       // ekranın çevirisini büyük bir paketin tamamlanmasını beklemeden gösterir.
@@ -302,12 +304,7 @@ export function installLiveI18n({ localeKey = "ps15-locale", getLocale, root = d
         }));
         if (groupIndex === 0) finishBoot();
       }
-      targets.forEach(target => {
-        const translated = cache[target.source];
-        if (!translated) return;
-        if (target.type === "text" && target.node.isConnected) applyText(target.node, translated);
-        else if (target.type === "attribute" && target.element.isConnected) applyAttribute(target.element, target.name, translated, target.source);
-      });
+      applyCachedTargets(targets);
       const unresolved = targets.some(target => !cache[target.source]);
       needsRecovery = unresolved;
       if (unresolved && recoveryPasses < 3) {

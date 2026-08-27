@@ -2,7 +2,7 @@
 
 ## Güncel geliştirme durumu · 27 Ağustos 2026
 
-Site 10.5.1 / Worker 5.4 / Desktop 0.14.3 / Play Connect 1.15.1 kaynakları
+Site 10.5.2 / Worker 5.4 / Desktop 0.14.3 / Play Connect 1.15.1 kaynakları
 hazırlandı. Play Connect popup'ı Chromium'un içerik kadar küçültme davranışına
 karşı 392 piksel gerçek panel genişliğinde sabitlendi; yalnız iki simgeye
 çökmez. Chromium ve Firefox 1.15.1 paketleri ortak test sözleşmesini geçer.

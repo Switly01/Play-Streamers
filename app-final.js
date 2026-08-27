@@ -3143,7 +3143,9 @@
       const terms = $(':scope > .ps73-privacy-slot > .ps72-terms-link', footer);
       const feature = $(':scope > .ps73-feature-slot', footer);
       const developer = $(':scope > .ps73-developer-slot > .ps73-developer-link', footer);
-      if (privacy?.textContent.trim() === 'Gizlilik' && terms?.textContent.trim() === 'Kullanım Koşulları' && feature?.textContent.trim() === 'Güvenli bağlantılar · Kişisel panel · Ücretsiz başlangıç' && developer?.textContent.trim() === 'SW CREATE') {
+      if (privacy && terms && feature && developer) {
+        privacy.href = 'https://pstreamers.com/privacy.html';
+        terms.href = 'https://pstreamers.com/terms.html';
         footer.classList.add('ps73-footer-order');
         return;
       }

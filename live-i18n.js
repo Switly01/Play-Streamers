@@ -4,12 +4,14 @@ const SKIP_TEXT_SELECTOR = [
   "script", "style", "noscript", "code", "pre", "textarea",
   "[contenteditable]", "[data-no-translate]", ".entries", ".event-message",
   ".event-detail-message", ".name", ".message", ".support-ticket-message",
-  ".ps59-chart", ".ps69-hourly-chart"
+  ".ps59-chart", ".ps69-hourly-chart", "#ps41LocaleMenu", "#ps15LocaleMenu",
+  "[data-language]", "[data-ps15-lang]"
 ].join(",");
 const SKIP_ATTRIBUTE_SELECTOR = [
   "script", "style", "noscript", "code", "pre", "[contenteditable]",
   "[data-no-translate]", ".entries", ".event-message", ".event-detail-message",
-  ".name", ".message", ".support-ticket-message", ".ps59-chart", ".ps69-hourly-chart"
+  ".name", ".message", ".support-ticket-message", ".ps59-chart", ".ps69-hourly-chart",
+  "#ps41LocaleMenu", "#ps15LocaleMenu", "[data-language]", "[data-ps15-lang]"
 ].join(",");
 
 const critical = Object.freeze({

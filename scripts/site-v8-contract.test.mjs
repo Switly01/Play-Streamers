@@ -11,12 +11,12 @@ test('site 10 assets are cache-busted and use fluid monochrome glass', async () 
     read('site-v7.css'),
     read('play-streamers-ps-logo.svg'),
   ]);
-  assert.match(html, /play-streamers-build" content="2026-08-27-site-10\.2\.3"/);
-  assert.match(html, /site-v7\.css\?v=10\.2\.1/);
-  assert.match(html, /app\.js\?v=5\.3\.6/);
-  assert.match(html, /site-v7\.js\?v=10\.2\.3/);
-  assert.match(html, /app-final\.js\?v=5\.7\.8/);
-  assert.match(html, /live-i18n\.js\?v=4\.3/);
+  assert.match(html, /play-streamers-build" content="2026-08-27-site-10\.3\.0"/);
+  assert.match(html, /site-v7\.css\?v=10\.3\.1/);
+  assert.match(html, /app\.js\?v=5\.3\.7/);
+  assert.match(html, /site-v7\.js\?v=10\.3\.0/);
+  assert.match(html, /app-final\.js\?v=5\.7\.9/);
+  assert.match(html, /live-i18n\.js\?v=4\.4/);
   assert.match(css, /html\[data-ps-site-version="8"\]/);
   assert.match(css, /--signal: #f5f5f2/);
   assert.match(css, /@keyframes ps82-meteor/);
@@ -39,6 +39,8 @@ test('site 10 assets are cache-busted and use fluid monochrome glass', async () 
   assert.match(css, /@keyframes ps101-astronaut-descend/);
   assert.match(css, /\.ps10-space-detail/);
   assert.match(css, /\.ps-identity-credential-form/);
+  assert.match(css, /Site 10\.3 final precedence layer/);
+  assert.match(html, /ps-i18n-booting/);
 });
 
 test('public home promotes the desktop app without restoring legacy hero', async () => {
@@ -110,10 +112,12 @@ test('SW Bot audits the whole interface and explains issues with SW AI', async (
 });
 
 test('SW Identity owns direct login and registration without legacy account leakage', async () => {
-  const [app, identityWorker, i18n] = await Promise.all([
+  const [app, identityWorker, i18n, identityAccount, callback] = await Promise.all([
     read('app.js'),
     read('swcreate-site/cloudflare-worker.js'),
     read('live-i18n.js'),
+    read('swcreate-site/src/AccountPage.tsx'),
+    read('identity/callback/index.html'),
   ]);
   assert.match(app, /showLandingAuthV101/);
   assert.match(app, /name=\"identity\"/);
@@ -121,19 +125,21 @@ test('SW Identity owns direct login and registration without legacy account leak
   assert.match(app, /name=\"birthDate\"/);
   assert.match(app, /data-provider=\"sw\"/);
   assert.match(app, /submitSwIdentityCredentials/);
-  assert.match(app, /setTimeout\(\(\)=>location\.reload\(\),180\)/);
+  assert.match(app, /classList\.add\('ps-i18n-booting'\); location\.reload\(\)/);
   assert.match(app, /adoptAuthenticatedUser\(data\.user\);state\.settings\.userSession=activeUserSession/);
   assert.match(identityWorker, /hostname === \"pstreamers\.com\"/);
   assert.match(app, /installIdentityCalendar/);
   assert.match(app, /productRedirectUrl/);
   assert.match(identityWorker, /SW_IDENTITY_VERSION = "1\.8\.0"/);
   assert.match(identityWorker, /createProductHandoffTarget/);
-  assert.match(i18n, /ps-live-i18n-v4-3/);
+  assert.match(i18n, /ps-live-i18n-v4-4/);
   assert.match(i18n, /Her şey tek platformda\./);
-  assert.match(i18n, /index \+= 12/);
+  assert.match(i18n, /index \+= 16/);
   assert.match(i18n, /requestTranslations\(strings\.slice\(0, middle\), depth \+ 1\)/);
   assert.match(i18n, /Promise\.all\(group\.map\(strings => requestTranslations\(strings\)\)\)/);
   assert.match(i18n, /SKIP_ATTRIBUTE_SELECTOR/);
+  assert.match(identityAccount, /https:\/\/pstreamers\.com/);
+  assert.match(callback, /sw_identity_callback/);
 });
 
 test('privacy and terms share the premium legal design', async () => {

@@ -535,7 +535,7 @@
         candidate.classList.remove('ps15-open', 'ps48-locale-closing');
       });
     }, 0);
-    $$('[data-language]', menu).forEach(choice => choice.onclick = () => { localStorage.setItem('ps15-locale', choice.dataset.language); closeAllFloatingSurfaces(); const reload = () => location.reload(); if (typeof window.psUnifiedLoad === 'function') window.psUnifiedLoad(reload); else if (typeof window.ps28Load === 'function') window.ps28Load(reload); else reload(); });
+    $$('[data-language]', menu).forEach(choice => choice.onclick = () => { localStorage.setItem('ps15-locale', choice.dataset.language); document.documentElement.classList.add('ps-i18n-booting'); location.reload(); });
   }
   function buildPublicInfoFrame(layer) {
     const overlay = $('#authOverlay');
@@ -2482,6 +2482,35 @@
     if (visibleResetButtons.length > 1) issues.push(`Dashboard bozuk: ${visibleResetButtons.length} sıfırlama düğmesi aynı anda görünüyor.`);
     const visibleMetricGraph = $('#ps59AccountDataDialog');
     if (visible(visibleMetricGraph) && $('.ps69-day-bar', visibleMetricGraph) && $('.ps59-chart', visibleMetricGraph)?.dataset.ps69DayNavigation !== 'ready') issues.push('Hesap verileri bozuk: Günlük sütunların 24 saatlik ayrıntı bağlantısı kurulamamış.');
+    const publicMetrics = $('#authOverlay .ps61-site-metrics');
+    if (visible(publicMetrics)) {
+      const expectedHost = $('#authOverlay .ps81-hero');
+      if (!expectedHost || publicMetrics.parentElement !== expectedHost || !publicMetrics.classList.contains('ps10-hero-metrics')) issues.push('Canlı site verileri kararsız: sayaç kutusu yanlış katmanda ve yeniden konumlandırılabilir.');
+      const metricRect = publicMetrics.getBoundingClientRect();
+      if (metricRect.left < -2 || metricRect.right > innerWidth + 2 || metricRect.top < -2) issues.push('Canlı site verileri yerleşimi ekran sınırlarının dışına taşıyor.');
+    }
+    const supportDialog = $('#ps47MailDialog .ps44-dialog');
+    if (visible(supportDialog)) {
+      const supportRect = supportDialog.getBoundingClientRect();
+      if (supportDialog.scrollWidth - supportDialog.clientWidth > 3 || supportRect.left < 0 || supportRect.right > innerWidth) issues.push('Destek penceresi yatay yönde taşıyor; kaydırma alanı pencerenin dışına çıkıyor.');
+      const fileDrop = $('.ps49-file-drop', supportDialog);
+      if (visible(fileDrop) && fileDrop.getBoundingClientRect().height > 96) issues.push('Destek penceresindeki dosya seçme alanı gereğinden fazla yüksek görünüyor.');
+    }
+    const currentLocale = String(document.documentElement.dataset.psLiveLocale || document.documentElement.lang || 'tr').toLowerCase();
+    if (currentLocale !== 'tr' && document.documentElement.dataset.psI18nReady === '1') {
+      const visibleCopy = $$('h1,h2,h3,p,button,a,span,small,label').filter(visible).map(node => String(node.textContent || '').replace(/\s+/g, ' ').trim());
+      const turkishLeak = visibleCopy.filter(text => /^(?:Giriş yap|Kayıt ol|Hakkımızda|Ürünlerimiz|Nasıl çalışır\?|Windows için indir|Her şey tek platformda\.)$/i.test(text));
+      if (turkishLeak.length) issues.push(`Canlı çeviri eksik: ${turkishLeak.length} görünür temel metin seçilen dile çevrilmemiş.`);
+      if (document.documentElement.dir !== 'ltr') issues.push('Dil yerleşimi bozuk: Play Streamers arayüzü seçilen dilde yanlışlıkla ters dönmüş.');
+    }
+    if (new URLSearchParams(location.search).get('two_factor') === '1' && !visible($('#landingAuthModal [name="code"]'))) issues.push('Hesap erişimi bozuk: iki aşamalı doğrulama istendi ancak kod ekranı görünmüyor.');
+    const openIdentityDialog = $('#landingAuthModal [data-sw-identity-auth="1"]');
+    if (visible(openIdentityDialog)) {
+      const kickProvider = $('[data-provider="kick"] img', openIdentityDialog);
+      if (!kickProvider || !/kick-logo\.svg/i.test(kickProvider.getAttribute('src') || '') || (kickProvider.complete && kickProvider.naturalWidth === 0)) issues.push('Giriş penceresi bozuk: Kick sağlayıcısında resmî yeşil K işareti görünmüyor.');
+      const swProvider = $('[data-provider="sw"] img', openIdentityDialog);
+      if (swProvider && (!/swcreate-sw-logo-transparent\.png/i.test(swProvider.getAttribute('src') || '') || (swProvider.complete && swProvider.naturalWidth === 0))) issues.push('Giriş penceresi bozuk: SW hızlı giriş düğmesinde SW Create logosu görünmüyor.');
+    }
     const unnamedControls = $$('button,a[href],input,select,textarea').filter(node => {
       if (!visible(node) || node.closest('[aria-hidden="true"]')) return false;
       const label = String(node.getAttribute('aria-label') || node.getAttribute('title') || node.textContent || node.getAttribute('placeholder') || '').replace(/\s+/g, ' ').trim();
@@ -2702,7 +2731,7 @@
       if (!button) { button = document.createElement('button'); button.type = 'button'; button.className = 'ps28-eye'; button.dataset.ps48Eye = '1'; button.innerHTML = '<svg class="ps47-eye-closed" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 3l18 18M10.6 10.7a2.2 2.2 0 0 0 2.8 2.7M9.1 5.9A10.8 10.8 0 0 1 12 5.5c6.2 0 9.5 6.5 9.5 6.5a16.4 16.4 0 0 1-2.6 3.3M6.2 7.2A16.7 16.7 0 0 0 2.5 12s3.3 6.5 9.5 6.5a10.9 10.9 0 0 0 3.1-.4"/></svg><svg class="ps47-eye-open" viewBox="0 0 24 24" aria-hidden="true"><path d="M2.5 12s3.3-5.5 9.5-5.5S21.5 12 21.5 12 18.2 17.5 12 17.5 2.5 12 2.5 12Z"/><circle cx="12" cy="12" r="2.7"/></svg>'; host.append(button); }
       const sync = () => { const visible = input.type === 'text'; button.classList.toggle('is-open', visible); button.setAttribute('aria-label', visible ? 'Şifreyi gizle' : 'Şifreyi göster'); button.setAttribute('aria-pressed', String(visible)); };
       button.onpointerdown = event => event.preventDefault();
-      button.onclick = event => { event.preventDefault(); event.stopImmediatePropagation(); if (button.dataset.psEyeBusy === '1') return; button.dataset.psEyeBusy = '1'; button.classList.remove('is-switching'); void button.offsetWidth; button.classList.add('is-switching'); input.type = input.type === 'password' ? 'text' : 'password'; sync(); input.focus({ preventScroll: true }); window.setTimeout(() => { button.classList.remove('is-switching'); delete button.dataset.psEyeBusy; }, 340); }; sync();
+      button.onclick = event => { event.preventDefault(); event.stopImmediatePropagation(); if (button.dataset.psEyeBusy === '1') return; button.dataset.psEyeBusy = '1'; button.classList.remove('is-switching'); void button.offsetWidth; button.classList.add('is-switching'); input.type = input.type === 'password' ? 'text' : 'password'; sync(); input.focus({ preventScroll: true }); window.setTimeout(() => { button.classList.remove('is-switching'); delete button.dataset.psEyeBusy; }, 480); }; sync();
     });
   }
   function rememberIntentForProvider(button) {
@@ -2815,12 +2844,12 @@
   }
   function ensureSiteMetricsCards() {
     let created = false;
-    const publicNav = $('#authOverlay .landing-nav');
-    const publicMain = $('#authOverlay .landing-main');
+    const publicHero = $('#authOverlay .ps81-hero');
     let publicCard = $('#authOverlay .ps61-site-metrics');
-    if (publicNav && publicMain) {
+    if (publicHero) {
       if (!publicCard) { publicCard = createSiteMetrics('public'); created = true; }
-      if (publicMain.nextElementSibling !== publicCard) publicMain.after(publicCard);
+      publicCard.classList.add('ps10-hero-metrics');
+      if (publicCard.parentElement !== publicHero) publicHero.append(publicCard);
     }
     const memberNav = $('#psSecondHome .ps20-nav');
     const memberHero = $('#psSecondHome .ps20-hero');
@@ -2966,8 +2995,14 @@
   function decorateDialogs() { $$('.auth-dialog,.ps27-dialog,#ps30Modal .ps30-dialog,.ps41-verify-card').forEach(dialog => { if (dialog.matches('[data-sw-identity-auth="1"]') || $('.ps44-auth-logo', dialog)) return; const logo = document.createElement('span'); logo.className = 'ps44-auth-logo'; logo.setAttribute('aria-hidden', 'true'); logo.textContent = 'PS'; dialog.prepend(logo); }); }
   function normalizeLogos() {
     $$('.brand-logo,#psSecondHome .ps20-logo,#psSecondHome .ps-second-brand>b,#psSecondHome #ps12HomeBrand>b,.ps30-brand-mark,.ps44-auth-logo').forEach(logo => {
-      logo.querySelectorAll('svg,img').forEach(mark => mark.remove());
-      if (!$(':scope>.ps48-logo-text', logo)) logo.innerHTML = '<span class="ps48-logo-text">PS</span>';
+      let mark = $(':scope > img.ps103-brand-image', logo);
+      if (!mark) {
+        mark = document.createElement('img');
+        mark.className = 'ps103-brand-image';
+        mark.src = './play-streamers-ps-logo.svg?v=10.3';
+        mark.alt = '';
+        logo.replaceChildren(mark);
+      }
     });
     $$('.landing-brand,.app .topbar .brand,.member-brand,.ps20-brand,.ps30-brand').forEach(container => { const preferred = $(':scope>.brand-logo,:scope>.ps20-logo,:scope>.ps30-brand-mark', container); if (!preferred) return; $$(':scope>.brand-logo,:scope>.ps20-logo,:scope>.ps30-brand-mark,:scope>img,:scope>svg', container).forEach(mark => { if (mark !== preferred) mark.remove(); }); });
   }

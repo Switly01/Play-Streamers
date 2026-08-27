@@ -25,7 +25,7 @@ const critical = Object.freeze({
 function clean(value) { return String(value || "").replace(/\s+/g, " ").trim(); }
 function translatable(value) {
   const text = clean(value);
-  if (text.length < 2 || text.length > 240 || !/[A-Za-zÇĞİÖŞÜçğıöşü]/.test(text)) return false;
+  if (text.length < 2 || text.length > 520 || !/[A-Za-zÇĞİÖŞÜçğıöşü]/.test(text)) return false;
   if (/^(https?:|www\.|[\w.+-]+@[\w.-]+\.|[\d\s.,:%+\-/]+$)/i.test(text)) return false;
   return true;
 }
@@ -43,14 +43,25 @@ export function installLiveI18n({ localeKey = "ps15-locale", getLocale, root = d
   document.documentElement.lang = language;
   document.documentElement.dir = "ltr";
   document.documentElement.dataset.psLiveLocale = language;
-  if (language === "tr" || !root) return { language, refresh() {} };
+  if (language === "tr" || !root) {
+    document.documentElement.classList.remove("ps-i18n-booting");
+    return { language, refresh() {} };
+  }
 
-  const cacheKey = `ps-live-i18n-v4-3:${language}`;
+  const cacheKey = `ps-live-i18n-v4-4:${language}`;
   const cache = { ...(critical[language] || {}), ...cacheRead(cacheKey) };
   const textState = new WeakMap();
   const attributeState = new WeakMap();
   let queued = false;
   let running = false;
+  let ready = false;
+  const finishBoot = () => {
+    if (ready) return;
+    ready = true;
+    document.documentElement.classList.remove("ps-i18n-booting");
+    document.documentElement.dataset.psI18nReady = "1";
+    window.dispatchEvent(new CustomEvent("ps:i18n-ready", { detail: { language } }));
+  };
 
   const applyText = (node, translated) => {
     const current = String(node.nodeValue || "");
@@ -146,7 +157,7 @@ export function installLiveI18n({ localeKey = "ps15-locale", getLocale, root = d
       // On iki öğelik paketler hem AI JSON yanıtını güvenilir tutar hem de ilk
       // ekranın çevirisini büyük bir paketin tamamlanmasını beklemeden gösterir.
       const chunks = [];
-      for (let index = 0; index < missing.length; index += 12) chunks.push(missing.slice(index, index + 12));
+      for (let index = 0; index < missing.length; index += 16) chunks.push(missing.slice(index, index + 16));
       // Dört küçük paket paralel çalışır. Böylece ilk kez dil değiştiren kişi
       // bütün sayfanın çevrilmesi için dakikalarca beklemez; Worker'ın sınırını
       // aşmadan görünür içerik yaklaşık bir ekran yenileme süresinde tamamlanır.
@@ -177,6 +188,7 @@ export function installLiveI18n({ localeKey = "ps15-locale", getLocale, root = d
       });
     } finally {
       running = false;
+      finishBoot();
       if (queued) window.setTimeout(translate, 120);
     }
   };

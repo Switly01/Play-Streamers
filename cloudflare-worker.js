@@ -1069,7 +1069,7 @@ async function translateInterfaceStrings(request, env) {
   if (!INTERFACE_LANGUAGES[language]) return apiResponse(request, { error: "Desteklenmeyen arayüz dili." }, 400);
   if (!rawStrings.length || rawStrings.length > 60) return apiResponse(request, { error: "Çeviri paketi 1 ile 60 metin içermelidir." }, 400);
   const strings = rawStrings.map(value => String(value || "").replace(/[\u0000-\u001f\u007f]+/g, " ").replace(/\s+/g, " ").trim());
-  if (strings.some(value => !value || value.length > 240)) return apiResponse(request, { error: "Çevrilecek arayüz metni geçersiz." }, 400);
+  if (strings.some(value => !value || value.length > 520)) return apiResponse(request, { error: "Çevrilecek arayüz metni geçersiz." }, 400);
   if (!(await allowInterfaceTranslationRequest(request, env, language))) {
     return apiResponse(request, { error: "Canlı çeviri sınırına ulaşıldı. Kısa süre sonra yeniden dene." }, 429);
   }
@@ -1104,7 +1104,7 @@ async function translateInterfaceStrings(request, env) {
   const end = cleaned.lastIndexOf("}");
   let translations = null;
   try { translations = JSON.parse(cleaned.slice(start, end + 1))?.translations; } catch { translations = null; }
-  if (!Array.isArray(translations) || translations.length !== strings.length || translations.some(value => typeof value !== "string" || !value.trim() || value.length > 360)) {
+  if (!Array.isArray(translations) || translations.length !== strings.length || translations.some(value => typeof value !== "string" || !value.trim() || value.length > 700)) {
     return apiResponse(request, { error: "Canlı çeviri güvenli biçimde doğrulanamadı." }, 502);
   }
   translations = translations.map(value => value.trim());

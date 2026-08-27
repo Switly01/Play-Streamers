@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <meta name="theme-color" content="#050505">
+  <title>SW Identity doğrulanıyor — Play Streamers</title>
+  <style>
+    html,body{min-height:100%;margin:0;background:#050505;color:#fff;font-family:system-ui,sans-serif}
+    body{display:grid;place-items:center}.state{display:grid;gap:14px;place-items:center;text-align:center}
+    .mark{width:58px;height:58px}.state p{margin:0;color:#aaa;font-size:13px}.line{width:170px;height:2px;overflow:hidden;background:#222}
+    .line::after{display:block;width:45%;height:100%;background:#fff;content:"";animation:move 1s ease-in-out infinite}
+    @keyframes move{from{transform:translateX(-110%)}to{transform:translateX(330%)}}
+  </style>
+</head>
+<body>
+  <main class="state" aria-live="polite">
+    <img class="mark" src="/play-streamers-ps-logo.svg?v=10.3" alt="Play Streamers">
+    <p>Güvenli giriş Play Streamers içinde tamamlanıyor…</p>
+    <span class="line" aria-hidden="true"></span>
+  </main>
+  <script>
+    (() => {
+      const target = new URL('/', location.origin);
+      new URLSearchParams(location.search).forEach((value, key) => target.searchParams.append(key, value));
+      target.searchParams.set('sw_identity_callback', '1');
+      location.replace(target.toString());
+    })();
+  </script>
+</body>
+</html>

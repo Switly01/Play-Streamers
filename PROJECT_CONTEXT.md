@@ -1,14 +1,15 @@
 # Play Streamers — Kalıcı Proje Bağlamı
 
-## Güncel geliştirme durumu · 28 Ağustos 2026
+## Güncel geliştirme durumu · 29 Ağustos 2026
 
-Site 10.8.0 / Worker 5.7 / SW Identity 1.8.1 / Desktop 0.14.4 / Play Connect
+Site 10.9.0 / Worker 5.8 / SW Identity 1.8.1 / Desktop 0.14.4 / Play Connect
 1.15.1 kaynakları hazırlandı. Site kartları ve temel yüzeyler, mobilde daha
 düşük bulanıklık kullanan belirgin sıvı cam katmanına geçirildi. Yıldız alanında
 tek `requestAnimationFrame` ile çalışan gerçek imleç feneri bulunur. Ortak
 yükleyici yıldız alanı, yüzen PS amblemi ve hareketli ilerleme çizgisiyle
-yenilendi. PS monogramında P/S aralığı daraltıldı; S üst ucu yuvarlak ve kesintisiz
-bir eğri olarak yeniden çizildi, üst soldaki Play Streamers adı büyütüldü.
+yenilendi. PS monogramı çerçeve içinde sağa alınarak ortalandı; P ve S aynı
+yükseklik ritmine yaklaştırıldı. Yükleme amblemi belirgin 3B salınım, boyut
+değişimi ve ışık nabzıyla daha canlı hale getirildi.
 
 SW Çeviri Botu, sürümlü `locales/*.json` paketlerini yayın öncesinde D1'deki
 onaylı karşılıklardan üretir. Dil seçimi sayfayı yenilemez: paket bellekte hazır
@@ -17,11 +18,12 @@ ilk karede uygulanır; tercih `ps15-locale` ile bütün sayfalarda kalıcıdır.
 Dashboard, giriş/kayıt, destek, gizlilik ve kullanım koşulları aynı altyapıya
 bağlıdır. Sonradan oluşan bilinmeyen metinler yalnızca kurtarma yolu olarak API
 üzerinden çevrilip D1'e eklenir. D1 çeviri önbelleği `v9`, istemci önbelleği
-`ps-live-i18n-v12` ad alanını kullanır; Worker yapılandırmasında KV binding'i yoktur.
+`ps-live-i18n-v13` ad alanını kullanır; Worker yapılandırmasında KV binding'i yoktur.
 
-Turnstile `interaction-only` görünümünde giriş/kayıt penceresi açılır açılmaz
-hazırlanır; etkileşim gerekirse kutu “Beni hatırla” satırının altında görünür,
-pencere kapanınca sıfırlanıp görünmez alana taşınır. Şifre gözünde seçim ve
+Turnstile `always` görünümünde giriş/kayıt penceresi açılır açılmaz hazırlanır;
+doğrulama kutusu “Beni hatırla” satırının altında sürekli görünür, geçici ağ
+hatalarında otomatik yenilenir ve ayrıca kullanıcıya yeniden deneme düğmesi sunar.
+Pencere kapanınca sıfırlanıp görünmez alana taşınır. Şifre gözünde seçim ve
 imleç konumu korunur. SW Identity izinli ürün CORS yanıtlarında `cross-origin`
 CORP kullanır; böylece Play Streamers'taki geçerli giriş/kayıt yanıtları tarayıcı
 tarafından “Failed to fetch” olarak gizlenmez. Canlı sayaç yazma isteği başarısız

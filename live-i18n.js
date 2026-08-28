@@ -1,6 +1,6 @@
 const API = "https://api.pstreamers.com/api/i18n/translate";
 const SUPPORTED = new Set(["tr", "en", "de", "es", "fr", "ru", "ar", "ja"]);
-const CATALOG_VERSION = "2026-08-28.1";
+const CATALOG_VERSION = "2026-08-29.1";
 const catalogPromises = new Map();
 const COUNTRY_LOCALES = Object.freeze({
   TR: "tr", JP: "ja", DE: "de", AT: "de", CH: "de", LI: "de",
@@ -124,6 +124,27 @@ Object.entries(criticalAccountCopy).forEach(([language, values]) => {
   criticalAccountSources.forEach((source, index) => { critical[language][source] = values[index]; });
   critical[language]["Gizlilik Politikası · Play Streamers"] = `${values[18]} · Play Streamers`;
   critical[language]["Kullanım Koşulları · Play Streamers"] = `${values[19]} · Play Streamers`;
+});
+
+const criticalVerificationSources = [
+  "Güvenlik doğrulaması", "Güvenlik doğrulaması yüklenemedi.", "Doğrulamayı yeniden dene",
+  "Güvenlik doğrulaması tamamlanamadı. Aşağıdaki kontrolü yeniden yapıp tekrar dene.",
+  "Güvenlik kontrolü yüklenemedi.", "Güvenlik doğrulaması hazırlanamadı.",
+  "Güvenlik doğrulaması henüz hazır değil. Lütfen birkaç saniye sonra tekrar dene.",
+  "Devam eden bir güvenlik doğrulaması var. Lütfen bekle.", "Güvenlik doğrulamasının süresi doldu.",
+  "En fazla 10 dosya · Dosya başına 10 MB · Toplam 25 MB",
+];
+const criticalVerificationCopy = Object.freeze({
+  en: ["Security verification", "Security verification could not be loaded.", "Retry verification", "Security verification could not be completed. Complete the check below and try again.", "Security check could not be loaded.", "Security verification could not be prepared.", "Security verification is not ready yet. Wait a few seconds and try again.", "A security verification is already in progress. Please wait.", "Security verification expired.", "Up to 10 files · 10 MB per file · 25 MB total"],
+  de: ["Sicherheitsprüfung", "Die Sicherheitsprüfung konnte nicht geladen werden.", "Prüfung erneut versuchen", "Die Sicherheitsprüfung konnte nicht abgeschlossen werden. Führe die Prüfung unten erneut aus und versuche es noch einmal.", "Die Sicherheitskontrolle konnte nicht geladen werden.", "Die Sicherheitsprüfung konnte nicht vorbereitet werden.", "Die Sicherheitsprüfung ist noch nicht bereit. Warte einige Sekunden und versuche es erneut.", "Eine Sicherheitsprüfung läuft bereits. Bitte warte.", "Die Sicherheitsprüfung ist abgelaufen.", "Bis zu 10 Dateien · 10 MB pro Datei · 25 MB insgesamt"],
+  es: ["Verificación de seguridad", "No se pudo cargar la verificación de seguridad.", "Reintentar la verificación", "No se pudo completar la verificación de seguridad. Completa el control de abajo e inténtalo de nuevo.", "No se pudo cargar el control de seguridad.", "No se pudo preparar la verificación de seguridad.", "La verificación de seguridad aún no está lista. Espera unos segundos e inténtalo de nuevo.", "Ya hay una verificación de seguridad en curso. Espera, por favor.", "La verificación de seguridad ha caducado.", "Hasta 10 archivos · 10 MB por archivo · 25 MB en total"],
+  fr: ["Vérification de sécurité", "La vérification de sécurité n’a pas pu être chargée.", "Réessayer la vérification", "La vérification de sécurité n’a pas pu être effectuée. Recommencez le contrôle ci-dessous, puis réessayez.", "Le contrôle de sécurité n’a pas pu être chargé.", "La vérification de sécurité n’a pas pu être préparée.", "La vérification de sécurité n’est pas encore prête. Patientez quelques secondes, puis réessayez.", "Une vérification de sécurité est déjà en cours. Veuillez patienter.", "La vérification de sécurité a expiré.", "Jusqu’à 10 fichiers · 10 Mo par fichier · 25 Mo au total"],
+  ru: ["Проверка безопасности", "Не удалось загрузить проверку безопасности.", "Повторить проверку", "Не удалось завершить проверку безопасности. Пройдите проверку ниже и повторите попытку.", "Не удалось загрузить контроль безопасности.", "Не удалось подготовить проверку безопасности.", "Проверка безопасности ещё не готова. Подождите несколько секунд и повторите попытку.", "Проверка безопасности уже выполняется. Подождите.", "Срок действия проверки безопасности истёк.", "До 10 файлов · 10 МБ на файл · 25 МБ всего"],
+  ar: ["التحقق الأمني", "تعذر تحميل التحقق الأمني.", "إعادة محاولة التحقق", "تعذر إكمال التحقق الأمني. أعد إجراء الفحص أدناه ثم حاول مرة أخرى.", "تعذر تحميل فحص الأمان.", "تعذر إعداد التحقق الأمني.", "التحقق الأمني غير جاهز بعد. انتظر بضع ثوانٍ ثم حاول مرة أخرى.", "يوجد تحقق أمني قيد التنفيذ بالفعل. يرجى الانتظار.", "انتهت صلاحية التحقق الأمني.", "حتى 10 ملفات · 10 ميغابايت لكل ملف · 25 ميغابايت إجمالاً"],
+  ja: ["セキュリティ確認", "セキュリティ確認を読み込めませんでした。", "確認を再試行", "セキュリティ確認を完了できませんでした。下の確認をもう一度行ってから再試行してください。", "セキュリティチェックを読み込めませんでした。", "セキュリティ確認を準備できませんでした。", "セキュリティ確認はまだ準備できていません。数秒待ってから再試行してください。", "セキュリティ確認がすでに進行中です。お待ちください。", "セキュリティ確認の有効期限が切れました。", "最大10ファイル · 1ファイル10 MB · 合計25 MB"],
+});
+Object.entries(criticalVerificationCopy).forEach(([language, values]) => {
+  criticalVerificationSources.forEach((source, index) => { critical[language][source] = values[index]; });
 });
 
 const fixedInterfaceSources = [
@@ -385,7 +406,7 @@ export function installLiveI18n({ localeKey = "ps15-locale", getLocale, root = d
     return { language, refresh() {}, dispose() {} };
   }
 
-  const cacheKey = `ps-live-i18n-v12:${language}`;
+  const cacheKey = `ps-live-i18n-v13:${language}`;
   // Kalıcı paket, eski tarayıcı önbelleğini ezer; elle doğrulanmış kritik
   // metinler ise her zaman en son sözü söyler.
   const cache = { ...cacheRead(cacheKey), ...catalog, ...(critical[language] || {}) };

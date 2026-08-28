@@ -2372,7 +2372,7 @@
     const flagSources = Object.fromEntries(Object.entries(localeFlagFiles).map(([code, file]) => [code, `./assets/flags/${file}.svg?v=4.10`]));
     Object.entries(flagSources).forEach(([code, src]) => auditPlayBotAsset(`flag:${code}`, src, `${code.toUpperCase()} dil bayrağı`));
     auditPlayBotAsset('provider:tipeeestream', donateProviderIconSource('tipeeestream'), 'TipeeeStream DAB gömülü resmî logosu');
-    auditPlayBotAsset('brand:play-streamers', './play-streamers-ps-logo.svg?v=10.7', 'Play Streamers marka amblemi');
+    auditPlayBotAsset('brand:play-streamers', './play-streamers-ps-logo.svg?v=10.8', 'Play Streamers marka amblemi');
     auditPlayBotAsset('brand:sw-create', './swcreate-sw-logo-transparent.png', 'SW Create marka amblemi');
     auditPlayBotAsset('provider:kick', './assets/kick-logo.svg', 'Kick giriş amblemi');
     normalizeTipeeeStreamDabLogo(document);
@@ -3040,7 +3040,7 @@
       if (!mark) {
         mark = document.createElement('img');
         mark.className = 'ps103-brand-image';
-        mark.src = './play-streamers-ps-logo.svg?v=10.7';
+        mark.src = './play-streamers-ps-logo.svg?v=10.8';
         mark.alt = '';
         logo.replaceChildren(mark);
       }

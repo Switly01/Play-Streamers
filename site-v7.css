@@ -906,7 +906,7 @@ body.ps-v9 :is(.brand-logo,.ps20-logo,.ps51-account-brand i,.ps53-products-brand
   width: 46px;
   height: 46px;
   flex-basis: 46px;
-  background: transparent url("./play-streamers-ps-logo.svg?v=10.2.2") center/contain no-repeat !important;
+  background: transparent url("./play-streamers-ps-logo.svg?v=10.8") center/contain no-repeat !important;
   filter: drop-shadow(0 9px 20px rgba(0,0,0,.38));
 }
 #ps9Ambient {
@@ -1170,7 +1170,7 @@ body.ps-v8 :is(.brand-logo,.ps20-logo,.ps51-account-brand i,.ps53-products-brand
   flex-basis: 44px;
   border-radius: 0;
   color: transparent !important;
-  background: transparent url("./play-streamers-ps-logo.svg?v=10.2.2") center/contain no-repeat !important;
+  background: transparent url("./play-streamers-ps-logo.svg?v=10.8") center/contain no-repeat !important;
   font-size: 0 !important;
   box-shadow: none !important;
 }
@@ -1861,7 +1861,7 @@ body.ps-v8 #authOverlay .landing-brand .brand-logo { transition: transform .22s 
    compatibility rule that still ships for existing accounts. */
 html[data-ps-site-version="9"] body.ps-v9 :is(.brand-logo,.ps20-logo,.ps51-account-brand i,.ps53-products-brand i) {
   width:46px !important;height:46px !important;flex-basis:46px !important;border:0 !important;border-radius:0 !important;
-  color:transparent !important;background:transparent url("./play-streamers-ps-logo.svg?v=10.2.2") center/contain no-repeat !important;
+  color:transparent !important;background:transparent url("./play-streamers-ps-logo.svg?v=10.8") center/contain no-repeat !important;
   box-shadow:none !important;filter:drop-shadow(0 9px 20px rgba(0,0,0,.38)) !important;font-size:0 !important;
 }
 html[data-ps-site-version="9"] body.ps-v9 :is(#authOverlay .landing-nav,#psSecondHome .ps20-nav,.app .topbar,#ps49InfoPage .landing-nav,.ps53-products-nav) {
@@ -2811,7 +2811,7 @@ html[data-ps-site-version="9"] body.ps-v9 .brand-logo:has(>.ps103-brand-image),h
    kullanır. Böylece ilk karede medya çözme maliyeti ve eski yeşil animasyon yoktur. */
 #ps28Loader,#ps20Loader,.ps14-loader{background:radial-gradient(circle at 50% 43%,rgba(255,255,255,.08),transparent 26%),rgba(0,0,0,.84)!important;-webkit-backdrop-filter:blur(18px)!important;backdrop-filter:blur(18px)!important}
 #ps28Loader .ps28-loader-card,#ps28Loader>div,#ps20Loader>div,.ps14-loader-box{position:relative;border:1px solid rgba(255,255,255,.2)!important;border-radius:28px!important;padding:30px 36px!important;background:linear-gradient(145deg,rgba(255,255,255,.12),rgba(7,7,9,.72))!important;box-shadow:0 34px 90px #000b,inset 0 1px 0 rgba(255,255,255,.28)!important;overflow:hidden}
-#ps28Loader .ps28-loader-card::before,#ps28Loader>div::before,#ps20Loader>div::before,.ps14-loader-box::before{display:block;width:58px;height:58px;margin:0 auto 18px;background:url('./play-streamers-ps-logo.svg?v=10.4') center/contain no-repeat;content:"";animation:ps104-loader-orbit 1.35s cubic-bezier(.45,.05,.3,1) infinite}
+#ps28Loader .ps28-loader-card::before,#ps28Loader>div::before,#ps20Loader>div::before,.ps14-loader-box::before{display:block;width:58px;height:58px;margin:0 auto 18px;background:url('./play-streamers-ps-logo.svg?v=10.8') center/contain no-repeat;content:"";animation:ps104-loader-orbit 1.35s cubic-bezier(.45,.05,.3,1) infinite}
 #ps28Loader :is(video,.ps14-loader-mark),#ps20Loader i{display:none!important}
 #ps28Loader b,#ps20Loader span,.ps14-loader-box span{color:#fff!important;font:800 10px/1.3 "Space Grotesk","Segoe UI",sans-serif!important;letter-spacing:.22em!important}
 @keyframes ps104-loader-orbit{50%{filter:drop-shadow(0 0 18px rgba(255,255,255,.34));transform:translateY(-5px) rotate(3deg)}100%{transform:rotate(0)}}
@@ -2918,6 +2918,9 @@ html[data-ps-site-version="9"] body.ps-v9 #authOverlay .landing-brand>.brand-log
 .ps-auth-verification-state { display:flex; min-height:24px; align-items:center; gap:9px; color:#a9a9ad; font-size:10px; }
 .ps-auth-verification-state>i { width:7px; height:7px; flex:0 0 7px; border-radius:50%; background:#fff; box-shadow:0 0 0 4px rgba(255,255,255,.08); animation:ps105-verify 1s ease-in-out infinite; }
 .ps-auth-verification-state.is-ready>i { background:#8ef0b4; animation:none; }
+.ps-auth-verification-state.is-error>i { background:#ff8b8b; animation:none; }
+.ps-auth-verification-state>[data-auth-verification-retry] { margin-left:auto; border:1px solid rgba(255,255,255,.2); border-radius:999px; padding:6px 9px; color:#f7f7f4; background:rgba(255,255,255,.07); font:700 10px/1 var(--body); cursor:pointer; transition:border-color .18s ease,background .18s ease,transform .18s ease; }
+.ps-auth-verification-state>[data-auth-verification-retry]:hover { border-color:rgba(255,255,255,.42); background:rgba(255,255,255,.13); transform:translateY(-1px); }
 .ps9-sw-ai-summary>small { color:inherit!important; font:inherit!important; }
 @keyframes ps105-verify{50%{opacity:.35;transform:scale(.72)}}
 @media(max-width:760px){.ps10-astronaut-visitor{bottom:132px!important}}
@@ -3020,11 +3023,13 @@ body.ps-v9 #authOverlay .ps81-hero::after { opacity:.2!important; }
   width:76px;
   height:76px;
   margin-bottom:24px;
-  background:url('./play-streamers-ps-logo.svg?v=10.7') center/contain no-repeat;
+  border-radius:28px;
+  background:radial-gradient(circle,rgba(255,255,255,.15),transparent 68%),url('./play-streamers-ps-logo.svg?v=10.8') center/62px 62px no-repeat;
+  box-shadow:0 0 0 1px rgba(255,255,255,.1),0 0 0 10px rgba(255,255,255,.025),inset 0 1px 0 rgba(255,255,255,.2);
   filter:drop-shadow(0 0 18px rgba(255,255,255,.18));
   transform-style:preserve-3d;
   will-change:transform,filter;
-  animation:ps106-loader-float 1.65s cubic-bezier(.45,.05,.3,1) infinite;
+  animation:ps109-loader-logo 2.15s cubic-bezier(.45,.05,.3,1) infinite;
 }
 #ps28Loader .ps28-loader-card::after,#ps28Loader>div::after,#ps20Loader>div::after,.ps14-loader-box::after {
   position:absolute;
@@ -3042,28 +3047,47 @@ body.ps-v9 #authOverlay .ps81-hero::after { opacity:.2!important; }
 
 #ps32-turnstile-host {
   width:100%;
-  min-height:0;
+  min-height:65px;
   display:flex;
-  justify-content:flex-start;
+  align-items:center;
+  justify-content:center;
   overflow:hidden;
   border-radius:13px;
+}
+.ps-auth-turnstile-slot {
+  width:100%;
+  min-height:73px;
+  margin:-4px 0 2px;
+  display:grid;
+  place-items:center;
+  overflow:hidden;
+  border:1px solid rgba(255,255,255,.1);
+  border-radius:15px;
+  padding:4px;
+  background:linear-gradient(135deg,rgba(255,255,255,.065),rgba(255,255,255,.018));
 }
 body>#ps32-turnstile-host {
   position:fixed;
   top:0;
   left:-10000px;
-  width:1px;
-  height:1px;
+  width:300px;
+  height:70px;
   visibility:hidden;
   pointer-events:none;
 }
-.ps-identity-credential-form>#ps32-turnstile-host { visibility:visible; }
+.ps-auth-turnstile-slot>#ps32-turnstile-host { visibility:visible; }
 
 @keyframes ps106-loader-stars { to { background-position:190px 190px,-240px 240px,310px -310px,-270px -270px,0 0,0 0; } }
 @keyframes ps106-loader-float {
   0%,100% { filter:drop-shadow(0 0 18px rgba(255,255,255,.18)); transform:translateY(0) rotateY(0) rotateZ(0) scale(1); }
   34% { filter:drop-shadow(0 0 30px rgba(255,255,255,.38)); transform:translateY(-8px) rotateY(-14deg) rotateZ(-2.5deg) scale(1.04); }
   68% { filter:drop-shadow(0 0 24px rgba(255,255,255,.28)); transform:translateY(-4px) rotateY(13deg) rotateZ(2deg) scale(1.02); }
+}
+@keyframes ps109-loader-logo {
+  0%,100% { filter:drop-shadow(0 0 15px rgba(255,255,255,.18)); transform:translateY(0) rotateY(0) rotateZ(0) scale(1); background-size:auto,62px 62px; }
+  22% { filter:drop-shadow(0 0 34px rgba(255,255,255,.48)); transform:translateY(-9px) rotateY(-18deg) rotateZ(-3deg) scale(1.075); background-size:auto,66px 66px; }
+  50% { filter:drop-shadow(0 0 20px rgba(255,255,255,.25)); transform:translateY(-3px) rotateY(0) rotateZ(0) scale(.985); background-size:auto,60px 60px; }
+  76% { filter:drop-shadow(0 0 38px rgba(255,255,255,.55)); transform:translateY(-8px) rotateY(18deg) rotateZ(3deg) scale(1.065); background-size:auto,65px 65px; }
 }
 @keyframes ps106-loader-progress { 0% { background-position:-72% 0,0 0; } 100% { background-position:172% 0,0 0; } }
 @keyframes ps106-loader-dots { 0% { opacity:.2; } 100% { opacity:1; } }

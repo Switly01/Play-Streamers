@@ -68,22 +68,27 @@
       if(!response.ok)throw new Error(data.error||`${isLogin?'Giriş':'Kayıt'} tamamlanamadı.`);
       sessionStorage.setItem('ps48RememberChoice',payload.remember?'1':'0');
       continueProductSignIn(data,product);
-    }catch(failure){window.clearTimeout(requestTimer);const networkFailure=failure instanceof TypeError||failure?.name==='AbortError';error.textContent=stage==='verification'?'Güvenlik doğrulaması tamamlanamadı. Kontrolü yeniden yapıp tekrar dene.':networkFailure?'Güvenli hesap bağlantısı kesildi. Bağlantı yenilendi; tekrar deneyebilirsin.':failure.message||'SW Identity hizmetine ulaşılamadı.';submit.disabled=false;submit.textContent=submit.dataset.originalText||'Devam et';prepareAuthVerification(form,true)}
+    }catch(failure){window.clearTimeout(requestTimer);const networkFailure=failure instanceof TypeError||failure?.name==='AbortError';error.textContent=stage==='verification'?'Güvenlik doğrulaması tamamlanamadı. Aşağıdaki kontrolü yeniden yapıp tekrar dene.':networkFailure?'Güvenli hesap bağlantısı kesildi. Bağlantı yenilendi; tekrar deneyebilirsin.':failure.message||'SW Identity hizmetine ulaşılamadı.';submit.disabled=false;submit.textContent=submit.dataset.originalText||'Devam et';if(stage==='verification')setAuthVerificationState(form,'is-error','Güvenlik doğrulaması yüklenemedi.',true);else prepareAuthVerification(form,true)}
+  }
+  function setAuthVerificationState(form,stateName,message,canRetry=false){
+    const status=$('.ps-auth-verification-state',form);if(!status)return;
+    status.classList.remove('is-ready','is-error');if(stateName)status.classList.add(stateName);
+    status.innerHTML=`<i></i><span>${message}</span>${canRetry?'<button type="button" data-auth-verification-retry>Doğrulamayı yeniden dene</button>':''}`;
+    $('[data-auth-verification-retry]',status)?.addEventListener('click',()=>prepareAuthVerification(form,true));
   }
   function prepareAuthVerification(form,force=false){
     if(!form||typeof window.ps32RequestTurnstileToken!=='function')return Promise.resolve('');
     if(!force&&form.psAuthVerification?.token&&form.psAuthVerification.expiresAt>Date.now())return Promise.resolve(form.psAuthVerification.token);
     if(!force&&form.psAuthVerificationPromise)return form.psAuthVerificationPromise;
-    const status=$('.ps-auth-verification-state',form);
-    if(status){status.classList.remove('is-ready','is-error');status.innerHTML='<i></i><span>Güvenlik doğrulaması hazırlanıyor…</span>'}
+    setAuthVerificationState(form,'','Güvenlik doğrulaması hazırlanıyor…');
     form.psAuthVerificationPromise=window.ps32RequestTurnstileToken().then(token=>{
       const clean=String(token||'').trim();
       if(!clean)throw new Error('Güvenlik doğrulaması hazırlanamadı.');
       form.psAuthVerification={token:clean,expiresAt:Date.now()+240000};
-      if(status){status.classList.add('is-ready');status.innerHTML='<i></i><span>Güvenlik doğrulaması hazır</span>'}
+      setAuthVerificationState(form,'is-ready','Güvenlik doğrulaması hazır');
       return clean;
     }).catch(error=>{
-      if(status){status.classList.add('is-error');status.innerHTML='<i></i><span>Güvenlik doğrulaması yüklenemedi; tekrar denenecek.</span>'}
+      setAuthVerificationState(form,'is-error','Güvenlik doğrulaması yüklenemedi.',true);
       throw error;
     }).finally(()=>{form.psAuthVerificationPromise=null});
     form.psAuthVerificationPromise.catch(()=>{});
@@ -107,8 +112,8 @@
     const fields=isLogin
       ?'<label class="auth-field">Kullanıcı adı veya e-posta<input name="identity" autocomplete="username" minlength="3" maxlength="160" required placeholder="kullaniciadi veya e-posta"></label><label class="auth-field">Şifre<input name="password" type="password" autocomplete="current-password" required placeholder="Şifren"></label>'
       :'<label class="auth-field">Kullanıcı adı<input name="username" autocomplete="username" minlength="3" maxlength="32" pattern="[A-Za-z0-9._-]+" required placeholder="ornek.kullanici"></label><label class="auth-field">Şifre<input name="password" type="password" autocomplete="new-password" minlength="10" required placeholder="En az 10 karakter"></label><label class="auth-field">Şifre tekrar<input name="passwordRepeat" type="password" autocomplete="new-password" minlength="10" required placeholder="Şifreni yeniden yaz"></label><label class="auth-field">Doğum tarihi<input name="birthDate" type="text" min="1900-01-01" max="'+adultBirthDate()+'" required aria-haspopup="dialog" placeholder="Tarih seç"></label>';
-    layer.innerHTML=`<section class="auth-dialog" data-sw-identity-auth="1"><button class="auth-close" type="button" aria-label="Kapat">×</button><div class="ps-identity-wordmark" aria-label="Play Streamers"><img src="./play-streamers-ps-logo.svg?v=10.5" alt=""><span>Play Streamers</span></div><span class="eyebrow">SW IDENTITY İLE KORUNUR</span><h2>${isLogin?'Hesabına giriş yap':'SW hesabını oluştur'}</h2><p>${isLogin?'Kullanıcı adın veya e-postanla giriş yap.':'Bu kayıt doğrudan SW Identity hesabını oluşturur; ayrıca bir Play Streamers hesabı açılmaz.'}</p><form class="auth-form ps-identity-credential-form">${fields}<label class="ps48-remember ps-identity-remember"><input type="checkbox" name="remember"><span>Beni hatırla</span></label><input class="ps-identity-honeypot" name="website" tabindex="-1" autocomplete="off" aria-hidden="true"><div class="ps-auth-verification-state" aria-live="polite"><i></i><span>Güvenlik doğrulaması hazırlanıyor…</span></div><p class="auth-error ps-identity-form-error" aria-live="polite"></p><button class="auth-submit ps-identity-form-submit" type="submit">${isLogin?'Giriş yap':'SW Identity hesabı oluştur'}</button></form><div class="auth-divider"><span>veya</span></div><div class="ps-identity-providers ${isLogin?'has-sw-provider':''}"><button type="button" data-provider="google" aria-label="Google ile devam et">${googleIcon}</button><button type="button" data-provider="kick" aria-label="Kick ile devam et">${kickIcon}</button>${isLogin?'<button type="button" data-provider="sw" aria-label="SW hesabı ile hızlı giriş"><img class="ps102-provider-logo ps102-sw-logo" src="./swcreate-sw-logo-transparent.png?v=10.3" alt=""></button>':''}</div><div class="ps-identity-trust"><i></i><span>SW Identity güvenlik ve plan altyapısı</span></div></section>`;
-    document.body.append(layer);const form=$('.ps-identity-credential-form',layer);const identityMark=$('.ps-identity-wordmark img',layer);if(identityMark)identityMark.src='./play-streamers-ps-logo.svg?v=10.7';
+    layer.innerHTML=`<section class="auth-dialog" data-sw-identity-auth="1"><button class="auth-close" type="button" aria-label="Kapat">×</button><div class="ps-identity-wordmark" aria-label="Play Streamers"><img src="./play-streamers-ps-logo.svg?v=10.8" alt=""><span>Play Streamers</span></div><span class="eyebrow">SW IDENTITY İLE KORUNUR</span><h2>${isLogin?'Hesabına giriş yap':'SW hesabını oluştur'}</h2><p>${isLogin?'Kullanıcı adın veya e-postanla giriş yap.':'Bu kayıt doğrudan SW Identity hesabını oluşturur; ayrıca bir Play Streamers hesabı açılmaz.'}</p><form class="auth-form ps-identity-credential-form">${fields}<label class="ps48-remember ps-identity-remember"><input type="checkbox" name="remember"><span>Beni hatırla</span></label><div class="ps-auth-turnstile-slot" data-turnstile-slot aria-label="Güvenlik doğrulaması"></div><input class="ps-identity-honeypot" name="website" tabindex="-1" autocomplete="off" aria-hidden="true"><div class="ps-auth-verification-state" aria-live="polite"><i></i><span>Güvenlik doğrulaması hazırlanıyor…</span></div><p class="auth-error ps-identity-form-error" aria-live="polite"></p><button class="auth-submit ps-identity-form-submit" type="submit">${isLogin?'Giriş yap':'SW Identity hesabı oluştur'}</button></form><div class="auth-divider"><span>veya</span></div><div class="ps-identity-providers ${isLogin?'has-sw-provider':''}"><button type="button" data-provider="google" aria-label="Google ile devam et">${googleIcon}</button><button type="button" data-provider="kick" aria-label="Kick ile devam et">${kickIcon}</button>${isLogin?'<button type="button" data-provider="sw" aria-label="SW hesabı ile hızlı giriş"><img class="ps102-provider-logo ps102-sw-logo" src="./swcreate-sw-logo-transparent.png?v=10.3" alt=""></button>':''}</div><div class="ps-identity-trust"><i></i><span>SW Identity güvenlik ve plan altyapısı</span></div></section>`;
+    document.body.append(layer);const form=$('.ps-identity-credential-form',layer);const identityMark=$('.ps-identity-wordmark img',layer);if(identityMark)identityMark.src='./play-streamers-ps-logo.svg?v=10.8';
     $('.auth-close',layer).onclick=removeLandingAuth;layer.onclick=event=>{if(event.target===layer)removeLandingAuth()};
     form.onsubmit=event=>{event.preventDefault();submitSwIdentityCredentials(form,isLogin,startedAt)};
     $('[data-provider="google"]',layer).onclick=()=>startSwIdentityLogin('google');$('[data-provider="kick"]',layer).onclick=()=>startSwIdentityLogin('kick');$('[data-provider="sw"]',layer)?.addEventListener('click',()=>startSwIdentityLogin());if(!isLogin)installIdentityCalendar(form.elements.birthDate);fetch(`${API_BASE}/health`,{cache:'no-store'}).catch(()=>{});prepareAuthVerification(form);
@@ -2188,8 +2193,8 @@
     const host = state.host || document.getElementById('ps32-turnstile-host');
     const form = document.querySelector('#landingAuthModal .ps-identity-credential-form');
     if (!host || !form) return host;
-    const anchor = form.querySelector('.ps-identity-remember');
-    if (anchor?.nextSibling !== host) anchor?.after(host);
+    const slot = form.querySelector('[data-turnstile-slot]');
+    if (slot && host.parentElement !== slot) slot.append(host);
     host.classList.add('is-active');
     return host;
   }
@@ -2275,9 +2280,13 @@
         sitekey: state.siteKey,
         action: 'sw-auth',
         theme: 'dark',
-        size: 'normal',
+        size: 'flexible',
         execution: 'execute',
-        appearance: 'interaction-only',
+        appearance: 'always',
+        retry: 'auto',
+        'retry-interval': 3000,
+        'refresh-expired': 'auto',
+        'refresh-timeout': 'auto',
         callback(token) { if (state.pending) state.pending.resolve(token); state.pending = null; },
         'error-callback'() { if (state.pending) state.pending.reject(new Error('Güvenlik kontrolü yüklenemedi.')); state.pending = null; },
         'expired-callback'() { if (state.pending) state.pending.reject(new Error('Güvenlik doğrulamasının süresi doldu.')); state.pending = null; },

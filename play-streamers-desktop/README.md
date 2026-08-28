@@ -1,6 +1,6 @@
 # Play Streamers Desktop
 
-## Sürüm 0.14.3
+## Sürüm 0.14.4
 
 Play Streamers Desktop, Windows 10 ve Windows 11 için tek pencereli yayıncı
 çalışma alanıdır. Kullanıcı kararıyla Studio ile yerel kayıt/yayın motoru bu

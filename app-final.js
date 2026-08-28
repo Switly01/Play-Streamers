@@ -535,7 +535,14 @@
         candidate.classList.remove('ps15-open', 'ps48-locale-closing');
       });
     }, 0);
-    $$('[data-language]', menu).forEach(choice => choice.onclick = () => { localStorage.setItem('ps15-locale', choice.dataset.language); localStorage.setItem('ps-locale-source', 'user'); document.documentElement.classList.add('ps-i18n-booting'); location.reload(); });
+    $$('[data-language]', menu).forEach(choice => choice.onclick = async () => {
+      const language = choice.dataset.language;
+      localStorage.setItem('ps15-locale', language);
+      localStorage.setItem('ps-locale-source', 'user');
+      closeLocaleMenus();
+      if (typeof window.psSetLocale === 'function') await window.psSetLocale(language);
+      else { document.documentElement.classList.add('ps-i18n-booting'); location.reload(); }
+    });
   }
   function buildPublicInfoFrame(layer) {
     const overlay = $('#authOverlay');
@@ -2365,7 +2372,7 @@
     const flagSources = Object.fromEntries(Object.entries(localeFlagFiles).map(([code, file]) => [code, `./assets/flags/${file}.svg?v=4.10`]));
     Object.entries(flagSources).forEach(([code, src]) => auditPlayBotAsset(`flag:${code}`, src, `${code.toUpperCase()} dil bayrağı`));
     auditPlayBotAsset('provider:tipeeestream', donateProviderIconSource('tipeeestream'), 'TipeeeStream DAB gömülü resmî logosu');
-    auditPlayBotAsset('brand:play-streamers', './play-streamers-ps-logo.svg?v=10.4', 'Play Streamers marka amblemi');
+    auditPlayBotAsset('brand:play-streamers', './play-streamers-ps-logo.svg?v=10.6', 'Play Streamers marka amblemi');
     auditPlayBotAsset('brand:sw-create', './swcreate-sw-logo-transparent.png', 'SW Create marka amblemi');
     auditPlayBotAsset('provider:kick', './assets/kick-logo.svg', 'Kick giriş amblemi');
     normalizeTipeeeStreamDabLogo(document);
@@ -2570,7 +2577,11 @@
     for (const issue of playBotTemplateIssues.values()) issues.push(issue);
     for (const issue of playBotGlobalIssues) issues.push(issue);
     for (const issue of playBotRuntimeIssues.values()) issues.push(issue.message);
-    return [...new Set(issues)].slice(0, 12);
+    // Kullanıcıya gösterilen SW Bot sonucu kişisel tarayıcı durumuna göre
+    // değişmez. Sunucu denetimi D1'e tek bir küresel sonuç yazar ve bütün
+    // ziyaretçiler aynı sorun listesini görür; yerel bulgular yalnız tanılama
+    // amacıyla bu fonksiyon içinde değerlendirilir.
+    return [...new Set(playBotGlobalIssues)].slice(0, 12);
   }
   function explainSwBotIssue(issue) {
     const text = String(issue || 'Bilinmeyen bir sorun bulundu.');
@@ -2748,7 +2759,7 @@
       if (!button) { button = document.createElement('button'); button.type = 'button'; button.className = 'ps28-eye'; button.dataset.ps48Eye = '1'; button.innerHTML = '<svg class="ps47-eye-closed" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 3l18 18M10.6 10.7a2.2 2.2 0 0 0 2.8 2.7M9.1 5.9A10.8 10.8 0 0 1 12 5.5c6.2 0 9.5 6.5 9.5 6.5a16.4 16.4 0 0 1-2.6 3.3M6.2 7.2A16.7 16.7 0 0 0 2.5 12s3.3 6.5 9.5 6.5a10.9 10.9 0 0 0 3.1-.4"/></svg><svg class="ps47-eye-open" viewBox="0 0 24 24" aria-hidden="true"><path d="M2.5 12s3.3-5.5 9.5-5.5S21.5 12 21.5 12 18.2 17.5 12 17.5 2.5 12 2.5 12Z"/><circle cx="12" cy="12" r="2.7"/></svg>'; host.append(button); }
       const sync = () => { const visible = input.type === 'text'; button.classList.toggle('is-open', visible); button.setAttribute('aria-label', visible ? 'Şifreyi gizle' : 'Şifreyi göster'); button.setAttribute('aria-pressed', String(visible)); };
       button.onpointerdown = event => event.preventDefault();
-      button.onclick = event => { event.preventDefault(); event.stopImmediatePropagation(); if (button.dataset.psEyeBusy === '1') return; button.dataset.psEyeBusy = '1'; button.classList.remove('is-switching'); void button.offsetWidth; button.classList.add('is-switching'); input.type = input.type === 'password' ? 'text' : 'password'; sync(); input.focus({ preventScroll: true }); window.setTimeout(() => { button.classList.remove('is-switching'); delete button.dataset.psEyeBusy; }, 480); }; sync();
+      button.onclick = event => { event.preventDefault(); event.stopImmediatePropagation(); if (button.dataset.psEyeBusy === '1') return; const selectionStart = input.selectionStart; const selectionEnd = input.selectionEnd; const selectionDirection = input.selectionDirection; button.dataset.psEyeBusy = '1'; button.classList.remove('is-switching'); void button.offsetWidth; button.classList.add('is-switching'); input.type = input.type === 'password' ? 'text' : 'password'; sync(); window.requestAnimationFrame(() => { input.focus({ preventScroll: true }); if (selectionStart !== null && selectionEnd !== null) { try { input.setSelectionRange(selectionStart, selectionEnd, selectionDirection || 'none'); } catch (_) {} } }); window.setTimeout(() => { button.classList.remove('is-switching'); delete button.dataset.psEyeBusy; }, 480); }; sync();
     });
   }
   function rememberIntentForProvider(button) {
@@ -2941,12 +2952,13 @@
     const now = Date.now();
     let cached = null;
     try { cached = JSON.parse(localStorage.getItem(SITE_METRICS_CACHE_KEY) || 'null'); } catch (_) {}
-    const lastSharedFetch = Number(localStorage.getItem(SITE_METRICS_FETCH_KEY) || 0);
+    let lastSharedFetch = 0;
+    try { lastSharedFetch = Number(localStorage.getItem(SITE_METRICS_FETCH_KEY) || 0); } catch (_) {}
     if (!force && cached?.updatedAt && now - lastSharedFetch < LIVE_CONTROL_INTERVALS.siteMetrics - 2_000) {
       renderSiteMetrics(cached);
       return cached;
     }
-    if (!claimSiteMetricsLease(now)) {
+    if (!claimSiteMetricsLease(now) && cached?.updatedAt) {
       if (cached?.updatedAt) renderSiteMetrics(cached);
       return cached;
     }
@@ -2954,7 +2966,7 @@
     const token = state().settings?.userSession || '';
     siteMetricsRequest = fetch('https://api.pstreamers.com/api/site/activity', {
       method: 'POST',
-      credentials: 'include',
+      credentials: 'omit',
       cache: 'no-store',
       headers: { 'content-type': 'application/json', ...(token ? { Authorization: `Bearer ${token}` } : {}) },
       body: JSON.stringify({ visitorId: siteVisitorId() })
@@ -2979,14 +2991,26 @@
       }
       renderSiteMetrics(displayData);
       return displayData;
-    }).catch(() => {
-      if (cached?.updatedAt) renderSiteMetrics(cached, true);
-      else $$('.ps61-site-metrics').forEach(card => {
-        card.classList.add('is-offline');
-        const status = $('[data-ps61-status]', card);
-        if (status) status.textContent = 'Canlı verilere şu anda ulaşılamıyor.';
-      });
-      return cached;
+    }).catch(async () => {
+      // Ziyaret kaydı yazılamasa bile herkese açık sayaç anlık görüntüsü
+      // kartların boş kalmasını önler. GET yolu D1'e yazmaz.
+      try {
+        const response = await fetch('https://api.pstreamers.com/api/site/activity', { method: 'GET', credentials: 'omit', cache: 'no-store' });
+        const result = await response.json().catch(() => ({}));
+        if (!response.ok) throw new Error(result.error || 'snapshot');
+        const snapshot = { totalVisitors:Number(result.totalVisitors || 0), registeredUsers:Number(result.registeredUsers || 0), activeUsers:Number(result.activeUsers || 0), updatedAt:result.updatedAt || new Date().toISOString() };
+        try { localStorage.setItem(SITE_METRICS_CACHE_KEY, JSON.stringify(snapshot)); } catch (_) {}
+        renderSiteMetrics(snapshot);
+        return snapshot;
+      } catch (_) {
+        if (cached?.updatedAt) renderSiteMetrics(cached, true);
+        else $$('.ps61-site-metrics').forEach(card => {
+          card.classList.add('is-offline');
+          const status = $('[data-ps61-status]', card);
+          if (status) status.textContent = 'Canlı verilere şu anda ulaşılamıyor.';
+        });
+        return cached;
+      }
     }).finally(() => {
       siteMetricsRequest = null;
       releaseSiteMetricsLease();
@@ -3016,7 +3040,7 @@
       if (!mark) {
         mark = document.createElement('img');
         mark.className = 'ps103-brand-image';
-        mark.src = './play-streamers-ps-logo.svg?v=10.4';
+        mark.src = './play-streamers-ps-logo.svg?v=10.6';
         mark.alt = '';
         logo.replaceChildren(mark);
       }

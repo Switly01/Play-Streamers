@@ -2922,3 +2922,155 @@ html[data-ps-site-version="9"] body.ps-v9 #authOverlay .landing-brand>.brand-log
 @keyframes ps105-verify{50%{opacity:.35;transform:scale(.72)}}
 @media(max-width:760px){.ps10-astronaut-visitor{bottom:132px!important}}
 @media(prefers-reduced-motion:reduce){body.ps-v9 #authOverlay .ps81-hero::after{will-change:auto}.ps-auth-verification-state>i{animation:none}}
+
+/* Site 10.6 — belirgin sıvı cam, gerçek imleç feneri ve zengin geçiş portalı. */
+:root {
+  --ps106-liquid-edge:rgba(255,255,255,.3);
+  --ps106-liquid-fill:linear-gradient(132deg,rgba(255,255,255,.17),rgba(255,255,255,.045) 34%,rgba(255,255,255,.025) 62%,rgba(255,255,255,.105));
+  --ps106-liquid-shadow:0 26px 70px rgba(0,0,0,.43),inset 0 1px 0 rgba(255,255,255,.34),inset 1px 0 0 rgba(255,255,255,.09),inset 0 -1px 0 rgba(255,255,255,.055);
+}
+
+body.ps-v9 :is(
+  .landing-nav,.ps61-site-metrics,.ps8-app-window,.ps8-float,.ps9-float-chip,
+  .ps92-plan-tabs,.ps92-plan-panel article,.ps8-about-grid article,
+  .ps8-boundary-grid article,.ps8-feature-grid article,.ps8-steps li,
+  .ps8-final-cta,.ps20-member-header,.ps20-card,.app .topbar,.workspace-tabs,
+  .ticker,.card,.ps51-account-shell,.ps51-account-pane,.ps69-play-bot,
+  .auth-dialog,.ps27-dialog,.ps44-dialog,#ps44StatusPopover,#ps44HomeMenu,
+  #ps44HomeConnection,#ps41LocaleMenu,#ps15LocaleMenu,.ps15-locale-menu
+) {
+  border-color:var(--ps106-liquid-edge)!important;
+  background:
+    radial-gradient(110% 85% at 3% -4%,rgba(255,255,255,.25),transparent 38%),
+    radial-gradient(95% 120% at 104% 112%,rgba(255,255,255,.105),transparent 47%),
+    var(--ps106-liquid-fill)!important;
+  box-shadow:var(--ps106-liquid-shadow)!important;
+  -webkit-backdrop-filter:blur(13px) saturate(165%) contrast(106%)!important;
+  backdrop-filter:blur(13px) saturate(165%) contrast(106%)!important;
+}
+body.ps-v9 :is(.landing-nav,.app .topbar,.auth-dialog,.ps27-dialog,.ps44-dialog,#ps44StatusPopover,#ps44HomeMenu,#ps44HomeConnection,#ps41LocaleMenu,#ps15LocaleMenu,.ps15-locale-menu) {
+  -webkit-backdrop-filter:blur(21px) saturate(175%) contrast(108%)!important;
+  backdrop-filter:blur(21px) saturate(175%) contrast(108%)!important;
+}
+body.ps-v9 :is(.ps92-plan-panel article,.ps8-about-grid article,.ps8-boundary-grid article,.ps8-feature-grid article,.ps8-steps li,.ps20-card,.card,.ps51-account-pane) {
+  contain:paint;
+  transform:translateZ(0);
+}
+
+#authOverlay .landing-brand>span:last-child {
+  font-size:15px!important;
+  font-weight:760!important;
+  letter-spacing:-.035em!important;
+}
+#authOverlay .landing-brand>.brand-logo>.ps103-brand-image { width:91%!important; height:91%!important; }
+
+body.ps-v9 #authOverlay .ps81-hero::after { opacity:.2!important; }
+.ps106-pointer-lantern {
+  position:absolute;
+  z-index:2;
+  top:0;
+  left:0;
+  width:min(760px,70vw);
+  aspect-ratio:1;
+  border-radius:50%;
+  opacity:.34;
+  pointer-events:none;
+  background:radial-gradient(circle,rgba(255,255,255,.22) 0,rgba(255,255,255,.105) 21%,rgba(255,255,255,.035) 45%,transparent 72%);
+  mix-blend-mode:screen;
+  filter:blur(1px);
+  transform:translate3d(50vw,42vh,0) translate3d(-50%,-50%,0);
+  will-change:transform,opacity;
+  transition:opacity .24s ease;
+}
+.ps106-pointer-lantern.is-active { opacity:1; }
+.ps106-pointer-lantern::after {
+  position:absolute;
+  inset:21%;
+  border:1px solid rgba(255,255,255,.055);
+  border-radius:50%;
+  box-shadow:0 0 70px rgba(255,255,255,.065);
+  content:"";
+}
+
+#ps28Loader,#ps20Loader,.ps14-loader {
+  isolation:isolate;
+  overflow:hidden;
+  background:
+    radial-gradient(circle at 20% 18%,rgba(255,255,255,.09) 0 1px,transparent 2px),
+    radial-gradient(circle at 72% 32%,rgba(255,255,255,.12) 0 1px,transparent 2px),
+    radial-gradient(circle at 82% 76%,rgba(255,255,255,.08) 0 1px,transparent 2px),
+    radial-gradient(circle at 34% 82%,rgba(255,255,255,.1) 0 1px,transparent 2px),
+    radial-gradient(circle at 50% 43%,rgba(255,255,255,.11),transparent 30%),
+    rgba(0,0,0,.88)!important;
+  background-size:190px 190px,240px 240px,310px 310px,270px 270px,auto,auto!important;
+  animation:ps106-loader-stars 12s linear infinite;
+}
+#ps28Loader .ps28-loader-card,#ps28Loader>div,#ps20Loader>div,.ps14-loader-box {
+  width:min(300px,calc(100vw - 42px));
+  min-height:210px;
+  display:grid;
+  place-content:center;
+  border-radius:34px!important;
+  padding:40px 38px 46px!important;
+  background:radial-gradient(circle at 50% 8%,rgba(255,255,255,.2),transparent 36%),linear-gradient(145deg,rgba(255,255,255,.13),rgba(7,7,10,.68))!important;
+  -webkit-backdrop-filter:blur(26px) saturate(175%)!important;
+  backdrop-filter:blur(26px) saturate(175%)!important;
+}
+#ps28Loader .ps28-loader-card::before,#ps28Loader>div::before,#ps20Loader>div::before,.ps14-loader-box::before {
+  width:76px;
+  height:76px;
+  margin-bottom:24px;
+  background:url('./play-streamers-ps-logo.svg?v=10.6') center/contain no-repeat;
+  filter:drop-shadow(0 0 18px rgba(255,255,255,.18));
+  animation:ps106-loader-float 1.7s cubic-bezier(.45,.05,.3,1) infinite;
+}
+#ps28Loader .ps28-loader-card::after,#ps28Loader>div::after,#ps20Loader>div::after,.ps14-loader-box::after {
+  position:absolute;
+  right:28px;
+  bottom:23px;
+  left:28px;
+  height:3px;
+  overflow:hidden;
+  border-radius:99px;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.95),transparent) 0 0/42% 100% no-repeat,rgba(255,255,255,.075);
+  content:"";
+  animation:ps106-loader-progress 1.25s ease-in-out infinite;
+}
+#ps28Loader b::after,#ps20Loader span::after,.ps14-loader-box span::after { content:" ···"; animation:ps106-loader-dots 1.1s steps(4,end) infinite; }
+
+#ps32-turnstile-host {
+  width:100%;
+  min-height:0;
+  display:flex;
+  justify-content:flex-start;
+  overflow:hidden;
+  border-radius:13px;
+}
+body>#ps32-turnstile-host {
+  position:fixed;
+  top:0;
+  left:-10000px;
+  width:1px;
+  height:1px;
+  visibility:hidden;
+  pointer-events:none;
+}
+.ps-identity-credential-form>#ps32-turnstile-host { visibility:visible; }
+
+@keyframes ps106-loader-stars { to { background-position:190px 190px,-240px 240px,310px -310px,-270px -270px,0 0,0 0; } }
+@keyframes ps106-loader-float { 50% { filter:drop-shadow(0 0 28px rgba(255,255,255,.34)); transform:translateY(-7px) scale(1.025); } }
+@keyframes ps106-loader-progress { 0% { background-position:-72% 0,0 0; } 100% { background-position:172% 0,0 0; } }
+@keyframes ps106-loader-dots { 0% { opacity:.2; } 100% { opacity:1; } }
+
+@media(max-width:760px) {
+  #authOverlay .landing-brand>span:last-child { font-size:14px!important; }
+  .ps106-pointer-lantern { width:105vw; }
+  body.ps-v9 :is(.ps92-plan-panel article,.ps8-about-grid article,.ps8-boundary-grid article,.ps8-feature-grid article,.ps8-steps li,.ps20-card,.card,.ps51-account-pane) {
+    -webkit-backdrop-filter:blur(9px) saturate(150%)!important;
+    backdrop-filter:blur(9px) saturate(150%)!important;
+  }
+}
+@media(prefers-reduced-motion:reduce) {
+  #ps28Loader,#ps20Loader,.ps14-loader,#ps28Loader .ps28-loader-card::before,#ps28Loader>div::before,#ps20Loader>div::before,.ps14-loader-box::before,#ps28Loader .ps28-loader-card::after,#ps28Loader>div::after,#ps20Loader>div::after,.ps14-loader-box::after { animation:none!important; }
+  .ps106-pointer-lantern { display:none; }
+}

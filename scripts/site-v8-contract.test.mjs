@@ -11,12 +11,12 @@ test('site 10 assets are cache-busted and use fluid monochrome glass', async () 
     read('site-v7.css'),
     read('play-streamers-ps-logo.svg'),
   ]);
-  assert.match(html, /play-streamers-build" content="2026-08-27-site-10\.4\.2"/);
-  assert.match(html, /site-v7\.css\?v=10\.4\.2/);
-  assert.match(html, /app\.js\?v=5\.3\.9/);
-  assert.match(html, /site-v7\.js\?v=10\.4\.2/);
-  assert.match(html, /app-final\.js\?v=5\.9\.0/);
-  assert.match(html, /live-i18n\.js\?v=5\.0/);
+  assert.match(html, /play-streamers-build" content="2026-08-28-site-10\.6\.0"/);
+  assert.match(html, /site-v7\.css\?v=10\.6\.0/);
+  assert.match(html, /app\.js\?v=5\.4\.1/);
+  assert.match(html, /site-v7\.js\?v=10\.6\.1/);
+  assert.match(html, /app-final\.js\?v=5\.9\.5/);
+  assert.match(html, /live-i18n\.js\?v=8\.4\.1/);
   assert.match(css, /html\[data-ps-site-version="8"\]/);
   assert.match(css, /--signal: #f5f5f2/);
   assert.match(css, /@keyframes ps82-meteor/);
@@ -32,7 +32,8 @@ test('site 10 assets are cache-busted and use fluid monochrome glass', async () 
   assert.match(css, /ps9-sw-ai-summary/);
   assert.doesNotMatch(css, /body\.ps-v9\s*>\s*:not\(#ps9Ambient\)/);
   assert.match(logo, /Tek beyaz beşgen çerçeve/);
-  assert.match(logo, /translate\(14\.4 14\.4\) scale\(\.82\)/);
+  assert.match(logo, /translate\(32 14\) scale\(\.68 \.86\)/);
+  assert.match(logo, /stroke-linecap="round"/);
   assert.match(logo, /M80 8 147 56 122 145H38L13 56 80 8Z/);
   assert.doesNotMatch(logo, /linearGradient|circle|polygon/);
   assert.match(css, /@keyframes ps92-warp/);
@@ -41,6 +42,9 @@ test('site 10 assets are cache-busted and use fluid monochrome glass', async () 
   assert.match(css, /\.ps10-space-detail/);
   assert.match(css, /\.ps-identity-credential-form/);
   assert.match(css, /Site 10\.3 final precedence layer/);
+  assert.match(css, /Site 10\.6/);
+  assert.match(css, /\.ps106-pointer-lantern/);
+  assert.match(css, /backdrop-filter:blur\(21px\)/);
   assert.match(html, /ps-i18n-booting/);
 });
 
@@ -49,7 +53,7 @@ test('public home promotes the desktop app without restoring legacy hero', async
   assert.match(source, /className = 'landing-main ps8-home'/);
   assert.match(source, /Windows için indir/);
   assert.match(source, /Windows 10\/11 · 64 bit/);
-  assert.match(source, /APP v0\.14\.2/);
+  assert.match(source, /APP v0\.14\.4/);
   assert.match(source, /data-ps8-action="register"/);
   assert.match(source, /data-ps8-action="products"/);
   assert.match(source, /id="ps8-about"/);
@@ -105,9 +109,9 @@ test('SW Bot audits the whole interface and explains issues with SW AI', async (
   assert.match(worker, /sw-bot:global-status:v13/);
   assert.match(worker, /explainSwBotIssuesWithAi/);
   assert.match(worker, /swBotDeterministicReport/);
-  assert.match(worker, /site-v7\.css\?v=10\.4\.2/);
+  assert.match(worker, /site-v7\.css\?v=10\.6\.0/);
   assert.match(worker, /\/api\/i18n\/translate/);
-  assert.match(worker, /i18n:v5/);
+  assert.match(worker, /i18n:v9/);
   assert.match(worker, /interface_translation_cache/);
   assert.doesNotMatch(worker, /env\.SESSIONS/);
   assert.match(worker, /LEGACY_PLAY_STREAMERS_AUTH_PATHS/);
@@ -129,14 +133,15 @@ test('SW Identity owns direct login and registration without legacy account leak
   assert.match(app, /name=\"birthDate\"/);
   assert.match(app, /data-provider=\"sw\"/);
   assert.match(app, /submitSwIdentityCredentials/);
-  assert.match(app, /classList\.add\('ps-i18n-booting'\); location\.reload\(\)/);
+  assert.match(app, /window\.psSetLocale/);
   assert.match(app, /adoptAuthenticatedUser\(data\.user\);state\.settings\.userSession=activeUserSession/);
   assert.match(identityWorker, /hostname === \"pstreamers\.com\"/);
   assert.match(app, /installIdentityCalendar/);
   assert.match(app, /productRedirectUrl/);
-  assert.match(identityWorker, /SW_IDENTITY_VERSION = "1\.8\.0"/);
+  assert.match(identityWorker, /SW_IDENTITY_VERSION = "1\.8\.1"/);
   assert.match(identityWorker, /createProductHandoffTarget/);
-  assert.match(i18n, /ps-live-i18n-v5/);
+  assert.match(i18n, /ps-live-i18n-v9/);
+  assert.match(i18n, /window\.psSetLocale/);
   assert.match(i18n, /Her şey tek platformda\./);
   assert.match(i18n, /index \+= 16/);
   assert.match(i18n, /requestTranslations\(strings\.slice\(0, middle\), depth \+ 1\)/);
@@ -148,9 +153,9 @@ test('SW Identity owns direct login and registration without legacy account leak
 
 test('privacy and terms share the premium legal design', async () => {
   const [privacy, terms, legalCss] = await Promise.all([read('privacy.html'), read('terms.html'), read('legal-v9.css')]);
-  assert.match(privacy, /legal-v9\.css\?v=10\.1/);
+  assert.match(privacy, /legal-v9\.css\?v=10\.5\.0/);
   assert.match(privacy, /Kullanım Koşulları/);
-  assert.match(terms, /play-streamers-build" content="2026-08-27-legal-10\.1"/);
+  assert.match(terms, /play-streamers-build" content="2026-08-28-legal-10\.6\.0"/);
   assert.match(terms, /SW Bot ve SW AI/);
   assert.match(legalCss, /@keyframes legal-stars/);
   assert.match(legalCss, /\.brand-mark img/);

@@ -7,7 +7,7 @@ Bu doküman; Play Streamers web uygulaması, Cloudflare Worker API'si ve Play Co
 - Web sitesi: **10.5.5**
 - Web uygulaması / ürün bağlamı: **5.2**
 - Play Connect: **1.15.1**
-- Desktop: **0.14.3**
+- Desktop: **0.14.4**
 - Worker kaynak sabiti: **5.4**
 
 > Yayın öncesinde Worker'daki bildirim sürüm sabiti ile bu sürüm geçmişi aynı numaraya yükseltilmelidir.
@@ -46,7 +46,7 @@ Bu doküman; Play Streamers web uygulaması, Cloudflare Worker API'si ve Play Co
 - PS logosundaki çift görünüm kaldırıldı; tek dış hat ve daha küçük monogram
   site ile masaüstü ikonlarına uygulandı.
 
-### Desktop 0.14.3 / Store 0.14.3.0
+### Desktop 0.14.4 / Store 0.14.4.0
 
 - Özellik arayüzü güvenilir, odaklanabilir ve Escape ile kapanan sıvı cam
   çekmecede açılır.

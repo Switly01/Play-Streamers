@@ -78,8 +78,8 @@ const DONATE_OAUTH_PROVIDERS = Object.freeze({
     clientSecretVariable: "TIPEEESTREAM_CLIENT_SECRET",
   }),
 });
-const CURRENT_RELEASE_VERSION = "5.4";
-const CURRENT_RELEASE_PUBLISHED_AT = "2026-08-25T12:00:00+03:00";
+const CURRENT_RELEASE_VERSION = "5.5";
+const CURRENT_RELEASE_PUBLISHED_AT = "2026-08-28T16:00:00+03:00";
 const SW_IDENTITY_ORIGIN = "https://api.swcreate.com";
 const DESKTOP_IDENTITY_REDIRECT = "playstreamers://identity/callback";
 const WEB_IDENTITY_REDIRECTS = new Set([
@@ -339,6 +339,10 @@ export default {
 
       if (url.pathname === "/api/site/activity" && request.method === "POST") {
         return updateSiteActivity(request, env);
+      }
+
+      if (url.pathname === "/api/site/activity" && request.method === "GET") {
+        return readSiteActivity(request, env);
       }
 
       if (url.pathname === "/api/auth/sw/exchange" && request.method === "POST") {
@@ -808,17 +812,20 @@ async function runScheduledPlayBotAudit(env) {
   await ensurePlayBotMetadataStorage(env);
   const resources = [
     ["Ana sayfa", "https://pstreamers.com/", "document"],
-    ["Ana uygulama betiği", "https://pstreamers.com/app.js?v=5.4.0", "script"],
-    ["Uygulama betiği", "https://pstreamers.com/app-final.js?v=5.9.4", "script"],
-    ["Site davranış betiği", "https://pstreamers.com/site-v7.js?v=10.5.5", "script"],
-    ["Canlı çeviri betiği", "https://pstreamers.com/live-i18n.js?v=8.3", "script"],
-    ["Premium stil dosyası", "https://pstreamers.com/site-v7.css?v=10.5.5", "style"],
+    ["Ana uygulama betiği", "https://pstreamers.com/app.js?v=5.4.1", "script"],
+    ["Uygulama betiği", "https://pstreamers.com/app-final.js?v=5.9.5", "script"],
+    ["Site davranış betiği", "https://pstreamers.com/site-v7.js?v=10.6.1", "script"],
+    ["Canlı çeviri betiği", "https://pstreamers.com/live-i18n.js?v=8.4.1", "script"],
+    ["Premium stil dosyası", "https://pstreamers.com/site-v7.css?v=10.6.0", "style"],
     ["Oturum başlangıç betiği", "https://pstreamers.com/session-bootstrap.js?v=1.1", "script"],
     ["Site yönlendiricisi", "https://pstreamers.com/site-router.js?v=1.1", "script"],
     ["Sunucu analiz betiği", "https://pstreamers.com/server-analytics.js?v=6.0", "script"],
     ["Gizlilik sayfası", "https://pstreamers.com/privacy.html", "document"],
     ["Kullanım koşulları", "https://pstreamers.com/terms.html", "document"],
-    ["PS marka amblemi", "https://pstreamers.com/play-streamers-ps-logo.svg?v=10.4", "image"],
+    ["Kimlik dönüş sayfası", "https://pstreamers.com/identity/callback/", "document"],
+    ["404 yönlendirme sayfası", "https://pstreamers.com/404.html", "document"],
+    ["SW Identity sağlığı", "https://api.swcreate.com/api/health", "json"],
+    ["PS marka amblemi", "https://pstreamers.com/play-streamers-ps-logo.svg?v=10.6", "image"],
     ["Kick giriş amblemi", "https://pstreamers.com/assets/kick-logo.svg", "image"],
     ["SW Create amblemi", "https://pstreamers.com/swcreate-sw-logo-transparent.png", "image"],
     ["Windows kurucusu", "https://pstreamers.com/downloads/Play-Streamers-Setup.exe", "binary"],
@@ -891,12 +898,12 @@ async function runScheduledPlayBotAudit(env) {
   const homeDocument = results.find(result => result.type === "document");
   if (homeDocument?.ok) {
     const documentContracts = [
-      ["site-v7.css?v=10.5.5", "Güncel premium stil dosyası"],
-      ["app.js?v=5.4.0", "Güncel ana uygulama betiği"],
-      ["app-final.js?v=5.9.4", "Güncel onarım betiği"],
-      ["site-v7.js?v=10.5.5", "Güncel site davranış betiği"],
-      ["live-i18n.js?v=8.3", "Güncel canlı çeviri betiği"],
-      ["play-streamers-build\" content=\"2026-08-27-site-10.5.5", "Site 10.5.5 sürüm işareti"],
+      ["site-v7.css?v=10.6.0", "Güncel premium stil dosyası"],
+      ["app.js?v=5.4.1", "Güncel ana uygulama betiği"],
+      ["app-final.js?v=5.9.5", "Güncel onarım betiği"],
+      ["site-v7.js?v=10.6.1", "Güncel site davranış betiği"],
+      ["live-i18n.js?v=8.4.1", "Güncel canlı çeviri betiği"],
+      ["play-streamers-build\" content=\"2026-08-28-site-10.6.0", "Site 10.6.0 sürüm işareti"],
     ];
     for (const [token, label] of documentContracts) {
       if (!homeDocument.body.includes(token)) issues.push(`${label} canlı ana sayfaya bağlanmamış.`);
@@ -939,6 +946,9 @@ async function runScheduledPlayBotAudit(env) {
       ["unlabeledFields", "Form alanı erişilebilirlik denetimi"],
       ["unsafeExternalLinks", "Yeni sekme bağlantı güvenliği denetimi"],
       ["Kullanım Koşulları", "Yasal koşullar bağlantısı"],
+      ["window.psSetLocale", "Sayfa yenilemeden çalışan dil seçimi"],
+      ["setSelectionRange", "Şifre gözünde imleç konumunu koruma"],
+      ["method: 'GET'", "Canlı site verilerinde salt okunur yedek akış"],
     ];
     for (const [token, label] of contracts) {
       if (!appScript.body.includes(token)) issues.push(`${label} canlı uygulama betiğinde bulunamadı.`);
@@ -959,6 +969,8 @@ async function runScheduledPlayBotAudit(env) {
     const contracts = [
       ["html[data-ps-site-version=\"9\"]", "Site 9.0 ortak tasarım sistemi"],
       ["#ps9Ambient", "Site geneli hareket katmanı"],
+      ["ps106-pointer-lantern", "Yıldız alanı imleç feneri"],
+      ["--ps106-liquid-edge", "Site geneli sıvı cam katmanı"],
       ["ps9-surface-in", "Ekran geçiş animasyonu"],
       ["ps9-sw-ai-summary", "SW AI sorun açıklama kartı"],
     ];
@@ -1171,7 +1183,7 @@ async function translateInterfaceStrings(request, env) {
   if (!(await allowInterfaceTranslationRequest(request, env, language))) {
     return apiResponse(request, { error: "Canlı çeviri sınırına ulaşıldı. Kısa süre sonra yeniden dene." }, 429);
   }
-  const cacheKeys = await Promise.all(strings.map(source => sha256Hex(`i18n:v8:${language}:${source}`)));
+  const cacheKeys = await Promise.all(strings.map(source => sha256Hex(`i18n:v9:${language}:${source}`)));
   const cachedByKey = new Map();
   if (env.DB) {
     try {
@@ -1940,6 +1952,33 @@ async function readUserSession(request, env) {
     return null;
   }
   return { sessionId, session: { ...session, user: { id: session.userId } } };
+}
+
+async function readSiteActivity(request, env) {
+  const origin = request.headers.get("Origin");
+  if (origin && !ALLOWED_FRONTEND_ORIGINS.has(origin)) {
+    return apiResponse(request, { error: "Bu istek izin verilen site kaynağından gelmiyor." }, 403);
+  }
+  await ensureUsersSchema(env);
+  const now = Date.now();
+  const counts = await env.DB.prepare(`SELECT
+      (SELECT COUNT(*) FROM site_visitors) AS total_visitors,
+      (SELECT COUNT(*) FROM users WHERE username IS NOT NULL AND trim(username) <> '') AS registered_users,
+      (SELECT COUNT(DISTINCT CASE
+        WHEN user_id IS NOT NULL THEN 'user:' || user_id
+        ELSE 'visitor:' || visitor_hash
+      END) FROM site_visitors WHERE last_seen_at >= ?1) AS active_users`)
+    .bind(now - SITE_ACTIVITY_ACTIVE_WINDOW_MS)
+    .first();
+  return apiResponse(request, {
+    ok: true,
+    totalVisitors: Number(counts?.total_visitors || 0),
+    registeredUsers: Number(counts?.registered_users || 0),
+    activeUsers: Number(counts?.active_users || 0),
+    updatedAt: new Date(now).toISOString(),
+    activeWindowSeconds: Math.floor(SITE_ACTIVITY_ACTIVE_WINDOW_MS / 1000),
+    snapshot: true,
+  });
 }
 
 async function updateSiteActivity(request, env) {

@@ -18,7 +18,7 @@
   function adultBirthDate(){const date=new Date();date.setFullYear(date.getFullYear()-18);return date.toISOString().slice(0,10)}
   function accountScope(user){return String(user?.id||user?.swIdentityUserId||user?.email||'').trim().toLowerCase()}
   function adoptAuthenticatedUser(user){const nextScope=accountScope(user);const previousScope=String(state.settings?.accountScopeId||accountScope(state.settings?.user)||'');if(nextScope&&previousScope&&nextScope!==previousScope){const remembered=Boolean(state.settings?.rememberUser),rememberUntil=state.settings?.rememberUntil;state=empty();state.settings.rememberUser=remembered;if(rememberUntil)state.settings.rememberUntil=rememberUntil;}state.settings.accountScopeId=nextScope;state.settings.user=user;return user}
-  function removeLandingAuth(){const modal=$('#landingAuthModal');if(!modal||modal.dataset.closing==='1')return;modal.dataset.closing='1';modal.classList.add('ps-identity-auth-closing');setTimeout(()=>modal.remove(),220)}
+  function removeLandingAuth(){const modal=$('#landingAuthModal');if(!modal||modal.dataset.closing==='1')return;window.ps32ReleaseTurnstileHost?.();modal.dataset.closing='1';modal.classList.add('ps-identity-auth-closing');setTimeout(()=>modal.remove(),220)}
   function passwordMatch(form,error){const password=$('[name="password"]',form)?.value||'',repeat=$('[name="passwordRepeat"]',form)?.value||'';if(repeat&&password!==repeat){if(error)error.textContent='Şifreler birbiriyle aynı değil.';return false}if(error)error.textContent='';return true}
   async function sendAccountRequest(path,payload,session=false){try{const response=await fetch(`${API_BASE}${path}`,{method:'POST',headers:{'content-type':'application/json',...(session?{Authorization:`Bearer ${activeUserSession}`}:{})},body:JSON.stringify(payload)});let data={};try{data=await response.json()}catch{}return{response,data}}catch{return{response:{ok:false},data:{error:'Sunucuya ulaşılamadı. Cloudflare Worker kodunun en güncel sürümünü Deploy ettiğinden emin ol.'}}}}
   function completeSignIn(data,{emailMissing=false}={}){landingMode=false;activeUserSession=data.sessionId||activeUserSession;adoptAuthenticatedUser(data.user);state.settings.userSession=activeUserSession;save();removeLandingAuth();render();if(emailMissing)showEmailMissingNotice()}
@@ -64,7 +64,7 @@
       if(!response.ok)throw new Error(data.error||`${isLogin?'Giriş':'Kayıt'} tamamlanamadı.`);
       sessionStorage.setItem('ps48RememberChoice',payload.remember?'1':'0');
       continueProductSignIn(data,product);
-    }catch(failure){error.textContent=failure.message||'SW Identity hizmetine ulaşılamadı.';submit.disabled=false;submit.textContent=submit.dataset.originalText||'Devam et';prepareAuthVerification(form,true)}
+    }catch(failure){error.textContent=failure instanceof TypeError?'Güvenli hesap hizmetine ulaşılamadı. Bağlantı yeniden hazırlanıyor; birkaç saniye sonra tekrar dene.':failure.message||'SW Identity hizmetine ulaşılamadı.';submit.disabled=false;submit.textContent=submit.dataset.originalText||'Devam et';prepareAuthVerification(form,true)}
   }
   function prepareAuthVerification(form,force=false){
     if(!form||typeof window.ps32RequestTurnstileToken!=='function')return Promise.resolve('');
@@ -1577,7 +1577,7 @@
     if(!menu.hidden){menuClose(menu);return;}
     const lang=currentLang();menu.innerHTML=`<span class="ps15-locale-title">DİL SEÇİMİ</span>${Object.entries(langs).map(([code,item])=>`<button type="button" data-ps15-lang="${code}" ${code===lang?'aria-current="true"':''}><span class="ps15-locale-flag">${item.flag}</span>${item.name}</button>`).join('')}`;
     const rect=button.getBoundingClientRect(), width=Math.min(245,innerWidth-24); menu.style.width=width+'px';menu.style.left=Math.max(12,Math.min(innerWidth-width-12,rect.left))+'px';menu.style.top=Math.min(innerHeight-215,rect.bottom+8)+'px';menu.hidden=false;menu.classList.remove('ps15-closing');menu.classList.add('ps15-open');setTimeout(()=>menu.classList.remove('ps15-open'),180);
-    $$('[data-ps15-lang]',menu).forEach(item=>item.onclick=()=>{ const selected=item.dataset.ps15Lang; localStorage.setItem('ps15-locale',selected); localStorage.setItem('ps-locale-source','user'); document.documentElement.classList.add('ps-i18n-booting'); location.reload(); });
+    $$('[data-ps15-lang]',menu).forEach(item=>item.onclick=()=>{ const selected=item.dataset.ps15Lang; localStorage.setItem('ps15-locale',selected); localStorage.setItem('ps-locale-source','user'); if(typeof window.psSetLocale==='function')void window.psSetLocale(selected);else{document.documentElement.classList.add('ps-i18n-booting');location.reload()} });
   }
   function localeButton(root=document){
     /* Keep the old select hidden in DOM so older repair code does not recreate it. */
@@ -2175,7 +2175,32 @@
     '/api/account/resend-code', '/api/account/delete'
   ]);
   const nativeFetch = window.fetch.bind(window);
-  const state = { enabled: false, siteKey: '', widgetId: null, ready: null, pending: null };
+  const state = { enabled: false, siteKey: '', widgetId: null, ready: null, pending: null, host: null };
+
+  function placeHostInActiveForm() {
+    const host = state.host || document.getElementById('ps32-turnstile-host');
+    const form = document.querySelector('#landingAuthModal .ps-identity-credential-form');
+    if (!host || !form) return host;
+    const anchor = form.querySelector('.ps-identity-remember');
+    if (anchor?.nextSibling !== host) anchor?.after(host);
+    host.classList.add('is-active');
+    return host;
+  }
+
+  function releaseHost() {
+    const host = state.host || document.getElementById('ps32-turnstile-host');
+    if (state.pending) {
+      state.pending.reject(new Error('Güvenlik doğrulaması kapatıldı.'));
+      state.pending = null;
+    }
+    if (window.turnstile && state.widgetId !== null) {
+      try { window.turnstile.reset(state.widgetId); } catch (_) {}
+    }
+    if (host) {
+      host.classList.remove('is-active');
+      document.body.append(host);
+    }
+  }
 
   // Turnstile's script "load" event can fire slightly before its render API is
   // ready.  Waiting for render() prevents intermittent first-click failures.
@@ -2236,16 +2261,16 @@
       if (!host) {
         host = document.createElement('div');
         host.id = 'ps32-turnstile-host';
-        host.style.cssText = 'position:fixed;right:12px;bottom:12px;z-index:2147483647;min-height:65px';
         document.body.append(host);
       }
+      state.host = host;
       state.widgetId = window.turnstile.render(host, {
         sitekey: state.siteKey,
         action: 'sw-auth',
         theme: 'dark',
         size: 'normal',
         execution: 'execute',
-        appearance: 'execute',
+        appearance: 'interaction-only',
         callback(token) { if (state.pending) state.pending.resolve(token); state.pending = null; },
         'error-callback'() { if (state.pending) state.pending.reject(new Error('Güvenlik kontrolü yüklenemedi.')); state.pending = null; },
         'expired-callback'() { if (state.pending) state.pending.reject(new Error('Güvenlik doğrulamasının süresi doldu.')); state.pending = null; },
@@ -2260,6 +2285,7 @@
     if (!state.enabled) return null;
     if (!window.turnstile || state.widgetId === null) throw new Error('Güvenlik doğrulaması henüz hazır değil. Lütfen birkaç saniye sonra tekrar dene.');
     if (state.pending) throw new Error('Devam eden bir güvenlik doğrulaması var. Lütfen bekle.');
+    placeHostInActiveForm();
     return new Promise((resolve, reject) => {
       state.pending = { resolve, reject };
       try { window.turnstile.reset(state.widgetId); window.turnstile.execute(state.widgetId); }
@@ -2310,6 +2336,7 @@
     if (state.ready) await state.ready;
     return state.enabled ? getToken() : null;
   };
+  window.ps32ReleaseTurnstileHost = releaseHost;
 })();
 
 (() => {
@@ -3603,8 +3630,8 @@
     $$('[data-language]', menu).forEach(choice => choice.onclick = () => {
       localStorage.setItem('ps15-locale', choice.dataset.language);
       localStorage.setItem('ps-locale-source', 'user');
-      document.documentElement.classList.add('ps-i18n-booting');
-      location.reload();
+      if (typeof window.psSetLocale === 'function') void window.psSetLocale(choice.dataset.language);
+      else { document.documentElement.classList.add('ps-i18n-booting'); location.reload(); }
     });
   }
   function globeMarkup() { return '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M3 12h18M12 3c2.5 2.5 3.7 5.5 3.7 9S14.5 18.5 12 21M12 3C9.5 5.5 8.3 8.5 8.3 12S9.5 18.5 12 21" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>'; }

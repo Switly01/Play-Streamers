@@ -87,6 +87,22 @@ Object.entries(systemStatusCopy).forEach(([language, values]) => Object.assign(c
   "SW Bot; kullanıcı alanını, Dashboard’u, menüleri ve veri bağlantılarını arka planda düzenli olarak denetliyor.": values[5],
 }));
 
+const criticalAccountCopy = Object.freeze({
+  en: ["Sign in to your account","Create your SW account","Username or email","Username","Password","Repeat password","Date of birth","Choose date","Security verification is being prepared…","Security verification is ready","or","Continue with Google","Continue with Kick","Support","Email address","Subject","Message","Send","Privacy Policy","Terms of Use"],
+  de: ["Bei deinem Konto anmelden","SW-Konto erstellen","Benutzername oder E-Mail","Benutzername","Passwort","Passwort wiederholen","Geburtsdatum","Datum auswählen","Sicherheitsprüfung wird vorbereitet…","Sicherheitsprüfung ist bereit","oder","Mit Google fortfahren","Mit Kick fortfahren","Support","E-Mail-Adresse","Betreff","Nachricht","Senden","Datenschutzerklärung","Nutzungsbedingungen"],
+  es: ["Inicia sesión en tu cuenta","Crea tu cuenta SW","Usuario o correo electrónico","Nombre de usuario","Contraseña","Repetir contraseña","Fecha de nacimiento","Elegir fecha","Preparando la verificación de seguridad…","La verificación de seguridad está lista","o","Continuar con Google","Continuar con Kick","Soporte","Correo electrónico","Asunto","Mensaje","Enviar","Política de privacidad","Términos de uso"],
+  fr: ["Connectez-vous à votre compte","Créez votre compte SW","Nom d’utilisateur ou e-mail","Nom d’utilisateur","Mot de passe","Répéter le mot de passe","Date de naissance","Choisir une date","Préparation de la vérification de sécurité…","La vérification de sécurité est prête","ou","Continuer avec Google","Continuer avec Kick","Assistance","Adresse e-mail","Objet","Message","Envoyer","Politique de confidentialité","Conditions d’utilisation"],
+  ru: ["Войдите в аккаунт","Создайте аккаунт SW","Имя пользователя или эл. почта","Имя пользователя","Пароль","Повторите пароль","Дата рождения","Выберите дату","Подготовка проверки безопасности…","Проверка безопасности готова","или","Продолжить с Google","Продолжить с Kick","Поддержка","Адрес электронной почты","Тема","Сообщение","Отправить","Политика конфиденциальности","Условия использования"],
+  ar: ["سجّل الدخول إلى حسابك","أنشئ حساب SW","اسم المستخدم أو البريد الإلكتروني","اسم المستخدم","كلمة المرور","تكرار كلمة المرور","تاريخ الميلاد","اختر التاريخ","جارٍ إعداد التحقق الأمني…","التحقق الأمني جاهز","أو","المتابعة باستخدام Google","المتابعة باستخدام Kick","الدعم","عنوان البريد الإلكتروني","الموضوع","الرسالة","إرسال","سياسة الخصوصية","شروط الاستخدام"],
+  ja: ["アカウントにログイン","SWアカウントを作成","ユーザー名またはメール","ユーザー名","パスワード","パスワードを再入力","生年月日","日付を選択","セキュリティ確認を準備中…","セキュリティ確認の準備完了","または","Googleで続行","Kickで続行","サポート","メールアドレス","件名","メッセージ","送信","プライバシーポリシー","利用規約"],
+});
+const criticalAccountSources = ["Hesabına giriş yap","SW hesabını oluştur","Kullanıcı adı veya e-posta","Kullanıcı adı","Şifre","Şifre tekrar","Doğum tarihi","Tarih seç","Güvenlik doğrulaması hazırlanıyor…","Güvenlik doğrulaması hazır","veya","Google ile devam et","Kick ile devam et","Destek","E-posta adresi","Konu","Mesaj","Gönder","Gizlilik Politikası","Kullanım Koşulları"];
+Object.entries(criticalAccountCopy).forEach(([language, values]) => {
+  criticalAccountSources.forEach((source, index) => { critical[language][source] = values[index]; });
+  critical[language]["Gizlilik Politikası · Play Streamers"] = `${values[18]} · Play Streamers`;
+  critical[language]["Kullanım Koşulları · Play Streamers"] = `${values[19]} · Play Streamers`;
+});
+
 function clean(value) { return String(value || "").replace(/\s+/g, " ").trim(); }
 const TURKISH_TERMS = new Set(["giriş", "kayıt", "hakkımızda", "ürünlerimiz", "nasıl", "çalışır", "içerik", "planlama", "canlı", "analiz", "topluluk", "marka", "araçları", "gelir", "görünümleri", "yayın", "yayıncı", "hesap", "şifre", "doğrula", "indir", "destek", "sistem", "durumu", "ziyaretçi", "şu", "anda", "aktif", "hemen", "başla", "keşfet", "daha", "fazla", "burada", "mısın", "beni", "hatırla"]);
 function containsTurkishCopy(value) {
@@ -145,8 +161,11 @@ async function detectCountryLocale(current, localeKey) {
     localStorage.setItem("ps-locale-source", "auto");
     if (suggested && suggested !== current) {
       localStorage.setItem(localeKey, suggested);
-      document.documentElement.classList.add("ps-i18n-booting");
-      location.reload();
+      if (typeof window.psSetLocale === "function") await window.psSetLocale(suggested, { source: "auto" });
+      else {
+        document.documentElement.classList.add("ps-i18n-booting");
+        location.reload();
+      }
     }
   } catch { /* Browser language remains the privacy-safe fallback. */ }
 }
@@ -163,20 +182,24 @@ export function installLiveI18n({ localeKey = "ps15-locale", getLocale, root = d
   document.documentElement.dataset.psLiveLocale = language;
   if (language === "tr" || !root) {
     document.documentElement.classList.remove("ps-i18n-booting");
-    return { language, refresh() {} };
+    document.documentElement.dataset.psI18nReady = "1";
+    return { language, refresh() {}, dispose() {} };
   }
 
-  const cacheKey = `ps-live-i18n-v8:${language}`;
+  const cacheKey = `ps-live-i18n-v9:${language}`;
   const cache = { ...cacheRead(cacheKey), ...(critical[language] || {}) };
-  const textState = new WeakMap();
-  const attributeState = new WeakMap();
+  const textState = new Map();
+  const attributeState = new Map();
+  let titleState = null;
   let queued = false;
   let running = false;
+  let disposed = false;
   let ready = false;
   let recoveryPasses = 0;
   let needsRecovery = false;
   let initialHold = true;
   const finishBoot = () => {
+    if (disposed) return;
     if (ready) return;
     ready = true;
     window.clearTimeout(bootSafetyTimer);
@@ -184,7 +207,7 @@ export function installLiveI18n({ localeKey = "ps15-locale", getLocale, root = d
     document.documentElement.dataset.psI18nReady = "1";
     window.dispatchEvent(new CustomEvent("ps:i18n-ready", { detail: { language } }));
   };
-  const bootSafetyTimer = window.setTimeout(finishBoot, 900);
+  const bootSafetyTimer = window.setTimeout(finishBoot, 1800);
 
   const applyText = (node, translated) => {
     const current = String(node.nodeValue || "");
@@ -198,6 +221,10 @@ export function installLiveI18n({ localeKey = "ps15-locale", getLocale, root = d
     const record = attributeState.get(element) || {};
     record[name] = { source, translated };
     attributeState.set(element, record);
+  };
+  const applyTitle = (translated, source) => {
+    document.title = translated;
+    titleState = { source, translated };
   };
 
   const requestTranslations = async (strings, depth = 0, retry = 0) => {
@@ -254,6 +281,9 @@ export function installLiveI18n({ localeKey = "ps15-locale", getLocale, root = d
 
   const collect = () => {
     const targets = [];
+    const currentTitle = clean(document.title);
+    const titleSource = titleState && titleState.translated !== currentTitle ? currentTitle : titleState?.source || currentTitle;
+    if (translatable(titleSource) && titleState?.translated !== currentTitle) targets.push({ type: "title", source: titleSource });
     const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
     for (let node = walker.nextNode(); node; node = walker.nextNode()) {
       const parent = node.parentElement;
@@ -280,11 +310,16 @@ export function installLiveI18n({ localeKey = "ps15-locale", getLocale, root = d
       });
     });
     const priority = target => {
+      if (target.type === "title") return 0;
       const element = target.type === "text" ? target.node.parentElement : target.element;
-      if (!element) return 3;
+      if (!element) return 4;
       if (element.closest("#landingAuthModal:not([hidden]),#authOverlay .ps8-home")) return 0;
-      if (element.getClientRects().length && !element.closest("[hidden]")) return 1;
-      return 2;
+      if (element.getClientRects().length && !element.closest("[hidden]")) {
+        const rect = element.getBoundingClientRect();
+        if (rect.bottom >= -24 && rect.top <= innerHeight + 24) return 1;
+        return 2;
+      }
+      return 3;
     };
     return targets.sort((left, right) => priority(left) - priority(right));
   };
@@ -294,9 +329,11 @@ export function installLiveI18n({ localeKey = "ps15-locale", getLocale, root = d
     if (!translated) return;
     if (target.type === "text" && target.node.isConnected) applyText(target.node, translated);
     else if (target.type === "attribute" && target.element.isConnected) applyAttribute(target.element, target.name, translated, target.source);
+    else if (target.type === "title") applyTitle(translated, target.source);
   });
 
   const translate = async () => {
+    if (disposed) return;
     if (running) { applyCachedTargets(collect()); queued = true; return; }
     queued = false;
     running = true;
@@ -311,15 +348,16 @@ export function installLiveI18n({ localeKey = "ps15-locale", getLocale, root = d
       // Küçük paketler hem AI JSON yanıtını güvenilir tutar hem de ilk
       // ekranın çevirisini büyük bir paketin tamamlanmasını beklemeden gösterir.
       const chunks = [];
-      for (let index = 0; index < missing.length; index += 20) chunks.push(missing.slice(index, index + 20));
+      for (let index = 0; index < missing.length; index += 16) chunks.push(missing.slice(index, index + 16));
       // Aktif yüzeyin küçük paketleri aynı anda çevrilir. Gizli panel ve
       // pencereler açıldıkları anda ayrıca işlendiği için bu istek grubu hem
       // sınırlı kalır hem de dil değişiminden sonra ilk ekranı tek dalgada bitirir.
       if (!chunks.length) finishBoot();
-      for (let groupIndex = 0; groupIndex < chunks.length; groupIndex += 4) {
-        const group = chunks.slice(groupIndex, groupIndex + 4);
+      for (let groupIndex = 0; groupIndex < chunks.length; groupIndex += 3) {
+        const group = chunks.slice(groupIndex, groupIndex + 3);
         await Promise.all(group.map(async strings => {
           const translations = await requestTranslations(strings);
+          if (disposed) return;
           strings.forEach((source, itemIndex) => {
             const value = clean(translations[itemIndex]);
             if (value) cache[source] = value;
@@ -331,10 +369,18 @@ export function installLiveI18n({ localeKey = "ps15-locale", getLocale, root = d
             if (!translated || !chunkSources.has(target.source)) return;
             if (target.type === "text" && target.node.isConnected) applyText(target.node, translated);
             else if (target.type === "attribute" && target.element.isConnected) applyAttribute(target.element, target.name, translated, target.source);
+            else if (target.type === "title") applyTitle(translated, target.source);
           });
         }));
-        if (groupIndex === 0) finishBoot();
+        if (disposed) return;
+        if (groupIndex === 0 && targets.filter(target => {
+          const element = target.type === "text" ? target.node.parentElement : target.element;
+          if (!element?.getClientRects().length || element.closest("[hidden]")) return false;
+          const rect = element.getBoundingClientRect();
+          return rect.bottom >= -24 && rect.top <= innerHeight + 24;
+        }).every(target => Boolean(cache[target.source]))) finishBoot();
       }
+      if (disposed) return;
       applyCachedTargets(targets);
       const unresolved = targets.some(target => !cache[target.source]);
       needsRecovery = unresolved;
@@ -351,23 +397,62 @@ export function installLiveI18n({ localeKey = "ps15-locale", getLocale, root = d
     }
   };
   const schedule = () => {
+    if (disposed) return;
     if (initialHold) { queued = true; return; }
     if (queued) return;
     queued = true;
     window.setTimeout(translate, 140);
   };
-  new MutationObserver(schedule).observe(root, { childList: true, subtree: true, characterData: true, attributes: true, attributeFilter: ["placeholder", "title", "aria-label", "hidden"] });
+  const observer = new MutationObserver(schedule);
+  observer.observe(root, { childList: true, subtree: true, characterData: true, attributes: true, attributeFilter: ["placeholder", "title", "aria-label", "aria-description", "alt", "hidden"] });
   window.setTimeout(() => {
     initialHold = false;
     queued = false;
     schedule();
   }, 80);
-  return { language, refresh: schedule, dispose() { window.clearTimeout(bootSafetyTimer); } };
+  return {
+    language,
+    refresh: schedule,
+    dispose({ restore = false } = {}) {
+      disposed = true;
+      observer.disconnect();
+      window.clearTimeout(bootSafetyTimer);
+      if (!restore) return;
+      for (const [node, record] of textState) {
+        if (!node.isConnected) continue;
+        const current = String(node.nodeValue || "");
+        const leading = current.match(/^\s*/)?.[0] || "";
+        const trailing = current.match(/\s*$/)?.[0] || "";
+        node.nodeValue = `${leading}${record.source}${trailing}`;
+      }
+      for (const [element, records] of attributeState) {
+        if (!element.isConnected) continue;
+        Object.entries(records).forEach(([name, record]) => element.setAttribute(name, record.source));
+      }
+      if (titleState) document.title = titleState.source;
+    },
+  };
 }
 
 if (typeof window !== "undefined" && document.body && !location.protocol.startsWith("chrome-extension")) {
-  const liveI18n = installLiveI18n();
+  let liveI18n = installLiveI18n();
   window.psLiveI18n = liveI18n;
+  window.psSetLocale = async (nextLanguage, { source = "user" } = {}) => {
+    const language = String(nextLanguage || "").toLowerCase();
+    if (!SUPPORTED.has(language)) return false;
+    localStorage.setItem("ps15-locale", language);
+    localStorage.setItem("ps-locale-source", source);
+    if (liveI18n.language === language) { liveI18n.refresh(); return true; }
+    document.documentElement.classList.add("ps-i18n-booting");
+    delete document.documentElement.dataset.psI18nReady;
+    liveI18n.dispose({ restore: true });
+    liveI18n = installLiveI18n({ getLocale: () => language });
+    window.psLiveI18n = liveI18n;
+    liveI18n.refresh();
+    window.dispatchEvent(new CustomEvent("ps:locale-change", { detail: { language, source } }));
+    return true;
+  };
   window.addEventListener("ps:i18n-refresh", () => liveI18n.refresh());
+  window.addEventListener("ps-route-change", () => liveI18n.refresh());
   void detectCountryLocale(liveI18n.language, "ps15-locale");
 }

@@ -1,36 +1,43 @@
 # Play Streamers — Kalıcı Proje Bağlamı
 
-## Güncel geliştirme durumu · 27 Ağustos 2026
+## Güncel geliştirme durumu · 28 Ağustos 2026
 
-Site 10.5.5 / Worker 5.4 / Desktop 0.14.3 / Play Connect 1.15.1 kaynakları
-hazırlandı. Play Connect popup'ı Chromium'un içerik kadar küçültme davranışına
-karşı 392 piksel gerçek panel genişliğinde sabitlendi; yalnız iki simgeye
-çökmez. Chromium ve Firefox 1.15.1 paketleri ortak test sözleşmesini geçer.
-Giriş/kayıt penceresi açıldığı anda Turnstile doğrulaması hazırlanmaya başlar;
-mevcut hesap girişinde eski şifreleri tarayıcı tarafında engelleyen gereksiz
-minimum uzunluk kaldırılmıştır.
+Site 10.6.0 / Worker 5.5 / SW Identity 1.8.1 / Desktop 0.14.4 / Play Connect
+1.15.1 kaynakları hazırlandı. Site kartları ve temel yüzeyler, mobilde daha
+düşük bulanıklık kullanan belirgin sıvı cam katmanına geçirildi. Yıldız alanında
+tek `requestAnimationFrame` ile çalışan gerçek imleç feneri bulunur. Ortak
+yükleyici yıldız alanı, yüzen PS amblemi ve hareketli ilerleme çizgisiyle
+yenilendi. PS monogramında P/S aralığı daraltıldı; S üst ucu yuvarlak ve kesintisiz
+bir eğri olarak yeniden çizildi, üst soldaki Play Streamers adı büyütüldü.
 
-Canlı çeviri Site 10.5 ile tüm arayüz metinlerini, yasal sayfaları ve sonradan
-oluşan SW Bot/SW AI sonuçlarını kapsar. Kullanıcının açık dil seçimi korunur;
-seçim yoksa Cloudflare ülke kodu desteklenen dile, diğer ülkeler İngilizceye
-yönelir. Ülke bilgisi saklanmaz. Çeviri D1 önbelleği `v6` ad alanını kullanır;
-Worker yapılandırmasında KV binding'i bulunmaz.
+Dil seçimi artık sayfayı yenilemez: kaynak Türkçe metinler geri yüklenir, seçilen
+dil aynı DOM üzerinde uygulanır ve tercih `ps15-locale` ile bütün sayfalarda
+kalıcıdır. İlk tercih yoksa ülke/tarayıcı dili, desteklenmeyen bölgelerde
+İngilizce kullanılır. Görünür alan önce çevrilir; Dashboard, giriş/kayıt,
+destek, gizlilik ve kullanım koşulları dahil kalan yüzeyler arka planda
+tamamlanır. D1 çeviri önbelleği `v9`, istemci önbelleği `ps-live-i18n-v9`
+ad alanını kullanır; Worker yapılandırmasında KV binding'i yoktur.
 
-Site 10.5 cam görünümünü korurken tekrarlanan kart ve düğmelerdeki pahalı
-backdrop blur işlemlerini kaldırır; yalnız navigasyon, modal ve popover
-yüzeylerinde sınırlı blur kullanır. Yıldız sayısı azaltılmış, alt bölümlere
-`content-visibility` eklenmiş, fare ışığı geri getirilmiş, dil/göz kontrolleri
-sabitlenmiş, astronot yükseltilmiş ve PS harfleri ayrıştırılmıştır. Desktop
-0.14.3 doğrudan kurucusu Tauri updater anahtarıyla yeniden imzalanmıştır;
-Tauri `.sig` dosyası Windows Authenticode yayımlayıcı sertifikasının yerine
-geçmez.
+Turnstile `interaction-only` görünümünde giriş/kayıt penceresi açılır açılmaz
+hazırlanır; etkileşim gerekirse kutu “Beni hatırla” satırının altında görünür,
+pencere kapanınca sıfırlanıp görünmez alana taşınır. Şifre gözünde seçim ve
+imleç konumu korunur. SW Identity izinli ürün CORS yanıtlarında `cross-origin`
+CORP kullanır; böylece Play Streamers'taki geçerli giriş/kayıt yanıtları tarayıcı
+tarafından “Failed to fetch” olarak gizlenmez. Canlı sayaç yazma isteği başarısız
+olursa D1'e yazmayan GET anlık görüntüsü kullanılır. SW Bot kullanıcıya yalnız
+D1'de tutulan ortak sunucu sonucunu gösterir; denetim kapsamına kimlik dönüşü,
+404 sayfası ve SW Identity sağlığı da eklendi.
+
+Desktop 0.14.4 doğrudan kurucusu Tauri updater anahtarıyla yeniden
+imzalanmıştır; Tauri `.sig` dosyası Windows Authenticode yayımlayıcı
+sertifikasının yerine geçmez.
 
 Önceki Site 10.4.2 / Desktop 0.14.3 / Play Connect 1.15.0 durumu:
 Play Connect paneli artık eklenti simgesinden doğrudan yeni sekmede açılır ve
 sağlayıcı seçimini URL üzerinden korur. Desktop özellik kartları erişilebilir
 bir sıvı cam çekmece açar; Escape ve kapatma düğmesiyle kapanır. Microsoft Store
 derlemesi uygulama içi Tauri güncelleyicisini içermez, güncellemeyi Store'a
-bırakır ve `0.14.3.0` MSIX olarak paketlenir.
+bırakır ve `0.14.4.0` MSIX olarak paketlenir.
 
 Canlı çeviri görünür/gizli Dashboard yüzeyleri ile placeholder, başlık, erişim
 etiketi ve düğme değerlerini kapsar. Önce yerel tarayıcı önbelleği uygulanır;

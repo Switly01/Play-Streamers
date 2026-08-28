@@ -46,8 +46,13 @@ if (-not $SkipStoreBuild) {
         # Microsoft Store MSIX kendi imzalama/güncelleme zincirini kullanır.
         # Bu nedenle NSIS ve Tauri updater artefaktlarını üretmeden yalnızca
         # Store paketine girecek uygulama ikilisini derle.
-        & $pnpm.Source exec tauri build --no-bundle
-        if ($LASTEXITCODE -ne 0) { throw 'Microsoft Store kanalına özel masaüstü derlemesi tamamlanamadı.' }
+        Push-Location $desktopRoot
+        try {
+            & $pnpm.Source exec tauri build --no-bundle
+            if ($LASTEXITCODE -ne 0) { throw 'Microsoft Store kanalına özel masaüstü derlemesi tamamlanamadı.' }
+        } finally {
+            Pop-Location
+        }
     } finally {
         $env:VITE_DISTRIBUTION_CHANNEL = $previousChannel
     }

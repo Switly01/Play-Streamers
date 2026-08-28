@@ -87,6 +87,27 @@ Object.entries(systemStatusCopy).forEach(([language, values]) => Object.assign(c
   "SW Bot; kullanıcı alanını, Dashboard’u, menüleri ve veri bağlantılarını arka planda düzenli olarak denetliyor.": values[5],
 }));
 
+const criticalLongFormCopy = Object.freeze({
+  en: ["Built for streamers,", "a system that keeps working after the stream ends.", "Important activity during a livestream is tracked on the server, so your history, averages, and changes are ready when you return.", "Play Streamers desktop app preview", "Privacy summary", "Terms summary"],
+  de: ["Für Streamer entwickelt,", "ein System, das nach dem Stream weiterarbeitet.", "Wichtige Aktivitäten während eines Streams werden auf dem Server erfasst, damit Verlauf, Durchschnittswerte und Veränderungen bei deiner Rückkehr bereitstehen.", "Vorschau der Play Streamers Desktop-App", "Datenschutzübersicht", "Zusammenfassung der Bedingungen"],
+  es: ["Creado para streamers,", "un sistema que sigue funcionando cuando termina la transmisión.", "La actividad importante durante una transmisión se registra en el servidor para que tu historial, promedios y cambios estén listos cuando regreses.", "Vista previa de la aplicación de escritorio Play Streamers", "Resumen de privacidad", "Resumen de condiciones"],
+  fr: ["Conçu pour les streamers,", "un système qui continue de fonctionner après la fin du direct.", "Les activités importantes pendant un direct sont suivies sur le serveur afin que votre historique, vos moyennes et vos évolutions soient prêts à votre retour.", "Aperçu de l’application de bureau Play Streamers", "Résumé de confidentialité", "Résumé des conditions"],
+  ru: ["Создано для стримеров,", "система, которая продолжает работать после завершения трансляции.", "Важные события во время трансляции отслеживаются на сервере, поэтому история, средние показатели и изменения будут готовы к вашему возвращению.", "Предпросмотр настольного приложения Play Streamers", "Кратко о конфиденциальности", "Кратко об условиях"],
+  ar: ["مصمم لصنّاع البث،", "نظام يواصل العمل بعد انتهاء البث.", "تُتابَع الأنشطة المهمة أثناء البث على الخادم، لتكون السجلات والمتوسطات والتغييرات جاهزة عند عودتك.", "معاينة تطبيق Play Streamers لسطح المكتب", "ملخص الخصوصية", "ملخص الشروط"],
+  ja: ["配信者のために作られた、", "配信終了後も動き続けるシステム。", "配信中の重要な動きはサーバーで記録されるため、戻ったときには履歴、平均値、変化が確認できます。", "Play Streamers デスクトップアプリのプレビュー", "プライバシーの概要", "利用条件の概要"],
+});
+const criticalLongFormSources = [
+  "Yayıncı için çalışan,",
+  "yayın bitince durmayan sistem.",
+  "Yayın açıkken oluşan önemli hareketler sunucuda izlenir; daha sonra geri döndüğünde geçmişin, ortalaman ve değişimin hazır olur.",
+  "Play Streamers masaüstü uygulaması ön izlemesi",
+  "Gizlilik özeti",
+  "Koşullar özeti",
+];
+Object.entries(criticalLongFormCopy).forEach(([language, values]) => {
+  criticalLongFormSources.forEach((source, index) => { critical[language][source] = values[index]; });
+});
+
 const criticalAccountCopy = Object.freeze({
   en: ["Sign in to your account","Create your SW account","Username or email","Username","Password","Repeat password","Date of birth","Choose date","Security verification is being prepared…","Security verification is ready","or","Continue with Google","Continue with Kick","Support","Email address","Subject","Message","Send","Privacy Policy","Terms of Use"],
   de: ["Bei deinem Konto anmelden","SW-Konto erstellen","Benutzername oder E-Mail","Benutzername","Passwort","Passwort wiederholen","Geburtsdatum","Datum auswählen","Sicherheitsprüfung wird vorbereitet…","Sicherheitsprüfung ist bereit","oder","Mit Google fortfahren","Mit Kick fortfahren","Support","E-Mail-Adresse","Betreff","Nachricht","Senden","Datenschutzerklärung","Nutzungsbedingungen"],
@@ -107,7 +128,10 @@ function clean(value) { return String(value || "").replace(/\s+/g, " ").trim(); 
 const TURKISH_TERMS = new Set(["giriş", "kayıt", "hakkımızda", "ürünlerimiz", "nasıl", "çalışır", "içerik", "planlama", "canlı", "analiz", "topluluk", "marka", "araçları", "gelir", "görünümleri", "yayın", "yayıncı", "hesap", "şifre", "doğrula", "indir", "destek", "sistem", "durumu", "ziyaretçi", "şu", "anda", "aktif", "hemen", "başla", "keşfet", "daha", "fazla", "burada", "mısın", "beni", "hatırla"]);
 function containsTurkishCopy(value) {
   const source = clean(value);
-  if (/[ÇĞİÖŞÜçğıöşü]/u.test(source)) return true;
+  // Ö/Ü/Ç are valid in several target languages (especially German and
+  // French). Only Turkish-specific letters are a definitive signal; common
+  // Latin letters are handled by the word-level check below.
+  if (/[ĞİŞğış]/u.test(source)) return true;
   const normalized = source.toLocaleLowerCase("tr-TR");
   const matches = new Set(normalized.split(/[^a-zçğıöşü]+/u).filter(word => TURKISH_TERMS.has(word)));
   return matches.size >= 2;

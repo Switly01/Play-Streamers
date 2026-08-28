@@ -812,10 +812,10 @@ async function runScheduledPlayBotAudit(env) {
   await ensurePlayBotMetadataStorage(env);
   const resources = [
     ["Ana sayfa", "https://pstreamers.com/", "document"],
-    ["Ana uygulama betiği", "https://pstreamers.com/app.js?v=5.4.1", "script"],
+    ["Ana uygulama betiği", "https://pstreamers.com/app.js?v=5.4.2", "script"],
     ["Uygulama betiği", "https://pstreamers.com/app-final.js?v=5.9.5", "script"],
     ["Site davranış betiği", "https://pstreamers.com/site-v7.js?v=10.6.1", "script"],
-    ["Canlı çeviri betiği", "https://pstreamers.com/live-i18n.js?v=8.4.1", "script"],
+    ["Canlı çeviri betiği", "https://pstreamers.com/live-i18n.js?v=8.4.2", "script"],
     ["Premium stil dosyası", "https://pstreamers.com/site-v7.css?v=10.6.0", "style"],
     ["Oturum başlangıç betiği", "https://pstreamers.com/session-bootstrap.js?v=1.1", "script"],
     ["Site yönlendiricisi", "https://pstreamers.com/site-router.js?v=1.1", "script"],
@@ -899,10 +899,10 @@ async function runScheduledPlayBotAudit(env) {
   if (homeDocument?.ok) {
     const documentContracts = [
       ["site-v7.css?v=10.6.0", "Güncel premium stil dosyası"],
-      ["app.js?v=5.4.1", "Güncel ana uygulama betiği"],
+      ["app.js?v=5.4.2", "Güncel ana uygulama betiği"],
       ["app-final.js?v=5.9.5", "Güncel onarım betiği"],
       ["site-v7.js?v=10.6.1", "Güncel site davranış betiği"],
-      ["live-i18n.js?v=8.4.1", "Güncel canlı çeviri betiği"],
+      ["live-i18n.js?v=8.4.2", "Güncel canlı çeviri betiği"],
       ["play-streamers-build\" content=\"2026-08-28-site-10.6.0", "Site 10.6.0 sürüm işareti"],
     ];
     for (const [token, label] of documentContracts) {
@@ -1254,7 +1254,11 @@ async function allowInterfaceTranslationRequest(request, _env, language) {
   const minute = Math.floor(Date.now() / 60000);
   const client = await sha256Hex(`${request.headers.get("CF-Connecting-IP") || "unknown"}:${language}:${minute}`);
   const current = interfaceTranslationRateBuckets.get(client);
-  if (Number(current?.count || 0) >= 80) return false;
+  // Tek sayfa; görünür arayüz, açılır pencereler ve erişilebilirlik metinleriyle
+  // birkaç kontrollü kurtarma turu çalıştırabilir. 80 istek bu normal akışı
+  // yarıda kesiyordu; 240 hâlâ dakikalık kötüye kullanım sınırı bırakırken tam
+  // sayfa çevirisinin D1 önbelleğini ilk ziyarette doldurmasına izin verir.
+  if (Number(current?.count || 0) >= 240) return false;
   interfaceTranslationRateBuckets.set(client, { count: Number(current?.count || 0) + 1, minute });
   if (interfaceTranslationRateBuckets.size > 2000) {
     for (const [key, bucket] of interfaceTranslationRateBuckets) {

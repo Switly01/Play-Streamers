@@ -1562,7 +1562,10 @@
     // Tam sayfa çeviri katmanı etkinleştiğinde eski küçük sözlük görünür
     // metinleri tekrar Türkçeye çevirmemeli. Bu katman yalnızca ilk açılış
     // öncesi ve Türkçe arayüz için yedek olarak kalır.
-    if(lang!=='tr'&&document.documentElement.dataset.psLiveLocale===lang){standardEyes();return;}
+    // Canlı çeviri katmanı yüklendikten sonra DOM metinlerinin tek sahibi odur.
+    // Eski küçük sözlük çevrilmiş metni yeni "kaynak" sanıp dil değişiminde
+    // Fransızca/İngilizce parçaları geride bırakmamalıdır.
+    if(document.documentElement.dataset.psLiveLocale){standardEyes();return;}
     $$('button,label,h1,h2,h3,h4,p,span,small,b,strong,li,a').forEach(node=>{
       if(node.children.length) return; const original=node.dataset.ps15Source || node.textContent.trim(); if(!original) return;
       if(!node.dataset.ps15Source) node.dataset.ps15Source=original;

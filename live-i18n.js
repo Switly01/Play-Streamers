@@ -247,10 +247,10 @@ export function installLiveI18n({ localeKey = "ps15-locale", getLocale, root = d
           .map((value, index) => translationLooksComplete(strings[index], value, language) ? -1 : index)
           .filter(index => index >= 0);
         if (!invalid.length) return translated;
-        if (retry < 2) {
-          const repaired = await Promise.all(invalid.map(index => requestTranslations([strings[index]], depth + 1, retry + 1)));
-          invalid.forEach((index, repairIndex) => { translated[index] = clean(repaired[repairIndex]?.[0]); });
-        }
+        // Worker geçersiz öğeleri zaten tek tek onarmayı dener. Tarayıcıda her
+        // eksik öğe için tekrar üç istek açmak, büyük sayfalarda kullanıcı başı
+        // sınırı gereksiz yere tüketiyordu. Eksikler sonraki kontrollü kurtarma
+        // turunda yeniden istenir.
         return translated.map((value, index) => translationLooksComplete(strings[index], value, language) ? value : "");
       }
       // Küçük modeller uzun JSON listelerinde zaman zaman eksik bir öğe

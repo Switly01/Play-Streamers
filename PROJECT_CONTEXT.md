@@ -1283,3 +1283,9 @@ bağlantı durumları sade ama güçlü bir arayüzde sunulmalıdır.
   İlgili yüzey açıldığında, tarayıcı yeniden çevrimiçi olduğunda veya sekme
   yeniden görünür olduğunda yenilenir; geçici ağ hatası boş kart yerine açık bir
   yeniden deneme durumu gösterir.
+- Site 10.6 canlı çeviri sistemi seçilen dili tarayıcıda kalıcı varsayılan olarak
+  saklar; ana sayfa, hesap pencereleri, Dashboard, Gizlilik ve Kullanım Koşulları
+  aynı çeviri katmanını kullanır. Çeviri önbelleği KV yerine D1'de kaynak metin
+  ve hedef dile göre paylaşılır. Workers AI üretimi GLM 4.7 Flash kullanır; aynı
+  yazımlar yeni sürümlerde yeniden ücret oluşturmaz. Almanca gibi Türkçeyle ortak
+  sözcükler taşıyan diller tek bir ortak sözcük yüzünden hatalı sayılmaz.

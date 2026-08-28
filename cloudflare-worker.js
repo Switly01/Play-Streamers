@@ -815,7 +815,7 @@ async function runScheduledPlayBotAudit(env) {
     ["Ana uygulama betiği", "https://pstreamers.com/app.js?v=5.4.2", "script"],
     ["Uygulama betiği", "https://pstreamers.com/app-final.js?v=5.9.5", "script"],
     ["Site davranış betiği", "https://pstreamers.com/site-v7.js?v=10.6.1", "script"],
-    ["Canlı çeviri betiği", "https://pstreamers.com/live-i18n.js?v=8.4.2", "script"],
+    ["Canlı çeviri betiği", "https://pstreamers.com/live-i18n.js?v=8.4.3", "script"],
     ["Premium stil dosyası", "https://pstreamers.com/site-v7.css?v=10.6.0", "style"],
     ["Oturum başlangıç betiği", "https://pstreamers.com/session-bootstrap.js?v=1.1", "script"],
     ["Site yönlendiricisi", "https://pstreamers.com/site-router.js?v=1.1", "script"],
@@ -902,7 +902,7 @@ async function runScheduledPlayBotAudit(env) {
       ["app.js?v=5.4.2", "Güncel ana uygulama betiği"],
       ["app-final.js?v=5.9.5", "Güncel onarım betiği"],
       ["site-v7.js?v=10.6.1", "Güncel site davranış betiği"],
-      ["live-i18n.js?v=8.4.2", "Güncel canlı çeviri betiği"],
+      ["live-i18n.js?v=8.4.3", "Güncel canlı çeviri betiği"],
       ["play-streamers-build\" content=\"2026-08-28-site-10.6.0", "Site 10.6.0 sürüm işareti"],
     ];
     for (const [token, label] of documentContracts) {
@@ -1112,7 +1112,8 @@ function containsTurkishInterfaceCopy(value) {
   const source = String(value || "");
   if (/[ÇĞİÖŞÜçğıöşü]/u.test(source)) return true;
   const normalized = source.toLocaleLowerCase("tr-TR");
-  return normalized.split(/[^a-zçğıöşü]+/u).some(word => TURKISH_INTERFACE_TERMS.has(word));
+  const matches = new Set(normalized.split(/[^a-zçğıöşü]+/u).filter(word => TURKISH_INTERFACE_TERMS.has(word)));
+  return matches.size >= 2;
 }
 
 function isInterfaceTranslationPassthrough(value) {
@@ -1145,7 +1146,7 @@ function validInterfaceTranslation(source, value, language) {
 
 async function generateInterfaceTranslations(env, language, sources) {
   if (!sources.length) return [];
-  const payload = await env.AI.run("@cf/meta/llama-3.1-70b-instruct", {
+  const payload = await env.AI.run("@cf/zai-org/glm-4.7-flash", {
     messages: [
       {
         role: "system",
@@ -1156,13 +1157,14 @@ async function generateInterfaceTranslations(env, language, sources) {
         content: `Return {"translations":["..."]} for this array: ${JSON.stringify(sources)}`,
       },
     ],
-    response_format: { type: "json_object" },
-    max_tokens: Math.min(7000, Math.max(1400, sources.length * 460)),
+    max_completion_tokens: Math.min(7000, Math.max(1400, sources.length * 460)),
+    reasoning_effort: "low",
     temperature: 0,
   });
   const text = typeof payload?.response === "string" ? payload.response
     : typeof payload?.result?.response === "string" ? payload.result.response
       : typeof payload?.choices?.[0]?.message?.content === "string" ? payload.choices[0].message.content : "";
+  if (!text) console.warn("i18n ai response has no text", Object.keys(payload || {}), typeof payload?.choices?.[0]?.message?.content);
   const cleaned = text.trim().replace(/^```(?:json)?\s*/i, "").replace(/\s*```$/i, "");
   const start = cleaned.indexOf("{");
   const end = cleaned.lastIndexOf("}");
@@ -1188,17 +1190,21 @@ async function translateInterfaceStrings(request, env) {
   if (env.DB) {
     try {
       await ensureInterfaceTranslationStorage(env);
-      const placeholders = cacheKeys.map((_, index) => `?${index + 1}`).join(",");
-      const cachedRows = await env.DB.prepare(`SELECT cache_key, translation FROM interface_translation_cache WHERE cache_key IN (${placeholders})`)
-        .bind(...cacheKeys)
+      // Cache sürümü yalnız yeni yazımların kimliğini belirler. Okuma kaynak
+      // metin + dil üzerinden yapılır; böylece önceki sürümlerde üretilmiş
+      // geçerli çeviriler tekrar AI çağrısı yapılmadan bütün site tarafından
+      // paylaşılır.
+      const placeholders = strings.map((_, index) => `?${index + 2}`).join(",");
+      const cachedRows = await env.DB.prepare(`SELECT source_text, translation FROM interface_translation_cache
+        WHERE language = ?1 AND source_text IN (${placeholders}) ORDER BY created_at DESC`)
+        .bind(language, ...strings)
         .all();
-      const sourceIndexByKey = new Map(cacheKeys.map((key, index) => [key, index]));
+      const sourceIndexByText = new Map(strings.map((source, index) => [source, index]));
       for (const row of cachedRows?.results || []) {
-        const key = String(row.cache_key);
-        const sourceIndex = sourceIndexByKey.get(key);
+        const sourceIndex = sourceIndexByText.get(String(row.source_text));
         const translation = interfaceTranslationText(row.translation);
         if (sourceIndex !== undefined && validInterfaceTranslation(strings[sourceIndex], translation, language)) {
-          cachedByKey.set(key, translation);
+          cachedByKey.set(cacheKeys[sourceIndex], translation);
         }
       }
     } catch (_) { cachedByKey.clear(); }
@@ -1212,7 +1218,10 @@ async function translateInterfaceStrings(request, env) {
   const groups = [];
   for (let index = 0; index < missingStrings.length; index += 8) groups.push({ index, sources: missingStrings.slice(index, index + 8) });
   await Promise.all(groups.map(async group => {
-    const values = await generateInterfaceTranslations(env, language, group.sources).catch(() => null);
+    const values = await generateInterfaceTranslations(env, language, group.sources).catch(error => {
+      console.error("i18n ai generation failed", error instanceof Error ? error.message : String(error));
+      return null;
+    });
     if (values) values.forEach((value, offset) => { generated[group.index + offset] = value; });
   }));
   const retryIndexes = generated.map((value, index) => value ? -1 : index).filter(index => index >= 0);

@@ -10,9 +10,10 @@ Play Streamers does not include Studio, live streaming, local recording, camera 
 
 The final `0.14.4.0` x64 MSIX was tested with Windows App Certification Kit
 10.0.26100.7705 on Windows 11. The complete command-line run finished with
-`OVERALL_RESULT="PASS"`; the report is stored as `WACK-0.14.4.0.xml`. The
+`OVERALL_RESULT="PASS"`; the refreshed-logo report is stored as
+`WACK-0.14.4.0-logo.xml`. The
 package SHA-256 is
-`6CF4B81032F5525A228132619C6859F90F7257465B882F08B465EFCED493BED2`.
+`7601C331C4489E13382065C0C4DB3F8B9755EB3C631D78E7A10ECF67400463D5`.
 
 ## runFullTrust justification
 

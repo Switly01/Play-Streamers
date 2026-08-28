@@ -109,7 +109,8 @@ function containsTurkishCopy(value) {
   const source = clean(value);
   if (/[ÇĞİÖŞÜçğıöşü]/u.test(source)) return true;
   const normalized = source.toLocaleLowerCase("tr-TR");
-  return normalized.split(/[^a-zçğıöşü]+/u).some(word => TURKISH_TERMS.has(word));
+  const matches = new Set(normalized.split(/[^a-zçğıöşü]+/u).filter(word => TURKISH_TERMS.has(word)));
+  return matches.size >= 2;
 }
 function isPassthroughCopy(value) {
   const source = clean(value);

@@ -2,7 +2,7 @@
 
 ## Güncel geliştirme durumu · 28 Ağustos 2026
 
-Site 10.7.0 / Worker 5.6 / SW Identity 1.8.1 / Desktop 0.14.4 / Play Connect
+Site 10.8.0 / Worker 5.7 / SW Identity 1.8.1 / Desktop 0.14.4 / Play Connect
 1.15.1 kaynakları hazırlandı. Site kartları ve temel yüzeyler, mobilde daha
 düşük bulanıklık kullanan belirgin sıvı cam katmanına geçirildi. Yıldız alanında
 tek `requestAnimationFrame` ile çalışan gerçek imleç feneri bulunur. Ortak
@@ -10,13 +10,14 @@ yükleyici yıldız alanı, yüzen PS amblemi ve hareketli ilerleme çizgisiyle
 yenilendi. PS monogramında P/S aralığı daraltıldı; S üst ucu yuvarlak ve kesintisiz
 bir eğri olarak yeniden çizildi, üst soldaki Play Streamers adı büyütüldü.
 
-Dil seçimi artık sayfayı yenilemez: kaynak Türkçe metinler geri yüklenir, seçilen
-dil aynı DOM üzerinde uygulanır ve tercih `ps15-locale` ile bütün sayfalarda
-kalıcıdır. İlk tercih yoksa ülke/tarayıcı dili, desteklenmeyen bölgelerde
-İngilizce kullanılır. Görünür alan önce çevrilir; Dashboard, giriş/kayıt,
-destek, gizlilik ve kullanım koşulları dahil kalan yüzeyler arka planda
-tamamlanır. D1 çeviri önbelleği `v9`, istemci önbelleği `ps-live-i18n-v11`
-ad alanını kullanır; Worker yapılandırmasında KV binding'i yoktur.
+SW Çeviri Botu, sürümlü `locales/*.json` paketlerini yayın öncesinde D1'deki
+onaylı karşılıklardan üretir. Dil seçimi sayfayı yenilemez: paket bellekte hazır
+olduğu için kaynak Türkçe metinler geri yüklenip seçilen dil aynı DOM üzerinde
+ilk karede uygulanır; tercih `ps15-locale` ile bütün sayfalarda kalıcıdır.
+Dashboard, giriş/kayıt, destek, gizlilik ve kullanım koşulları aynı altyapıya
+bağlıdır. Sonradan oluşan bilinmeyen metinler yalnızca kurtarma yolu olarak API
+üzerinden çevrilip D1'e eklenir. D1 çeviri önbelleği `v9`, istemci önbelleği
+`ps-live-i18n-v12` ad alanını kullanır; Worker yapılandırmasında KV binding'i yoktur.
 
 Turnstile `interaction-only` görünümünde giriş/kayıt penceresi açılır açılmaz
 hazırlanır; etkileşim gerekirse kutu “Beni hatırla” satırının altında görünür,

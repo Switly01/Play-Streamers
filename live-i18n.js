@@ -1,5 +1,7 @@
 const API = "https://api.pstreamers.com/api/i18n/translate";
 const SUPPORTED = new Set(["tr", "en", "de", "es", "fr", "ru", "ar", "ja"]);
+const CATALOG_VERSION = "2026-08-28.1";
+const catalogPromises = new Map();
 const COUNTRY_LOCALES = Object.freeze({
   TR: "tr", JP: "ja", DE: "de", AT: "de", CH: "de", LI: "de",
   FR: "fr", BE: "fr", LU: "fr", MC: "fr",
@@ -21,7 +23,7 @@ const SKIP_ATTRIBUTE_SELECTOR = [
   "#ps41LocaleMenu", "#ps15LocaleMenu", "[data-language]", "[data-ps15-lang]"
 ].join(",");
 
-const critical = Object.freeze({
+export const critical = Object.freeze({
   en: { "Giriş yap": "Sign in", "Kayıt ol": "Create account", "Beni hatırla": "Remember me", "Hakkımızda": "About", "Ürünlerimiz": "Products", "Nasıl çalışır?": "How it works", "Windows için indir": "Download for Windows", "Sistem durumu": "System status", "Dil seçimi": "Language", "Her şey tek platformda.": "Everything in one platform.", "Canlı site verileri": "Live site data", "Toplam ziyaretçi": "Total visitors", "Kayıtlı hesap": "Registered accounts", "Şu anda aktif": "Active now", "Hey, geleceğin yayıncısı burada mısın?": "Hey, future streamer, are you there?", "Buradaysan ben gidiyorum.": "If you're there, I'm heading out.", "Site hesap ve bağlantıları, masaüstü uygulaması günlük üretimi, Play Connect ise tarayıcı akışını taşır. Hepsi aynı SW Identity hesabında birleşir.": "The website handles accounts and connections, the desktop app handles daily production, and Play Connect handles the browser flow. Everything comes together under the same SW Identity account.", "Derin analiz, SW AI açıklamaları ve gelişmiş iş akışlarıyla veriyi karara çevirmek için.": "Turn data into decisions with deep analytics, SW AI explanations, and advanced workflows.", "SW Identity ile güvenli merkezini aç.": "Open your secure hub with SW Identity.", "Gizlilik": "Privacy", "Kullanım Koşulları": "Terms of Use", "Güvenli bağlantılar · Kişisel panel · Ücretsiz başlangıç": "Secure connections · Personal dashboard · Free start" },
   de: { "Giriş yap": "Anmelden", "Kayıt ol": "Konto erstellen", "Beni hatırla": "Angemeldet bleiben", "Hakkımızda": "Über uns", "Ürünlerimiz": "Produkte", "Nasıl çalışır?": "So funktioniert es", "Windows için indir": "Für Windows herunterladen", "Sistem durumu": "Systemstatus", "Dil seçimi": "Sprache", "Her şey tek platformda.": "Alles auf einer Plattform.", "Canlı site verileri": "Live-Sitedaten", "Toplam ziyaretçi": "Besucher insgesamt", "Kayıtlı hesap": "Registrierte Konten", "Şu anda aktif": "Jetzt aktiv", "Site hesap ve bağlantıları, masaüstü uygulaması günlük üretimi, Play Connect ise tarayıcı akışını taşır. Hepsi aynı SW Identity hesabında birleşir.": "Die Website verwaltet Konto und Verbindungen, die Desktop-App die tägliche Produktion und Play Connect den Browser-Ablauf. Alles läuft im selben SW Identity-Konto zusammen.", "Derin analiz, SW AI açıklamaları ve gelişmiş iş akışlarıyla veriyi karara çevirmek için.": "Verwandle Daten mit detaillierten Analysen, SW AI-Erklärungen und erweiterten Workflows in Entscheidungen.", "SW Identity ile güvenli merkezini aç.": "Öffne deine sichere Zentrale mit SW Identity.", "Gizlilik": "Datenschutz", "Kullanım Koşulları": "Nutzungsbedingungen", "Güvenli bağlantılar · Kişisel panel · Ücretsiz başlangıç": "Sichere Verbindungen · Persönliches Dashboard · Kostenloser Einstieg" },
   es: { "Giriş yap": "Iniciar sesión", "Kayıt ol": "Crear cuenta", "Beni hatırla": "Recordarme", "Hakkımızda": "Sobre nosotros", "Ürünlerimiz": "Productos", "Nasıl çalışır?": "Cómo funciona", "Windows için indir": "Descargar para Windows", "Sistem durumu": "Estado del sistema", "Dil seçimi": "Idioma", "Her şey tek platformda.": "Todo en una sola plataforma.", "Canlı site verileri": "Datos del sitio en vivo", "Toplam ziyaretçi": "Visitantes totales", "Kayıtlı hesap": "Cuentas registradas", "Şu anda aktif": "Activos ahora", "Site hesap ve bağlantıları, masaüstü uygulaması günlük üretimi, Play Connect ise tarayıcı akışını taşır. Hepsi aynı SW Identity hesabında birleşir.": "El sitio gestiona la cuenta y las conexiones, la aplicación de escritorio la producción diaria y Play Connect el flujo del navegador. Todo se reúne en la misma cuenta de SW Identity.", "Derin analiz, SW AI açıklamaları ve gelişmiş iş akışlarıyla veriyi karara çevirmek için.": "Convierte los datos en decisiones con análisis profundos, explicaciones de SW AI y flujos de trabajo avanzados.", "SW Identity ile güvenli merkezini aç.": "Abre tu centro seguro con SW Identity.", "Gizlilik": "Privacidad", "Kullanım Koşulları": "Términos de uso", "Güvenli bağlantılar · Kişisel panel · Ücretsiz başlangıç": "Conexiones seguras · Panel personal · Inicio gratuito" },
@@ -124,6 +126,150 @@ Object.entries(criticalAccountCopy).forEach(([language, values]) => {
   critical[language]["Kullanım Koşulları · Play Streamers"] = `${values[19]} · Play Streamers`;
 });
 
+const fixedInterfaceSources = [
+  "Akıllı bildirimler", "Alıcı", "araç", "Astronot yukarı çıkıyor", "Ayarlar",
+  "Bağlantıyı yenile", "Başlangıç", "Bize yaz", "Bu cihazda",
+  "Bu kayıt doğrudan SW Identity hesabını oluşturur; ayrıca bir Play Streamers hesabı açılmaz.",
+  "Canlı merkez", "CANLI MERKEZ", "DESTEK MERKEZİ", "E-posta adresin", "Ekle",
+  "En az 10 karakter", "Fikir kasası", "Fotoğraf veya dosya ekle",
+  "Güvenlik doğrulaması yüklenemedi; tekrar denenecek.", "Hakkımızda · Play Streamers",
+  "Henüz veri yok", "Kick yayın durumu kontrol ediliyor…", "Kullanılabilir", "Mesajı gönder",
+  "Mesajın ve seçtiğin dosyalar Play Streamers içinden doğrudan destek ekibimize gönderilir.",
+  "Nasıl Çalışır? · Play Streamers", "Nasıl yardımcı olabiliriz?", "Planla", "Sıfırla", "Sil",
+  "Sunucudan güncel değerler alınıyor…", "SW Identity hesabı oluştur", "Şifreni yeniden yaz",
+  "Şu an", "Ürünlerimiz · Play Streamers", "Vazgeç", "Yaşadığın durumu veya önerini yaz...",
+  "Yayın akışı", "Yayın kapalı", "Yayın senin.", "Menü", "Kapat",
+];
+const fixedInterfaceCopy = Object.freeze({
+  en: [
+    "Smart notifications", "Recipient", "tool", "Astronaut ascending", "Settings",
+    "Refresh connection", "Home", "Write to us", "On this device",
+    "This registration creates the SW Identity account directly; it does not create a separate Play Streamers account.",
+    "Live hub", "LIVE HUB", "SUPPORT CENTER", "Your email address", "Add",
+    "At least 10 characters", "Idea vault", "Attach a photo or file",
+    "Security verification could not load; it will retry.", "About · Play Streamers",
+    "No data yet", "Checking Kick stream status…", "Available", "Send message",
+    "Your message and selected files are sent directly to our support team through Play Streamers.",
+    "How It Works · Play Streamers", "How can we help?", "Schedule", "Reset", "Delete",
+    "Fetching current values from the server…", "Create SW Identity account", "Re-enter your password",
+    "Now", "Products · Play Streamers", "Cancel", "Describe the issue or share your suggestion...",
+    "Stream flow", "Stream offline", "The stream is yours.", "Menu", "Close",
+  ],
+  de: [
+    "Intelligente Benachrichtigungen", "Empfänger", "Werkzeug", "Astronaut steigt auf", "Einstellungen",
+    "Verbindung aktualisieren", "Start", "Schreib uns", "Auf diesem Gerät",
+    "Diese Registrierung erstellt direkt das SW Identity-Konto; ein separates Play Streamers-Konto wird nicht erstellt.",
+    "Live-Zentrale", "LIVE-ZENTRALE", "SUPPORT-CENTER", "Deine E-Mail-Adresse", "Hinzufügen",
+    "Mindestens 10 Zeichen", "Ideenspeicher", "Foto oder Datei anhängen",
+    "Die Sicherheitsprüfung konnte nicht geladen werden; ein neuer Versuch folgt.", "Über uns · Play Streamers",
+    "Noch keine Daten", "Kick-Streamstatus wird geprüft…", "Verfügbar", "Nachricht senden",
+    "Deine Nachricht und die ausgewählten Dateien werden über Play Streamers direkt an unser Support-Team gesendet.",
+    "So funktioniert es · Play Streamers", "Wie können wir helfen?", "Planen", "Zurücksetzen", "Löschen",
+    "Aktuelle Werte werden vom Server geladen…", "SW Identity-Konto erstellen", "Passwort erneut eingeben",
+    "Jetzt", "Produkte · Play Streamers", "Abbrechen", "Beschreibe dein Problem oder deinen Vorschlag...",
+    "Stream-Ablauf", "Stream offline", "Dein Stream.", "Menü", "Schließen",
+  ],
+  es: [
+    "Notificaciones inteligentes", "Destinatario", "herramienta", "El astronauta está ascendiendo", "Ajustes",
+    "Actualizar conexión", "Inicio", "Escríbenos", "En este dispositivo",
+    "Este registro crea directamente la cuenta de SW Identity; no crea una cuenta separada de Play Streamers.",
+    "Centro en vivo", "CENTRO EN VIVO", "CENTRO DE SOPORTE", "Tu correo electrónico", "Añadir",
+    "Al menos 10 caracteres", "Bóveda de ideas", "Adjuntar foto o archivo",
+    "No se pudo cargar la verificación de seguridad; se volverá a intentar.", "Sobre nosotros · Play Streamers",
+    "Aún no hay datos", "Comprobando el estado del directo de Kick…", "Disponible", "Enviar mensaje",
+    "Tu mensaje y los archivos seleccionados se envían directamente a nuestro equipo de soporte mediante Play Streamers.",
+    "Cómo funciona · Play Streamers", "¿Cómo podemos ayudarte?", "Programar", "Restablecer", "Eliminar",
+    "Obteniendo los valores actuales del servidor…", "Crear cuenta de SW Identity", "Vuelve a escribir tu contraseña",
+    "Ahora", "Productos · Play Streamers", "Cancelar", "Describe el problema o comparte tu sugerencia...",
+    "Flujo de transmisión", "Transmisión desconectada", "La transmisión es tuya.", "Menú", "Cerrar",
+  ],
+  fr: [
+    "Notifications intelligentes", "Destinataire", "outil", "L’astronaute remonte", "Paramètres",
+    "Actualiser la connexion", "Accueil", "Écrivez-nous", "Sur cet appareil",
+    "Cette inscription crée directement le compte SW Identity ; elle ne crée pas de compte Play Streamers distinct.",
+    "Centre en direct", "CENTRE EN DIRECT", "CENTRE D’ASSISTANCE", "Votre adresse e-mail", "Ajouter",
+    "Au moins 10 caractères", "Boîte à idées", "Joindre une photo ou un fichier",
+    "La vérification de sécurité n’a pas pu être chargée ; une nouvelle tentative va être effectuée.", "À propos · Play Streamers",
+    "Aucune donnée pour le moment", "Vérification de l’état du direct Kick…", "Disponible", "Envoyer le message",
+    "Votre message et les fichiers sélectionnés sont envoyés directement à notre équipe d’assistance via Play Streamers.",
+    "Fonctionnement · Play Streamers", "Comment pouvons-nous vous aider ?", "Planifier", "Réinitialiser", "Supprimer",
+    "Récupération des valeurs actuelles depuis le serveur…", "Créer un compte SW Identity", "Saisissez à nouveau votre mot de passe",
+    "Maintenant", "Produits · Play Streamers", "Annuler", "Décrivez votre problème ou partagez votre suggestion...",
+    "Flux du direct", "Direct hors ligne", "Le direct est à vous.", "Menu", "Fermer",
+  ],
+  ru: [
+    "Умные уведомления", "Получатель", "инструмент", "Астронавт поднимается", "Настройки",
+    "Обновить подключение", "Главная", "Напишите нам", "На этом устройстве",
+    "Эта регистрация создаёт аккаунт SW Identity напрямую; отдельный аккаунт Play Streamers не создаётся.",
+    "Центр трансляции", "ЦЕНТР ТРАНСЛЯЦИИ", "ЦЕНТР ПОДДЕРЖКИ", "Ваш адрес электронной почты", "Добавить",
+    "Не менее 10 символов", "Хранилище идей", "Прикрепить фото или файл",
+    "Не удалось загрузить проверку безопасности; будет выполнена повторная попытка.", "О нас · Play Streamers",
+    "Данных пока нет", "Проверяется статус трансляции Kick…", "Доступно", "Отправить сообщение",
+    "Ваше сообщение и выбранные файлы отправляются напрямую нашей службе поддержки через Play Streamers.",
+    "Как это работает · Play Streamers", "Чем мы можем помочь?", "Запланировать", "Сбросить", "Удалить",
+    "Получение актуальных данных с сервера…", "Создать аккаунт SW Identity", "Введите пароль ещё раз",
+    "Сейчас", "Продукты · Play Streamers", "Отмена", "Опишите проблему или поделитесь предложением...",
+    "Ход трансляции", "Трансляция не ведётся", "Трансляция ваша.", "Меню", "Закрыть",
+  ],
+  ar: [
+    "إشعارات ذكية", "المستلم", "أداة", "رائد الفضاء يصعد", "الإعدادات",
+    "تحديث الاتصال", "الرئيسية", "اكتب لنا", "على هذا الجهاز",
+    "ينشئ هذا التسجيل حساب SW Identity مباشرةً؛ ولا ينشئ حسابًا منفصلًا في Play Streamers.",
+    "مركز البث", "مركز البث", "مركز الدعم", "عنوان بريدك الإلكتروني", "إضافة",
+    "10 أحرف على الأقل", "خزنة الأفكار", "إرفاق صورة أو ملف",
+    "تعذر تحميل التحقق الأمني؛ ستتم إعادة المحاولة.", "من نحن · Play Streamers",
+    "لا توجد بيانات بعد", "جارٍ التحقق من حالة بث Kick…", "متاح", "إرسال الرسالة",
+    "تُرسل رسالتك والملفات التي اخترتها مباشرةً إلى فريق الدعم لدينا عبر Play Streamers.",
+    "كيف يعمل · Play Streamers", "كيف يمكننا مساعدتك؟", "جدولة", "إعادة تعيين", "حذف",
+    "جارٍ جلب القيم الحالية من الخادم…", "إنشاء حساب SW Identity", "أعد كتابة كلمة المرور",
+    "الآن", "المنتجات · Play Streamers", "إلغاء", "صِف المشكلة أو شارك اقتراحك...",
+    "مسار البث", "البث غير متصل", "البث لك.", "القائمة", "إغلاق",
+  ],
+  ja: [
+    "スマート通知", "受信者", "ツール", "宇宙飛行士が上昇中", "設定",
+    "接続を更新", "ホーム", "お問い合わせ", "このデバイスで",
+    "この登録ではSW Identityアカウントが直接作成され、別のPlay Streamersアカウントは作成されません。",
+    "ライブセンター", "ライブセンター", "サポートセンター", "メールアドレス", "追加",
+    "10文字以上", "アイデアボックス", "写真またはファイルを添付",
+    "セキュリティ確認を読み込めませんでした。再試行します。", "私たちについて · Play Streamers",
+    "データはまだありません", "Kickの配信状態を確認中…", "利用可能", "メッセージを送信",
+    "メッセージと選択したファイルは、Play Streamersからサポートチームへ直接送信されます。",
+    "仕組み · Play Streamers", "どのようなご用件でしょうか？", "予約", "リセット", "削除",
+    "サーバーから最新の値を取得中…", "SW Identityアカウントを作成", "パスワードをもう一度入力",
+    "現在", "製品 · Play Streamers", "キャンセル", "問題やご提案を入力してください...",
+    "配信フロー", "配信オフライン", "配信の主役はあなたです。", "メニュー", "閉じる",
+  ],
+});
+Object.entries(fixedInterfaceCopy).forEach(([language, values]) => {
+  fixedInterfaceSources.forEach((source, index) => { critical[language][source] = values[index]; });
+});
+Object.entries({
+  en: ["If you're there, I'm heading out.", "example.user"],
+  de: ["Wenn du da bist, mache ich mich auf den Weg.", "beispiel.benutzer"],
+  es: ["Si estás ahí, me voy.", "usuario.ejemplo"],
+  fr: ["Si vous êtes là, je m’en vais.", "utilisateur.exemple"],
+  ru: ["Если вы здесь, я ухожу.", "пример.пользователя"],
+  ar: ["إن كنت هنا، فسأغادر.", "مستخدم.مثال"],
+  ja: ["そこにいるなら、私は戻ります。", "ユーザー.例"],
+}).forEach(([language, values]) => Object.assign(critical[language], {
+  "Buradaysan ben gidiyorum.": values[0],
+  "ornek.kullanici": values[1],
+}));
+Object.entries({
+  en: ["Sign in with your username or email.", "username or email", "Quick sign-in with your SW account", "PROTECTED BY SW IDENTITY", "SW Identity security and plan infrastructure", "Your password", "Hide password", "Show password"],
+  de: ["Melde dich mit deinem Benutzernamen oder deiner E-Mail-Adresse an.", "Benutzername oder E-Mail", "Schnellanmeldung mit deinem SW-Konto", "DURCH SW IDENTITY GESCHÜTZT", "Sicherheits- und Planinfrastruktur von SW Identity", "Dein Passwort", "Passwort ausblenden", "Passwort anzeigen"],
+  es: ["Inicia sesión con tu usuario o correo electrónico.", "usuario o correo electrónico", "Inicio rápido con tu cuenta SW", "PROTEGIDO POR SW IDENTITY", "Infraestructura de seguridad y planes de SW Identity", "Tu contraseña", "Ocultar contraseña", "Mostrar contraseña"],
+  fr: ["Connectez-vous avec votre nom d’utilisateur ou votre e-mail.", "nom d’utilisateur ou e-mail", "Connexion rapide avec votre compte SW", "PROTÉGÉ PAR SW IDENTITY", "Infrastructure de sécurité et d’offres SW Identity", "Votre mot de passe", "Masquer le mot de passe", "Afficher le mot de passe"],
+  ru: ["Войдите с помощью имени пользователя или электронной почты.", "имя пользователя или эл. почта", "Быстрый вход с аккаунтом SW", "ПОД ЗАЩИТОЙ SW IDENTITY", "Инфраструктура безопасности и тарифов SW Identity", "Ваш пароль", "Скрыть пароль", "Показать пароль"],
+  ar: ["سجّل الدخول باسم المستخدم أو البريد الإلكتروني.", "اسم المستخدم أو البريد الإلكتروني", "تسجيل دخول سريع بحساب SW", "محمي بواسطة SW IDENTITY", "بنية الأمان والخطط في SW Identity", "كلمة مرورك", "إخفاء كلمة المرور", "إظهار كلمة المرور"],
+  ja: ["ユーザー名またはメールアドレスでログインしてください。", "ユーザー名またはメール", "SWアカウントですばやくログイン", "SW IDENTITYにより保護", "SW Identityのセキュリティとプラン基盤", "パスワード", "パスワードを隠す", "パスワードを表示"],
+}).forEach(([language, values]) => {
+  [
+    "Kullanıcı adın veya e-postanla giriş yap.", "kullaniciadi veya e-posta", "SW hesabı ile hızlı giriş",
+    "SW IDENTITY İLE KORUNUR", "SW Identity güvenlik ve plan altyapısı", "Şifren", "Şifreyi gizle", "Şifreyi göster",
+  ].forEach((source, index) => { critical[language][source] = values[index]; });
+});
+
 function clean(value) { return String(value || "").replace(/\s+/g, " ").trim(); }
 const TURKISH_TERMS = new Set(["giriş", "kayıt", "hakkımızda", "ürünlerimiz", "nasıl", "çalışır", "içerik", "planlama", "canlı", "analiz", "topluluk", "marka", "araçları", "gelir", "görünümleri", "yayın", "yayıncı", "hesap", "şifre", "doğrula", "indir", "destek", "sistem", "durumu", "ziyaretçi", "şu", "anda", "aktif", "hemen", "başla", "keşfet", "daha", "fazla", "burada", "mısın", "beni", "hatırla"]);
 function containsTurkishCopy(value) {
@@ -169,6 +315,34 @@ function cacheWrite(key, value) {
   } catch { /* Translation remains usable without persistent cache. */ }
 }
 
+function loadCatalog(language) {
+  if (language === "tr" || !SUPPORTED.has(language)) return Promise.resolve({});
+  if (catalogPromises.has(language)) return catalogPromises.get(language);
+  const request = fetch(`/locales/${language}.json?v=${encodeURIComponent(CATALOG_VERSION)}`, {
+    cache: "force-cache",
+    credentials: "omit",
+  }).then(async response => {
+    if (!response.ok) throw new Error(`catalog-${response.status}`);
+    const payload = await response.json();
+    if (payload?.version !== CATALOG_VERSION || payload?.language !== language || !payload?.translations) {
+      throw new Error("catalog-version-mismatch");
+    }
+    return Object.fromEntries(Object.entries(payload.translations)
+      .map(([source, translated]) => [clean(source), clean(translated)])
+      .filter(([source, translated]) => source && translationLooksComplete(source, translated, language)));
+  }).catch(() => {
+    catalogPromises.delete(language);
+    return {};
+  });
+  catalogPromises.set(language, request);
+  return request;
+}
+
+function warmCatalogs(activeLanguage) {
+  const languages = [...SUPPORTED].filter(language => language !== "tr" && language !== activeLanguage);
+  return Promise.allSettled(languages.map(loadCatalog));
+}
+
 function browserLocale() {
   return (navigator.languages || [navigator.language || ""])
     .map(value => String(value).toLowerCase().split("-")[0])
@@ -195,7 +369,7 @@ async function detectCountryLocale(current, localeKey) {
   } catch { /* Browser language remains the privacy-safe fallback. */ }
 }
 
-export function installLiveI18n({ localeKey = "ps15-locale", getLocale, root = document.body } = {}) {
+export function installLiveI18n({ localeKey = "ps15-locale", getLocale, root = document.body, catalog = {} } = {}) {
   const stored = String(getLocale?.() || localStorage.getItem(localeKey) || "").toLowerCase();
   const language = SUPPORTED.has(stored) ? stored : browserLocale();
   if (!SUPPORTED.has(stored)) {
@@ -211,8 +385,10 @@ export function installLiveI18n({ localeKey = "ps15-locale", getLocale, root = d
     return { language, refresh() {}, dispose() {} };
   }
 
-  const cacheKey = `ps-live-i18n-v11:${language}`;
-  const cache = { ...cacheRead(cacheKey), ...(critical[language] || {}) };
+  const cacheKey = `ps-live-i18n-v12:${language}`;
+  // Kalıcı paket, eski tarayıcı önbelleğini ezer; elle doğrulanmış kritik
+  // metinler ise her zaman en son sözü söyler.
+  const cache = { ...cacheRead(cacheKey), ...catalog, ...(critical[language] || {}) };
   const textState = new Map();
   const attributeState = new Map();
   let titleState = null;
@@ -222,7 +398,6 @@ export function installLiveI18n({ localeKey = "ps15-locale", getLocale, root = d
   let ready = false;
   let recoveryPasses = 0;
   let needsRecovery = false;
-  let initialHold = true;
   const finishBoot = () => {
     if (disposed) return;
     if (ready) return;
@@ -422,19 +597,17 @@ export function installLiveI18n({ localeKey = "ps15-locale", getLocale, root = d
     }
   };
   const schedule = () => {
-    if (disposed) return;
-    if (initialHold) { queued = true; return; }
-    if (queued) return;
+    if (disposed || queued) return;
     queued = true;
-    window.setTimeout(translate, 140);
+    // Diyaloglar ve sayfa içi geçişler sonradan DOM'a eklense bile hazır dil
+    // paketindeki karşılıkları aynı karede uygula. Ağ isteği yalnızca gerçekten
+    // yeni bir metin kaldıysa arka planda çalışır.
+    applyCachedTargets(collect());
+    window.setTimeout(translate, 24);
   };
   const observer = new MutationObserver(schedule);
   observer.observe(root, { childList: true, subtree: true, characterData: true, attributes: true, attributeFilter: ["placeholder", "title", "aria-label", "aria-description", "alt", "hidden"] });
-  window.setTimeout(() => {
-    initialHold = false;
-    queued = false;
-    schedule();
-  }, 80);
+  schedule();
   return {
     language,
     refresh: schedule,
@@ -460,24 +633,34 @@ export function installLiveI18n({ localeKey = "ps15-locale", getLocale, root = d
 }
 
 if (typeof window !== "undefined" && document.body && !location.protocol.startsWith("chrome-extension")) {
-  let liveI18n = installLiveI18n();
-  window.psLiveI18n = liveI18n;
-  window.psSetLocale = async (nextLanguage, { source = "user" } = {}) => {
-    const language = String(nextLanguage || "").toLowerCase();
-    if (!SUPPORTED.has(language)) return false;
-    localStorage.setItem("ps15-locale", language);
-    localStorage.setItem("ps-locale-source", source);
-    if (liveI18n.language === language) { liveI18n.refresh(); return true; }
-    document.documentElement.classList.add("ps-i18n-booting");
-    delete document.documentElement.dataset.psI18nReady;
-    liveI18n.dispose({ restore: true });
-    liveI18n = installLiveI18n({ getLocale: () => language });
+  void (async () => {
+    const stored = String(localStorage.getItem("ps15-locale") || "").toLowerCase();
+    const initialLanguage = SUPPORTED.has(stored) ? stored : browserLocale();
+    const initialCatalog = await loadCatalog(initialLanguage);
+    let liveI18n = installLiveI18n({ catalog: initialCatalog });
     window.psLiveI18n = liveI18n;
-    liveI18n.refresh();
-    window.dispatchEvent(new CustomEvent("ps:locale-change", { detail: { language, source } }));
-    return true;
-  };
-  window.addEventListener("ps:i18n-refresh", () => liveI18n.refresh());
-  window.addEventListener("ps-route-change", () => liveI18n.refresh());
-  void detectCountryLocale(liveI18n.language, "ps15-locale");
+    window.psSetLocale = async (nextLanguage, { source = "user" } = {}) => {
+      const language = String(nextLanguage || "").toLowerCase();
+      if (!SUPPORTED.has(language)) return false;
+      localStorage.setItem("ps15-locale", language);
+      localStorage.setItem("ps-locale-source", source);
+      if (liveI18n.language === language) { liveI18n.refresh(); return true; }
+      document.documentElement.classList.add("ps-i18n-booting");
+      delete document.documentElement.dataset.psI18nReady;
+      const catalog = await loadCatalog(language);
+      liveI18n.dispose({ restore: true });
+      liveI18n = installLiveI18n({ getLocale: () => language, catalog });
+      window.psLiveI18n = liveI18n;
+      liveI18n.refresh();
+      window.dispatchEvent(new CustomEvent("ps:locale-change", { detail: { language, source } }));
+      return true;
+    };
+    window.psWarmLocaleCatalogs = () => warmCatalogs(liveI18n.language);
+    window.addEventListener("ps:i18n-refresh", () => liveI18n.refresh());
+    window.addEventListener("ps-route-change", () => liveI18n.refresh());
+    const warm = () => { void warmCatalogs(liveI18n.language); };
+    if (typeof requestIdleCallback === "function") requestIdleCallback(warm, { timeout: 800 });
+    else window.setTimeout(warm, 180);
+    void detectCountryLocale(liveI18n.language, "ps15-locale");
+  })();
 }

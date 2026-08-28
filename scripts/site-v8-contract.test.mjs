@@ -11,12 +11,12 @@ test('site 10 assets are cache-busted and use fluid monochrome glass', async () 
     read('site-v7.css'),
     read('play-streamers-ps-logo.svg'),
   ]);
-  assert.match(html, /play-streamers-build" content="2026-08-28-site-10\.7\.0"/);
-  assert.match(html, /site-v7\.css\?v=10\.7\.0/);
+  assert.match(html, /play-streamers-build" content="2026-08-28-site-10\.8\.0"/);
+  assert.match(html, /site-v7\.css\?v=10\.8\.0/);
   assert.match(html, /app\.js\?v=5\.4\.3/);
-  assert.match(html, /site-v7\.js\?v=10\.7\.0/);
+  assert.match(html, /site-v7\.js\?v=10\.8\.0/);
   assert.match(html, /app-final\.js\?v=5\.9\.6/);
-  assert.match(html, /live-i18n\.js\?v=8\.4\.6/);
+  assert.match(html, /live-i18n\.js\?v=9\.0\.0/);
   assert.match(css, /html\[data-ps-site-version="8"\]/);
   assert.match(css, /--signal: #f5f5f2/);
   assert.match(css, /@keyframes ps82-meteor/);
@@ -110,10 +110,12 @@ test('SW Bot audits the whole interface and explains issues with SW AI', async (
   assert.match(worker, /sw-bot:global-status:v13/);
   assert.match(worker, /explainSwBotIssuesWithAi/);
   assert.match(worker, /swBotDeterministicReport/);
-  assert.match(worker, /site-v7\.css\?v=10\.7\.0/);
+  assert.match(worker, /site-v7\.css\?v=10\.8\.0/);
   assert.match(worker, /\/api\/i18n\/translate/);
   assert.match(worker, /i18n:v9/);
   assert.match(worker, /interface_translation_cache/);
+  assert.match(worker, /Fransızca dil paketi/);
+  assert.match(worker, /locales\/fr\.json\?v=2026-08-28\.1/);
   assert.doesNotMatch(worker, /env\.SESSIONS/);
   assert.match(worker, /LEGACY_PLAY_STREAMERS_AUTH_PATHS/);
   assert.match(worker, /SW_IDENTITY_REQUIRED/);
@@ -142,7 +144,9 @@ test('SW Identity owns direct login and registration without legacy account leak
   assert.match(app, /productRedirectUrl/);
   assert.match(identityWorker, /SW_IDENTITY_VERSION = "1\.8\.1"/);
   assert.match(identityWorker, /createProductHandoffTarget/);
-  assert.match(i18n, /ps-live-i18n-v11/);
+  assert.match(i18n, /ps-live-i18n-v12/);
+  assert.match(i18n, /\/locales\/\$\{language\}\.json/);
+  assert.match(i18n, /warmCatalogs/);
   assert.match(i18n, /window\.psSetLocale/);
   assert.match(i18n, /Her şey tek platformda\./);
   assert.match(i18n, /index \+= 16/);
@@ -160,10 +164,25 @@ test('privacy and terms share the premium legal design', async () => {
   const [privacy, terms, legalCss] = await Promise.all([read('privacy.html'), read('terms.html'), read('legal-v9.css')]);
   assert.match(privacy, /legal-v9\.css\?v=10\.5\.0/);
   assert.match(privacy, /Kullanım Koşulları/);
-  assert.match(terms, /play-streamers-build" content="2026-08-28-legal-10\.6\.0"/);
+  assert.match(terms, /play-streamers-build" content="2026-08-28-legal-10\.8\.0"/);
   assert.match(terms, /SW Bot ve SW AI/);
   assert.match(legalCss, /@keyframes legal-stars/);
   assert.match(legalCss, /\.brand-mark img/);
+});
+
+test('versioned locale catalogs cover public, account, support and legal surfaces', async () => {
+  const requiredSources = [
+    'Giriş yap', 'Kullanım Koşulları', 'Gizlilik Politikası', 'Destek',
+    'SW Identity hesabı oluştur', 'Yayın akışı',
+  ];
+  for (const language of ['en', 'de', 'es', 'fr', 'ru', 'ar', 'ja']) {
+    const catalog = JSON.parse(await read(`locales/${language}.json`));
+    assert.equal(catalog.version, '2026-08-28.1');
+    assert.equal(catalog.sourceLanguage, 'tr');
+    assert.equal(catalog.language, language);
+    assert.ok(Object.keys(catalog.translations).length >= 350);
+    requiredSources.forEach(source => assert.ok(catalog.translations[source], `${language}: ${source}`));
+  }
 });
 
 test('desktop installer referenced by the public home exists', async () => {

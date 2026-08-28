@@ -187,7 +187,7 @@ export function installLiveI18n({ localeKey = "ps15-locale", getLocale, root = d
     return { language, refresh() {}, dispose() {} };
   }
 
-  const cacheKey = `ps-live-i18n-v9:${language}`;
+  const cacheKey = `ps-live-i18n-v10:${language}`;
   const cache = { ...cacheRead(cacheKey), ...(critical[language] || {}) };
   const textState = new Map();
   const attributeState = new Map();

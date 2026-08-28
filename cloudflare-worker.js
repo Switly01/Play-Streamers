@@ -815,7 +815,7 @@ async function runScheduledPlayBotAudit(env) {
     ["Ana uygulama betiği", "https://pstreamers.com/app.js?v=5.4.2", "script"],
     ["Uygulama betiği", "https://pstreamers.com/app-final.js?v=5.9.5", "script"],
     ["Site davranış betiği", "https://pstreamers.com/site-v7.js?v=10.6.1", "script"],
-    ["Canlı çeviri betiği", "https://pstreamers.com/live-i18n.js?v=8.4.3", "script"],
+    ["Canlı çeviri betiği", "https://pstreamers.com/live-i18n.js?v=8.4.4", "script"],
     ["Premium stil dosyası", "https://pstreamers.com/site-v7.css?v=10.6.0", "style"],
     ["Oturum başlangıç betiği", "https://pstreamers.com/session-bootstrap.js?v=1.1", "script"],
     ["Site yönlendiricisi", "https://pstreamers.com/site-router.js?v=1.1", "script"],
@@ -902,7 +902,7 @@ async function runScheduledPlayBotAudit(env) {
       ["app.js?v=5.4.2", "Güncel ana uygulama betiği"],
       ["app-final.js?v=5.9.5", "Güncel onarım betiği"],
       ["site-v7.js?v=10.6.1", "Güncel site davranış betiği"],
-      ["live-i18n.js?v=8.4.3", "Güncel canlı çeviri betiği"],
+      ["live-i18n.js?v=8.4.4", "Güncel canlı çeviri betiği"],
       ["play-streamers-build\" content=\"2026-08-28-site-10.6.0", "Site 10.6.0 sürüm işareti"],
     ];
     for (const [token, label] of documentContracts) {

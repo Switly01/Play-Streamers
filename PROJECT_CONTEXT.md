@@ -15,7 +15,7 @@ dil aynı DOM üzerinde uygulanır ve tercih `ps15-locale` ile bütün sayfalard
 kalıcıdır. İlk tercih yoksa ülke/tarayıcı dili, desteklenmeyen bölgelerde
 İngilizce kullanılır. Görünür alan önce çevrilir; Dashboard, giriş/kayıt,
 destek, gizlilik ve kullanım koşulları dahil kalan yüzeyler arka planda
-tamamlanır. D1 çeviri önbelleği `v9`, istemci önbelleği `ps-live-i18n-v9`
+tamamlanır. D1 çeviri önbelleği `v9`, istemci önbelleği `ps-live-i18n-v10`
 ad alanını kullanır; Worker yapılandırmasında KV binding'i yoktur.
 
 Turnstile `interaction-only` görünümünde giriş/kayıt penceresi açılır açılmaz

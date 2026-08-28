@@ -286,7 +286,7 @@ const LEGACY_PLAY_STREAMERS_AUTH_PATHS = new Set([
 ]);
 
 export default {
-  async fetch(request, env) {
+  async fetch(request, env, ctx) {
     const url = new URL(request.url);
 
     if (request.method === "OPTIONS") {
@@ -334,7 +334,7 @@ export default {
       }
 
       if (url.pathname === "/api/i18n/translate" && request.method === "POST") {
-        return translateInterfaceStrings(request, env);
+        return translateInterfaceStrings(request, env, ctx);
       }
 
       if (url.pathname === "/api/site/activity" && request.method === "POST") {
@@ -815,7 +815,7 @@ async function runScheduledPlayBotAudit(env) {
     ["Ana uygulama betiği", "https://pstreamers.com/app.js?v=5.4.2", "script"],
     ["Uygulama betiği", "https://pstreamers.com/app-final.js?v=5.9.5", "script"],
     ["Site davranış betiği", "https://pstreamers.com/site-v7.js?v=10.6.1", "script"],
-    ["Canlı çeviri betiği", "https://pstreamers.com/live-i18n.js?v=8.4.5", "script"],
+    ["Canlı çeviri betiği", "https://pstreamers.com/live-i18n.js?v=8.4.6", "script"],
     ["Premium stil dosyası", "https://pstreamers.com/site-v7.css?v=10.6.0", "style"],
     ["Oturum başlangıç betiği", "https://pstreamers.com/session-bootstrap.js?v=1.1", "script"],
     ["Site yönlendiricisi", "https://pstreamers.com/site-router.js?v=1.1", "script"],
@@ -902,7 +902,7 @@ async function runScheduledPlayBotAudit(env) {
       ["app.js?v=5.4.2", "Güncel ana uygulama betiği"],
       ["app-final.js?v=5.9.5", "Güncel onarım betiği"],
       ["site-v7.js?v=10.6.1", "Güncel site davranış betiği"],
-      ["live-i18n.js?v=8.4.5", "Güncel canlı çeviri betiği"],
+      ["live-i18n.js?v=8.4.6", "Güncel canlı çeviri betiği"],
       ["play-streamers-build\" content=\"2026-08-28-site-10.6.0", "Site 10.6.0 sürüm işareti"],
     ];
     for (const [token, label] of documentContracts) {
@@ -1174,7 +1174,7 @@ async function generateInterfaceTranslations(env, language, sources) {
   return generated.map((value, index) => validInterfaceTranslation(sources[index], value, language) ? interfaceTranslationText(value) : "");
 }
 
-async function translateInterfaceStrings(request, env) {
+async function translateInterfaceStrings(request, env, ctx) {
   const input = await requestJson(request);
   const language = String(input?.language || "").toLowerCase();
   const rawStrings = Array.isArray(input?.strings) ? input.strings : [];
@@ -1187,6 +1187,7 @@ async function translateInterfaceStrings(request, env) {
   }
   const cacheKeys = await Promise.all(strings.map(source => sha256Hex(`i18n:v9:${language}:${source}`)));
   const cachedByKey = new Map();
+  const cachedCreatedAtByKey = new Map();
   if (env.DB) {
     try {
       await ensureInterfaceTranslationStorage(env);
@@ -1195,7 +1196,7 @@ async function translateInterfaceStrings(request, env) {
       // geçerli çeviriler tekrar AI çağrısı yapılmadan bütün site tarafından
       // paylaşılır.
       const placeholders = strings.map((_, index) => `?${index + 2}`).join(",");
-      const cachedRows = await env.DB.prepare(`SELECT source_text, translation FROM interface_translation_cache
+      const cachedRows = await env.DB.prepare(`SELECT source_text, translation, created_at FROM interface_translation_cache
         WHERE language = ?1 AND source_text IN (${placeholders}) ORDER BY created_at DESC`)
         .bind(language, ...strings)
         .all();
@@ -1203,15 +1204,30 @@ async function translateInterfaceStrings(request, env) {
       for (const row of cachedRows?.results || []) {
         const sourceIndex = sourceIndexByText.get(String(row.source_text));
         const translation = interfaceTranslationText(row.translation);
-        if (sourceIndex !== undefined && validInterfaceTranslation(strings[sourceIndex], translation, language)) {
-          cachedByKey.set(cacheKeys[sourceIndex], translation);
+        const cacheKey = sourceIndex === undefined ? "" : cacheKeys[sourceIndex];
+        // Rows arrive newest first. Keep the first valid row so a current AI
+        // translation is never overwritten in memory by an older fallback.
+        if (cacheKey && !cachedByKey.has(cacheKey) && validInterfaceTranslation(strings[sourceIndex], translation, language)) {
+          cachedByKey.set(cacheKey, translation);
+          cachedCreatedAtByKey.set(cacheKey, String(row.created_at || ""));
         }
       }
     } catch (_) { cachedByKey.clear(); }
   }
   const translations = strings.map((_, index) => cachedByKey.get(cacheKeys[index]) || "");
   const missingIndexes = translations.map((value, index) => value ? -1 : index).filter(index => index >= 0);
-  if (!missingIndexes.length) return apiResponse(request, { ok: true, language, translations, cached: true, cache: "d1" });
+  const fallbackIndexes = translations
+    .map((value, index) => value && cachedCreatedAtByKey.get(cacheKeys[index]) < "2021-01-01" ? index : -1)
+    .filter(index => index >= 0);
+  if (!missingIndexes.length) {
+    // Offline translations guarantee an immediate result when the AI daily
+    // allowance is unavailable. Upgrade a tiny number in the background on
+    // later visits without delaying the language switch or consuming KV.
+    if (fallbackIndexes.length && ctx?.waitUntil && env.AI && env.DB) {
+      ctx.waitUntil(refreshInterfaceTranslationFallbacks(env, language, strings, cacheKeys, fallbackIndexes.slice(0, 2)));
+    }
+    return apiResponse(request, { ok: true, language, translations, cached: true, cache: "d1" });
+  }
   if (!env.AI || typeof env.AI.run !== "function") return apiResponse(request, { error: "Canlı çeviri şu anda kullanılamıyor." }, 503);
   const missingStrings = missingIndexes.map(index => strings[index]);
   const generated = new Array(missingStrings.length).fill("");
@@ -1238,11 +1254,26 @@ async function translateInterfaceStrings(request, env) {
       .filter(item => item.value)
       .map(item => env.DB.prepare(`INSERT INTO interface_translation_cache (cache_key, language, source_text, translation, created_at)
         VALUES (?1, ?2, ?3, ?4, datetime('now'))
-        ON CONFLICT(cache_key) DO UPDATE SET translation = excluded.translation`)
+        ON CONFLICT(cache_key) DO UPDATE SET translation = excluded.translation, created_at = excluded.created_at`)
         .bind(cacheKeys[item.sourceIndex], language, strings[item.sourceIndex], item.value));
     if (writes.length) await env.DB.batch(writes).catch(() => {});
   }
   return apiResponse(request, { ok: true, language, translations, partial: translations.some(value => !value), cached: false, cache: "d1" });
+}
+
+async function refreshInterfaceTranslationFallbacks(env, language, strings, cacheKeys, sourceIndexes) {
+  if (!sourceIndexes.length) return;
+  const sources = sourceIndexes.map(index => strings[index]);
+  const values = await generateInterfaceTranslations(env, language, sources).catch(() => null);
+  if (!values) return;
+  const writes = sourceIndexes
+    .map((sourceIndex, valueIndex) => ({ sourceIndex, value: values[valueIndex] }))
+    .filter(item => item.value)
+    .map(item => env.DB.prepare(`INSERT INTO interface_translation_cache (cache_key, language, source_text, translation, created_at)
+      VALUES (?1, ?2, ?3, ?4, datetime('now'))
+      ON CONFLICT(cache_key) DO UPDATE SET translation = excluded.translation, created_at = excluded.created_at`)
+      .bind(cacheKeys[item.sourceIndex], language, strings[item.sourceIndex], item.value));
+  if (writes.length) await env.DB.batch(writes).catch(() => {});
 }
 
 async function ensureInterfaceTranslationStorage(env) {

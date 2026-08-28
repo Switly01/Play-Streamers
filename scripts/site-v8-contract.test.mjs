@@ -16,7 +16,7 @@ test('site 10 assets are cache-busted and use fluid monochrome glass', async () 
   assert.match(html, /app\.js\?v=5\.4\.2/);
   assert.match(html, /site-v7\.js\?v=10\.6\.1/);
   assert.match(html, /app-final\.js\?v=5\.9\.5/);
-  assert.match(html, /live-i18n\.js\?v=8\.4\.5/);
+  assert.match(html, /live-i18n\.js\?v=8\.4\.6/);
   assert.match(css, /html\[data-ps-site-version="8"\]/);
   assert.match(css, /--signal: #f5f5f2/);
   assert.match(css, /@keyframes ps82-meteor/);
@@ -140,7 +140,7 @@ test('SW Identity owns direct login and registration without legacy account leak
   assert.match(app, /productRedirectUrl/);
   assert.match(identityWorker, /SW_IDENTITY_VERSION = "1\.8\.1"/);
   assert.match(identityWorker, /createProductHandoffTarget/);
-  assert.match(i18n, /ps-live-i18n-v10/);
+  assert.match(i18n, /ps-live-i18n-v11/);
   assert.match(i18n, /window\.psSetLocale/);
   assert.match(i18n, /Her şey tek platformda\./);
   assert.match(i18n, /index \+= 16/);

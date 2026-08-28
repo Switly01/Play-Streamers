@@ -36,7 +36,7 @@
     if(!form||!/^[a-f0-9]{64}$/i.test(challengeId)){notice('Doğrulama başlatılamadı','İki aşamalı doğrulama isteği geçerli değil. Yeniden giriş yap.','!');return}
     form.dataset.challengeId=challengeId;
     form.innerHTML=`<span class="eyebrow">İKİ AŞAMALI DOĞRULAMA</span><h3>Güvenlik kodunu gir</h3><p>Authenticator uygulamandaki 6 haneli kodu veya kurtarma kodunu burada gir. Play Streamers’tan ayrılmayacaksın.</p><label class="auth-field">Doğrulama kodu<input name="code" autocomplete="one-time-code" inputmode="numeric" minlength="6" maxlength="9" required placeholder="000000"></label><p class="auth-error ps-identity-form-error" aria-live="polite"></p><button class="auth-submit ps-identity-form-submit" type="submit">Doğrula ve devam et</button>`;
-    form.onsubmit=async event=>{event.preventDefault();const verifyError=$('.ps-identity-form-error',form),verifyButton=$('.ps-identity-form-submit',form);if(!form.reportValidity())return;verifyButton.disabled=true;verifyButton.textContent='Doğrulanıyor…';try{const verification=await fetch(`${SW_IDENTITY_ORIGIN}/api/auth/two-factor/verify`,{method:'POST',credentials:'include',headers:{'content-type':'application/json'},body:JSON.stringify({challengeId:form.dataset.challengeId,code:form.elements.code.value,product})});const result=await verification.json().catch(()=>({}));if(!verification.ok)throw new Error(result.error||'Kod doğrulanamadı.');continueProductSignIn(result,product)}catch(verifyFailure){verifyError.textContent=verifyFailure.message||'Kod doğrulanamadı.';verifyButton.disabled=false;verifyButton.textContent='Doğrula ve devam et'}};
+    form.onsubmit=async event=>{event.preventDefault();const verifyError=$('.ps-identity-form-error',form),verifyButton=$('.ps-identity-form-submit',form);if(!form.reportValidity())return;verifyButton.disabled=true;verifyButton.textContent='Doğrulanıyor…';try{const verification=await fetch(`${API_BASE}/api/sw-identity/two-factor/verify`,{method:'POST',credentials:'include',headers:{'content-type':'application/json'},body:JSON.stringify({challengeId:form.dataset.challengeId,code:form.elements.code.value,product})});const result=await verification.json().catch(()=>({}));if(!verification.ok)throw new Error(result.error||'Kod doğrulanamadı.');continueProductSignIn(result,product)}catch(verifyFailure){verifyError.textContent=verifyFailure.message||'Kod doğrulanamadı.';verifyButton.disabled=false;verifyButton.textContent='Doğrula ve devam et'}};
     form.elements.code?.focus();
   }
   async function submitSwIdentityCredentials(form,isLogin,startedAt){
@@ -44,6 +44,7 @@
     if(!form.reportValidity())return;
     if(!isLogin&&!passwordMatch(form,error))return;
     submit.disabled=true;submit.dataset.originalText=submit.textContent;submit.textContent=isLogin?'Giriş yapılıyor…':'Hesap oluşturuluyor…';error.textContent='';
+    let stage='verification',requestTimer=0;
     try{
       const product=identityProductRequest();
       let turnstileToken='';
@@ -56,7 +57,10 @@
       const payload=isLogin
         ?{identity:form.elements.identity.value.trim(),password:form.elements.password.value,remember:form.elements.remember.checked,startedAt,website:'',product,turnstileToken}
         :{username:form.elements.username.value.trim(),password:form.elements.password.value,passwordRepeat:form.elements.passwordRepeat.value,birthDate:form.elements.birthDate.value,remember:form.elements.remember.checked,startedAt,website:'',product,turnstileToken};
-      const response=await fetch(`${SW_IDENTITY_ORIGIN}/api/auth/${isLogin?'login':'register'}`,{method:'POST',credentials:'include',headers:{'content-type':'application/json'},body:JSON.stringify(payload)});
+      stage='account';
+      const controller=new AbortController();requestTimer=window.setTimeout(()=>controller.abort(),20000);
+      const response=await fetch(`${API_BASE}/api/sw-identity/${isLogin?'login':'register'}`,{method:'POST',credentials:'include',signal:controller.signal,headers:{'content-type':'application/json','X-Turnstile-Token':turnstileToken},body:JSON.stringify(payload)});
+      window.clearTimeout(requestTimer);requestTimer=0;
       const data=await response.json().catch(()=>({}));
       if(response.status===202&&data.twoFactorRequired){
         showInlineTwoFactor(form,data.challengeId,product);return;
@@ -64,7 +68,7 @@
       if(!response.ok)throw new Error(data.error||`${isLogin?'Giriş':'Kayıt'} tamamlanamadı.`);
       sessionStorage.setItem('ps48RememberChoice',payload.remember?'1':'0');
       continueProductSignIn(data,product);
-    }catch(failure){error.textContent=failure instanceof TypeError?'Güvenli hesap hizmetine ulaşılamadı. Bağlantı yeniden hazırlanıyor; birkaç saniye sonra tekrar dene.':failure.message||'SW Identity hizmetine ulaşılamadı.';submit.disabled=false;submit.textContent=submit.dataset.originalText||'Devam et';prepareAuthVerification(form,true)}
+    }catch(failure){window.clearTimeout(requestTimer);const networkFailure=failure instanceof TypeError||failure?.name==='AbortError';error.textContent=stage==='verification'?'Güvenlik doğrulaması tamamlanamadı. Kontrolü yeniden yapıp tekrar dene.':networkFailure?'Güvenli hesap bağlantısı kesildi. Bağlantı yenilendi; tekrar deneyebilirsin.':failure.message||'SW Identity hizmetine ulaşılamadı.';submit.disabled=false;submit.textContent=submit.dataset.originalText||'Devam et';prepareAuthVerification(form,true)}
   }
   function prepareAuthVerification(form,force=false){
     if(!form||typeof window.ps32RequestTurnstileToken!=='function')return Promise.resolve('');
@@ -104,10 +108,10 @@
       ?'<label class="auth-field">Kullanıcı adı veya e-posta<input name="identity" autocomplete="username" minlength="3" maxlength="160" required placeholder="kullaniciadi veya e-posta"></label><label class="auth-field">Şifre<input name="password" type="password" autocomplete="current-password" required placeholder="Şifren"></label>'
       :'<label class="auth-field">Kullanıcı adı<input name="username" autocomplete="username" minlength="3" maxlength="32" pattern="[A-Za-z0-9._-]+" required placeholder="ornek.kullanici"></label><label class="auth-field">Şifre<input name="password" type="password" autocomplete="new-password" minlength="10" required placeholder="En az 10 karakter"></label><label class="auth-field">Şifre tekrar<input name="passwordRepeat" type="password" autocomplete="new-password" minlength="10" required placeholder="Şifreni yeniden yaz"></label><label class="auth-field">Doğum tarihi<input name="birthDate" type="text" min="1900-01-01" max="'+adultBirthDate()+'" required aria-haspopup="dialog" placeholder="Tarih seç"></label>';
     layer.innerHTML=`<section class="auth-dialog" data-sw-identity-auth="1"><button class="auth-close" type="button" aria-label="Kapat">×</button><div class="ps-identity-wordmark" aria-label="Play Streamers"><img src="./play-streamers-ps-logo.svg?v=10.5" alt=""><span>Play Streamers</span></div><span class="eyebrow">SW IDENTITY İLE KORUNUR</span><h2>${isLogin?'Hesabına giriş yap':'SW hesabını oluştur'}</h2><p>${isLogin?'Kullanıcı adın veya e-postanla giriş yap.':'Bu kayıt doğrudan SW Identity hesabını oluşturur; ayrıca bir Play Streamers hesabı açılmaz.'}</p><form class="auth-form ps-identity-credential-form">${fields}<label class="ps48-remember ps-identity-remember"><input type="checkbox" name="remember"><span>Beni hatırla</span></label><input class="ps-identity-honeypot" name="website" tabindex="-1" autocomplete="off" aria-hidden="true"><div class="ps-auth-verification-state" aria-live="polite"><i></i><span>Güvenlik doğrulaması hazırlanıyor…</span></div><p class="auth-error ps-identity-form-error" aria-live="polite"></p><button class="auth-submit ps-identity-form-submit" type="submit">${isLogin?'Giriş yap':'SW Identity hesabı oluştur'}</button></form><div class="auth-divider"><span>veya</span></div><div class="ps-identity-providers ${isLogin?'has-sw-provider':''}"><button type="button" data-provider="google" aria-label="Google ile devam et">${googleIcon}</button><button type="button" data-provider="kick" aria-label="Kick ile devam et">${kickIcon}</button>${isLogin?'<button type="button" data-provider="sw" aria-label="SW hesabı ile hızlı giriş"><img class="ps102-provider-logo ps102-sw-logo" src="./swcreate-sw-logo-transparent.png?v=10.3" alt=""></button>':''}</div><div class="ps-identity-trust"><i></i><span>SW Identity güvenlik ve plan altyapısı</span></div></section>`;
-    document.body.append(layer);const form=$('.ps-identity-credential-form',layer);const identityMark=$('.ps-identity-wordmark img',layer);if(identityMark)identityMark.src='./play-streamers-ps-logo.svg?v=10.5';
+    document.body.append(layer);const form=$('.ps-identity-credential-form',layer);const identityMark=$('.ps-identity-wordmark img',layer);if(identityMark)identityMark.src='./play-streamers-ps-logo.svg?v=10.7';
     $('.auth-close',layer).onclick=removeLandingAuth;layer.onclick=event=>{if(event.target===layer)removeLandingAuth()};
     form.onsubmit=event=>{event.preventDefault();submitSwIdentityCredentials(form,isLogin,startedAt)};
-    $('[data-provider="google"]',layer).onclick=()=>startSwIdentityLogin('google');$('[data-provider="kick"]',layer).onclick=()=>startSwIdentityLogin('kick');$('[data-provider="sw"]',layer)?.addEventListener('click',()=>startSwIdentityLogin());if(!isLogin)installIdentityCalendar(form.elements.birthDate);prepareAuthVerification(form);
+    $('[data-provider="google"]',layer).onclick=()=>startSwIdentityLogin('google');$('[data-provider="kick"]',layer).onclick=()=>startSwIdentityLogin('kick');$('[data-provider="sw"]',layer)?.addEventListener('click',()=>startSwIdentityLogin());if(!isLogin)installIdentityCalendar(form.elements.birthDate);fetch(`${API_BASE}/health`,{cache:'no-store'}).catch(()=>{});prepareAuthVerification(form);
   }
   function openAccountFlow(mode){if(activeUserSession&&state.settings.user){landingMode=false;removeLandingAuth();renderUserAuth();return}showLandingAuthV101(mode)}
   window.psOpenLandingAuth = openAccountFlow;

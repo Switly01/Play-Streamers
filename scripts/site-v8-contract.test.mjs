@@ -11,11 +11,11 @@ test('site 10 assets are cache-busted and use fluid monochrome glass', async () 
     read('site-v7.css'),
     read('play-streamers-ps-logo.svg'),
   ]);
-  assert.match(html, /play-streamers-build" content="2026-08-28-site-10\.6\.0"/);
-  assert.match(html, /site-v7\.css\?v=10\.6\.0/);
-  assert.match(html, /app\.js\?v=5\.4\.2/);
-  assert.match(html, /site-v7\.js\?v=10\.6\.1/);
-  assert.match(html, /app-final\.js\?v=5\.9\.5/);
+  assert.match(html, /play-streamers-build" content="2026-08-28-site-10\.7\.0"/);
+  assert.match(html, /site-v7\.css\?v=10\.7\.0/);
+  assert.match(html, /app\.js\?v=5\.4\.3/);
+  assert.match(html, /site-v7\.js\?v=10\.7\.0/);
+  assert.match(html, /app-final\.js\?v=5\.9\.6/);
   assert.match(html, /live-i18n\.js\?v=8\.4\.6/);
   assert.match(css, /html\[data-ps-site-version="8"\]/);
   assert.match(css, /--signal: #f5f5f2/);
@@ -32,7 +32,8 @@ test('site 10 assets are cache-busted and use fluid monochrome glass', async () 
   assert.match(css, /ps9-sw-ai-summary/);
   assert.doesNotMatch(css, /body\.ps-v9\s*>\s*:not\(#ps9Ambient\)/);
   assert.match(logo, /Tek beyaz beşgen çerçeve/);
-  assert.match(logo, /translate\(32 14\) scale\(\.68 \.86\)/);
+  assert.match(logo, /translate\(35 25\) scale\(\.64 \.75\)/);
+  assert.match(css, /@keyframes ps106-loader-float/);
   assert.match(logo, /stroke-linecap="round"/);
   assert.match(logo, /M80 8 147 56 122 145H38L13 56 80 8Z/);
   assert.doesNotMatch(logo, /linearGradient|circle|polygon/);
@@ -109,7 +110,7 @@ test('SW Bot audits the whole interface and explains issues with SW AI', async (
   assert.match(worker, /sw-bot:global-status:v13/);
   assert.match(worker, /explainSwBotIssuesWithAi/);
   assert.match(worker, /swBotDeterministicReport/);
-  assert.match(worker, /site-v7\.css\?v=10\.6\.0/);
+  assert.match(worker, /site-v7\.css\?v=10\.7\.0/);
   assert.match(worker, /\/api\/i18n\/translate/);
   assert.match(worker, /i18n:v9/);
   assert.match(worker, /interface_translation_cache/);
@@ -133,6 +134,7 @@ test('SW Identity owns direct login and registration without legacy account leak
   assert.match(app, /name=\"birthDate\"/);
   assert.match(app, /data-provider=\"sw\"/);
   assert.match(app, /submitSwIdentityCredentials/);
+  assert.match(app, /\/api\/sw-identity\/\$\{isLogin\?'login':'register'\}/);
   assert.match(app, /window\.psSetLocale/);
   assert.match(app, /adoptAuthenticatedUser\(data\.user\);state\.settings\.userSession=activeUserSession/);
   assert.match(identityWorker, /hostname === \"pstreamers\.com\"/);
@@ -149,6 +151,9 @@ test('SW Identity owns direct login and registration without legacy account leak
   assert.match(i18n, /SKIP_ATTRIBUTE_SELECTOR/);
   assert.match(identityAccount, /https:\/\/pstreamers\.com/);
   assert.match(callback, /sw_identity_callback/);
+  const worker = await read('cloudflare-worker.js');
+  assert.match(worker, /proxySwIdentityCredentialRequest/);
+  assert.match(worker, /\/api\/sw-identity\/login/);
 });
 
 test('privacy and terms share the premium legal design', async () => {

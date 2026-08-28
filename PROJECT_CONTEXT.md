@@ -2,7 +2,7 @@
 
 ## Güncel geliştirme durumu · 28 Ağustos 2026
 
-Site 10.6.0 / Worker 5.5 / SW Identity 1.8.1 / Desktop 0.14.4 / Play Connect
+Site 10.7.0 / Worker 5.6 / SW Identity 1.8.1 / Desktop 0.14.4 / Play Connect
 1.15.1 kaynakları hazırlandı. Site kartları ve temel yüzeyler, mobilde daha
 düşük bulanıklık kullanan belirgin sıvı cam katmanına geçirildi. Yıldız alanında
 tek `requestAnimationFrame` ile çalışan gerçek imleç feneri bulunur. Ortak

@@ -78,8 +78,8 @@ const DONATE_OAUTH_PROVIDERS = Object.freeze({
     clientSecretVariable: "TIPEEESTREAM_CLIENT_SECRET",
   }),
 });
-const CURRENT_RELEASE_VERSION = "5.5";
-const CURRENT_RELEASE_PUBLISHED_AT = "2026-08-28T16:00:00+03:00";
+const CURRENT_RELEASE_VERSION = "5.6";
+const CURRENT_RELEASE_PUBLISHED_AT = "2026-08-28T23:18:00+03:00";
 const SW_IDENTITY_ORIGIN = "https://api.swcreate.com";
 const DESKTOP_IDENTITY_REDIRECT = "playstreamers://identity/callback";
 const WEB_IDENTITY_REDIRECTS = new Set([
@@ -309,6 +309,18 @@ export default {
           turnstileEnabled: isTurnstileEnabled(env),
           aiEnabled: Boolean(env.AI || env.OPENAI_API_KEY),
         });
+      }
+
+      if (url.pathname === "/api/sw-identity/login" && request.method === "POST") {
+        return proxySwIdentityCredentialRequest(request, "login");
+      }
+
+      if (url.pathname === "/api/sw-identity/register" && request.method === "POST") {
+        return proxySwIdentityCredentialRequest(request, "register");
+      }
+
+      if (url.pathname === "/api/sw-identity/two-factor/verify" && request.method === "POST") {
+        return proxySwIdentityCredentialRequest(request, "two-factor/verify");
       }
 
       if (LEGACY_PLAY_STREAMERS_AUTH_PATHS.has(url.pathname)) {
@@ -812,11 +824,11 @@ async function runScheduledPlayBotAudit(env) {
   await ensurePlayBotMetadataStorage(env);
   const resources = [
     ["Ana sayfa", "https://pstreamers.com/", "document"],
-    ["Ana uygulama betiği", "https://pstreamers.com/app.js?v=5.4.2", "script"],
-    ["Uygulama betiği", "https://pstreamers.com/app-final.js?v=5.9.5", "script"],
-    ["Site davranış betiği", "https://pstreamers.com/site-v7.js?v=10.6.1", "script"],
+    ["Ana uygulama betiği", "https://pstreamers.com/app.js?v=5.4.3", "script"],
+    ["Uygulama betiği", "https://pstreamers.com/app-final.js?v=5.9.6", "script"],
+    ["Site davranış betiği", "https://pstreamers.com/site-v7.js?v=10.7.0", "script"],
     ["Canlı çeviri betiği", "https://pstreamers.com/live-i18n.js?v=8.4.6", "script"],
-    ["Premium stil dosyası", "https://pstreamers.com/site-v7.css?v=10.6.0", "style"],
+    ["Premium stil dosyası", "https://pstreamers.com/site-v7.css?v=10.7.0", "style"],
     ["Oturum başlangıç betiği", "https://pstreamers.com/session-bootstrap.js?v=1.1", "script"],
     ["Site yönlendiricisi", "https://pstreamers.com/site-router.js?v=1.1", "script"],
     ["Sunucu analiz betiği", "https://pstreamers.com/server-analytics.js?v=6.0", "script"],
@@ -898,12 +910,12 @@ async function runScheduledPlayBotAudit(env) {
   const homeDocument = results.find(result => result.type === "document");
   if (homeDocument?.ok) {
     const documentContracts = [
-      ["site-v7.css?v=10.6.0", "Güncel premium stil dosyası"],
-      ["app.js?v=5.4.2", "Güncel ana uygulama betiği"],
-      ["app-final.js?v=5.9.5", "Güncel onarım betiği"],
-      ["site-v7.js?v=10.6.1", "Güncel site davranış betiği"],
+      ["site-v7.css?v=10.7.0", "Güncel premium stil dosyası"],
+      ["app.js?v=5.4.3", "Güncel ana uygulama betiği"],
+      ["app-final.js?v=5.9.6", "Güncel onarım betiği"],
+      ["site-v7.js?v=10.7.0", "Güncel site davranış betiği"],
       ["live-i18n.js?v=8.4.6", "Güncel canlı çeviri betiği"],
-      ["play-streamers-build\" content=\"2026-08-28-site-10.6.0", "Site 10.6.0 sürüm işareti"],
+      ["play-streamers-build\" content=\"2026-08-28-site-10.7.0", "Site 10.7.0 sürüm işareti"],
     ];
     for (const [token, label] of documentContracts) {
       if (!homeDocument.body.includes(token)) issues.push(`${label} canlı ana sayfaya bağlanmamış.`);
@@ -1350,6 +1362,34 @@ async function fetchExternal(url, init = {}, options = {}) {
     } finally {
       clearTimeout(timer);
     }
+  }
+}
+
+async function proxySwIdentityCredentialRequest(request, route) {
+  const origin = String(request.headers.get("Origin") || "");
+  if (!["https://pstreamers.com", "https://www.pstreamers.com"].includes(origin)) {
+    return apiResponse(request, { error: "Bu hesap isteğinin kaynağı doğrulanamadı." }, 403);
+  }
+  const payload = await requestJson(request);
+  const headers = new Headers({
+    "content-type": "application/json",
+    "origin": origin,
+  });
+  const turnstileToken = String(request.headers.get("X-Turnstile-Token") || payload.turnstileToken || "").trim();
+  const flowId = String(request.headers.get("X-SW-Flow-ID") || "").trim();
+  if (turnstileToken) headers.set("X-Turnstile-Token", turnstileToken);
+  if (flowId) headers.set("X-SW-Flow-ID", flowId.slice(0, 160));
+  try {
+    const response = await fetchExternal(`https://api.swcreate.com/api/auth/${route}`, {
+      method: "POST",
+      headers,
+      body: JSON.stringify(payload),
+    }, { operation: `sw-identity-${route.replaceAll("/", "-")}`, timeoutMs: 20_000 });
+    const data = await response.json().catch(() => ({ error: "SW Identity yanıtı okunamadı." }));
+    return apiResponse(request, data, response.status);
+  } catch (error) {
+    logSecurityEvent("sw_identity_proxy_failed", { route, reason: error?.code || error?.name || "unknown" });
+    return apiResponse(request, { error: "Güvenli hesap bağlantısı şu anda tamamlanamadı. Lütfen tekrar dene." }, 503);
   }
 }
 

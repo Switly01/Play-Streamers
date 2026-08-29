@@ -1,5 +1,5 @@
 const SUPPORTED = new Set(["tr", "en", "de", "es", "fr", "ru", "ar", "ja"]);
-const CATALOG_VERSION = "2026-08-29.3";
+const CATALOG_VERSION = "2026-08-29.4";
 const catalogPromises = new Map();
 const COUNTRY_LOCALES = Object.freeze({
   TR: "tr", JP: "ja", DE: "de", AT: "de", CH: "de", LI: "de",
@@ -52,6 +52,30 @@ Object.entries({
   ja: "Play Streamers — クリエイターハブ",
 }).forEach(([language, translation]) => {
   critical[language]["Play Streamers — Yayıncı Merkezi"] = translation;
+});
+Object.assign(critical.en, {
+  "Profesyonel Yayıncı Kontrol Platformu": "Professional Creator Control Platform",
+  "Canlı analiz · İçerik planlama · Topluluk · Marka · Play Connect": "Live analytics · Content planning · Community · Brand · Play Connect",
+  "Analiz, içerik, topluluk ve daha fazlası — yayınını yönetmek için ihtiyacın olan araçlar tek sade uygulamada.": "Analytics, content, community, and more — everything you need to run your stream in one focused app.",
+  "SON YAYIN": "LAST STREAM",
+  "Ortalama 184 izleyici": "184 average viewers",
+  "Önceki yayına göre": "Compared with your previous stream",
+  "Sunucu tabanlı yayın geçmişi": "Server-side stream history",
+  "Ham sayılar yerine değişimin ne anlama geldiğini gösteren okunabilir yayın özetleri.": "Clear stream summaries that explain the change, not just the raw numbers.",
+  "Yayın bittikten sonra da çalışan sistem.": "A system that keeps working after the stream ends.",
+  "Yayına başlamak, temel verilerini görmek ve günlük üretim düzenini kurmak için.": "Start streaming, see your core data, and build your daily production routine.",
+  "Yayın sırasındaki tüm önemli hareketler tek bir akışta düzenlenir.": "Every important moment during a stream is organized into one timeline.",
+  "Yayınını değil,": "Don't just grow your stream,",
+  "sistemini büyüt.": "grow your system.",
+  "Yayın akışı": "Stream timeline",
+  "Yayın kapalı": "Stream offline",
+  "Yayın senin.": "Your stream, your way.",
+  "Yayın durumu hazırlanıyor": "Preparing stream status",
+  "Doğrudan kurulum dosyası Windows yayınevi imzası tamamlanana kadar SmartScreen uyarısı gösterebilir.": "The direct installer may trigger a SmartScreen warning until Windows publisher signing is complete.",
+  "Play Streamers, dağınık yayın araçlarını çoğaltmak yerine veriyi, üretimi ve hesap yönetimini tek anlaşılır düzende birleştirir.": "Play Streamers brings stream data, production, and account management into one clear system instead of adding more scattered tools.",
+  "Play Streamers; yayın verilerini toplama ve görüntüleme, hesap ve bağlantı yönetimi, içerik ve topluluk araçları, masaüstü çalışma alanları ve desteklenen platformlarla entegrasyon sunar. Bazı özellikler plana, platform izinlerine, işletim sistemine veya üçüncü taraf hizmetlerin kullanılabilirliğine bağlı olabilir.": "Play Streamers provides stream data collection and viewing, account and connection management, content and community tools, desktop workspaces, and integrations with supported platforms. Some features may depend on your plan, platform permissions, operating system, or third-party availability.",
+  "Bu koşullar; Play Streamers web sitesi, masaüstü uygulaması, Play Connect eklentisi ve bunlara bağlı hesap, analiz ve bağlantı hizmetlerinin kullanım kurallarını açıklar.": "These terms explain the rules for using the Play Streamers website, desktop app, Play Connect extension, and their related account, analytics, and connection services.",
+  "Hizmet ve analizler mevcut haliyle sunulur. Yürürlükteki hukukun izin verdiği ölçüde; yayın geliri, izleyici artışı, platform kararı, veri kaybı veya üçüncü taraf kesintisi konusunda garanti verilmez. Bu hüküm, kanunen sınırlandırılamayan tüketici haklarını ortadan kaldırmaz.": "Services and analytics are provided as available. To the extent permitted by law, we do not guarantee stream revenue, audience growth, platform decisions, freedom from data loss, or uninterrupted third-party services. This does not limit consumer rights that cannot legally be restricted.",
 });
 Object.assign(critical.fr, {
   "ETKİLEŞİM": "INTERACTION",
@@ -333,6 +357,11 @@ const fixedInterfaceCopy = Object.freeze({
 Object.entries(fixedInterfaceCopy).forEach(([language, values]) => {
   fixedInterfaceSources.forEach((source, index) => { critical[language][source] = values[index]; });
 });
+Object.assign(critical.en, {
+  "Yayın akışı": "Stream timeline",
+  "Yayın kapalı": "Stream offline",
+  "Yayın senin.": "Your stream, your way.",
+});
 Object.entries({
   en: ["If you're there, I'm heading out.", "example.user"],
   de: ["Wenn du da bist, mache ich mich auf den Weg.", "beispiel.benutzer"],
@@ -475,7 +504,7 @@ export function installLiveI18n({ localeKey = "ps15-locale", getLocale, root = d
     return { language, translate(value) { return String(value ?? ""); }, refresh() {}, dispose() {} };
   }
 
-  const cacheKey = `ps-live-i18n-v15:${language}`;
+  const cacheKey = `ps-live-i18n-v16:${language}`;
   // Kalıcı paket, eski tarayıcı önbelleğini ezer; elle doğrulanmış kritik
   // metinler ise her zaman en son sözü söyler.
   const cache = { ...cacheRead(cacheKey), ...catalog, ...(critical[language] || {}) };

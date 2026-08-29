@@ -2,7 +2,7 @@
 
 ## Güncel geliştirme durumu · 29 Ağustos 2026
 
-Site 10.11.0 / Worker 6.0 / SW Identity 1.8.1 / Desktop 0.14.4 / Play Connect
+Site 10.11.1 / Worker 6.1 / SW Identity 1.8.1 / Desktop 0.14.4 / Play Connect
 1.15.1 kaynakları hazırlandı. Site kartları ve temel yüzeyler, mobilde daha
 düşük bulanıklık kullanan belirgin sıvı cam katmanına geçirildi; giriş sonrası
 üye ana sayfası ve Dashboard aynı cam yüzey, aralık ve kart ritminde yeniden
@@ -20,6 +20,8 @@ olduğu için seçilen dil aynı DOM üzerinde ilk karede uygulanır; tercih
 `ps15-locale` ile bütün sayfalarda kalıcıdır. Tarayıcı artık dil değişiminde
 Türkçe metinleri canlı API ile çevirmez; arayüz doğrudan seçilen dilin hazır
 paketinden açılır. Dil menüsü başlığı ve süre birimleri de pakete dahildir.
+İngilizce ana sayfa, yayıncılık terimleri ve yasal yüzeyler kelimesi kelimesine
+makine çevirisi yerine elle düzenlenmiş doğal ürün diliyle sabitlenmiştir.
 Dashboard, giriş/kayıt, destek, gizlilik ve kullanım koşulları aynı altyapıya
 bağlıdır. Yeni metinler yayın öncesi paket üretiminde çevrilip D1'e eklenir; canlı
 kullanıcının dil seçimi ağdaki çeviri hizmetini beklemez. D1 çeviri önbelleği

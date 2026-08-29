@@ -2,6 +2,17 @@
 
 ## Güncel geliştirme durumu · 29 Ağustos 2026
 
+Site 10.14.0 / Worker 6.6 üye arayüzü ve dil güvenliği revizyonu: Sonradan
+değişen astronot metinleri seçili dile bağlı kalır; Cloudflare Turnstile kutusu
+site diliyle oluşturulur ve açık doğrulama kutusu dil değişiminde güvenle
+yenilenir. Bağlantı durumu ipuçları kaynak metni koruyarak çevrilir; Kick ve
+Play Connect güncel ürün amblemleriyle gösterilir. PS ambleminin iç boşluğu
+artırıldı, çalışma merkezi gerçek amblemi kullanır. Dashboard kısayolu ve BETA
+etiketi kaldırıldı; kart simgeleri küçültülüp uzun çevirilere dayanıklı hale
+getirildi. Güncelleme geçmişinin kaydırma alanı pencere içinde tutulur. Hesap
+merkezindeki veriler, profil, güvenlik, cihazlar, bağlantılar ve destek
+yüzeyleri masaüstü ve mobilde taşma yapmayan ortak sıvı cam düzenine alındı.
+
 Site 10.13.2 / Worker 6.5 ücretsiz yerel çeviri revizyonu: Google Cloud'un
 hesap etkinleştirmede istediği ön ödeme kabul edilmedi ve hiçbir ödeme
 yapılmadı. Arayüz çevirileri artık açık kaynak Argos modelleriyle yalnız yayın

@@ -8,7 +8,7 @@ import { critical } from '../live-i18n.js';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const outputDirectory = join(root, 'locales');
-const version = '2026-08-29.7';
+const version = '2026-08-29.8';
 const languages = ['en', 'de', 'es', 'fr', 'ru', 'ar', 'ja'];
 const sourceFiles = ['index.html', 'privacy.html', 'terms.html', 'app.js', 'app-final.js', 'site-v7.js'];
 const extractionFiles = new Set(['index.html', 'privacy.html', 'terms.html', 'site-v7.js']);

@@ -78,8 +78,8 @@ const DONATE_OAUTH_PROVIDERS = Object.freeze({
     clientSecretVariable: "TIPEEESTREAM_CLIENT_SECRET",
   }),
 });
-const CURRENT_RELEASE_VERSION = "6.5";
-const CURRENT_RELEASE_PUBLISHED_AT = "2026-08-29T21:35:00+03:00";
+const CURRENT_RELEASE_VERSION = "6.6";
+const CURRENT_RELEASE_PUBLISHED_AT = "2026-08-29T23:10:00+03:00";
 const SW_IDENTITY_ORIGIN = "https://api.swcreate.com";
 const DESKTOP_IDENTITY_REDIRECT = "playstreamers://identity/callback";
 const WEB_IDENTITY_REDIRECTS = new Set([
@@ -829,18 +829,18 @@ async function runScheduledPlayBotAudit(env) {
   await ensurePlayBotMetadataStorage(env);
   const resources = [
     ["Ana sayfa", "https://pstreamers.com/", "document"],
-    ["Ana uygulama betiği", "https://pstreamers.com/app.js?v=5.4.8", "script"],
-    ["Uygulama betiği", "https://pstreamers.com/app-final.js?v=5.11.0", "script"],
-    ["Site davranış betiği", "https://pstreamers.com/site-v7.js?v=10.13.0", "script"],
-    ["Sabit çeviri betiği", "https://pstreamers.com/live-i18n.js?v=9.7.0", "script"],
-    ["İngilizce dil paketi", "https://pstreamers.com/locales/en.json?v=2026-08-29.7", "json"],
-    ["Almanca dil paketi", "https://pstreamers.com/locales/de.json?v=2026-08-29.7", "json"],
-    ["İspanyolca dil paketi", "https://pstreamers.com/locales/es.json?v=2026-08-29.7", "json"],
-    ["Fransızca dil paketi", "https://pstreamers.com/locales/fr.json?v=2026-08-29.7", "json"],
-    ["Rusça dil paketi", "https://pstreamers.com/locales/ru.json?v=2026-08-29.7", "json"],
-    ["Arapça dil paketi", "https://pstreamers.com/locales/ar.json?v=2026-08-29.7", "json"],
-    ["Japonca dil paketi", "https://pstreamers.com/locales/ja.json?v=2026-08-29.7", "json"],
-    ["Premium stil dosyası", "https://pstreamers.com/site-v7.css?v=10.13.0", "style"],
+    ["Ana uygulama betiği", "https://pstreamers.com/app.js?v=5.4.9", "script"],
+    ["Uygulama betiği", "https://pstreamers.com/app-final.js?v=5.12.0", "script"],
+    ["Site davranış betiği", "https://pstreamers.com/site-v7.js?v=10.14.0", "script"],
+    ["Sabit çeviri betiği", "https://pstreamers.com/live-i18n.js?v=9.8.0", "script"],
+    ["İngilizce dil paketi", "https://pstreamers.com/locales/en.json?v=2026-08-29.8", "json"],
+    ["Almanca dil paketi", "https://pstreamers.com/locales/de.json?v=2026-08-29.8", "json"],
+    ["İspanyolca dil paketi", "https://pstreamers.com/locales/es.json?v=2026-08-29.8", "json"],
+    ["Fransızca dil paketi", "https://pstreamers.com/locales/fr.json?v=2026-08-29.8", "json"],
+    ["Rusça dil paketi", "https://pstreamers.com/locales/ru.json?v=2026-08-29.8", "json"],
+    ["Arapça dil paketi", "https://pstreamers.com/locales/ar.json?v=2026-08-29.8", "json"],
+    ["Japonca dil paketi", "https://pstreamers.com/locales/ja.json?v=2026-08-29.8", "json"],
+    ["Premium stil dosyası", "https://pstreamers.com/site-v7.css?v=10.14.0", "style"],
     ["Oturum başlangıç betiği", "https://pstreamers.com/session-bootstrap.js?v=1.1", "script"],
     ["Site yönlendiricisi", "https://pstreamers.com/site-router.js?v=1.1", "script"],
     ["Sunucu analiz betiği", "https://pstreamers.com/server-analytics.js?v=6.0", "script"],
@@ -849,7 +849,7 @@ async function runScheduledPlayBotAudit(env) {
     ["Kimlik dönüş sayfası", "https://pstreamers.com/identity/callback/", "document"],
     ["404 yönlendirme sayfası", "https://pstreamers.com/404.html", "document"],
     ["SW Identity sağlığı", "https://api.swcreate.com/api/health", "json"],
-    ["PS marka amblemi", "https://pstreamers.com/play-streamers-ps-logo.svg?v=10.11", "image"],
+    ["PS marka amblemi", "https://pstreamers.com/play-streamers-ps-logo.svg?v=10.14", "image"],
     ["Kick giriş amblemi", "https://pstreamers.com/assets/kick-logo.svg", "image"],
     ["SW Create amblemi", "https://pstreamers.com/swcreate-sw-logo-transparent.png", "image"],
     ["Windows kurucusu", "https://pstreamers.com/downloads/Play-Streamers-Setup.exe", "binary"],
@@ -917,7 +917,7 @@ async function runScheduledPlayBotAudit(env) {
       const validPayload = result.label === "Windows güncelleme bildirimi"
         ? Boolean(payload?.version && hasUpdaterPlatforms)
         : localeCatalog
-          ? Boolean(payload?.version === "2026-08-29.7" && payload?.sourceLanguage === "tr" && payload?.language && Object.keys(payload?.translations || {}).length >= 1000)
+          ? Boolean(payload?.version === "2026-08-29.8" && payload?.sourceLanguage === "tr" && payload?.language && Object.keys(payload?.translations || {}).length >= 1000)
           : Boolean(payload?.ok);
       if (!validPayload) issues.push(`${result.label} geçerli bir JSON yanıtı döndürmüyor.`);
     }
@@ -925,12 +925,12 @@ async function runScheduledPlayBotAudit(env) {
   const homeDocument = results.find(result => result.type === "document");
   if (homeDocument?.ok) {
     const documentContracts = [
-      ["site-v7.css?v=10.13.0", "Güncel premium stil dosyası"],
-      ["app.js?v=5.4.8", "Güncel ana uygulama betiği"],
-      ["app-final.js?v=5.11.0", "Güncel onarım betiği"],
-      ["site-v7.js?v=10.13.0", "Güncel site davranış betiği"],
-      ["live-i18n.js?v=9.7.0", "Güncel sabit paket çeviri betiği"],
-      ["play-streamers-build\" content=\"2026-08-29-site-10.13.2", "Site 10.13.2 sürüm işareti"],
+      ["site-v7.css?v=10.14.0", "Güncel premium stil dosyası"],
+      ["app.js?v=5.4.9", "Güncel ana uygulama betiği"],
+      ["app-final.js?v=5.12.0", "Güncel onarım betiği"],
+      ["site-v7.js?v=10.14.0", "Güncel site davranış betiği"],
+      ["live-i18n.js?v=9.8.0", "Güncel sabit paket çeviri betiği"],
+      ["play-streamers-build\" content=\"2026-08-29-site-10.14.0", "Site 10.14.0 sürüm işareti"],
     ];
     for (const [token, label] of documentContracts) {
       if (!homeDocument.body.includes(token)) issues.push(`${label} canlı ana sayfaya bağlanmamış.`);

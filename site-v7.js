@@ -237,6 +237,14 @@
     if (!home || home.dataset.ps10AstronautScheduled === '1') return;
     home.dataset.ps10AstronautScheduled = '1';
     const delay = new URL(location.href).searchParams.get('astronaut') === '1' ? 1200 : 300000;
+    const setAstronautCopy = (astronaut, source) => {
+      const bubble = astronaut?.querySelector('.ps10-astronaut-bubble');
+      if (!bubble) return;
+      bubble.dataset.psAstronautSource = source;
+      bubble.textContent = typeof window.psTranslateInterface === 'function'
+        ? window.psTranslateInterface(source)
+        : source;
+    };
     const position = () => {
       const astronaut = home.querySelector('.ps10-astronaut-visitor');
       const hero = home.querySelector('.ps81-hero');
@@ -254,6 +262,7 @@
       }
       const astronaut = home.querySelector('.ps10-astronaut-visitor');
       if (!astronaut || astronaut.classList.contains('is-visible')) return;
+      setAstronautCopy(astronaut, 'Hey, geleceğin yayıncısı burada mısın?');
       position();
       astronaut.classList.add('is-visible');
       astronaut.setAttribute('aria-hidden', 'false');
@@ -261,8 +270,7 @@
       window.setTimeout(() => { if (astronaut.classList.contains('is-visible')) astronaut.classList.add('is-settled'); }, 2500);
       const depart = () => {
         if (astronaut.classList.contains('is-departing')) return;
-        const bubble = astronaut.querySelector('.ps10-astronaut-bubble');
-        if (bubble) bubble.textContent = 'Buradaysan ben gidiyorum.';
+        setAstronautCopy(astronaut, 'Buradaysan ben gidiyorum.');
         astronaut.classList.add('is-leaving-message');
         astronaut.setAttribute('aria-label', 'Astronot yukarı çıkıyor');
         window.setTimeout(() => astronaut.classList.add('is-hook-returning'), 850);
@@ -284,6 +292,11 @@
       }
       window.addEventListener('resize', position, { passive: true });
     };
+    window.addEventListener('ps:i18n-ready', () => {
+      const astronaut = home.querySelector('.ps10-astronaut-visitor');
+      const source = astronaut?.querySelector('.ps10-astronaut-bubble')?.dataset.psAstronautSource;
+      if (astronaut && source) setAstronautCopy(astronaut, source);
+    });
     window.setTimeout(reveal, delay);
   }
 
@@ -357,7 +370,7 @@
         <div class="ps8-app-stage" aria-label="Play Streamers masaüstü uygulaması ön izlemesi">
           <div class="ps8-app-halo" aria-hidden="true"></div>
           <article class="ps8-app-window">
-            <header><span class="ps8-window-brand"><img src="./play-streamers-ps-logo.svg?v=10.11" alt=""><b>PLAY STREAMERS</b></span><span class="ps8-window-controls">— □ ×</span></header>
+            <header><span class="ps8-window-brand"><img src="./play-streamers-ps-logo.svg?v=10.14" alt=""><b>PLAY STREAMERS</b></span><span class="ps8-window-controls">— □ ×</span></header>
             <div class="ps8-app-body">
               <aside><i class="active"></i><i></i><i></i><i></i><i></i><i></i></aside>
               <div class="ps8-app-content">
@@ -383,7 +396,7 @@
         <header><span>HAKKIMIZDA</span><h2 id="ps8-about-title">Yayıncı için çalışan,<br>yayın bitince durmayan sistem.</h2><p>Play Streamers, dağınık yayın araçlarını çoğaltmak yerine veriyi, üretimi ve hesap yönetimini tek anlaşılır düzende birleştirir.</p></header>
         <div class="ps8-about-grid">
           <article class="ps8-about-manifesto"><span>NEDEN VARIZ?</span><h3>Yayıncının dikkatini pencerelere değil, topluluğuna geri vermek için.</h3><p>Yayın açıkken oluşan önemli hareketler sunucuda izlenir; daha sonra geri döndüğünde geçmişin, ortalaman ve değişimin hazır olur.</p><div><b>OTOMATİK</b><b>ANLAŞILIR</b><b>YAYINCI ODAKLI</b></div></article>
-          <article class="ps8-about-system"><span>TEK EKOSİSTEM</span><div class="ps8-about-orbit" aria-hidden="true"><i><img src="./play-streamers-ps-logo.svg?v=10.11" alt=""></i><b>WEB</b><b>APP</b><b>CONNECT</b></div><p>Site hesap ve bağlantıları, masaüstü uygulaması günlük üretimi, Play Connect ise tarayıcı akışını taşır. Hepsi aynı SW Identity hesabında birleşir.</p></article>
+          <article class="ps8-about-system"><span>TEK EKOSİSTEM</span><div class="ps8-about-orbit" aria-hidden="true"><i><img src="./play-streamers-ps-logo.svg?v=10.14" alt=""></i><b>WEB</b><b>APP</b><b>CONNECT</b></div><p>Site hesap ve bağlantıları, masaüstü uygulaması günlük üretimi, Play Connect ise tarayıcı akışını taşır. Hepsi aynı SW Identity hesabında birleşir.</p></article>
         </div>
       </section>
 
@@ -427,7 +440,7 @@
       </section>
 
       <section class="ps8-final-cta" aria-labelledby="ps8-final-title">
-        <img src="./play-streamers-ps-logo.svg?v=10.11" alt="Play Streamers PS logosu">
+        <img src="./play-streamers-ps-logo.svg?v=10.14" alt="Play Streamers PS logosu">
         <span>WINDOWS 10/11 · SÜRÜM 0.14.4</span>
         <h2 id="ps8-final-title">Yayınını değil,<br>sistemini büyüt.</h2>
         <p>Hesabını ücretsiz oluştur. Play Streamers Desktop'ı indir ve üretim araçlarını tek sade merkezde kullanmaya başla.</p>

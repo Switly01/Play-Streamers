@@ -1,9 +1,25 @@
 {
+  "en": {
+    "Hey, geleceğin yayıncısı burada mısın?": "Hey, future streamer, are you there?",
+    "Buradaysan ben gidiyorum.": "If you're there, I'm heading out."
+  },
   "de": {
+    "Hey, geleceğin yayıncısı burada mısın?": "Hey, zukünftiger Streamer, bist du da?",
+    "Buradaysan ben gidiyorum.": "Wenn du da bist, mache ich mich auf den Weg.",
     "Menü": "Menü",
     "MENÜ": "MENÜ"
   },
+  "es": {
+    "Hey, geleceğin yayıncısı burada mısın?": "Oye, streamer del futuro, ¿estás ahí?",
+    "Buradaysan ben gidiyorum.": "Si estás ahí, me voy."
+  },
+  "fr": {
+    "Hey, geleceğin yayıncısı burada mısın?": "Hé, futur streamer, tu es là ?",
+    "Buradaysan ben gidiyorum.": "Si tu es là, je m’en vais."
+  },
   "ru": {
+    "Hey, geleceğin yayıncısı burada mısın?": "Эй, будущий стример, ты здесь?",
+    "Buradaysan ben gidiyorum.": "Если ты здесь, я ухожу.",
     "AKTİF ABONE*": "АКТИВНЫЕ ПОДПИСЧИКИ*",
     "Canlı Dashboard": "Панель в реальном времени",
     "CREATOR OPERATING SYSTEM": "ОПЕРАЦИОННАЯ СИСТЕМА АВТОРА",
@@ -12,6 +28,8 @@
     "YAYINCI PANELİNİ SIFIRLA": "СБРОСИТЬ ПАНЕЛЬ СТРИМЕРА"
   },
   "ar": {
+    "Hey, geleceğin yayıncısı burada mısın?": "مرحبًا يا صانع البث المستقبلي، هل أنت هنا؟",
+    "Buradaysan ben gidiyorum.": "إن كنت هنا، فسأغادر.",
     "© 2026 SW Create · Play Streamers": "© 2026 SW Create · Play Streamers",
     "AKTİF ABONE*": "المشتركون النشطون*",
     "Bağlantı bilgisi alınamadı.": "تعذّر الحصول على معلومات الاتصال.",
@@ -68,5 +86,9 @@
     "Yayıncı bağışı olmayan satış, üyelik, hediye ve genel bağış toplama servisleriyle GameSatış ve ItemSultan katalogdan çıkarıldı.": "تمت إزالة خدمات البيع والعضوية والهدايا وجمع التبرعات العامة التي لا تقدم تبرعات مباشرة لصانع المحتوى، إلى جانب GameSatış وItemSultan، من القائمة.",
     "YAYINCI PANELİNİ SIFIRLA": "إعادة ضبط لوحة صانع المحتوى",
     "YEDEK KODLARI YENİLE": "تجديد الرموز الاحتياطية"
+  },
+  "ja": {
+    "Hey, geleceğin yayıncısı burada mısın?": "やあ、未来のストリーマー、そこにいる？",
+    "Buradaysan ben gidiyorum.": "そこにいるなら、もう行くね。"
   }
 }

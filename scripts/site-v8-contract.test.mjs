@@ -11,12 +11,12 @@ test('site 10 assets are cache-busted and use fluid monochrome glass', async () 
     read('site-v7.css'),
     read('play-streamers-ps-logo.svg'),
   ]);
-  assert.match(html, /play-streamers-build" content="2026-08-29-site-10\.11\.1"/);
-  assert.match(html, /site-v7\.css\?v=10\.11\.0/);
-  assert.match(html, /app\.js\?v=5\.4\.6/);
-  assert.match(html, /site-v7\.js\?v=10\.11\.0/);
-  assert.match(html, /app-final\.js\?v=5\.9\.9/);
-  assert.match(html, /live-i18n\.js\?v=9\.3\.1/);
+  assert.match(html, /play-streamers-build" content="2026-08-29-site-10\.12\.0"/);
+  assert.match(html, /site-v7\.css\?v=10\.12\.0/);
+  assert.match(html, /app\.js\?v=5\.4\.7/);
+  assert.match(html, /site-v7\.js\?v=10\.12\.0/);
+  assert.match(html, /app-final\.js\?v=5\.10\.0/);
+  assert.match(html, /live-i18n\.js\?v=9\.4\.0/);
   assert.match(css, /html\[data-ps-site-version="8"\]/);
   assert.match(css, /--signal: #f5f5f2/);
   assert.match(css, /@keyframes ps82-meteor/);
@@ -33,8 +33,8 @@ test('site 10 assets are cache-busted and use fluid monochrome glass', async () 
   assert.doesNotMatch(css, /body\.ps-v9\s*>\s*:not\(#ps9Ambient\)/);
   assert.match(logo, /Tek beyaz beşgen çerçeve/);
   assert.equal((logo.match(/stroke-width="13\.5"/g) || []).length, 2);
-  assert.match(logo, /M42 120V42h22/);
-  assert.match(logo, /M119 50c-7-5-15-8-24-8/);
+  assert.match(logo, /M35 120V42h18/);
+  assert.match(logo, /M126 50c-7-5-14-8-21-8/);
   assert.match(css, /@keyframes ps109-loader-logo/);
   assert.match(css, /@keyframes ps110-logo-flight/);
   assert.match(css, /\.ps110-loader-emblem/);
@@ -50,6 +50,9 @@ test('site 10 assets are cache-busted and use fluid monochrome glass', async () 
   assert.match(css, /Site 10\.6/);
   assert.match(css, /\.ps106-pointer-lantern/);
   assert.match(css, /backdrop-filter:blur\(21px\)/);
+  assert.match(css, /Site 10\.12/);
+  assert.match(css, /html\.ps-locale-switching/);
+  assert.match(css, /#panelGrid>\.card \{ grid-column:span 4/);
   assert.match(html, /ps-i18n-booting/);
 });
 
@@ -114,7 +117,7 @@ test('SW Bot audits the whole interface and explains issues with SW AI', async (
   assert.match(worker, /sw-bot:global-status:v13/);
   assert.match(worker, /explainSwBotIssuesWithAi/);
   assert.match(worker, /swBotDeterministicReport/);
-  assert.match(worker, /site-v7\.css\?v=10\.11\.0/);
+  assert.match(worker, /site-v7\.css\?v=10\.12\.0/);
   assert.match(worker, /\/api\/i18n\/translate/);
   assert.match(worker, /i18n:v9/);
   assert.match(worker, /interface_translation_cache/);
@@ -165,7 +168,9 @@ test('SW Identity owns direct login and registration without legacy account leak
   assert.match(i18n, /Her şey tek platformda\./);
   assert.doesNotMatch(i18n, /api\/i18n\/translate/);
   assert.match(i18n, /sürümlü dil paketinden boyanır/);
-  assert.match(i18n, /Promise\.all\(group\.map\(async strings =>/);
+  assert.match(i18n, /Eksik bir metin/);
+  assert.doesNotMatch(i18n, /Promise\.all\(group\.map\(async strings =>/);
+  assert.match(i18n, /ps-locale-switching/);
   assert.match(i18n, /SKIP_ATTRIBUTE_SELECTOR/);
   assert.match(identityAccount, /https:\/\/pstreamers\.com/);
   assert.match(callback, /sw_identity_callback/);

@@ -906,7 +906,7 @@ body.ps-v9 :is(.brand-logo,.ps20-logo,.ps51-account-brand i,.ps53-products-brand
   width: 46px;
   height: 46px;
   flex-basis: 46px;
-  background: transparent url("./play-streamers-ps-logo.svg?v=10.10") center/contain no-repeat !important;
+  background: transparent url("./play-streamers-ps-logo.svg?v=10.11") center/contain no-repeat !important;
   filter: drop-shadow(0 9px 20px rgba(0,0,0,.38));
 }
 #ps9Ambient {
@@ -1170,7 +1170,7 @@ body.ps-v8 :is(.brand-logo,.ps20-logo,.ps51-account-brand i,.ps53-products-brand
   flex-basis: 44px;
   border-radius: 0;
   color: transparent !important;
-  background: transparent url("./play-streamers-ps-logo.svg?v=10.10") center/contain no-repeat !important;
+  background: transparent url("./play-streamers-ps-logo.svg?v=10.11") center/contain no-repeat !important;
   font-size: 0 !important;
   box-shadow: none !important;
 }
@@ -1861,7 +1861,7 @@ body.ps-v8 #authOverlay .landing-brand .brand-logo { transition: transform .22s 
    compatibility rule that still ships for existing accounts. */
 html[data-ps-site-version="9"] body.ps-v9 :is(.brand-logo,.ps20-logo,.ps51-account-brand i,.ps53-products-brand i) {
   width:46px !important;height:46px !important;flex-basis:46px !important;border:0 !important;border-radius:0 !important;
-  color:transparent !important;background:transparent url("./play-streamers-ps-logo.svg?v=10.10") center/contain no-repeat !important;
+  color:transparent !important;background:transparent url("./play-streamers-ps-logo.svg?v=10.11") center/contain no-repeat !important;
   box-shadow:none !important;filter:drop-shadow(0 9px 20px rgba(0,0,0,.38)) !important;font-size:0 !important;
 }
 html[data-ps-site-version="9"] body.ps-v9 :is(#authOverlay .landing-nav,#psSecondHome .ps20-nav,.app .topbar,#ps49InfoPage .landing-nav,.ps53-products-nav) {
@@ -2811,7 +2811,7 @@ html[data-ps-site-version="9"] body.ps-v9 .brand-logo:has(>.ps103-brand-image),h
    kullanır. Böylece ilk karede medya çözme maliyeti ve eski yeşil animasyon yoktur. */
 #ps28Loader,#ps20Loader,.ps14-loader{background:radial-gradient(circle at 50% 43%,rgba(255,255,255,.08),transparent 26%),rgba(0,0,0,.84)!important;-webkit-backdrop-filter:blur(18px)!important;backdrop-filter:blur(18px)!important}
 #ps28Loader .ps28-loader-card,#ps28Loader>div,#ps20Loader>div,.ps14-loader-box{position:relative;border:1px solid rgba(255,255,255,.2)!important;border-radius:28px!important;padding:30px 36px!important;background:linear-gradient(145deg,rgba(255,255,255,.12),rgba(7,7,9,.72))!important;box-shadow:0 34px 90px #000b,inset 0 1px 0 rgba(255,255,255,.28)!important;overflow:hidden}
-#ps28Loader .ps28-loader-card::before,#ps28Loader>div::before,#ps20Loader>div::before,.ps14-loader-box::before{display:block;width:58px;height:58px;margin:0 auto 18px;background:url('./play-streamers-ps-logo.svg?v=10.10') center/contain no-repeat;content:"";animation:ps104-loader-orbit 1.35s cubic-bezier(.45,.05,.3,1) infinite}
+#ps28Loader .ps28-loader-card::before,#ps28Loader>div::before,#ps20Loader>div::before,.ps14-loader-box::before{display:block;width:58px;height:58px;margin:0 auto 18px;background:url('./play-streamers-ps-logo.svg?v=10.11') center/contain no-repeat;content:"";animation:ps104-loader-orbit 1.35s cubic-bezier(.45,.05,.3,1) infinite}
 #ps28Loader :is(video,.ps14-loader-mark),#ps20Loader i{display:none!important}
 #ps28Loader b,#ps20Loader span,.ps14-loader-box span{color:#fff!important;font:800 10px/1.3 "Space Grotesk","Segoe UI",sans-serif!important;letter-spacing:.22em!important}
 @keyframes ps104-loader-orbit{50%{filter:drop-shadow(0 0 18px rgba(255,255,255,.34));transform:translateY(-5px) rotate(3deg)}100%{transform:rotate(0)}}
@@ -3017,7 +3017,7 @@ body.ps-v9 #authOverlay .ps81-hero::after { opacity:.2!important; }
   height:76px;
   margin-bottom:24px;
   border-radius:28px;
-  background:radial-gradient(circle,rgba(255,255,255,.15),transparent 68%),url('./play-streamers-ps-logo.svg?v=10.10') center/62px 62px no-repeat;
+  background:radial-gradient(circle,rgba(255,255,255,.15),transparent 68%),url('./play-streamers-ps-logo.svg?v=10.11') center/62px 62px no-repeat;
   box-shadow:0 0 0 1px rgba(255,255,255,.1),0 0 0 10px rgba(255,255,255,.025),inset 0 1px 0 rgba(255,255,255,.2);
   filter:drop-shadow(0 0 18px rgba(255,255,255,.18));
   transform-style:preserve-3d;
@@ -3333,4 +3333,228 @@ body.ps-v9 :is(#psSecondHome .ps20-actions button,.app.ps13-dashboard .actions b
 }
 @media(prefers-reduced-motion:reduce) {
   #ps28Loader .ps110-loader-emblem,#ps28Loader .ps110-loader-emblem img,#ps28Loader .ps110-loader-emblem i,#ps28Loader .ps110-loader-emblem span,.ps-auth-turnstile-retry::before { animation:none!important; }
+}
+
+/* Site 10.12 — kararlı dil denetimi ve Creator Control Room üye yüzeyleri. */
+html.ps-locale-switching *,html.ps-locale-switching *::before,html.ps-locale-switching *::after {
+  animation-play-state:paused!important;
+  transition:none!important;
+}
+html.ps-i18n-booting::after {
+  background-image:radial-gradient(circle,#ffffff12,transparent 68%),url("./play-streamers-ps-logo.svg?v=10.11")!important;
+}
+.ps15-locale-button,.ps41-locale-button,#ps66MemberLocale,#ps66DashboardLocale {
+  position:relative!important;
+  inset:auto!important;
+  box-sizing:border-box!important;
+  margin:0!important;
+  padding:0!important;
+  overflow:hidden!important;
+  align-self:center!important;
+  line-height:1!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.1)!important;
+  will-change:auto!important;
+}
+.ps15-locale-button:hover,.ps41-locale-button:hover,#ps66MemberLocale:hover,#ps66DashboardLocale:hover {
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.16)!important;
+}
+#ps41LocaleMenu[hidden],#ps15LocaleMenu[hidden],#ps44HomeMenu[hidden],#ps44HomeConnection[hidden],
+#ps20Menu[hidden],#ps20ConnectionPopover[hidden],#sideMenu[hidden],#connections[hidden] { display:none!important; }
+
+body.ps-v9 #psSecondHome.ps20-member-home,
+body.ps-v9.ps42-dashboard-active {
+  --ps112-edge:rgba(255,255,255,.17);
+  --ps112-soft:rgba(255,255,255,.68);
+  --ps112-panel:linear-gradient(145deg,rgba(255,255,255,.105),rgba(13,13,16,.92) 42%,rgba(255,255,255,.035));
+}
+body.ps-v9 #psSecondHome .ps20-shell,
+body.ps-v9 .app.ps13-dashboard {
+  width:min(1440px,calc(100% - 56px))!important;
+  padding-bottom:54px!important;
+}
+body.ps-v9 #psSecondHome .ps20-nav,
+body.ps-v9 .app.ps13-dashboard .topbar {
+  top:14px!important;
+  min-height:68px!important;
+  margin:14px 0 0!important;
+  border:1px solid var(--ps112-edge)!important;
+  border-radius:18px!important;
+  padding:0 14px 0 18px!important;
+  background:linear-gradient(120deg,rgba(255,255,255,.13),rgba(8,8,11,.9) 40%,rgba(255,255,255,.05))!important;
+  box-shadow:0 20px 60px rgba(0,0,0,.4),inset 0 1px 0 rgba(255,255,255,.24)!important;
+  -webkit-backdrop-filter:blur(18px) saturate(150%)!important;
+  backdrop-filter:blur(18px) saturate(150%)!important;
+}
+body.ps-v9 #psSecondHome .ps20-brand,
+body.ps-v9 .app.ps13-dashboard .brand {
+  min-width:0!important;
+  gap:12px!important;
+}
+body.ps-v9 #psSecondHome .ps20-brand>span:last-child,
+body.ps-v9 .app.ps13-dashboard .brand-name {
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+  font-size:13px!important;
+  letter-spacing:.12em!important;
+}
+body.ps-v9 #psSecondHome :is(.ps20-actions),
+body.ps-v9 .app.ps13-dashboard .actions {
+  min-width:max-content!important;
+  flex-wrap:nowrap!important;
+  gap:7px!important;
+}
+body.ps-v9 #psSecondHome :is(.ps20-actions button),
+body.ps-v9 .app.ps13-dashboard .actions button {
+  min-width:42px!important;
+  height:42px!important;
+  border-radius:12px!important;
+}
+body.ps-v9 #psSecondHome .ps20-dashboard {
+  min-width:auto!important;
+  padding:0 17px!important;
+}
+
+body.ps-v9 #psSecondHome .ps20-hero {
+  grid-template-columns:minmax(0,1.35fr) minmax(300px,.65fr)!important;
+  align-items:stretch!important;
+  gap:clamp(34px,5vw,78px)!important;
+  margin-top:34px!important;
+  border-radius:28px!important;
+  padding:clamp(38px,5.5vw,76px)!important;
+  background:
+    radial-gradient(65% 130% at 100% 0,rgba(255,255,255,.16),transparent 68%),
+    radial-gradient(40% 90% at 0 100%,rgba(255,255,255,.075),transparent 72%),
+    linear-gradient(130deg,rgba(255,255,255,.11),rgba(8,8,11,.91) 48%,rgba(255,255,255,.035))!important;
+}
+body.ps-v9 #psSecondHome .ps20-hero-copy { align-self:center!important; }
+body.ps-v9 #psSecondHome .ps20-hero-copy h1 {
+  max-width:780px!important;
+  font-size:clamp(54px,6.6vw,96px)!important;
+  line-height:.88!important;
+}
+body.ps-v9 #psSecondHome .ps20-hero-copy p { max-width:720px!important; color:var(--ps112-soft)!important; font-size:13px!important; }
+body.ps-v9 #psSecondHome .ps49-hero-guide {
+  align-self:stretch!important;
+  border:1px solid rgba(255,255,255,.12)!important;
+  border-radius:18px!important;
+  padding:10px 20px!important;
+  background:rgba(2,2,4,.34)!important;
+}
+body.ps-v9 #psSecondHome .ps49-hero-step:last-child { border-bottom:0!important; }
+
+body.ps-v9 #psSecondHome .ps20-grid {
+  gap:16px!important;
+  margin-top:16px!important;
+}
+body.ps-v9 #psSecondHome .ps20-card {
+  min-height:320px!important;
+  border:1px solid var(--ps112-edge)!important;
+  border-radius:22px!important;
+  padding:30px!important;
+  background:var(--ps112-panel)!important;
+  box-shadow:0 24px 65px rgba(0,0,0,.31),inset 0 1px 0 rgba(255,255,255,.2)!important;
+  -webkit-backdrop-filter:none!important;
+  backdrop-filter:none!important;
+}
+body.ps-v9 #psSecondHome .ps20-card:not(.wide):first-child { grid-column:span 5!important; }
+body.ps-v9 #psSecondHome .ps20-card:not(.wide):nth-child(2) { grid-column:span 7!important; }
+body.ps-v9 #psSecondHome .ps20-card h2 { font-size:clamp(27px,3vw,38px)!important; }
+body.ps-v9 #psSecondHome :is(.ps20-offers,.ps20-roadmap,.ps49-story-grid) { gap:8px!important; border:0!important; background:transparent!important; }
+body.ps-v9 #psSecondHome :is(.ps20-offers button,.ps20-roadmap article,.ps49-story-grid article) {
+  min-height:128px!important;
+  border:1px solid rgba(255,255,255,.1)!important;
+  border-radius:14px!important;
+  background:linear-gradient(145deg,rgba(255,255,255,.06),rgba(6,6,8,.72))!important;
+}
+body.ps-v9 #psSecondHome .ps49-member-story {
+  margin-top:16px!important;
+  border-radius:22px!important;
+  background:var(--ps112-panel)!important;
+  -webkit-backdrop-filter:none!important;
+  backdrop-filter:none!important;
+}
+
+body.ps-v9 .app.ps13-dashboard { padding-top:1px!important; }
+body.ps-v9 .app.ps13-dashboard .workspace-tabs {
+  display:flex!important;
+  width:min(520px,100%)!important;
+  margin:30px 0 16px!important;
+  border-radius:15px!important;
+  padding:5px!important;
+  background:linear-gradient(145deg,rgba(255,255,255,.09),rgba(8,8,10,.86))!important;
+  -webkit-backdrop-filter:none!important;
+  backdrop-filter:none!important;
+}
+body.ps-v9 .app.ps13-dashboard .workspace-tabs button { flex:1!important; min-height:44px!important; border-radius:10px!important; font-size:11px!important; }
+body.ps-v9 .app.ps13-dashboard .ticker {
+  margin-bottom:16px!important;
+  border-radius:15px!important;
+  padding:16px 18px!important;
+  background:linear-gradient(120deg,rgba(255,255,255,.075),rgba(7,7,9,.82))!important;
+  -webkit-backdrop-filter:none!important;
+  backdrop-filter:none!important;
+}
+body.ps-v9 .app.ps13-dashboard :is(#panelGrid,#statsGrid,.grid) { gap:16px!important; }
+body.ps-v9 .app.ps13-dashboard #panelGrid>.card { grid-column:span 4!important; }
+body.ps-v9 .app.ps13-dashboard #statsGrid>.card:nth-child(-n+2) { grid-column:span 6!important; }
+body.ps-v9 .app.ps13-dashboard #statsGrid>.card:nth-child(n+3) { grid-column:span 4!important; }
+body.ps-v9 .app.ps13-dashboard .card {
+  min-height:300px!important;
+  border:1px solid var(--ps112-edge)!important;
+  border-radius:21px!important;
+  padding:25px!important;
+  background:var(--ps112-panel)!important;
+  box-shadow:0 22px 58px rgba(0,0,0,.3),inset 0 1px 0 rgba(255,255,255,.18)!important;
+  -webkit-backdrop-filter:none!important;
+  backdrop-filter:none!important;
+}
+body.ps-v9 .app.ps13-dashboard .card:hover { border-color:rgba(255,255,255,.3)!important; }
+body.ps-v9 .app.ps13-dashboard .card-head { position:relative!important; z-index:1!important; }
+body.ps-v9 .app.ps13-dashboard .count { font-size:clamp(44px,5vw,68px)!important; }
+
+body.ps-v9 :is(#ps44HomeMenu,#ps44HomeConnection) {
+  width:min(320px,calc(100vw - 24px))!important;
+  overflow:hidden!important;
+  border-radius:17px!important;
+  padding:10px!important;
+}
+body.ps-v9 :is(#ps44HomeMenu,#ps44HomeConnection) .ps44-panel-title {
+  display:block!important;
+  margin:0 4px 7px!important;
+  border-bottom:1px solid rgba(255,255,255,.1)!important;
+  padding:9px 8px 13px!important;
+  color:rgba(255,255,255,.62)!important;
+  font-size:9px!important;
+  letter-spacing:.14em!important;
+}
+body.ps-v9 #ps44HomeMenu .ps44-menu-button {
+  min-height:44px!important;
+  margin:2px 0!important;
+  border-radius:10px!important;
+  padding:0 12px!important;
+  font-size:11px!important;
+}
+body.ps-v9 #ps44HomeConnection .ps44-platform {
+  border-radius:12px!important;
+  padding:12px 10px!important;
+}
+
+@media(max-width:1100px) {
+  body.ps-v9 #psSecondHome .ps20-hero { grid-template-columns:1fr!important; }
+  body.ps-v9 #psSecondHome .ps20-card:not(.wide):first-child,
+  body.ps-v9 #psSecondHome .ps20-card:not(.wide):nth-child(2) { grid-column:1/-1!important; }
+  body.ps-v9 .app.ps13-dashboard #panelGrid>.card,
+  body.ps-v9 .app.ps13-dashboard #statsGrid>.card:nth-child(n) { grid-column:span 6!important; }
+}
+@media(max-width:720px) {
+  body.ps-v9 #psSecondHome .ps20-shell,body.ps-v9 .app.ps13-dashboard { width:calc(100% - 20px)!important; }
+  body.ps-v9 #psSecondHome .ps20-nav,body.ps-v9 .app.ps13-dashboard .topbar { top:6px!important; margin-top:6px!important; padding:0 8px!important; }
+  body.ps-v9 #psSecondHome .ps20-dashboard { padding:0 11px!important; }
+  body.ps-v9 #psSecondHome .ps20-hero { margin-top:18px!important; padding:32px 21px!important; }
+  body.ps-v9 #psSecondHome .ps20-hero-copy h1 { font-size:clamp(48px,15vw,68px)!important; }
+  body.ps-v9 #psSecondHome .ps20-card,body.ps-v9 .app.ps13-dashboard .card { min-height:240px!important; padding:21px!important; }
+  body.ps-v9 .app.ps13-dashboard #panelGrid>.card,
+  body.ps-v9 .app.ps13-dashboard #statsGrid>.card:nth-child(n) { grid-column:1/-1!important; }
+  body.ps-v9 .app.ps13-dashboard .actions :is(#clearBtn,.clear) { display:none!important; }
 }

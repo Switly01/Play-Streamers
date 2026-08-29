@@ -515,8 +515,6 @@ export function installLiveI18n({ localeKey = "ps15-locale", getLocale, root = d
   let running = false;
   let disposed = false;
   let ready = false;
-  let recoveryPasses = 0;
-  let needsRecovery = false;
   const finishBoot = () => {
     if (disposed) return;
     if (ready) return;
@@ -606,76 +604,26 @@ export function installLiveI18n({ localeKey = "ps15-locale", getLocale, root = d
 
   const translate = async () => {
     if (disposed) return;
-    if (running) { applyCachedTargets(collect()); queued = true; return; }
+    if (running) { queued = true; return; }
     queued = false;
     running = true;
-    needsRecovery = false;
     try {
       const targets = collect();
-      // Statik sözlükte veya önceki ziyaret önbelleğinde bulunan metinleri ağ
-      // isteğini bekletmeden ilk karede uygula. Böylece büyük sayfalarda
-      // görünür bölüm, arka plandaki uzun çeviri kuyruğunun arkasında kalmaz.
+      // Canlı arayüz yalnızca sürümlü yerel paketten boyanır. Eksik bir metin
+      // için sonuç üretmeyen ağ grupları veya tam belge kurtarma turları
+      // çalıştırmak, dil seçildikten sonra sayfayı gereksiz yere meşgul ediyordu.
       applyCachedTargets(targets);
-      const missing = [...new Set(targets.map(item => item.source).filter(source => !cache[source]))];
-      // Küçük paketler hem AI JSON yanıtını güvenilir tutar hem de ilk
-      // ekranın çevirisini büyük bir paketin tamamlanmasını beklemeden gösterir.
-      const chunks = [];
-      for (let index = 0; index < missing.length; index += 16) chunks.push(missing.slice(index, index + 16));
-      // Aktif yüzeyin küçük paketleri aynı anda çevrilir. Gizli panel ve
-      // pencereler açıldıkları anda ayrıca işlendiği için bu istek grubu hem
-      // sınırlı kalır hem de dil değişiminden sonra ilk ekranı tek dalgada bitirir.
-      if (!chunks.length) finishBoot();
-      for (let groupIndex = 0; groupIndex < chunks.length; groupIndex += 3) {
-        const group = chunks.slice(groupIndex, groupIndex + 3);
-        await Promise.all(group.map(async strings => {
-          const translations = await requestTranslations(strings);
-          if (disposed) return;
-          strings.forEach((source, itemIndex) => {
-            const value = clean(translations[itemIndex]);
-            if (value) cache[source] = value;
-          });
-          cacheWrite(cacheKey, cache);
-          const chunkSources = new Set(strings);
-          targets.forEach(target => {
-            const translated = cache[target.source];
-            if (!translated || !chunkSources.has(target.source)) return;
-            if (target.type === "text" && target.node.isConnected) applyText(target.node, translated);
-            else if (target.type === "attribute" && target.element.isConnected) applyAttribute(target.element, target.name, translated, target.source);
-            else if (target.type === "title") applyTitle(translated, target.source);
-          });
-        }));
-        if (disposed) return;
-        if (groupIndex === 0 && targets.filter(target => {
-          const element = target.type === "text" ? target.node.parentElement : target.element;
-          if (!element?.getClientRects().length || element.closest("[hidden]")) return false;
-          const rect = element.getBoundingClientRect();
-          return rect.bottom >= -24 && rect.top <= innerHeight + 24;
-        }).every(target => Boolean(cache[target.source]))) finishBoot();
-      }
-      if (disposed) return;
-      applyCachedTargets(targets);
-      const unresolved = targets.some(target => !cache[target.source]);
-      needsRecovery = unresolved;
-      if (unresolved && recoveryPasses < 3) {
-        recoveryPasses += 1;
-        queued = true;
-      } else if (!unresolved) {
-        recoveryPasses = 0;
-      }
+      finishBoot();
     } finally {
       running = false;
-      if (!needsRecovery || recoveryPasses >= 3) finishBoot();
-      if (queued) window.setTimeout(translate, recoveryPasses ? 1600 : 120);
+      if (queued) window.setTimeout(translate, 72);
     }
   };
   const schedule = () => {
     if (disposed || queued) return;
     queued = true;
-    // Diyaloglar ve sayfa içi geçişler sonradan DOM'a eklense bile hazır dil
-    // paketindeki karşılıkları aynı karede uygula. Ağ isteği yalnızca gerçekten
-    // yeni bir metin kaldıysa arka planda çalışır.
-    applyCachedTargets(collect());
-    window.setTimeout(translate, 24);
+    // Bir DOM dalgasında yüzlerce metin değişse bile yalnızca tek tarama yap.
+    window.setTimeout(translate, 36);
   };
   const observer = new MutationObserver(schedule);
   observer.observe(root, { childList: true, subtree: true, characterData: true, attributes: true, attributeFilter: ["placeholder", "title", "aria-label", "aria-description", "alt", "data-ps-tooltip", "hidden"] });
@@ -719,7 +667,7 @@ if (typeof window !== "undefined" && document.body && !location.protocol.startsW
       localStorage.setItem("ps15-locale", language);
       localStorage.setItem("ps-locale-source", source);
       if (liveI18n.language === language) { liveI18n.refresh(); return true; }
-      document.documentElement.classList.add("ps-i18n-booting");
+      document.documentElement.classList.add("ps-locale-switching");
       delete document.documentElement.dataset.psI18nReady;
       const catalog = await loadCatalog(language);
       liveI18n.dispose({ restore: true });
@@ -727,6 +675,7 @@ if (typeof window !== "undefined" && document.body && !location.protocol.startsW
       window.psLiveI18n = liveI18n;
       liveI18n.refresh();
       window.dispatchEvent(new CustomEvent("ps:locale-change", { detail: { language, source } }));
+      window.setTimeout(() => document.documentElement.classList.remove("ps-locale-switching"), 120);
       return true;
     };
     window.psWarmLocaleCatalogs = () => warmCatalogs(liveI18n.language);

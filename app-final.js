@@ -57,7 +57,7 @@
 
   function close(node) { if (node) node.hidden = true; }
   function closeDialog(node) { if (!node || node.hidden || node.classList.contains('ps44-modal-closing')) return; window.clearTimeout(node.ps48CloseTimer); node.classList.add('ps44-modal-closing'); node.ps48CloseTimer = window.setTimeout(() => { node.hidden = true; node.classList.remove('ps44-modal-closing'); }, 180); }
-  function closeHomePanel(node) { if (!node || node.hidden || node.classList.contains('ps47-popover-closing')) return; window.clearTimeout(node.ps48CloseTimer); node.classList.add('ps47-popover-closing'); const trigger = node.id === 'ps44HomeConnection' ? $('#ps20Connection') : $('#ps20MenuButton'); trigger?.setAttribute('aria-expanded', 'false'); node.ps48CloseTimer = window.setTimeout(() => { node.hidden = true; node.classList.remove('ps47-popover-closing'); }, 180); }
+  function closeHomePanel(node) { if (!node || node.hidden || node.classList.contains('ps47-popover-closing')) return; window.clearTimeout(node.ps48CloseTimer); node.classList.add('ps47-popover-closing'); const trigger = floatingSurfaceAnchors.get(node) || (node.id === 'ps44HomeConnection' ? $('#connectionBtn,#ps20Connection') : $('#menuBtn,#ps20MenuButton')); trigger?.setAttribute('aria-expanded', 'false'); node.ps48CloseTimer = window.setTimeout(() => { node.hidden = true; node.classList.remove('ps47-popover-closing'); }, 180); }
   function revealHomePanel(node) { window.clearTimeout(node.ps48CloseTimer); node.classList.remove('ps47-popover-closing'); node.hidden = false; window.requestAnimationFrame(repositionOpenFloatingSurfaces); }
   function closeHomePanels() { closeHomePanel($('#ps44HomeConnection')); closeHomePanel($('#ps44HomeMenu')); }
   function closeAllFloatingSurfaces() {
@@ -2373,7 +2373,7 @@
     const flagSources = Object.fromEntries(Object.entries(localeFlagFiles).map(([code, file]) => [code, `./assets/flags/${file}.svg?v=4.10`]));
     Object.entries(flagSources).forEach(([code, src]) => auditPlayBotAsset(`flag:${code}`, src, `${code.toUpperCase()} dil bayrağı`));
     auditPlayBotAsset('provider:tipeeestream', donateProviderIconSource('tipeeestream'), 'TipeeeStream DAB gömülü resmî logosu');
-    auditPlayBotAsset('brand:play-streamers', './play-streamers-ps-logo.svg?v=10.10', 'Play Streamers marka amblemi');
+    auditPlayBotAsset('brand:play-streamers', './play-streamers-ps-logo.svg?v=10.11', 'Play Streamers marka amblemi');
     auditPlayBotAsset('brand:sw-create', './swcreate-sw-logo-transparent.png', 'SW Create marka amblemi');
     auditPlayBotAsset('provider:kick', './assets/kick-logo.svg', 'Kick giriş amblemi');
     normalizeTipeeeStreamDabLogo(document);
@@ -3042,7 +3042,7 @@
       if (!mark) {
         mark = document.createElement('img');
         mark.className = 'ps103-brand-image';
-        mark.src = './play-streamers-ps-logo.svg?v=10.10';
+        mark.src = './play-streamers-ps-logo.svg?v=10.11';
         mark.alt = '';
         logo.replaceChildren(mark);
       }
@@ -3729,6 +3729,7 @@
   window.setTimeout(monitorPlayBotInBackground, 2500);
   let ps68MutationRepairTimer = 0;
   const queueMutationRepair = records => {
+    if (document.documentElement.classList.contains('ps-locale-switching')) return;
     // Hesap merkezinin kendi canli verileri ve sekme gecisleri genel sayfa
     // duzelticisini tetiklememeli. Aksi halde her kart/sekme guncellemesinde
     // butun dokuman yeniden taranip ayni panel tekrar baglaniyordu.

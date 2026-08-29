@@ -78,8 +78,8 @@ const DONATE_OAUTH_PROVIDERS = Object.freeze({
     clientSecretVariable: "TIPEEESTREAM_CLIENT_SECRET",
   }),
 });
-const CURRENT_RELEASE_VERSION = "6.1";
-const CURRENT_RELEASE_PUBLISHED_AT = "2026-08-29T16:05:00+03:00";
+const CURRENT_RELEASE_VERSION = "6.2";
+const CURRENT_RELEASE_PUBLISHED_AT = "2026-08-29T16:25:00+03:00";
 const SW_IDENTITY_ORIGIN = "https://api.swcreate.com";
 const DESKTOP_IDENTITY_REDIRECT = "playstreamers://identity/callback";
 const WEB_IDENTITY_REDIRECTS = new Set([
@@ -824,10 +824,10 @@ async function runScheduledPlayBotAudit(env) {
   await ensurePlayBotMetadataStorage(env);
   const resources = [
     ["Ana sayfa", "https://pstreamers.com/", "document"],
-    ["Ana uygulama betiği", "https://pstreamers.com/app.js?v=5.4.6", "script"],
-    ["Uygulama betiği", "https://pstreamers.com/app-final.js?v=5.9.9", "script"],
-    ["Site davranış betiği", "https://pstreamers.com/site-v7.js?v=10.11.0", "script"],
-    ["Canlı çeviri betiği", "https://pstreamers.com/live-i18n.js?v=9.3.1", "script"],
+    ["Ana uygulama betiği", "https://pstreamers.com/app.js?v=5.4.7", "script"],
+    ["Uygulama betiği", "https://pstreamers.com/app-final.js?v=5.10.0", "script"],
+    ["Site davranış betiği", "https://pstreamers.com/site-v7.js?v=10.12.0", "script"],
+    ["Canlı çeviri betiği", "https://pstreamers.com/live-i18n.js?v=9.4.0", "script"],
     ["İngilizce dil paketi", "https://pstreamers.com/locales/en.json?v=2026-08-29.4", "json"],
     ["Almanca dil paketi", "https://pstreamers.com/locales/de.json?v=2026-08-29.4", "json"],
     ["İspanyolca dil paketi", "https://pstreamers.com/locales/es.json?v=2026-08-29.4", "json"],
@@ -835,7 +835,7 @@ async function runScheduledPlayBotAudit(env) {
     ["Rusça dil paketi", "https://pstreamers.com/locales/ru.json?v=2026-08-29.4", "json"],
     ["Arapça dil paketi", "https://pstreamers.com/locales/ar.json?v=2026-08-29.4", "json"],
     ["Japonca dil paketi", "https://pstreamers.com/locales/ja.json?v=2026-08-29.4", "json"],
-    ["Premium stil dosyası", "https://pstreamers.com/site-v7.css?v=10.11.0", "style"],
+    ["Premium stil dosyası", "https://pstreamers.com/site-v7.css?v=10.12.0", "style"],
     ["Oturum başlangıç betiği", "https://pstreamers.com/session-bootstrap.js?v=1.1", "script"],
     ["Site yönlendiricisi", "https://pstreamers.com/site-router.js?v=1.1", "script"],
     ["Sunucu analiz betiği", "https://pstreamers.com/server-analytics.js?v=6.0", "script"],
@@ -844,7 +844,7 @@ async function runScheduledPlayBotAudit(env) {
     ["Kimlik dönüş sayfası", "https://pstreamers.com/identity/callback/", "document"],
     ["404 yönlendirme sayfası", "https://pstreamers.com/404.html", "document"],
     ["SW Identity sağlığı", "https://api.swcreate.com/api/health", "json"],
-    ["PS marka amblemi", "https://pstreamers.com/play-streamers-ps-logo.svg?v=10.10", "image"],
+    ["PS marka amblemi", "https://pstreamers.com/play-streamers-ps-logo.svg?v=10.11", "image"],
     ["Kick giriş amblemi", "https://pstreamers.com/assets/kick-logo.svg", "image"],
     ["SW Create amblemi", "https://pstreamers.com/swcreate-sw-logo-transparent.png", "image"],
     ["Windows kurucusu", "https://pstreamers.com/downloads/Play-Streamers-Setup.exe", "binary"],
@@ -920,12 +920,12 @@ async function runScheduledPlayBotAudit(env) {
   const homeDocument = results.find(result => result.type === "document");
   if (homeDocument?.ok) {
     const documentContracts = [
-      ["site-v7.css?v=10.11.0", "Güncel premium stil dosyası"],
-      ["app.js?v=5.4.6", "Güncel ana uygulama betiği"],
-      ["app-final.js?v=5.9.9", "Güncel onarım betiği"],
-      ["site-v7.js?v=10.11.0", "Güncel site davranış betiği"],
-      ["live-i18n.js?v=9.3.1", "Güncel sabit paket çeviri betiği"],
-      ["play-streamers-build\" content=\"2026-08-29-site-10.11.1", "Site 10.11.1 sürüm işareti"],
+      ["site-v7.css?v=10.12.0", "Güncel premium stil dosyası"],
+      ["app.js?v=5.4.7", "Güncel ana uygulama betiği"],
+      ["app-final.js?v=5.10.0", "Güncel onarım betiği"],
+      ["site-v7.js?v=10.12.0", "Güncel site davranış betiği"],
+      ["live-i18n.js?v=9.4.0", "Güncel sabit paket çeviri betiği"],
+      ["play-streamers-build\" content=\"2026-08-29-site-10.12.0", "Site 10.12.0 sürüm işareti"],
     ];
     for (const [token, label] of documentContracts) {
       if (!homeDocument.body.includes(token)) issues.push(`${label} canlı ana sayfaya bağlanmamış.`);

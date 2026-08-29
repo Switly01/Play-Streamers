@@ -2,7 +2,7 @@
 
 ## Güncel geliştirme durumu · 29 Ağustos 2026
 
-Site 10.11.1 / Worker 6.1 / SW Identity 1.8.1 / Desktop 0.14.4 / Play Connect
+Site 10.12.0 / Worker 6.2 / SW Identity 1.8.1 / Desktop 0.14.4 / Play Connect
 1.15.1 kaynakları hazırlandı. Site kartları ve temel yüzeyler, mobilde daha
 düşük bulanıklık kullanan belirgin sıvı cam katmanına geçirildi; giriş sonrası
 üye ana sayfası ve Dashboard aynı cam yüzey, aralık ve kart ritminde yeniden
@@ -12,7 +12,11 @@ kaldırıldı; yıldız alanı, iki yörüngeli PS amblemi, 3B salınım ve hare
 ilerleme çizgisi artık görünür. Geçiş yükleyicisindeki PS amblemi üç yörünge,
 parlak parçacık, daha güçlü 3B salınım ve sıçrama hareketiyle görünür biçimde
 canlandırıldı. PS monogramındaki P ve S aynı yükseklik ve aynı 13,5 birim çizgi
-kalınlığıyla yeniden çizildi.
+kalınlığıyla yeniden çizildi; harflerin iç içe geçen bölümü okunaklı bir aralıkla
+ayrıldı. Dil düğmesinin yerini değiştiren iki eski katman aynı sıraya sabitlendi
+ve açılır menünün tek etkileşim sahibi son arayüz katmanı oldu. Kullanıcı ana
+sayfası ile Dashboard; daha dengeli kart ızgarası, kararlı üst menü, mobil kırılım
+ve daha düşük GPU yükü kullanan Creator Control Room düzenine geçirildi.
 
 SW Çeviri Botu, sürümlü `locales/*.json` paketlerini yayın öncesinde D1'deki
 onaylı karşılıklardan üretir. Dil seçimi sayfayı yenilemez: paket bellekte hazır
@@ -25,8 +29,12 @@ makine çevirisi yerine elle düzenlenmiş doğal ürün diliyle sabitlenmiştir
 Dashboard, giriş/kayıt, destek, gizlilik ve kullanım koşulları aynı altyapıya
 bağlıdır. Yeni metinler yayın öncesi paket üretiminde çevrilip D1'e eklenir; canlı
 kullanıcının dil seçimi ağdaki çeviri hizmetini beklemez. D1 çeviri önbelleği
-`v9`, istemci önbelleği `ps-live-i18n-v15` ad alanını kullanır; Worker
+`v9`, istemci önbelleği `ps-live-i18n-v16` ad alanını kullanır; Worker
 yapılandırmasında KV binding'i yoktur.
+Statik paket modunda karşılığı bulunmayan metinler için sonuç üretmeyen tekrar
+turları kaldırıldı. Dil değişimi tek toplu DOM boyamasında tamamlanır; bu sırada
+eski genel arayüz gözlemcileri kısa süreliğine bekler ve yüzlerce gereksiz tam
+sayfa taraması oluşturmaz.
 Paket üreticisi uzak D1 önbelleğine erişemediğinde mevcut sürümlü yerel paketleri
 temel alır; bu nedenle yayın derlemesi hesap oturumu değişikliğinde yarıda kalmaz.
 

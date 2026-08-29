@@ -112,7 +112,7 @@
       ?'<label class="auth-field">Kullanıcı adı veya e-posta<input name="identity" autocomplete="username" minlength="3" maxlength="160" required placeholder="kullaniciadi veya e-posta"></label><label class="auth-field">Şifre<input name="password" type="password" autocomplete="current-password" required placeholder="Şifren"></label>'
       :'<label class="auth-field">Kullanıcı adı<input name="username" autocomplete="username" minlength="3" maxlength="32" pattern="[A-Za-z0-9._-]+" required placeholder="ornek.kullanici"></label><label class="auth-field">Şifre<input name="password" type="password" autocomplete="new-password" minlength="10" required placeholder="En az 10 karakter"></label><label class="auth-field">Şifre tekrar<input name="passwordRepeat" type="password" autocomplete="new-password" minlength="10" required placeholder="Şifreni yeniden yaz"></label><label class="auth-field">Doğum tarihi<input name="birthDate" type="text" min="1900-01-01" max="'+adultBirthDate()+'" required aria-haspopup="dialog" placeholder="Tarih seç"></label>';
     layer.innerHTML=`<section class="auth-dialog" data-sw-identity-auth="1"><button class="auth-close" type="button" aria-label="Kapat">×</button><div class="ps-identity-wordmark" aria-label="Play Streamers"><img src="./play-streamers-ps-logo.svg?v=10.10" alt=""><span>Play Streamers</span></div><span class="eyebrow">SW IDENTITY İLE KORUNUR</span><h2>${isLogin?'Hesabına giriş yap':'SW hesabını oluştur'}</h2><p>${isLogin?'Kullanıcı adın veya e-postanla giriş yap.':'Bu kayıt doğrudan SW Identity hesabını oluşturur; ayrıca bir Play Streamers hesabı açılmaz.'}</p><form class="auth-form ps-identity-credential-form">${fields}<label class="ps48-remember ps-identity-remember"><input type="checkbox" name="remember"><span>Beni hatırla</span></label><div class="ps-auth-turnstile-slot is-loading" data-turnstile-slot aria-label="Güvenlik doğrulaması"><button class="ps-auth-turnstile-retry" type="button" data-auth-turnstile-retry>Güvenlik kontrolü yükleniyor…</button></div><input class="ps-identity-honeypot" name="website" tabindex="-1" autocomplete="off" aria-hidden="true"><p class="auth-error ps-identity-form-error" aria-live="polite"></p><button class="auth-submit ps-identity-form-submit" type="submit">${isLogin?'Giriş yap':'SW Identity hesabı oluştur'}</button></form><div class="auth-divider"><span>veya</span></div><div class="ps-identity-providers ${isLogin?'has-sw-provider':''}"><button type="button" data-provider="google" aria-label="Google ile devam et">${googleIcon}</button><button type="button" data-provider="kick" aria-label="Kick ile devam et">${kickIcon}</button>${isLogin?'<button type="button" data-provider="sw" aria-label="SW hesabı ile hızlı giriş"><img class="ps102-provider-logo ps102-sw-logo" src="./swcreate-sw-logo-transparent.png?v=10.3" alt=""></button>':''}</div><div class="ps-identity-trust"><i></i><span>SW Identity güvenlik ve plan altyapısı</span></div></section>`;
-    document.body.append(layer);const form=$('.ps-identity-credential-form',layer);const identityMark=$('.ps-identity-wordmark img',layer);if(identityMark)identityMark.src='./play-streamers-ps-logo.svg?v=10.10';
+    document.body.append(layer);const form=$('.ps-identity-credential-form',layer);const identityMark=$('.ps-identity-wordmark img',layer);if(identityMark)identityMark.src='./play-streamers-ps-logo.svg?v=10.11';
     $('.auth-close',layer).onclick=removeLandingAuth;layer.onclick=event=>{if(event.target===layer)removeLandingAuth()};
     form.onsubmit=event=>{event.preventDefault();submitSwIdentityCredentials(form,isLogin,startedAt)};
     $('[data-provider="google"]',layer).onclick=()=>startSwIdentityLogin('google');$('[data-provider="kick"]',layer).onclick=()=>startSwIdentityLogin('kick');$('[data-provider="sw"]',layer)?.addEventListener('click',()=>startSwIdentityLogin());$('[data-auth-turnstile-retry]',form).onclick=()=>prepareAuthVerification(form,true);if(!isLogin)installIdentityCalendar(form.elements.birthDate);fetch(`${API_BASE}/health`,{cache:'no-store'}).catch(()=>{});prepareAuthVerification(form);
@@ -1917,7 +1917,7 @@
   function loaderNode(){
     let node=$('#ps28Loader');
     if(!node){node=document.createElement('aside');node.id='ps28Loader';node.hidden=true;document.body.append(node)}
-    if(!$('.ps110-loader-emblem',node))node.innerHTML='<div class="ps28-loader-card"><div class="ps110-loader-emblem" aria-hidden="true"><i></i><i></i><i></i><span></span><img src="./play-streamers-ps-logo.svg?v=10.10" alt=""></div><b>PLAY STREAMERS YÜKLENİYOR</b></div>';
+    if(!$('.ps110-loader-emblem',node))node.innerHTML='<div class="ps28-loader-card"><div class="ps110-loader-emblem" aria-hidden="true"><i></i><i></i><i></i><span></span><img src="./play-streamers-ps-logo.svg?v=10.11" alt=""></div><b>PLAY STREAMERS YÜKLENİYOR</b></div>';
     return node;
   }
   function loadThen(action){
@@ -3695,10 +3695,15 @@
       if (!globe) {
         globe = document.createElement('button');
         globe.type = 'button'; globe.className = 'ps15-locale-button ps41-locale-button'; globe.title = 'Dil seçimi'; globe.setAttribute('aria-label', 'Dil seçimi'); globe.innerHTML = globeMarkup();
-        globe.onclick = event => { event.preventDefault(); event.stopPropagation(); ps41LocaleMenu(globe); };
+        // Açma/kapama davranışının tek sahibi en son arayüz katmanıdır.
+        // Burada ikinci bir click dinleyicisi eklemek menünün iki kez
+        // tetiklenmesine ve düğmenin titriyor gibi görünmesine neden oluyordu.
       }
+      globe.classList.add('ps41-locale-button');
       const login = $$('button', actions).find(button => /^(giriş yap|sign in|anmelden|iniciar sesión|connexion|войти|دخول|ログイン)$/i.test((button.textContent || '').trim()));
-      if (globe && login && globe.nextElementSibling !== login) login.before(globe);
+      const status = $('#ps17SystemStatus', actions);
+      const anchor = status || login;
+      if (globe && anchor && globe.nextElementSibling !== anchor) anchor.before(globe);
     });
   }
 
@@ -3976,7 +3981,10 @@
     normalizeDashboard();
   };
   const queueRepair = () => { if (!queued) { queued = true; requestAnimationFrame(repair); } };
-  new MutationObserver(queueRepair).observe(document.documentElement, { childList: true, subtree: true });
+  new MutationObserver(() => {
+    if (document.documentElement.classList.contains('ps-locale-switching')) return;
+    queueRepair();
+  }).observe(document.documentElement, { childList: true, subtree: true });
   window.addEventListener('pageshow', queueRepair);
   window.addEventListener('resize', () => { $('#ps20ConnectionPopover')?.setAttribute('hidden', ''); $('#ps20Menu')?.setAttribute('hidden', ''); });
   repair();

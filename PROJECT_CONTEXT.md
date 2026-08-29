@@ -2,6 +2,18 @@
 
 ## Güncel geliştirme durumu · 29 Ağustos 2026
 
+Site 10.13.2 / Worker 6.5 ücretsiz yerel çeviri revizyonu: Google Cloud'un
+hesap etkinleştirmede istediği ön ödeme kabul edilmedi ve hiçbir ödeme
+yapılmadı. Arayüz çevirileri artık açık kaynak Argos modelleriyle yalnız yayın
+bilgisayarında hazırlanır. Türkçe kaynak önce yerel İngilizce modele, İngilizce
+dışındaki hedefler de ilgili yerel modele aktarılır; elle düzenlenmiş kritik
+ürün ve yasal karşılıkları her zaman korunur. `locales/*.json` dosyaları bütün
+site, giriş/kayıt, Dashboard, hesap, destek, gizlilik ve kullanım koşulları
+yüzeylerini kapsar. Tarayıcı model veya API çalıştırmaz; dil seçildiğinde hazır
+paketi tek toplu DOM boyamasıyla uygular. Bu akış Google anahtarı,
+`I18N_BUILD_TOKEN`, Workers AI, KV veya D1 çeviri yazımı kullanmaz. Eski
+`/api/i18n/translate` yolu 410 `STATIC_I18N_ONLY` döndürür.
+
 Site 10.13.1 / Worker 6.4 çeviri maliyeti revizyonu: Canlı ziyaretçi
 akışından bütün arayüz çeviri üretimi çıkarıldı. Tarayıcı yalnız sürümlü
 `locales/*.json` paketlerini kullanır; eksik metin için Google veya Workers AI

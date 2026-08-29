@@ -78,8 +78,8 @@ const DONATE_OAUTH_PROVIDERS = Object.freeze({
     clientSecretVariable: "TIPEEESTREAM_CLIENT_SECRET",
   }),
 });
-const CURRENT_RELEASE_VERSION = "6.4";
-const CURRENT_RELEASE_PUBLISHED_AT = "2026-08-29T20:25:00+03:00";
+const CURRENT_RELEASE_VERSION = "6.5";
+const CURRENT_RELEASE_PUBLISHED_AT = "2026-08-29T21:35:00+03:00";
 const SW_IDENTITY_ORIGIN = "https://api.swcreate.com";
 const DESKTOP_IDENTITY_REDIRECT = "playstreamers://identity/callback";
 const WEB_IDENTITY_REDIRECTS = new Set([
@@ -308,7 +308,7 @@ export default {
           identityProvider: "sw-identity",
           turnstileEnabled: isTurnstileEnabled(env),
           aiEnabled: Boolean(env.AI || env.OPENAI_API_KEY),
-          translationProvider: env.GOOGLE_TRANSLATE_API_KEY ? "google-static-build" : "static-catalogs",
+          translationProvider: "local-static-build",
           liveTranslationEnabled: false,
         });
       }
@@ -348,7 +348,10 @@ export default {
       }
 
       if (url.pathname === "/api/i18n/translate" && request.method === "POST") {
-        return translateInterfaceStrings(request, env, ctx);
+        return apiResponse(request, {
+          error: "Canlı çeviri kapalıdır; arayüz sürümlü yerel dil paketlerini kullanır.",
+          code: "STATIC_I18N_ONLY",
+        }, 410);
       }
 
       if (url.pathname === "/api/site/activity" && request.method === "POST") {
@@ -829,14 +832,14 @@ async function runScheduledPlayBotAudit(env) {
     ["Ana uygulama betiği", "https://pstreamers.com/app.js?v=5.4.8", "script"],
     ["Uygulama betiği", "https://pstreamers.com/app-final.js?v=5.11.0", "script"],
     ["Site davranış betiği", "https://pstreamers.com/site-v7.js?v=10.13.0", "script"],
-    ["Sabit çeviri betiği", "https://pstreamers.com/live-i18n.js?v=9.6.0", "script"],
-    ["İngilizce dil paketi", "https://pstreamers.com/locales/en.json?v=2026-08-29.6", "json"],
-    ["Almanca dil paketi", "https://pstreamers.com/locales/de.json?v=2026-08-29.6", "json"],
-    ["İspanyolca dil paketi", "https://pstreamers.com/locales/es.json?v=2026-08-29.6", "json"],
-    ["Fransızca dil paketi", "https://pstreamers.com/locales/fr.json?v=2026-08-29.6", "json"],
-    ["Rusça dil paketi", "https://pstreamers.com/locales/ru.json?v=2026-08-29.6", "json"],
-    ["Arapça dil paketi", "https://pstreamers.com/locales/ar.json?v=2026-08-29.6", "json"],
-    ["Japonca dil paketi", "https://pstreamers.com/locales/ja.json?v=2026-08-29.6", "json"],
+    ["Sabit çeviri betiği", "https://pstreamers.com/live-i18n.js?v=9.7.0", "script"],
+    ["İngilizce dil paketi", "https://pstreamers.com/locales/en.json?v=2026-08-29.7", "json"],
+    ["Almanca dil paketi", "https://pstreamers.com/locales/de.json?v=2026-08-29.7", "json"],
+    ["İspanyolca dil paketi", "https://pstreamers.com/locales/es.json?v=2026-08-29.7", "json"],
+    ["Fransızca dil paketi", "https://pstreamers.com/locales/fr.json?v=2026-08-29.7", "json"],
+    ["Rusça dil paketi", "https://pstreamers.com/locales/ru.json?v=2026-08-29.7", "json"],
+    ["Arapça dil paketi", "https://pstreamers.com/locales/ar.json?v=2026-08-29.7", "json"],
+    ["Japonca dil paketi", "https://pstreamers.com/locales/ja.json?v=2026-08-29.7", "json"],
     ["Premium stil dosyası", "https://pstreamers.com/site-v7.css?v=10.13.0", "style"],
     ["Oturum başlangıç betiği", "https://pstreamers.com/session-bootstrap.js?v=1.1", "script"],
     ["Site yönlendiricisi", "https://pstreamers.com/site-router.js?v=1.1", "script"],
@@ -914,7 +917,7 @@ async function runScheduledPlayBotAudit(env) {
       const validPayload = result.label === "Windows güncelleme bildirimi"
         ? Boolean(payload?.version && hasUpdaterPlatforms)
         : localeCatalog
-          ? Boolean(payload?.version === "2026-08-29.6" && payload?.sourceLanguage === "tr" && payload?.language && Object.keys(payload?.translations || {}).length >= 350)
+          ? Boolean(payload?.version === "2026-08-29.7" && payload?.sourceLanguage === "tr" && payload?.language && Object.keys(payload?.translations || {}).length >= 1000)
           : Boolean(payload?.ok);
       if (!validPayload) issues.push(`${result.label} geçerli bir JSON yanıtı döndürmüyor.`);
     }
@@ -926,8 +929,8 @@ async function runScheduledPlayBotAudit(env) {
       ["app.js?v=5.4.8", "Güncel ana uygulama betiği"],
       ["app-final.js?v=5.11.0", "Güncel onarım betiği"],
       ["site-v7.js?v=10.13.0", "Güncel site davranış betiği"],
-      ["live-i18n.js?v=9.6.0", "Güncel sabit paket çeviri betiği"],
-      ["play-streamers-build\" content=\"2026-08-29-site-10.13.1", "Site 10.13.1 sürüm işareti"],
+      ["live-i18n.js?v=9.7.0", "Güncel sabit paket çeviri betiği"],
+      ["play-streamers-build\" content=\"2026-08-29-site-10.13.2", "Site 10.13.2 sürüm işareti"],
     ];
     for (const [token, label] of documentContracts) {
       if (!homeDocument.body.includes(token)) issues.push(`${label} canlı ana sayfaya bağlanmamış.`);
@@ -1150,43 +1153,14 @@ function validInterfaceTranslation(source, value, language) {
   return true;
 }
 
-async function generateInterfaceTranslations(env, language, sources) {
-  if (!sources.length) return [];
-  if (!env.GOOGLE_TRANSLATE_API_KEY) return null;
-  const response = await fetchExternal("https://translation.googleapis.com/language/translate/v2", {
-    method: "POST",
-    headers: {
-      "content-type": "application/json; charset=utf-8",
-      "x-goog-api-key": env.GOOGLE_TRANSLATE_API_KEY,
-    },
-    body: JSON.stringify({ q: sources, source: "tr", target: language, format: "text" }),
-  }, {
-    operation: "google-interface-translation",
-    timeoutMs: 20_000,
-    retries: 1,
-  });
-  if (!response.ok) throw new Error(`Google Translation HTTP ${response.status}`);
-  const payload = await safeJson(response);
-  const generated = payload?.data?.translations;
-  if (!Array.isArray(generated) || generated.length !== sources.length) return null;
-  return generated.map((entry, index) => {
-    const value = decodeGoogleTranslation(entry?.translatedText);
-    return validInterfaceTranslation(sources[index], value, language) ? value : "";
-  });
+async function generateInterfaceTranslations(_env, _language, sources) {
+  // Canlı Worker hiçbir çeviri üretmez. Bu eski yardımcı yalnız geriye dönük
+  // kod yollarının güvenli biçimde boş sonuç vermesi için tutulur.
+  return null;
 }
 
-function decodeGoogleTranslation(value) {
-  return String(value || "")
-    .replace(/&quot;/g, '"').replace(/&#39;|&apos;/g, "'")
-    .replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&amp;/g, "&")
-    .replace(/&#(\d+);/g, (_, code) => String.fromCodePoint(Number(code)))
-    .replace(/&#x([0-9a-f]+);/gi, (_, code) => String.fromCodePoint(Number.parseInt(code, 16)))
-    .trim();
-}
-
-function authorizedInterfaceCatalogBuild(request, env) {
-  const supplied = getBearerToken(request);
-  return Boolean(env.I18N_BUILD_TOKEN && supplied && constantTimeEqual(supplied, env.I18N_BUILD_TOKEN));
+function authorizedInterfaceCatalogBuild(_request, _env) {
+  return false;
 }
 
 async function translateInterfaceStrings(request, env, _ctx) {
@@ -1245,9 +1219,8 @@ async function translateInterfaceStrings(request, env, _ctx) {
       provider: "static-catalog",
     });
   }
-  if (!env.GOOGLE_TRANSLATE_API_KEY) {
-    return apiResponse(request, { error: "Google Translation sunucu anahtarı yapılandırılmadı." }, 503);
-  }
+  return apiResponse(request, { error: "Canlı çeviri kapalıdır; sürümlü dil paketleri kullanılır." }, 410);
+  /* c8 ignore start -- eski üretim akışı ulaşılmaz durumda tutulur */
   const missingStrings = missingIndexes.map(index => strings[index]);
   const generated = new Array(missingStrings.length).fill("");
   const groups = [];
@@ -1284,8 +1257,9 @@ async function translateInterfaceStrings(request, env, _ctx) {
     partial: translations.some(value => !value),
     cached: false,
     cache: "d1",
-    provider: "google-cloud-translation",
+    provider: "legacy-disabled",
   });
+  /* c8 ignore stop */
 }
 
 async function ensureInterfaceTranslationStorage(env) {

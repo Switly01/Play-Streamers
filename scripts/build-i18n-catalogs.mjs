@@ -1,23 +1,22 @@
-import { execFileSync } from 'node:child_process';
+import { spawn } from 'node:child_process';
 import { readFileSync } from 'node:fs';
-import { mkdir, readFile, writeFile } from 'node:fs/promises';
+import { mkdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
+import { tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { critical } from '../live-i18n.js';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
-const wrangler = join(root, 'swcreate-site', 'node_modules', 'wrangler', 'bin', 'wrangler.js');
-const config = join(root, 'wrangler.play-streamers.jsonc');
 const outputDirectory = join(root, 'locales');
-const api = 'https://api.pstreamers.com/api/i18n/translate';
-const version = '2026-08-29.6';
+const version = '2026-08-29.7';
 const languages = ['en', 'de', 'es', 'fr', 'ru', 'ar', 'ja'];
 const sourceFiles = ['index.html', 'privacy.html', 'terms.html', 'app.js', 'app-final.js', 'site-v7.js'];
 const extractionFiles = new Set(['index.html', 'privacy.html', 'terms.html', 'site-v7.js']);
 const dryRun = process.argv.includes('--dry-run');
 const noGenerate = process.argv.includes('--no-generate');
 const refreshAll = process.argv.includes('--refresh-all');
-const buildToken = String(process.env.I18N_BUILD_TOKEN || '').trim();
+const localTranslator = join(root, 'scripts', 'local-i18n-translator.py');
+const localOverrides = JSON.parse(readFileSync(join(root, 'scripts', 'i18n-overrides.json'), 'utf8'));
 
 const clean = value => String(value || '').replace(/\\n|\\r|\\t/g, ' ').replace(/\s+/g, ' ').trim();
 const decode = value => clean(String(value || '')
@@ -27,12 +26,15 @@ const decode = value => clean(String(value || '')
   .replace(/&#39;|&apos;/gi, "'")
   .replace(/&lt;/gi, '<')
   .replace(/&gt;/gi, '>'));
-const passthrough = value => /^(?:PLAY STREAMERS|PLAY CONNECT|PLAY|STREAMERS|SW CREATE|SW IDENTITY|SW BOT|SW AI|PRODUCT PRO|FREE|PRO|PC|PS|APP|WEB|CONNECT|HTTP|HTTPS|API|OBS|KICK|WINDOWS)(?:\s*[·+:/-].*)?$/i.test(clean(value))
-  || /^(?:https?:\/\/|www\.|[\w.+-]+@[\w.-]+\.)/i.test(clean(value))
-  || /^[\d\s.,:%+\-/–—()]+$/.test(clean(value));
+const passthrough = value => /^(?:(?:PLAY STREAMERS|SW CREATE)(?:\s+(?:APP|WEB|PLANS|FREE|PRO|PRODUCT PRO|FREE EDITION|PRO EDITION|PRODUCT PRO EDITION))?|PLAY CONNECT|PLAY|STREAMERS|SW IDENTITY|SW BOT|SW AI|PRODUCT PRO|FREE|PRO|PC|PS|APP|WEB|CONNECT|HTTP|HTTPS|API|OBS|KICK|WINDOWS)(?:\s*[·+:/-].*)?$/i.test(clean(value))
+  || /^(?:https?:\/\/|www\.|[\w.+-]+@[\w.-]+\.|(?:api\.)?[a-z0-9-]+(?:\.[a-z0-9-]+){1,}|chrome\.storage\.local$)/i.test(clean(value))
+  || /^(?:cookies|notifications|offscreen|storage|webRequest):$/i.test(clean(value))
+  || /^(?:ByNoGame|Dashboard|English|Language|Menü|Windows 10\/11|PRO EDITION|Pro Edition|Product Pro Edition)$/i.test(clean(value))
+  || /^(?:©\s*\d{4}\s+SW Create\s*·\s*Play Streamers|APP\s+v[\d.]+\s*·\s*Windows\s+10\/11\s*·\s*64\s*bit)$/i.test(clean(value))
+  || /^[\d\s.,:%+\-/–—()]+(?:MB|KB|GB|K)?$/i.test(clean(value));
 const translatable = value => {
   const text = clean(value);
-  if (passthrough(text) || text.length < 2 || text.length > 1200) return false;
+  if (passthrough(text) || text.length < 2 || text.length > 1200 || /^(?:["']?>)+/.test(text)) return false;
   if (!/[A-Za-zÇĞİÖŞÜçğıöşü]/.test(text)) return false;
   if (/^(?:https?:|www\.|[\w.+-]+@[\w.-]+\.|[\d\s.,:%+\-/]+$)/i.test(text)) return false;
   if (/^(?:GET|POST|PUT|PATCH|DELETE|OPTIONS|SELECT|INSERT|UPDATE|CREATE|DROP)\b/i.test(text)) return false;
@@ -158,61 +160,42 @@ function translationValid(source, translation, language) {
   return true;
 }
 
-function readRemoteCache() {
-  try {
-    const stdout = execFileSync(process.execPath, [wrangler, 'd1', 'execute', 'play-streamers-users', '--remote', '--json', '--config', config, '--command', 'SELECT language, source_text, translation FROM interface_translation_cache ORDER BY language, source_text;'], {
-      cwd: root,
-      encoding: 'utf8',
-      maxBuffer: 32 * 1024 * 1024,
-    });
-    const payload = JSON.parse(stdout);
-    return payload.flatMap(result => Array.isArray(result.results) ? result.results : []);
-  } catch (error) {
-    console.warn('Uzak çeviri önbelleğine erişilemedi; mevcut yerel paketler temel alınıyor.');
-    return languages.flatMap(language => {
-      try {
-        const catalog = JSON.parse(readFileSync(join(outputDirectory, `${language}.json`), 'utf8'));
-        return Object.entries(catalog.translations || {}).map(([source_text, translation]) => ({ language, source_text, translation }));
-      } catch (_) { return []; }
-    });
-  }
+function readLocalCatalogs() {
+  return languages.flatMap(language => {
+    try {
+      const catalog = JSON.parse(readFileSync(join(outputDirectory, `${language}.json`), 'utf8'));
+      return Object.entries(catalog.translations || {}).map(([source_text, translation]) => ({ language, source_text, translation }));
+    } catch (_) { return []; }
+  });
 }
 
-async function translateMissing(language, sources) {
-  if (!buildToken) throw new Error('I18N_BUILD_TOKEN bulunamadı. Google paket üretimi yalnız yetkili yayın işleminde çalışır.');
-  const completed = new Map();
-  const chunks = [];
-  for (let index = 0; index < sources.length; index += 16) chunks.push(sources.slice(index, index + 16));
-  for (let offset = 0; offset < chunks.length; offset += 3) {
-    await Promise.all(chunks.slice(offset, offset + 3).map(async strings => {
-      let lastError = null;
-      for (let attempt = 0; attempt < 3; attempt += 1) {
-        try {
-          const response = await fetch(api, {
-            method: 'POST',
-            headers: {
-              authorization: `Bearer ${buildToken}`,
-              'content-type': 'application/json',
-              origin: 'https://pstreamers.com',
-            },
-            body: JSON.stringify({ language, strings }),
-          });
-          const result = await response.json().catch(() => ({}));
-          if (!response.ok || !Array.isArray(result.translations) || result.translations.length !== strings.length) throw new Error(result.error || `HTTP ${response.status}`);
-          strings.forEach((source, index) => {
-            const translation = clean(result.translations[index]);
-            if (translationValid(source, translation, language)) completed.set(source, translation);
-          });
-          return;
-        } catch (error) {
-          lastError = error;
-          await new Promise(resolve => setTimeout(resolve, 700 * (attempt + 1)));
-        }
-      }
-      console.warn(`[${language}] paket çevrilemedi: ${lastError?.message || 'bilinmeyen hata'}`);
-    }));
+function pythonCommand() {
+  const configured = String(process.env.I18N_PYTHON || '').trim();
+  if (configured) return { command: configured, args: [] };
+  if (process.platform === 'win32') return { command: 'py', args: ['-3'] };
+  return { command: 'python3', args: [] };
+}
+
+async function translateLocally(requests) {
+  const workDirectory = await mkdtemp(join(tmpdir(), 'play-streamers-i18n-'));
+  const input = join(workDirectory, 'input.json');
+  const output = join(workDirectory, 'output.json');
+  await writeFile(input, JSON.stringify({ sourceLanguage: 'tr', requests }), 'utf8');
+  const python = pythonCommand();
+  try {
+    await new Promise((resolve, reject) => {
+      const child = spawn(python.command, [...python.args, localTranslator, '--input', input, '--output', output], {
+        cwd: root,
+        env: process.env,
+        stdio: ['ignore', 'inherit', 'inherit'],
+      });
+      child.once('error', error => reject(new Error(`Yerel çeviri motoru başlatılamadı: ${error.message}. I18N_PYTHON ile Python yolunu belirt.`)));
+      child.once('exit', code => code === 0 ? resolve() : reject(new Error(`Yerel çeviri motoru ${code} koduyla durdu.`)));
+    });
+    return JSON.parse(await readFile(output, 'utf8'))?.translations || {};
+  } finally {
+    await rm(workDirectory, { recursive: true, force: true });
   }
-  return completed;
 }
 
 async function main() {
@@ -233,10 +216,10 @@ async function main() {
       if (corpus.includes(source)) extracted.add(clean(source));
     }
   }
-  const rows = readRemoteCache();
+  const rows = readLocalCatalogs();
   for (const row of rows) {
     const source = clean(row.source_text);
-    if (source && corpus.includes(source)) extracted.add(source);
+    if (source && (translatable(source) || passthrough(source)) && corpus.includes(source)) extracted.add(source);
   }
   if (dryRun) {
     printStats(extracted, rows);
@@ -248,7 +231,7 @@ async function main() {
     if (!byLanguage[row.language]) continue;
     const source = clean(row.source_text);
     const translation = clean(row.translation);
-    if (!source || (!extracted.has(source) && !corpus.includes(source))) continue;
+    if (!source || (!translatable(source) && !passthrough(source)) || (!extracted.has(source) && !corpus.includes(source))) continue;
     if (translationValid(source, translation, row.language)) byLanguage[row.language].set(source, translation);
     extracted.add(source);
   }
@@ -262,21 +245,46 @@ async function main() {
       extracted.add(normalizedSource);
       byLanguage[language].set(normalizedSource, normalizedTranslation);
     }
+    for (const [source, translation] of Object.entries(localOverrides[language] || {})) {
+      const normalizedSource = clean(source);
+      const normalizedTranslation = clean(translation);
+      if ((!extracted.has(normalizedSource) && !corpus.includes(normalizedSource))
+        || !translationValid(normalizedSource, normalizedTranslation, language)) continue;
+      extracted.add(normalizedSource);
+      byLanguage[language].set(normalizedSource, normalizedTranslation);
+    }
+  }
+
+  const generationByLanguage = {};
+  for (const language of languages) {
+    const translations = byLanguage[language];
+    const missing = [...extracted].filter(source => !translations.has(source) && !passthrough(source));
+    const protectedSources = new Set([
+      ...Object.keys(critical[language] || {}),
+      ...Object.keys(localOverrides[language] || {}),
+    ].map(clean));
+    const generationTargets = refreshAll
+      ? [...extracted].filter(source => !passthrough(source) && !protectedSources.has(source))
+      : missing;
+    if (generationTargets.length && !noGenerate) {
+      generationByLanguage[language] = generationTargets;
+      console.log(`[${language}] ${translations.size} hazır, ${generationTargets.length} metin yerel çeviri motoruyla hazırlanacak.`);
+    }
+  }
+  if (Object.keys(generationByLanguage).length) {
+    const generatedByLanguage = await translateLocally(generationByLanguage);
+    for (const [language, sources] of Object.entries(generationByLanguage)) {
+      const generated = Array.isArray(generatedByLanguage[language]) ? generatedByLanguage[language] : [];
+      sources.forEach((source, index) => {
+        const translation = clean(generated[index]);
+        if (translationValid(source, translation, language)) byLanguage[language].set(source, translation);
+      });
+    }
   }
 
   await mkdir(outputDirectory, { recursive: true });
   for (const language of languages) {
     const translations = byLanguage[language];
-    const missing = [...extracted].filter(source => !translations.has(source) && !passthrough(source));
-    const protectedSources = new Set(Object.keys(critical[language] || {}).map(clean));
-    const generationTargets = refreshAll
-      ? [...extracted].filter(source => !passthrough(source) && !protectedSources.has(source))
-      : missing;
-    if (generationTargets.length && !noGenerate) {
-      console.log(`[${language}] ${translations.size} hazır, ${generationTargets.length} metin Google Translation ile hazırlanıyor.`);
-      const generated = await translateMissing(language, generationTargets);
-      generated.forEach((translation, source) => translations.set(source, translation));
-    }
     const ordered = Object.fromEntries([...translations.entries()].sort(([left], [right]) => left.localeCompare(right, 'tr')));
     const catalog = { version, sourceLanguage: 'tr', language, translations: ordered };
     await writeFile(join(outputDirectory, `${language}.json`), `${JSON.stringify(catalog)}\n`, 'utf8');

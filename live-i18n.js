@@ -1,6 +1,6 @@
 const API = "https://api.pstreamers.com/api/i18n/translate";
 const SUPPORTED = new Set(["tr", "en", "de", "es", "fr", "ru", "ar", "ja"]);
-const CATALOG_VERSION = "2026-08-29.1";
+const CATALOG_VERSION = "2026-08-29.2";
 const catalogPromises = new Map();
 const COUNTRY_LOCALES = Object.freeze({
   TR: "tr", JP: "ja", DE: "de", AT: "de", CH: "de", LI: "de",
@@ -145,6 +145,59 @@ const criticalVerificationCopy = Object.freeze({
 });
 Object.entries(criticalVerificationCopy).forEach(([language, values]) => {
   criticalVerificationSources.forEach((source, index) => { critical[language][source] = values[index]; });
+});
+
+const criticalStatusSupportSources = [
+  "Sistem gözlemde",
+  "SW Bot; kullanıcı alanını, Dashboard’u, menüleri ve veri bağlantılarını arka planda düzenli olarak denetliyor.",
+  "Sistem normal",
+  "Teknik sorun görünmüyor. Giriş, kayıt, panel ve bağlantı akışları denetleniyor.",
+  "Taramayı yenile",
+  "SW Bot; sayfaları, menüleri, düğmeleri, görselleri, veri bağlantısını ve çalışma zamanı hatalarını denetliyor…",
+  "SW Bot tüm denetimleri tamamladı. Sorun tespit edilmedi.",
+  "Son kontrol:",
+  "Ekibimiz sorun üzerinde çalışıyor.",
+  "Bizimle iletişime geçmek için",
+  "Destek bağlantısı",
+  "Destek e-postası oluştur",
+  "En fazla 10 dosya ekleyebilirsin.",
+  "Her dosya en fazla 10 MB olabilir.",
+  "Eklerin toplam boyutu en fazla 25 MB olabilir.",
+  "Gönderiliyor…",
+  "Güvenlik kontrolü ve dosyalar hazırlanıyor…",
+  "Mesajın gönderildi",
+  "Tamam",
+  "Mesaj gönderilemedi. Lütfen tekrar dene.",
+  "Destek ekibimiz mesajını aldı. Talebini Hesabım › Destek talepleri bölümünden takip edebilirsin.",
+  "Güvenlik kontrolünü yeniden yükle",
+  "Güvenlik kontrolü yükleniyor…",
+  "Güvenlik kontrolü hazırlanamadı. Kutudaki yeniden yükle düğmesini kullanıp tekrar dene.",
+];
+const criticalStatusSupportCopy = Object.freeze({
+  en: [
+    "System under observation", "SW Bot regularly checks the member area, Dashboard, menus, and data connections in the background.", "System operational", "No technical issue is visible. Sign-in, registration, dashboard, and connection flows are being checked.", "Scan again", "SW Bot is checking pages, menus, buttons, images, data connections, and runtime errors…", "SW Bot completed every check. No issue was detected.", "Last check:", "Our team is working on the issue.", "To contact us", "Support link", "Create a support email", "You can add up to 10 files.", "Each file can be up to 10 MB.", "Attachments can total up to 25 MB.", "Sending…", "Preparing the security check and files…", "Your message was sent", "Done", "The message could not be sent. Please try again.", "Our support team received your message. You can track it under My Account › Support requests.", "Reload security check", "Loading security check…", "The security check could not be prepared. Use the reload button in the box and try again."
+  ],
+  de: [
+    "System wird beobachtet", "SW Bot prüft den Mitgliederbereich, das Dashboard, Menüs und Datenverbindungen regelmäßig im Hintergrund.", "System normal", "Es ist kein technisches Problem erkennbar. Anmeldung, Registrierung, Dashboard und Verbindungen werden geprüft.", "Erneut prüfen", "SW Bot prüft Seiten, Menüs, Schaltflächen, Bilder, Datenverbindungen und Laufzeitfehler…", "SW Bot hat alle Prüfungen abgeschlossen. Es wurde kein Problem erkannt.", "Letzte Prüfung:", "Unser Team arbeitet an dem Problem.", "So erreichst du uns", "Support-Link", "Support-E-Mail erstellen", "Du kannst bis zu 10 Dateien hinzufügen.", "Jede Datei darf höchstens 10 MB groß sein.", "Anhänge dürfen insgesamt höchstens 25 MB groß sein.", "Wird gesendet…", "Sicherheitsprüfung und Dateien werden vorbereitet…", "Deine Nachricht wurde gesendet", "Fertig", "Die Nachricht konnte nicht gesendet werden. Bitte versuche es erneut.", "Unser Support-Team hat deine Nachricht erhalten. Du kannst sie unter Mein Konto › Supportanfragen verfolgen.", "Sicherheitsprüfung neu laden", "Sicherheitsprüfung wird geladen…", "Die Sicherheitsprüfung konnte nicht vorbereitet werden. Verwende die Schaltfläche zum Neuladen im Feld und versuche es erneut."
+  ],
+  es: [
+    "Sistema en observación", "SW Bot comprueba periódicamente en segundo plano el área de usuario, el Dashboard, los menús y las conexiones de datos.", "Sistema normal", "No se detecta ningún problema técnico. Se están comprobando el inicio de sesión, el registro, el panel y las conexiones.", "Volver a analizar", "SW Bot está comprobando páginas, menús, botones, imágenes, conexiones de datos y errores de ejecución…", "SW Bot completó todas las comprobaciones. No se detectó ningún problema.", "Última comprobación:", "Nuestro equipo está trabajando en el problema.", "Para contactar con nosotros", "Enlace de soporte", "Crear correo de soporte", "Puedes añadir hasta 10 archivos.", "Cada archivo puede ocupar hasta 10 MB.", "Los archivos adjuntos pueden sumar hasta 25 MB.", "Enviando…", "Preparando la verificación de seguridad y los archivos…", "Tu mensaje fue enviado", "Listo", "No se pudo enviar el mensaje. Inténtalo de nuevo.", "Nuestro equipo de soporte recibió tu mensaje. Puedes seguirlo en Mi cuenta › Solicitudes de soporte.", "Volver a cargar la verificación", "Cargando la verificación de seguridad…", "No se pudo preparar la verificación de seguridad. Usa el botón de recarga del cuadro e inténtalo de nuevo."
+  ],
+  fr: [
+    "Système sous surveillance", "SW Bot vérifie régulièrement en arrière-plan l’espace membre, le Dashboard, les menus et les connexions de données.", "Système opérationnel", "Aucun problème technique n’est visible. La connexion, l’inscription, le tableau de bord et les connexions sont vérifiés.", "Relancer l’analyse", "SW Bot vérifie les pages, les menus, les boutons, les images, les connexions de données et les erreurs d’exécution…", "SW Bot a terminé toutes les vérifications. Aucun problème n’a été détecté.", "Dernière vérification :", "Notre équipe travaille sur le problème.", "Pour nous contacter", "Lien d’assistance", "Créer un e-mail d’assistance", "Vous pouvez ajouter jusqu’à 10 fichiers.", "Chaque fichier peut peser jusqu’à 10 Mo.", "Les pièces jointes peuvent totaliser jusqu’à 25 Mo.", "Envoi en cours…", "Préparation du contrôle de sécurité et des fichiers…", "Votre message a été envoyé", "Terminé", "Le message n’a pas pu être envoyé. Veuillez réessayer.", "Notre équipe d’assistance a reçu votre message. Vous pouvez le suivre dans Mon compte › Demandes d’assistance.", "Recharger le contrôle de sécurité", "Chargement du contrôle de sécurité…", "Le contrôle de sécurité n’a pas pu être préparé. Utilisez le bouton de rechargement dans la zone, puis réessayez."
+  ],
+  ru: [
+    "Система под наблюдением", "SW Bot регулярно проверяет в фоне личный раздел, Dashboard, меню и подключения данных.", "Система работает нормально", "Технических проблем не обнаружено. Проверяются вход, регистрация, панель и подключения.", "Проверить снова", "SW Bot проверяет страницы, меню, кнопки, изображения, подключения данных и ошибки выполнения…", "SW Bot завершил все проверки. Проблем не обнаружено.", "Последняя проверка:", "Наша команда работает над проблемой.", "Чтобы связаться с нами", "Ссылка поддержки", "Создать письмо в поддержку", "Можно добавить до 10 файлов.", "Размер каждого файла — не более 10 МБ.", "Общий размер вложений — не более 25 МБ.", "Отправка…", "Подготовка проверки безопасности и файлов…", "Сообщение отправлено", "Готово", "Не удалось отправить сообщение. Повторите попытку.", "Служба поддержки получила ваше сообщение. Его можно отслеживать в разделе Мой аккаунт › Обращения в поддержку.", "Перезагрузить проверку", "Загрузка проверки безопасности…", "Не удалось подготовить проверку безопасности. Нажмите кнопку перезагрузки в поле и повторите попытку."
+  ],
+  ar: [
+    "النظام قيد المراقبة", "يتحقق SW Bot بانتظام في الخلفية من منطقة المستخدم ولوحة المعلومات والقوائم واتصالات البيانات.", "النظام يعمل بصورة طبيعية", "لا تظهر مشكلة تقنية. يجري فحص تسجيل الدخول والتسجيل ولوحة المعلومات ومسارات الاتصال.", "إعادة الفحص", "يفحص SW Bot الصفحات والقوائم والأزرار والصور واتصالات البيانات وأخطاء وقت التشغيل…", "أكمل SW Bot جميع الفحوصات. لم يتم اكتشاف أي مشكلة.", "آخر فحص:", "يعمل فريقنا على حل المشكلة.", "للتواصل معنا", "رابط الدعم", "إنشاء رسالة دعم", "يمكنك إضافة ما يصل إلى 10 ملفات.", "يمكن أن يصل حجم كل ملف إلى 10 ميغابايت.", "يمكن أن يصل إجمالي المرفقات إلى 25 ميغابايت.", "جارٍ الإرسال…", "جارٍ إعداد فحص الأمان والملفات…", "تم إرسال رسالتك", "تم", "تعذر إرسال الرسالة. حاول مرة أخرى.", "استلم فريق الدعم رسالتك. يمكنك متابعتها من حسابي › طلبات الدعم.", "إعادة تحميل فحص الأمان", "جارٍ تحميل فحص الأمان…", "تعذر إعداد فحص الأمان. استخدم زر إعادة التحميل داخل المربع ثم حاول مرة أخرى."
+  ],
+  ja: [
+    "システム監視中", "SW Bot はメンバーエリア、Dashboard、メニュー、データ接続をバックグラウンドで定期的に確認しています。", "システムは正常です", "技術的な問題は見つかっていません。ログイン、登録、ダッシュボード、接続フローを確認しています。", "再スキャン", "SW Bot はページ、メニュー、ボタン、画像、データ接続、実行時エラーを確認しています…", "SW Bot はすべての確認を完了しました。問題は検出されませんでした。", "最終確認：", "チームが問題の解決に取り組んでいます。", "お問い合わせ", "サポートリンク", "サポートメールを作成", "最大10ファイルまで追加できます。", "各ファイルは最大10 MBです。", "添付ファイルの合計は最大25 MBです。", "送信中…", "セキュリティ確認とファイルを準備中…", "メッセージを送信しました", "完了", "メッセージを送信できませんでした。もう一度お試しください。", "サポートチームがメッセージを受け取りました。マイアカウント › サポートリクエストで確認できます。", "セキュリティ確認を再読み込み", "セキュリティ確認を読み込み中…", "セキュリティ確認を準備できませんでした。ボックス内の再読み込みボタンを使って、もう一度お試しください。"
+  ],
+});
+Object.entries(criticalStatusSupportCopy).forEach(([language, values]) => {
+  criticalStatusSupportSources.forEach((source, index) => { critical[language][source] = values[index]; });
 });
 
 const fixedInterfaceSources = [
@@ -403,10 +456,10 @@ export function installLiveI18n({ localeKey = "ps15-locale", getLocale, root = d
   if (language === "tr" || !root) {
     document.documentElement.classList.remove("ps-i18n-booting");
     document.documentElement.dataset.psI18nReady = "1";
-    return { language, refresh() {}, dispose() {} };
+    return { language, translate(value) { return String(value ?? ""); }, refresh() {}, dispose() {} };
   }
 
-  const cacheKey = `ps-live-i18n-v13:${language}`;
+  const cacheKey = `ps-live-i18n-v14:${language}`;
   // Kalıcı paket, eski tarayıcı önbelleğini ezer; elle doğrulanmış kritik
   // metinler ise her zaman en son sözü söyler.
   const cache = { ...cacheRead(cacheKey), ...catalog, ...(critical[language] || {}) };
@@ -627,10 +680,11 @@ export function installLiveI18n({ localeKey = "ps15-locale", getLocale, root = d
     window.setTimeout(translate, 24);
   };
   const observer = new MutationObserver(schedule);
-  observer.observe(root, { childList: true, subtree: true, characterData: true, attributes: true, attributeFilter: ["placeholder", "title", "aria-label", "aria-description", "alt", "hidden"] });
+  observer.observe(root, { childList: true, subtree: true, characterData: true, attributes: true, attributeFilter: ["placeholder", "title", "aria-label", "aria-description", "alt", "data-ps-tooltip", "hidden"] });
   schedule();
   return {
     language,
+    translate(value) { const source = clean(value); return cache[source] || source; },
     refresh: schedule,
     dispose({ restore = false } = {}) {
       disposed = true;
@@ -660,6 +714,7 @@ if (typeof window !== "undefined" && document.body && !location.protocol.startsW
     const initialCatalog = await loadCatalog(initialLanguage);
     let liveI18n = installLiveI18n({ catalog: initialCatalog });
     window.psLiveI18n = liveI18n;
+    window.psTranslateInterface = value => liveI18n.translate(value);
     window.psSetLocale = async (nextLanguage, { source = "user" } = {}) => {
       const language = String(nextLanguage || "").toLowerCase();
       if (!SUPPORTED.has(language)) return false;

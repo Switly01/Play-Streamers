@@ -2,14 +2,15 @@
 
 ## Güncel geliştirme durumu · 29 Ağustos 2026
 
-Site 10.9.0 / Worker 5.8 / SW Identity 1.8.1 / Desktop 0.14.4 / Play Connect
+Site 10.10.0 / Worker 5.9 / SW Identity 1.8.1 / Desktop 0.14.4 / Play Connect
 1.15.1 kaynakları hazırlandı. Site kartları ve temel yüzeyler, mobilde daha
-düşük bulanıklık kullanan belirgin sıvı cam katmanına geçirildi. Yıldız alanında
-tek `requestAnimationFrame` ile çalışan gerçek imleç feneri bulunur. Ortak
-yükleyici yıldız alanı, yüzen PS amblemi ve hareketli ilerleme çizgisiyle
-yenilendi. PS monogramı çerçeve içinde sağa alınarak ortalandı; P ve S aynı
-yükseklik ritmine yaklaştırıldı. Yükleme amblemi belirgin 3B salınım, boyut
-değişimi ve ışık nabzıyla daha canlı hale getirildi.
+düşük bulanıklık kullanan belirgin sıvı cam katmanına geçirildi; giriş sonrası
+üye ana sayfası ve Dashboard aynı cam yüzey, aralık ve kart ritminde yeniden
+düzenlendi. Yıldız alanında tek `requestAnimationFrame` ile çalışan gerçek
+imleç feneri bulunur. Ortak yükleyiciyi devre dışı bırakan eski erken çıkış
+kaldırıldı; yıldız alanı, iki yörüngeli PS amblemi, 3B salınım ve hareketli
+ilerleme çizgisi artık görünür. PS monogramındaki S yeniden çizilerek üst kıvrım
+ve P ile oranı düzeltildi.
 
 SW Çeviri Botu, sürümlü `locales/*.json` paketlerini yayın öncesinde D1'deki
 onaylı karşılıklardan üretir. Dil seçimi sayfayı yenilemez: paket bellekte hazır
@@ -18,12 +19,16 @@ ilk karede uygulanır; tercih `ps15-locale` ile bütün sayfalarda kalıcıdır.
 Dashboard, giriş/kayıt, destek, gizlilik ve kullanım koşulları aynı altyapıya
 bağlıdır. Sonradan oluşan bilinmeyen metinler yalnızca kurtarma yolu olarak API
 üzerinden çevrilip D1'e eklenir. D1 çeviri önbelleği `v9`, istemci önbelleği
-`ps-live-i18n-v13` ad alanını kullanır; Worker yapılandırmasında KV binding'i yoktur.
+`ps-live-i18n-v14` ad alanını kullanır; Worker yapılandırmasında KV binding'i yoktur.
+Paket üreticisi uzak D1 önbelleğine erişemediğinde mevcut sürümlü yerel paketleri
+temel alır; bu nedenle yayın derlemesi hesap oturumu değişikliğinde yarıda kalmaz.
 
 Turnstile `always` görünümünde giriş/kayıt penceresi açılır açılmaz hazırlanır;
-doğrulama kutusu “Beni hatırla” satırının altında sürekli görünür, geçici ağ
-hatalarında otomatik yenilenir ve ayrıca kullanıcıya yeniden deneme düğmesi sunar.
-Pencere kapanınca sıfırlanıp görünmez alana taşınır. Şifre gözünde seçim ve
+doğrulama kutusu “Beni hatırla” satırının altında sürekli görünür. Widget artık
+sayfa dışında oluşturulup forma taşınmaz; doğrudan açık formda oluşturulur ve
+geçici ağ hatasında aynı kutu içindeki yeniden yükleme düğmesiyle baştan kurulur.
+Kutunun altında ayrı hata satırı yoktur. Pencere kapanınca widget kaldırılır ve
+sonraki açılışta temiz oluşturulur. Şifre gözünde seçim ve
 imleç konumu korunur. SW Identity izinli ürün CORS yanıtlarında `cross-origin`
 CORP kullanır; böylece Play Streamers'taki geçerli giriş/kayıt yanıtları tarayıcı
 tarafından “Failed to fetch” olarak gizlenmez. Canlı sayaç yazma isteği başarısız

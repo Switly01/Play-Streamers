@@ -1,4 +1,5 @@
 import { execFileSync } from 'node:child_process';
+import { readFileSync } from 'node:fs';
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -9,7 +10,7 @@ const wrangler = join(root, 'swcreate-site', 'node_modules', 'wrangler', 'bin', 
 const config = join(root, 'wrangler.play-streamers.jsonc');
 const outputDirectory = join(root, 'locales');
 const api = 'https://api.pstreamers.com/api/i18n/translate';
-const version = '2026-08-29.1';
+const version = '2026-08-29.2';
 const languages = ['en', 'de', 'es', 'fr', 'ru', 'ar', 'ja'];
 const sourceFiles = ['index.html', 'privacy.html', 'terms.html', 'app.js', 'app-final.js', 'site-v7.js'];
 const extractionFiles = new Set(['index.html', 'privacy.html', 'terms.html', 'site-v7.js']);
@@ -134,13 +135,23 @@ function translationValid(source, translation, language) {
 }
 
 function readRemoteCache() {
-  const stdout = execFileSync(process.execPath, [wrangler, 'd1', 'execute', 'play-streamers-users', '--remote', '--json', '--config', config, '--command', 'SELECT language, source_text, translation FROM interface_translation_cache ORDER BY language, source_text;'], {
-    cwd: root,
-    encoding: 'utf8',
-    maxBuffer: 32 * 1024 * 1024,
-  });
-  const payload = JSON.parse(stdout);
-  return payload.flatMap(result => Array.isArray(result.results) ? result.results : []);
+  try {
+    const stdout = execFileSync(process.execPath, [wrangler, 'd1', 'execute', 'play-streamers-users', '--remote', '--json', '--config', config, '--command', 'SELECT language, source_text, translation FROM interface_translation_cache ORDER BY language, source_text;'], {
+      cwd: root,
+      encoding: 'utf8',
+      maxBuffer: 32 * 1024 * 1024,
+    });
+    const payload = JSON.parse(stdout);
+    return payload.flatMap(result => Array.isArray(result.results) ? result.results : []);
+  } catch (error) {
+    console.warn('Uzak çeviri önbelleğine erişilemedi; mevcut yerel paketler temel alınıyor.');
+    return languages.flatMap(language => {
+      try {
+        const catalog = JSON.parse(readFileSync(join(outputDirectory, `${language}.json`), 'utf8'));
+        return Object.entries(catalog.translations || {}).map(([source_text, translation]) => ({ language, source_text, translation }));
+      } catch (_) { return []; }
+    });
+  }
 }
 
 async function translateMissing(language, sources) {

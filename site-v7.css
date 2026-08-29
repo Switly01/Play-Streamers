@@ -906,7 +906,7 @@ body.ps-v9 :is(.brand-logo,.ps20-logo,.ps51-account-brand i,.ps53-products-brand
   width: 46px;
   height: 46px;
   flex-basis: 46px;
-  background: transparent url("./play-streamers-ps-logo.svg?v=10.8") center/contain no-repeat !important;
+  background: transparent url("./play-streamers-ps-logo.svg?v=10.9") center/contain no-repeat !important;
   filter: drop-shadow(0 9px 20px rgba(0,0,0,.38));
 }
 #ps9Ambient {
@@ -1170,7 +1170,7 @@ body.ps-v8 :is(.brand-logo,.ps20-logo,.ps51-account-brand i,.ps53-products-brand
   flex-basis: 44px;
   border-radius: 0;
   color: transparent !important;
-  background: transparent url("./play-streamers-ps-logo.svg?v=10.8") center/contain no-repeat !important;
+  background: transparent url("./play-streamers-ps-logo.svg?v=10.9") center/contain no-repeat !important;
   font-size: 0 !important;
   box-shadow: none !important;
 }
@@ -1861,7 +1861,7 @@ body.ps-v8 #authOverlay .landing-brand .brand-logo { transition: transform .22s 
    compatibility rule that still ships for existing accounts. */
 html[data-ps-site-version="9"] body.ps-v9 :is(.brand-logo,.ps20-logo,.ps51-account-brand i,.ps53-products-brand i) {
   width:46px !important;height:46px !important;flex-basis:46px !important;border:0 !important;border-radius:0 !important;
-  color:transparent !important;background:transparent url("./play-streamers-ps-logo.svg?v=10.8") center/contain no-repeat !important;
+  color:transparent !important;background:transparent url("./play-streamers-ps-logo.svg?v=10.9") center/contain no-repeat !important;
   box-shadow:none !important;filter:drop-shadow(0 9px 20px rgba(0,0,0,.38)) !important;font-size:0 !important;
 }
 html[data-ps-site-version="9"] body.ps-v9 :is(#authOverlay .landing-nav,#psSecondHome .ps20-nav,.app .topbar,#ps49InfoPage .landing-nav,.ps53-products-nav) {
@@ -2811,7 +2811,7 @@ html[data-ps-site-version="9"] body.ps-v9 .brand-logo:has(>.ps103-brand-image),h
    kullanır. Böylece ilk karede medya çözme maliyeti ve eski yeşil animasyon yoktur. */
 #ps28Loader,#ps20Loader,.ps14-loader{background:radial-gradient(circle at 50% 43%,rgba(255,255,255,.08),transparent 26%),rgba(0,0,0,.84)!important;-webkit-backdrop-filter:blur(18px)!important;backdrop-filter:blur(18px)!important}
 #ps28Loader .ps28-loader-card,#ps28Loader>div,#ps20Loader>div,.ps14-loader-box{position:relative;border:1px solid rgba(255,255,255,.2)!important;border-radius:28px!important;padding:30px 36px!important;background:linear-gradient(145deg,rgba(255,255,255,.12),rgba(7,7,9,.72))!important;box-shadow:0 34px 90px #000b,inset 0 1px 0 rgba(255,255,255,.28)!important;overflow:hidden}
-#ps28Loader .ps28-loader-card::before,#ps28Loader>div::before,#ps20Loader>div::before,.ps14-loader-box::before{display:block;width:58px;height:58px;margin:0 auto 18px;background:url('./play-streamers-ps-logo.svg?v=10.8') center/contain no-repeat;content:"";animation:ps104-loader-orbit 1.35s cubic-bezier(.45,.05,.3,1) infinite}
+#ps28Loader .ps28-loader-card::before,#ps28Loader>div::before,#ps20Loader>div::before,.ps14-loader-box::before{display:block;width:58px;height:58px;margin:0 auto 18px;background:url('./play-streamers-ps-logo.svg?v=10.9') center/contain no-repeat;content:"";animation:ps104-loader-orbit 1.35s cubic-bezier(.45,.05,.3,1) infinite}
 #ps28Loader :is(video,.ps14-loader-mark),#ps20Loader i{display:none!important}
 #ps28Loader b,#ps20Loader span,.ps14-loader-box span{color:#fff!important;font:800 10px/1.3 "Space Grotesk","Segoe UI",sans-serif!important;letter-spacing:.22em!important}
 @keyframes ps104-loader-orbit{50%{filter:drop-shadow(0 0 18px rgba(255,255,255,.34));transform:translateY(-5px) rotate(3deg)}100%{transform:rotate(0)}}
@@ -2915,16 +2915,9 @@ html[data-ps-site-version="9"] body.ps-v9 #authOverlay .landing-brand>.brand-log
   flex-basis:56px!important;
 }
 #authOverlay .landing-brand>.brand-logo>.ps103-brand-image { width:88%!important; height:88%!important; }
-.ps-auth-verification-state { display:flex; min-height:24px; align-items:center; gap:9px; color:#a9a9ad; font-size:10px; }
-.ps-auth-verification-state>i { width:7px; height:7px; flex:0 0 7px; border-radius:50%; background:#fff; box-shadow:0 0 0 4px rgba(255,255,255,.08); animation:ps105-verify 1s ease-in-out infinite; }
-.ps-auth-verification-state.is-ready>i { background:#8ef0b4; animation:none; }
-.ps-auth-verification-state.is-error>i { background:#ff8b8b; animation:none; }
-.ps-auth-verification-state>[data-auth-verification-retry] { margin-left:auto; border:1px solid rgba(255,255,255,.2); border-radius:999px; padding:6px 9px; color:#f7f7f4; background:rgba(255,255,255,.07); font:700 10px/1 var(--body); cursor:pointer; transition:border-color .18s ease,background .18s ease,transform .18s ease; }
-.ps-auth-verification-state>[data-auth-verification-retry]:hover { border-color:rgba(255,255,255,.42); background:rgba(255,255,255,.13); transform:translateY(-1px); }
 .ps9-sw-ai-summary>small { color:inherit!important; font:inherit!important; }
-@keyframes ps105-verify{50%{opacity:.35;transform:scale(.72)}}
 @media(max-width:760px){.ps10-astronaut-visitor{bottom:132px!important}}
-@media(prefers-reduced-motion:reduce){body.ps-v9 #authOverlay .ps81-hero::after{will-change:auto}.ps-auth-verification-state>i{animation:none}}
+@media(prefers-reduced-motion:reduce){body.ps-v9 #authOverlay .ps81-hero::after{will-change:auto}}
 
 /* Site 10.6 — belirgin sıvı cam, gerçek imleç feneri ve zengin geçiş portalı. */
 :root {
@@ -3024,7 +3017,7 @@ body.ps-v9 #authOverlay .ps81-hero::after { opacity:.2!important; }
   height:76px;
   margin-bottom:24px;
   border-radius:28px;
-  background:radial-gradient(circle,rgba(255,255,255,.15),transparent 68%),url('./play-streamers-ps-logo.svg?v=10.8') center/62px 62px no-repeat;
+  background:radial-gradient(circle,rgba(255,255,255,.15),transparent 68%),url('./play-streamers-ps-logo.svg?v=10.9') center/62px 62px no-repeat;
   box-shadow:0 0 0 1px rgba(255,255,255,.1),0 0 0 10px rgba(255,255,255,.025),inset 0 1px 0 rgba(255,255,255,.2);
   filter:drop-shadow(0 0 18px rgba(255,255,255,.18));
   transform-style:preserve-3d;
@@ -3103,4 +3096,201 @@ body>#ps32-turnstile-host {
 @media(prefers-reduced-motion:reduce) {
   #ps28Loader,#ps20Loader,.ps14-loader,#ps28Loader .ps28-loader-card::before,#ps28Loader>div::before,#ps20Loader>div::before,.ps14-loader-box::before,#ps28Loader .ps28-loader-card::after,#ps28Loader>div::after,#ps20Loader>div::after,.ps14-loader-box::after { animation:none!important; }
   .ps106-pointer-lantern { display:none; }
+}
+
+/* Site 10.10 — güvenilir doğrulama, görünür geçiş animasyonu ve üye yüzeyleri. */
+#ps28Loader {
+  position:fixed!important;
+  z-index:30000!important;
+  inset:0!important;
+  display:grid!important;
+  place-items:center!important;
+  padding:24px!important;
+  opacity:0!important;
+  visibility:hidden!important;
+  pointer-events:none!important;
+  transition:opacity .24s ease,visibility 0s linear .24s!important;
+}
+#ps28Loader[hidden] { display:none!important; }
+#ps28Loader.is-open {
+  opacity:1!important;
+  visibility:visible!important;
+  pointer-events:auto!important;
+  transition:opacity .24s ease!important;
+}
+#ps28Loader.is-closing { opacity:0!important; visibility:hidden!important; }
+#ps28Loader .ps28-loader-card {
+  display:grid!important;
+  width:min(330px,calc(100vw - 40px))!important;
+  min-height:245px!important;
+  place-items:center!important;
+  place-content:center!important;
+  gap:26px!important;
+}
+#ps28Loader .ps28-loader-card::before { display:none!important; content:none!important; }
+#ps28Loader .ps110-loader-emblem {
+  position:relative;
+  display:grid;
+  width:112px;
+  height:112px;
+  place-items:center;
+  perspective:500px;
+}
+#ps28Loader .ps110-loader-emblem img {
+  position:relative;
+  z-index:3;
+  width:76px;
+  height:76px;
+  object-fit:contain;
+  filter:drop-shadow(0 0 18px rgba(255,255,255,.32));
+  transform-origin:50% 55%;
+  animation:ps110-logo-flight 1.6s cubic-bezier(.45,.05,.3,1) infinite;
+}
+#ps28Loader .ps110-loader-emblem i {
+  position:absolute;
+  z-index:1;
+  inset:7px;
+  border:1px solid rgba(255,255,255,.27);
+  border-top-color:rgba(255,255,255,.95);
+  border-radius:38% 62% 52% 48%;
+  box-shadow:0 0 28px rgba(255,255,255,.12),inset 0 0 22px rgba(255,255,255,.06);
+  animation:ps110-ring 2.1s linear infinite;
+}
+#ps28Loader .ps110-loader-emblem i:nth-child(2) {
+  inset:18px;
+  border-color:rgba(255,255,255,.12);
+  border-right-color:rgba(255,255,255,.72);
+  border-radius:58% 42% 61% 39%;
+  animation-direction:reverse;
+  animation-duration:1.45s;
+}
+#ps28Loader b { display:block!important; text-align:center; }
+
+.ps-auth-turnstile-slot {
+  position:relative;
+  isolation:isolate;
+  overflow:hidden;
+}
+.ps-auth-turnstile-slot>#ps32-turnstile-host { position:relative; z-index:2; }
+.ps-auth-turnstile-slot.is-error>#ps32-turnstile-host,
+.ps-auth-turnstile-slot>#ps32-turnstile-host:empty { display:none; }
+.ps-auth-turnstile-retry {
+  position:absolute;
+  z-index:1;
+  inset:4px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:9px;
+  border:0;
+  border-radius:11px;
+  color:#d8d8d4;
+  background:rgba(8,8,10,.82);
+  font:700 10px/1.35 var(--body);
+  cursor:pointer;
+}
+.ps-auth-turnstile-retry::before {
+  width:8px;
+  height:8px;
+  border:2px solid rgba(255,255,255,.22);
+  border-top-color:#fff;
+  border-radius:50%;
+  content:"";
+  animation:ps110-verify-spin .85s linear infinite;
+}
+.ps-auth-turnstile-slot.is-ready>.ps-auth-turnstile-retry { display:none; }
+.ps-auth-turnstile-slot.is-error>.ps-auth-turnstile-retry {
+  z-index:3;
+  color:#f7f7f4;
+  background:linear-gradient(135deg,rgba(255,255,255,.12),rgba(255,255,255,.045));
+}
+.ps-auth-turnstile-slot.is-error>.ps-auth-turnstile-retry::before { animation-duration:1.25s; }
+
+body.ps-v9 #psSecondHome.ps20-member-home {
+  background:
+    radial-gradient(70% 55% at 8% 2%,rgba(255,255,255,.085),transparent 68%),
+    radial-gradient(55% 55% at 96% 38%,rgba(255,255,255,.04),transparent 72%),
+    #050505!important;
+}
+body.ps-v9 #psSecondHome .ps20-shell,
+body.ps-v9 .app.ps13-dashboard { width:min(1380px,calc(100% - 48px))!important; }
+body.ps-v9 #psSecondHome .ps20-nav,
+body.ps-v9 .app.ps13-dashboard .topbar {
+  top:12px!important;
+  min-height:64px!important;
+  margin-top:12px!important;
+  border:1px solid rgba(255,255,255,.18)!important;
+  border-radius:20px!important;
+  padding:0 14px 0 18px!important;
+  background:linear-gradient(118deg,rgba(255,255,255,.12),rgba(9,9,11,.76) 42%,rgba(255,255,255,.055))!important;
+  box-shadow:0 20px 50px rgba(0,0,0,.34),inset 0 1px 0 rgba(255,255,255,.22)!important;
+  -webkit-backdrop-filter:blur(18px) saturate(155%)!important;
+  backdrop-filter:blur(18px) saturate(155%)!important;
+}
+body.ps-v9 #psSecondHome .ps20-hero {
+  overflow:hidden;
+  margin-top:28px!important;
+  border-color:rgba(255,255,255,.2)!important;
+  border-radius:30px!important;
+  background:
+    radial-gradient(70% 80% at 100% 0,rgba(255,255,255,.13),transparent 70%),
+    linear-gradient(128deg,rgba(255,255,255,.12),rgba(10,10,12,.66) 46%,rgba(255,255,255,.045))!important;
+  box-shadow:0 34px 85px rgba(0,0,0,.42),inset 0 1px 0 rgba(255,255,255,.3)!important;
+  -webkit-backdrop-filter:blur(20px) saturate(145%)!important;
+  backdrop-filter:blur(20px) saturate(145%)!important;
+}
+body.ps-v9 #psSecondHome :is(.ps20-card,.ps49-member-story),
+body.ps-v9 .app.ps13-dashboard :is(.card,.ticker,.workspace-tabs) {
+  border-color:rgba(255,255,255,.16)!important;
+  background:linear-gradient(135deg,rgba(255,255,255,.095),rgba(12,12,14,.72) 45%,rgba(255,255,255,.035))!important;
+  box-shadow:0 20px 52px rgba(0,0,0,.3),inset 0 1px 0 rgba(255,255,255,.19)!important;
+  -webkit-backdrop-filter:blur(14px) saturate(140%)!important;
+  backdrop-filter:blur(14px) saturate(140%)!important;
+}
+body.ps-v9 #psSecondHome .ps20-card { min-height:300px!important; border-radius:22px!important; padding:30px!important; }
+body.ps-v9 #psSecondHome .ps49-member-story { border-radius:24px!important; }
+body.ps-v9 #psSecondHome :is(.ps20-offers button,.ps20-roadmap article,.ps49-story-grid article) {
+  background:linear-gradient(145deg,rgba(255,255,255,.065),rgba(7,7,8,.72))!important;
+}
+body.ps-v9 .app.ps13-dashboard { padding-top:1px!important; background:transparent!important; }
+body.ps-v9 .app.ps13-dashboard .workspace-tabs { margin-top:30px!important; border-radius:16px!important; padding:5px!important; }
+body.ps-v9 .app.ps13-dashboard .workspace-tabs button { min-height:42px!important; border-radius:11px!important; }
+body.ps-v9 .app.ps13-dashboard .workspace-tabs button.active {
+  color:#080808!important;
+  background:linear-gradient(135deg,#fff,#d8d8d4)!important;
+  box-shadow:0 9px 24px rgba(255,255,255,.13)!important;
+}
+body.ps-v9 .app.ps13-dashboard .ticker { border-radius:16px!important; padding:15px 18px!important; }
+body.ps-v9 .app.ps13-dashboard :is(#panelGrid,#statsGrid,.grid) { gap:16px!important; }
+body.ps-v9 .app.ps13-dashboard .card { min-height:285px!important; border-radius:22px!important; padding:25px!important; }
+body.ps-v9 .app.ps13-dashboard .card::before {
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  border-radius:inherit;
+  background:radial-gradient(55% 48% at 100% 0,rgba(var(--rgb,255,255,255),.12),transparent 75%);
+  content:"";
+}
+body.ps-v9 :is(#psSecondHome .ps20-actions button,.app.ps13-dashboard .actions button) {
+  border-color:rgba(255,255,255,.2)!important;
+  background:rgba(255,255,255,.055)!important;
+}
+
+@keyframes ps110-logo-flight {
+  0%,100% { transform:translateY(0) rotateY(0) rotateZ(0) scale(1); filter:drop-shadow(0 0 16px rgba(255,255,255,.25)); }
+  28% { transform:translateY(-10px) rotateY(-16deg) rotateZ(-3deg) scale(1.08); filter:drop-shadow(0 0 34px rgba(255,255,255,.58)); }
+  58% { transform:translateY(-2px) rotateY(6deg) rotateZ(1deg) scale(.98); filter:drop-shadow(0 0 20px rgba(255,255,255,.34)); }
+  80% { transform:translateY(-7px) rotateY(14deg) rotateZ(3deg) scale(1.05); filter:drop-shadow(0 0 30px rgba(255,255,255,.5)); }
+}
+@keyframes ps110-ring { to { transform:rotate(360deg); } }
+@keyframes ps110-verify-spin { to { transform:rotate(360deg); } }
+
+@media(max-width:760px) {
+  body.ps-v9 #psSecondHome .ps20-shell,body.ps-v9 .app.ps13-dashboard { width:calc(100% - 24px)!important; }
+  body.ps-v9 #psSecondHome .ps20-nav,body.ps-v9 .app.ps13-dashboard .topbar { top:7px!important; margin-top:7px!important; border-radius:16px!important; }
+  body.ps-v9 #psSecondHome .ps20-hero { border-radius:22px!important; padding:30px 22px!important; }
+  body.ps-v9 #psSecondHome .ps20-card,body.ps-v9 .app.ps13-dashboard .card { min-height:240px!important; border-radius:18px!important; padding:20px!important; }
+}
+@media(prefers-reduced-motion:reduce) {
+  #ps28Loader .ps110-loader-emblem img,#ps28Loader .ps110-loader-emblem i,.ps-auth-turnstile-retry::before { animation:none!important; }
 }

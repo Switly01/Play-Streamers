@@ -7,6 +7,7 @@
   const $ = (selector, root = document) => root.querySelector(selector);
   const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
   const esc = value => { const node = document.createElement('span'); node.textContent = String(value ?? ''); return node.innerHTML; };
+  const ui = source => typeof window.psTranslateInterface === 'function' ? window.psTranslateInterface(source) : source;
   const state = () => { try { return JSON.parse(localStorage.getItem(STORE) || '{}'); } catch (_) { return {}; } };
   const INFO_ROUTE_PATHS = Object.freeze({ about: '/about', products: '/products', how: '/how-it-works' });
   const ACCOUNT_ROUTE_PATHS = Object.freeze({ data: '/account/data', profile: '/account/profile', account: '/account/security', devices: '/account/devices', connections: '/account/connections', support: '/account/support' });
@@ -2372,7 +2373,7 @@
     const flagSources = Object.fromEntries(Object.entries(localeFlagFiles).map(([code, file]) => [code, `./assets/flags/${file}.svg?v=4.10`]));
     Object.entries(flagSources).forEach(([code, src]) => auditPlayBotAsset(`flag:${code}`, src, `${code.toUpperCase()} dil bayrağı`));
     auditPlayBotAsset('provider:tipeeestream', donateProviderIconSource('tipeeestream'), 'TipeeeStream DAB gömülü resmî logosu');
-    auditPlayBotAsset('brand:play-streamers', './play-streamers-ps-logo.svg?v=10.8', 'Play Streamers marka amblemi');
+    auditPlayBotAsset('brand:play-streamers', './play-streamers-ps-logo.svg?v=10.9', 'Play Streamers marka amblemi');
     auditPlayBotAsset('brand:sw-create', './swcreate-sw-logo-transparent.png', 'SW Create marka amblemi');
     auditPlayBotAsset('provider:kick', './assets/kick-logo.svg', 'Kick giriş amblemi');
     normalizeTipeeeStreamDabLogo(document);
@@ -2586,7 +2587,7 @@
   function explainSwBotIssue(issue) {
     const text = String(issue || 'Bilinmeyen bir sorun bulundu.');
     let title = 'Arayüz denetimi';
-    const action = 'Ekibimiz sorun üzerinde çalışıyor.';
+    const action = ui('Ekibimiz sorun üzerinde çalışıyor.');
     if (/API|sunucu|bağlantı|çevrimdışı/i.test(text)) title = 'Veri bağlantısı';
     else if (/taşıyor|yerleşim|ekranın dışında|çakışma/i.test(text)) title = 'Ekran yerleşimi';
     else if (/giriş|kayıt|doğrulama|Google/i.test(text)) title = 'Hesap erişimi';
@@ -2605,8 +2606,8 @@
     body.closest('.ps69-play-bot')?.classList.remove('is-refreshing');
     const serverByIssue = new Map(playBotGlobalReports.map(report => [String(report.issue || ''), report]));
     body.innerHTML = issues.length
-      ? `<ul>${issues.map(issue => { const clean = String(issue).replace(/^Site geneli:\s*/i, '').replace(/\s+/g, ' ').trim(); const report = serverByIssue.get(clean) || explainSwBotIssue(clean); const description = String(report.summary || clean).replace(/^(Sayfayı yenile|Tarayıcı yakınlaştırmasını|İşlemi tekrar dene)[^.]*\.?\s*/i, '').trim() || clean; return `<li class="error"><i aria-hidden="true"></i><span><b>${esc(report.title || 'SW AI sistem açıklaması')}</b><em class="ps9-sw-ai-summary"><b>SW AI</b><span>${esc(`${description.replace(/[.!?]+$/, '')}.`)}</span><small>Ekibimiz sorun üzerinde çalışıyor.</small></em></span></li>`; }).join('')}</ul><time><span>Son kontrol:</span> <b data-no-translate>${esc(new Date().toLocaleTimeString(document.documentElement.lang || 'tr-TR'))}</b></time>`
-      : `<p class="ps69-play-bot-clear">SW Bot tüm denetimleri tamamladı. Sorun tespit edilmedi.</p><time><span>Son kontrol:</span> <b data-no-translate>${esc(new Date().toLocaleTimeString(document.documentElement.lang || 'tr-TR'))}</b></time>`;
+      ? `<ul>${issues.map(issue => { const clean = String(issue).replace(/^Site geneli:\s*/i, '').replace(/\s+/g, ' ').trim(); const report = serverByIssue.get(clean) || explainSwBotIssue(clean); const description = String(report.summary || clean).replace(/^(Sayfayı yenile|Tarayıcı yakınlaştırmasını|İşlemi tekrar dene)[^.]*\.?\s*/i, '').trim() || clean; return `<li class="error"><i aria-hidden="true"></i><span><b>${esc(report.title || 'SW AI sistem açıklaması')}</b><em class="ps9-sw-ai-summary"><b>SW AI</b><span>${esc(`${description.replace(/[.!?]+$/, '')}.`)}</span><small>${esc(ui('Ekibimiz sorun üzerinde çalışıyor.'))}</small></em></span></li>`; }).join('')}</ul><time><span>${esc(ui('Son kontrol:'))}</span> <b data-no-translate>${esc(new Date().toLocaleTimeString(document.documentElement.lang || 'tr-TR'))}</b></time>`
+      : `<p class="ps69-play-bot-clear">${esc(ui('SW Bot tüm denetimleri tamamladı. Sorun tespit edilmedi.'))}</p><time><span>${esc(ui('Son kontrol:'))}</span> <b data-no-translate>${esc(new Date().toLocaleTimeString(document.documentElement.lang || 'tr-TR'))}</b></time>`;
     window.dispatchEvent(new Event('ps:i18n-refresh'));
   }
   async function runPlayBot(popover, force = false) {
@@ -2616,7 +2617,7 @@
     if (body) {
       body.dataset.busy = '1';
       body.closest('.ps69-play-bot')?.classList.add('is-refreshing');
-      if (!body.children.length) body.innerHTML = '<p class="ps69-play-bot-checking">SW Bot; sayfaları, menüleri, düğmeleri, görselleri, veri bağlantısını ve çalışma zamanı hatalarını denetliyor…</p>';
+      if (!body.children.length) body.innerHTML = `<p class="ps69-play-bot-checking">${esc(ui('SW Bot; sayfaları, menüleri, düğmeleri, görselleri, veri bağlantısını ve çalışma zamanı hatalarını denetliyor…'))}</p>`;
     }
     runPlayBotResourceAudits();
     await refreshGlobalPlayBotAudit(force);
@@ -2647,10 +2648,11 @@
     const developmentWarning = button?.dataset.ps66Development === 'true';
     popover.classList.toggle('ps66-status-warning', developmentWarning);
     popover.innerHTML = developmentWarning
-      ? '<b>Sistem gözlemde</b><p>SW Bot; kullanıcı alanını, Dashboard’u, menüleri ve veri bağlantılarını arka planda düzenli olarak denetliyor.</p>'
-      : '<b>Sistem normal</b><p>Teknik sorun görünmüyor. Giriş, kayıt, panel ve bağlantı akışları denetleniyor.</p>';
-    popover.insertAdjacentHTML('beforeend', '<section class="ps69-play-bot"><header><span><b>SW BOT</b></span><button class="ps69-play-bot-refresh" type="button">Taramayı yenile</button></header><div class="ps69-play-bot-body" aria-live="polite"></div></section>');
+      ? `<b>${esc(ui('Sistem gözlemde'))}</b><p>${esc(ui('SW Bot; kullanıcı alanını, Dashboard’u, menüleri ve veri bağlantılarını arka planda düzenli olarak denetliyor.'))}</p>`
+      : `<b>${esc(ui('Sistem normal'))}</b><p>${esc(ui('Teknik sorun görünmüyor. Giriş, kayıt, panel ve bağlantı akışları denetleniyor.'))}</p>`;
+    popover.insertAdjacentHTML('beforeend', `<section class="ps69-play-bot"><header><span><b>SW BOT</b></span><button class="ps69-play-bot-refresh" type="button">${esc(ui('Taramayı yenile'))}</button></header><div class="ps69-play-bot-body" aria-live="polite"></div></section>`);
     popover.dataset.owner = button.id || 'ps17SystemStatus'; popover.hidden = false; place(button, popover); window.requestAnimationFrame(() => place(button, popover)); button.setAttribute('aria-expanded', 'true'); hideTooltip();
+    window.dispatchEvent(new Event('ps:i18n-refresh'));
     $('.ps69-play-bot-refresh', popover).onclick = () => runPlayBot(popover, true);
     const keepStatusOpen = event => {
       event.stopPropagation();
@@ -2702,7 +2704,7 @@
       if (globe) { globe.dataset.psTooltip = (globe.getAttribute('title') || globe.getAttribute('aria-label') || 'Dil seçimi').trim(); globe.removeAttribute('title'); }
       if (status) {
         status.style.removeProperty('width'); status.style.removeProperty('height');
-        if (status.textContent !== '!') status.textContent = '!'; status.className = 'ps17-system-status green'; status.dataset.ps18Level = 'green'; status.dataset.ps18Title = 'Sistem normal'; status.dataset.ps18Items = JSON.stringify(['Teknik sorun yok.']); status.dataset.psTooltip = 'Sistem durumu'; status.removeAttribute('title');
+        if (status.textContent !== '!') status.textContent = '!'; status.className = 'ps17-system-status green'; status.dataset.ps18Level = 'green'; status.dataset.ps18Title = 'Sistem normal'; status.dataset.ps18Items = JSON.stringify(['Teknik sorun yok.']); if (!status.dataset.psTooltip) status.dataset.psTooltip = 'Sistem durumu'; status.removeAttribute('title');
         status.setAttribute('aria-haspopup', 'dialog'); status.setAttribute('aria-expanded', String(Boolean($('#ps44StatusPopover') && !$('#ps44StatusPopover').hidden)));
         status.onclick = event => { event.preventDefault(); event.stopImmediatePropagation(); if (Date.now() - lastStatusPress < 800) return; openStatus(status); };
       }
@@ -3040,7 +3042,7 @@
       if (!mark) {
         mark = document.createElement('img');
         mark.className = 'ps103-brand-image';
-        mark.src = './play-streamers-ps-logo.svg?v=10.8';
+        mark.src = './play-streamers-ps-logo.svg?v=10.9';
         mark.alt = '';
         logo.replaceChildren(mark);
       }
@@ -3063,7 +3065,7 @@
     const overlay = $('#authOverlay'); if (!overlay) return;
     const arrowPath = 'M200 5C200 43 170 65 134 77 112 85 96 91 79 96M94 83 79 96l19 3';
     let support = $('#ps46Support');
-    if (!support) { support = document.createElement('aside'); support.id = 'ps46Support'; support.setAttribute('aria-label', 'Destek bağlantısı'); support.innerHTML = `<span class="ps46-support-copy">Bizimle iletişime geçmek için</span><svg class="ps46-support-arrow" viewBox="0 0 245 105" aria-hidden="true"><path d="${arrowPath}"/></svg><button class="ps46-support-link" type="button" aria-label="Destek e-postası oluştur"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 16.5H3.5A1.5 1.5 0 0 1 2 15v-3a1.5 1.5 0 0 1 1.5-1.5H5M19 16.5h1.5A1.5 1.5 0 0 0 22 15v-3a1.5 1.5 0 0 0-1.5-1.5H19M5 17v-5a7 7 0 0 1 14 0v6.5a2.5 2.5 0 0 1-2.5 2.5H13"/><path d="M10.5 21h3"/></svg></button>`; document.body.append(support); $('.ps46-support-link', support).onclick = showMailComposer; }
+    if (!support) { support = document.createElement('aside'); support.id = 'ps46Support'; support.setAttribute('aria-label', ui('Destek bağlantısı')); support.innerHTML = `<span class="ps46-support-copy">${esc(ui('Bizimle iletişime geçmek için'))}</span><svg class="ps46-support-arrow" viewBox="0 0 245 105" aria-hidden="true"><path d="${arrowPath}"/></svg><button class="ps46-support-link" type="button" aria-label="${esc(ui('Destek e-postası oluştur'))}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 16.5H3.5A1.5 1.5 0 0 1 2 15v-3a1.5 1.5 0 0 1 1.5-1.5H5M19 16.5h1.5A1.5 1.5 0 0 0 22 15v-3a1.5 1.5 0 0 0-1.5-1.5H19M5 17v-5a7 7 0 0 1 14 0v6.5a2.5 2.5 0 0 1-2.5 2.5H13"/><path d="M10.5 21h3"/></svg></button>`; document.body.append(support); $('.ps46-support-link', support).onclick = showMailComposer; window.dispatchEvent(new Event('ps:i18n-refresh')); }
     const arrow = $('.ps46-support-arrow', support);
     if (arrow && (arrow.getAttribute('viewBox') !== '0 0 245 105' || $('path', arrow)?.getAttribute('d') !== arrowPath)) { arrow.setAttribute('viewBox', '0 0 245 105'); arrow.innerHTML = `<path d="${arrowPath}"/>`; }
     const home = $('#psSecondHome'); const app = $('.app');
@@ -3074,8 +3076,9 @@
     closeLocaleMenus(); closeHomePanels(); closeStatus(); hideTooltip();
     const currentState = state(); const user = currentState.settings?.user || {}; const sender = String(user.email || user.googleEmail || '').trim();
     const maxFiles = 10; const maxFileBytes = 10 * 1024 * 1024; const maxTotalBytes = 25 * 1024 * 1024;
-    const layer = showDialog('ps47MailDialog', `<button class="ps47-dialog-close" type="button" aria-label="Kapat">×</button><span class="ps44-panel-title">DESTEK MERKEZİ</span><h2>Bize yaz</h2><p>Mesajın ve seçtiğin dosyalar Play Streamers içinden doğrudan destek ekibimize gönderilir.</p><form class="ps47-mail-form"><label>Alıcı<input name="recipient" type="email" value="swcreate.info@gmail.com" readonly aria-readonly="true"></label><label>E-posta adresin<input name="email" type="email" autocomplete="email" required value="${esc(sender)}" placeholder="ornek@eposta.com" ${sender ? 'readonly aria-readonly="true"' : ''}></label><label>Konu<input name="subject" required minlength="3" maxlength="120" placeholder="Nasıl yardımcı olabiliriz?"></label><label>Mesaj<textarea name="message" required minlength="10" maxlength="3000" placeholder="Yaşadığın durumu veya önerini yaz..."></textarea></label><label class="ps49-file-drop"><input name="attachments" type="file" multiple accept="image/jpeg,image/png,image/webp,image/gif,application/pdf,text/plain,.doc,.docx,.xls,.xlsx"><span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16V4m0 0L7.5 8.5M12 4l4.5 4.5M5 13v5.5A1.5 1.5 0 0 0 6.5 20h11a1.5 1.5 0 0 0 1.5-1.5V13"/></svg><b>Fotoğraf veya dosya ekle</b><small>En fazla ${maxFiles} dosya · Dosya başına ${maxFileBytes / 1024 / 1024} MB · Toplam ${maxTotalBytes / 1024 / 1024} MB</small></span></label><div class="ps49-file-list" aria-live="polite"></div><p class="ps49-mail-status" aria-live="polite"></p><div class="ps44-dialog-actions"><button class="ps44-cancel" type="button">Vazgeç</button><button class="ps44-confirm" type="submit">Mesajı gönder</button></div></form>`);
+    const layer = showDialog('ps47MailDialog', `<button class="ps47-dialog-close" type="button" aria-label="${esc(ui('Kapat'))}">×</button><span class="ps44-panel-title">${esc(ui('DESTEK MERKEZİ'))}</span><h2>${esc(ui('Bize yaz'))}</h2><p>${esc(ui('Mesajın ve seçtiğin dosyalar Play Streamers içinden doğrudan destek ekibimize gönderilir.'))}</p><form class="ps47-mail-form"><label>${esc(ui('Alıcı'))}<input name="recipient" type="email" value="swcreate.info@gmail.com" readonly aria-readonly="true"></label><label>${esc(ui('E-posta adresin'))}<input name="email" type="email" autocomplete="email" required value="${esc(sender)}" placeholder="ornek@eposta.com" ${sender ? 'readonly aria-readonly="true"' : ''}></label><label>${esc(ui('Konu'))}<input name="subject" required minlength="3" maxlength="120" placeholder="${esc(ui('Nasıl yardımcı olabiliriz?'))}"></label><label>${esc(ui('Mesaj'))}<textarea name="message" required minlength="10" maxlength="3000" placeholder="${esc(ui('Yaşadığın durumu veya önerini yaz...'))}"></textarea></label><label class="ps49-file-drop"><input name="attachments" type="file" multiple accept="image/jpeg,image/png,image/webp,image/gif,application/pdf,text/plain,.doc,.docx,.xls,.xlsx"><span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16V4m0 0L7.5 8.5M12 4l4.5 4.5M5 13v5.5A1.5 1.5 0 0 0 6.5 20h11a1.5 1.5 0 0 0 1.5-1.5V13"/></svg><b>${esc(ui('Fotoğraf veya dosya ekle'))}</b><small>${esc(ui(`En fazla ${maxFiles} dosya · Dosya başına ${maxFileBytes / 1024 / 1024} MB · Toplam ${maxTotalBytes / 1024 / 1024} MB`))}</small></span></label><div class="ps49-file-list" aria-live="polite"></div><p class="ps49-mail-status" aria-live="polite"></p><div class="ps44-dialog-actions"><button class="ps44-cancel" type="button">${esc(ui('Vazgeç'))}</button><button class="ps44-confirm" type="submit">${esc(ui('Mesajı gönder'))}</button></div></form>`);
     $('.ps44-dialog', layer)?.classList.add('ps47-rich-dialog', 'ps68-resizable-dialog');
+    window.dispatchEvent(new Event('ps:i18n-refresh'));
     $$('.ps47-dialog-close,.ps44-cancel', layer).forEach(button => button.onclick = () => closeDialog(layer));
     const form = $('.ps47-mail-form', layer); const fileInput = $('[name="attachments"]', form); const fileList = $('.ps49-file-list', form); const status = $('.ps49-mail-status', form); let selectedFiles = [];
     const fileSize = bytes => bytes >= 1024 * 1024 ? `${(bytes / 1024 / 1024).toFixed(1)} MB` : `${Math.max(1, Math.round(bytes / 1024))} KB`;
@@ -3088,16 +3091,16 @@
       const incoming = [...(fileInput.files || [])]; const files = [...selectedFiles];
       incoming.forEach(file => { if (!files.some(saved => saved.name === file.name && saved.size === file.size && saved.lastModified === file.lastModified)) files.push(file); });
       const total = files.reduce((sum, file) => sum + file.size, 0);
-      if (files.length > maxFiles) { status.classList.add('error'); status.textContent = `En fazla ${maxFiles} dosya ekleyebilirsin.`; fileInput.value = ''; return; }
-      if (files.some(file => file.size > maxFileBytes)) { status.classList.add('error'); status.textContent = `Her dosya en fazla ${maxFileBytes / 1024 / 1024} MB olabilir.`; fileInput.value = ''; return; }
-      if (total > maxTotalBytes) { status.classList.add('error'); status.textContent = `Eklerin toplam boyutu en fazla ${maxTotalBytes / 1024 / 1024} MB olabilir.`; fileInput.value = ''; return; }
+      if (files.length > maxFiles) { status.classList.add('error'); status.textContent = ui(`En fazla ${maxFiles} dosya ekleyebilirsin.`); fileInput.value = ''; return; }
+      if (files.some(file => file.size > maxFileBytes)) { status.classList.add('error'); status.textContent = ui(`Her dosya en fazla ${maxFileBytes / 1024 / 1024} MB olabilir.`); fileInput.value = ''; return; }
+      if (total > maxTotalBytes) { status.classList.add('error'); status.textContent = ui(`Eklerin toplam boyutu en fazla ${maxTotalBytes / 1024 / 1024} MB olabilir.`); fileInput.value = ''; return; }
       selectedFiles = files; fileInput.value = ''; renderFiles();
     };
     form.onsubmit = async event => {
       event.preventDefault();
       const submit = $('.ps44-confirm', form); const email = String(form.elements.email.value || '').trim(); const subject = String(form.elements.subject.value || '').trim(); const message = String(form.elements.message.value || '').trim(); const sessionId = String(currentState.settings?.userSession || currentState.userSession || '');
       if (!form.reportValidity()) return;
-      submit.disabled = true; submit.textContent = 'Gönderiliyor…'; status.className = 'ps49-mail-status'; status.textContent = 'Güvenlik kontrolü ve dosyalar hazırlanıyor…';
+      submit.disabled = true; submit.textContent = ui('Gönderiliyor…'); status.className = 'ps49-mail-status'; status.textContent = ui('Güvenlik kontrolü ve dosyalar hazırlanıyor…');
       try {
         const token = typeof window.ps32RequestTurnstileToken === 'function' ? await window.ps32RequestTurnstileToken() : null;
         const payload = new FormData(); payload.set('email', email); payload.set('subject', subject); payload.set('message', message); if (token) payload.set('turnstileToken', token); selectedFiles.forEach(file => payload.append('attachments', file, file.name));
@@ -3112,13 +3115,14 @@
           saveNotificationReadState(notificationState); updateNotifications();
         }
         const successCopy = result.ticketId
-          ? 'Destek ekibimiz mesajını aldı. Talebini Hesabım › Destek talepleri bölümünden takip edebilirsin.'
+          ? ui('Destek ekibimiz mesajını aldı. Talebini Hesabım › Destek talepleri bölümünden takip edebilirsin.')
           : `Mesajın destek ekibimize ulaştı. Yanıt için lütfen ${email} adresindeki mailinizden kontrol ediniz.`;
-        const dialog = $('.ps44-dialog', layer); dialog.innerHTML = `<button class="ps47-dialog-close" type="button" aria-label="Kapat">×</button><div class="ps49-support-success"><i>✓</i><h3>Mesajın gönderildi</h3><p>${esc(successCopy)}</p><div class="ps44-dialog-actions"><button class="ps44-confirm" type="button">Tamam</button></div></div>`;
+        const dialog = $('.ps44-dialog', layer); dialog.innerHTML = `<button class="ps47-dialog-close" type="button" aria-label="${esc(ui('Kapat'))}">×</button><div class="ps49-support-success"><i>✓</i><h3>${esc(ui('Mesajın gönderildi'))}</h3><p>${esc(successCopy)}</p><div class="ps44-dialog-actions"><button class="ps44-confirm" type="button">${esc(ui('Tamam'))}</button></div></div>`;
+        window.dispatchEvent(new Event('ps:i18n-refresh'));
         $$('.ps47-dialog-close,.ps44-confirm', dialog).forEach(button => button.onclick = () => closeDialog(layer));
       } catch (error) {
         if (sessionId) refreshSupportTickets(true).catch(() => {});
-        status.className = 'ps49-mail-status error'; status.textContent = error?.message || 'Mesaj gönderilemedi. Lütfen tekrar dene.'; submit.disabled = false; submit.textContent = 'Mesajı gönder';
+        status.className = 'ps49-mail-status error'; status.textContent = error?.message || ui('Mesaj gönderilemedi. Lütfen tekrar dene.'); submit.disabled = false; submit.textContent = ui('Mesajı gönder');
       }
     };
   }

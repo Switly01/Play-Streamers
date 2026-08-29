@@ -111,8 +111,8 @@
     const fields=isLogin
       ?'<label class="auth-field">Kullanıcı adı veya e-posta<input name="identity" autocomplete="username" minlength="3" maxlength="160" required placeholder="kullaniciadi veya e-posta"></label><label class="auth-field">Şifre<input name="password" type="password" autocomplete="current-password" required placeholder="Şifren"></label>'
       :'<label class="auth-field">Kullanıcı adı<input name="username" autocomplete="username" minlength="3" maxlength="32" pattern="[A-Za-z0-9._-]+" required placeholder="ornek.kullanici"></label><label class="auth-field">Şifre<input name="password" type="password" autocomplete="new-password" minlength="10" required placeholder="En az 10 karakter"></label><label class="auth-field">Şifre tekrar<input name="passwordRepeat" type="password" autocomplete="new-password" minlength="10" required placeholder="Şifreni yeniden yaz"></label><label class="auth-field">Doğum tarihi<input name="birthDate" type="text" min="1900-01-01" max="'+adultBirthDate()+'" required aria-haspopup="dialog" placeholder="Tarih seç"></label>';
-    layer.innerHTML=`<section class="auth-dialog" data-sw-identity-auth="1"><button class="auth-close" type="button" aria-label="Kapat">×</button><div class="ps-identity-wordmark" aria-label="Play Streamers"><img src="./play-streamers-ps-logo.svg?v=10.9" alt=""><span>Play Streamers</span></div><span class="eyebrow">SW IDENTITY İLE KORUNUR</span><h2>${isLogin?'Hesabına giriş yap':'SW hesabını oluştur'}</h2><p>${isLogin?'Kullanıcı adın veya e-postanla giriş yap.':'Bu kayıt doğrudan SW Identity hesabını oluşturur; ayrıca bir Play Streamers hesabı açılmaz.'}</p><form class="auth-form ps-identity-credential-form">${fields}<label class="ps48-remember ps-identity-remember"><input type="checkbox" name="remember"><span>Beni hatırla</span></label><div class="ps-auth-turnstile-slot is-loading" data-turnstile-slot aria-label="Güvenlik doğrulaması"><button class="ps-auth-turnstile-retry" type="button" data-auth-turnstile-retry>Güvenlik kontrolü yükleniyor…</button></div><input class="ps-identity-honeypot" name="website" tabindex="-1" autocomplete="off" aria-hidden="true"><p class="auth-error ps-identity-form-error" aria-live="polite"></p><button class="auth-submit ps-identity-form-submit" type="submit">${isLogin?'Giriş yap':'SW Identity hesabı oluştur'}</button></form><div class="auth-divider"><span>veya</span></div><div class="ps-identity-providers ${isLogin?'has-sw-provider':''}"><button type="button" data-provider="google" aria-label="Google ile devam et">${googleIcon}</button><button type="button" data-provider="kick" aria-label="Kick ile devam et">${kickIcon}</button>${isLogin?'<button type="button" data-provider="sw" aria-label="SW hesabı ile hızlı giriş"><img class="ps102-provider-logo ps102-sw-logo" src="./swcreate-sw-logo-transparent.png?v=10.3" alt=""></button>':''}</div><div class="ps-identity-trust"><i></i><span>SW Identity güvenlik ve plan altyapısı</span></div></section>`;
-    document.body.append(layer);const form=$('.ps-identity-credential-form',layer);const identityMark=$('.ps-identity-wordmark img',layer);if(identityMark)identityMark.src='./play-streamers-ps-logo.svg?v=10.9';
+    layer.innerHTML=`<section class="auth-dialog" data-sw-identity-auth="1"><button class="auth-close" type="button" aria-label="Kapat">×</button><div class="ps-identity-wordmark" aria-label="Play Streamers"><img src="./play-streamers-ps-logo.svg?v=10.10" alt=""><span>Play Streamers</span></div><span class="eyebrow">SW IDENTITY İLE KORUNUR</span><h2>${isLogin?'Hesabına giriş yap':'SW hesabını oluştur'}</h2><p>${isLogin?'Kullanıcı adın veya e-postanla giriş yap.':'Bu kayıt doğrudan SW Identity hesabını oluşturur; ayrıca bir Play Streamers hesabı açılmaz.'}</p><form class="auth-form ps-identity-credential-form">${fields}<label class="ps48-remember ps-identity-remember"><input type="checkbox" name="remember"><span>Beni hatırla</span></label><div class="ps-auth-turnstile-slot is-loading" data-turnstile-slot aria-label="Güvenlik doğrulaması"><button class="ps-auth-turnstile-retry" type="button" data-auth-turnstile-retry>Güvenlik kontrolü yükleniyor…</button></div><input class="ps-identity-honeypot" name="website" tabindex="-1" autocomplete="off" aria-hidden="true"><p class="auth-error ps-identity-form-error" aria-live="polite"></p><button class="auth-submit ps-identity-form-submit" type="submit">${isLogin?'Giriş yap':'SW Identity hesabı oluştur'}</button></form><div class="auth-divider"><span>veya</span></div><div class="ps-identity-providers ${isLogin?'has-sw-provider':''}"><button type="button" data-provider="google" aria-label="Google ile devam et">${googleIcon}</button><button type="button" data-provider="kick" aria-label="Kick ile devam et">${kickIcon}</button>${isLogin?'<button type="button" data-provider="sw" aria-label="SW hesabı ile hızlı giriş"><img class="ps102-provider-logo ps102-sw-logo" src="./swcreate-sw-logo-transparent.png?v=10.3" alt=""></button>':''}</div><div class="ps-identity-trust"><i></i><span>SW Identity güvenlik ve plan altyapısı</span></div></section>`;
+    document.body.append(layer);const form=$('.ps-identity-credential-form',layer);const identityMark=$('.ps-identity-wordmark img',layer);if(identityMark)identityMark.src='./play-streamers-ps-logo.svg?v=10.10';
     $('.auth-close',layer).onclick=removeLandingAuth;layer.onclick=event=>{if(event.target===layer)removeLandingAuth()};
     form.onsubmit=event=>{event.preventDefault();submitSwIdentityCredentials(form,isLogin,startedAt)};
     $('[data-provider="google"]',layer).onclick=()=>startSwIdentityLogin('google');$('[data-provider="kick"]',layer).onclick=()=>startSwIdentityLogin('kick');$('[data-provider="sw"]',layer)?.addEventListener('click',()=>startSwIdentityLogin());$('[data-auth-turnstile-retry]',form).onclick=()=>prepareAuthVerification(form,true);if(!isLogin)installIdentityCalendar(form.elements.birthDate);fetch(`${API_BASE}/health`,{cache:'no-store'}).catch(()=>{});prepareAuthVerification(form);
@@ -1917,7 +1917,7 @@
   function loaderNode(){
     let node=$('#ps28Loader');
     if(!node){node=document.createElement('aside');node.id='ps28Loader';node.hidden=true;document.body.append(node)}
-    if(!$('.ps110-loader-emblem',node))node.innerHTML='<div class="ps28-loader-card"><div class="ps110-loader-emblem" aria-hidden="true"><i></i><i></i><img src="./play-streamers-ps-logo.svg?v=10.9" alt=""></div><b>PLAY STREAMERS YÜKLENİYOR</b></div>';
+    if(!$('.ps110-loader-emblem',node))node.innerHTML='<div class="ps28-loader-card"><div class="ps110-loader-emblem" aria-hidden="true"><i></i><i></i><i></i><span></span><img src="./play-streamers-ps-logo.svg?v=10.10" alt=""></div><b>PLAY STREAMERS YÜKLENİYOR</b></div>';
     return node;
   }
   function loadThen(action){
@@ -1933,7 +1933,7 @@
     node.classList.remove('ps42-initial-loader','ps42-initial-leaving');
     node.hidden=false;requestAnimationFrame(()=>node.classList.add('is-open'));
     window.setTimeout(()=>{const actions=loaderActions.splice(0);actions.forEach(next=>{try{next()}catch(error){console.error('[Play Streamers] Geçiş işlemi tamamlanamadı.',error)}})},520);
-    window.setTimeout(()=>{node.classList.remove('is-open');node.classList.add('is-closing');window.setTimeout(()=>{node.hidden=true;node.classList.remove('is-closing');loaderBusy=false;if(loaderActions.length)loadThen()},240)},980);
+    window.setTimeout(()=>{node.classList.remove('is-open');node.classList.add('is-closing');window.setTimeout(()=>{node.hidden=true;node.classList.remove('is-closing');loaderBusy=false;if(loaderActions.length)loadThen()},240)},1480);
   }
   window.ps28Load=loadThen;
 
@@ -2171,6 +2171,7 @@
     '/api/account/resend-code', '/api/account/delete'
   ]);
   const nativeFetch = window.fetch.bind(window);
+  const PUBLIC_SITE_KEY_FALLBACK = '0x4AAAAAAD4Mr0GZFyPQkCSj';
   const state = { enabled: false, siteKey: '', widgetId: null, ready: null, pending: null, host: null };
 
   function placeHostInActiveForm() {
@@ -2254,11 +2255,17 @@
   }
 
   async function configure() {
+    let siteKey = String(window.__psTurnstileConfig?.siteKey || PUBLIC_SITE_KEY_FALLBACK).trim();
     try {
       const response = await nativeFetch(`${API}/api/public-config`, { cache: 'no-store' });
       const config = await response.json().catch(() => ({}));
-      if (!response.ok || !config.turnstileEnabled || !config.turnstileSiteKey) return;
-      state.siteKey = config.turnstileSiteKey;
+      if (response.ok && config.turnstileEnabled && config.turnstileSiteKey) siteKey = String(config.turnstileSiteKey).trim();
+    } catch (error) {
+      console.warn('Turnstile yapılandırması için güvenli genel anahtar kullanılıyor.', error);
+    }
+    try {
+      if (!siteKey) return false;
+      state.siteKey = siteKey;
       // The visible login verifier and the background verifier must use the
       // same key. This small public object only contains the public site key.
       window.__psTurnstileConfig = { enabled: true, siteKey: state.siteKey };
@@ -2290,7 +2297,7 @@
         action: 'sw-auth',
         theme: 'dark',
         size: 'flexible',
-        execution: 'execute',
+        execution: 'render',
         appearance: 'always',
         retry: 'auto',
         'retry-interval': 3000,
@@ -2322,9 +2329,9 @@
     return new Promise((resolve, reject) => {
       state.pending = { resolve, reject };
       try {
+        const existed = state.widgetId !== null;
         const widgetId = renderWidget();
-        window.turnstile.reset(widgetId);
-        window.turnstile.execute(widgetId);
+        if (existed) window.turnstile.reset(widgetId);
       }
       catch (error) { state.pending = null; reject(error); }
     });
@@ -2370,8 +2377,18 @@
 
   state.ready = configure();
   window.ps32RequestTurnstileToken = async (force = false) => {
-    if (state.ready) await state.ready;
-    return getToken(force);
+    let lastError = null;
+    for (let attempt = 0; attempt < 3; attempt += 1) {
+      try {
+        if (state.ready) await state.ready;
+        const token = await getToken(force || attempt > 0);
+        if (token) return token;
+      } catch (error) {
+        lastError = error;
+        if (attempt < 2) await new Promise(resolve => window.setTimeout(resolve, 450 * (attempt + 1)));
+      }
+    }
+    throw lastError || new Error('Güvenlik doğrulaması hazırlanamadı.');
   };
   window.ps32ReleaseTurnstileHost = releaseHost;
 })();

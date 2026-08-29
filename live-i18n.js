@@ -1,6 +1,5 @@
-const API = "https://api.pstreamers.com/api/i18n/translate";
 const SUPPORTED = new Set(["tr", "en", "de", "es", "fr", "ru", "ar", "ja"]);
-const CATALOG_VERSION = "2026-08-29.2";
+const CATALOG_VERSION = "2026-08-29.3";
 const catalogPromises = new Map();
 const COUNTRY_LOCALES = Object.freeze({
   TR: "tr", JP: "ja", DE: "de", AT: "de", CH: "de", LI: "de",
@@ -13,14 +12,14 @@ const SKIP_TEXT_SELECTOR = [
   "script", "style", "noscript", "code", "pre", "textarea",
   "[contenteditable]", "[data-no-translate]", ".entries", ".event-message",
   ".event-detail-message", ".name", ".message", ".support-ticket-message",
-  ".ps59-chart", ".ps69-hourly-chart", "#ps41LocaleMenu", "#ps15LocaleMenu",
+  ".ps59-chart", ".ps69-hourly-chart",
   "[data-language]", "[data-ps15-lang]"
 ].join(",");
 const SKIP_ATTRIBUTE_SELECTOR = [
   "script", "style", "noscript", "code", "pre", "[contenteditable]",
   "[data-no-translate]", ".entries", ".event-message", ".event-detail-message",
   ".name", ".message", ".support-ticket-message", ".ps59-chart", ".ps69-hourly-chart",
-  "#ps41LocaleMenu", "#ps15LocaleMenu", "[data-language]", "[data-ps15-lang]"
+  "[data-language]", "[data-ps15-lang]"
 ].join(",");
 
 export const critical = Object.freeze({
@@ -37,6 +36,23 @@ Object.entries({
   en: "Dashboard", de: "Übersicht", es: "Panel", fr: "Tableau de bord",
   ru: "Панель управления", ar: "لوحة التحكم", ja: "ダッシュボード",
 }).forEach(([language, translation]) => { critical[language].Dashboard = translation; });
+Object.entries({
+  en: ["LANGUAGE", "2h 48m"], de: ["SPRACHE", "2 Std. 48 Min."],
+  es: ["IDIOMA", "2 h 48 min"], fr: ["LANGUE", "2 h 48 min"],
+  ru: ["ЯЗЫК", "2 ч 48 мин"], ar: ["اللغة", "ساعتان و48 دقيقة"],
+  ja: ["言語", "2時間48分"],
+}).forEach(([language, values]) => Object.assign(critical[language], {
+  "DİL SEÇİMİ": values[0],
+  "2s 48dk": values[1],
+}));
+Object.entries({
+  en: "Play Streamers — Creator Hub", de: "Play Streamers — Creator-Zentrale",
+  es: "Play Streamers — Centro para streamers", fr: "Play Streamers — Espace créateur",
+  ru: "Play Streamers — Центр стримера", ar: "Play Streamers — مركز صنّاع المحتوى",
+  ja: "Play Streamers — クリエイターハブ",
+}).forEach(([language, translation]) => {
+  critical[language]["Play Streamers — Yayıncı Merkezi"] = translation;
+});
 Object.assign(critical.fr, {
   "ETKİLEŞİM": "INTERACTION",
   "TOPLULUK": "COMMUNAUTÉ",
@@ -459,7 +475,7 @@ export function installLiveI18n({ localeKey = "ps15-locale", getLocale, root = d
     return { language, translate(value) { return String(value ?? ""); }, refresh() {}, dispose() {} };
   }
 
-  const cacheKey = `ps-live-i18n-v14:${language}`;
+  const cacheKey = `ps-live-i18n-v15:${language}`;
   // Kalıcı paket, eski tarayıcı önbelleğini ezer; elle doğrulanmış kritik
   // metinler ise her zaman en son sözü söyler.
   const cache = { ...cacheRead(cacheKey), ...catalog, ...(critical[language] || {}) };
@@ -501,57 +517,10 @@ export function installLiveI18n({ localeKey = "ps15-locale", getLocale, root = d
     titleState = { source, translated };
   };
 
-  const requestTranslations = async (strings, depth = 0, retry = 0) => {
-    if (!strings.length) return [];
-    const controller = new AbortController();
-    const timeout = window.setTimeout(() => controller.abort(), 22000);
-    try {
-      const response = await fetch(API, {
-        method: "POST",
-        credentials: "omit",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify({ language, strings }),
-        signal: controller.signal,
-      });
-      window.clearTimeout(timeout);
-      const result = await response.json().catch(() => ({}));
-      if (response.ok && Array.isArray(result.translations) && result.translations.length === strings.length) {
-        const translated = result.translations.map(value => clean(value));
-        const invalid = translated
-          .map((value, index) => translationLooksComplete(strings[index], value, language) ? -1 : index)
-          .filter(index => index >= 0);
-        if (!invalid.length) return translated;
-        // Worker geçersiz öğeleri zaten tek tek onarmayı dener. Tarayıcıda her
-        // eksik öğe için tekrar üç istek açmak, büyük sayfalarda kullanıcı başı
-        // sınırı gereksiz yere tüketiyordu. Eksikler sonraki kontrollü kurtarma
-        // turunda yeniden istenir.
-        return translated.map((value, index) => translationLooksComplete(strings[index], value, language) ? value : "");
-      }
-      // Küçük modeller uzun JSON listelerinde zaman zaman eksik bir öğe
-      // döndürebiliyor. 429 durumunda bekleriz; diğer geçersiz yanıtlarda paketi
-      // kontrollü biçimde bölerek görünür metinlerin yarım kalmasını önleriz.
-      if (response.status === 429 && retry < 2) {
-        await new Promise(resolve => window.setTimeout(resolve, 900 * (retry + 1)));
-        return requestTranslations(strings, depth, retry + 1);
-      }
-      if (strings.length === 1 && retry < 2) {
-        await new Promise(resolve => window.setTimeout(resolve, 350 * (retry + 1)));
-        return requestTranslations(strings, depth + 1, retry + 1);
-      }
-      if (strings.length === 1 || depth >= 3) return strings.map(() => "");
-    } catch {
-      window.clearTimeout(timeout);
-      if (strings.length === 1 && retry < 2) {
-        await new Promise(resolve => window.setTimeout(resolve, 350 * (retry + 1)));
-        return requestTranslations(strings, depth + 1, retry + 1);
-      }
-      if (strings.length === 1 || depth >= 3) return strings.map(() => "");
-    }
-    const middle = Math.ceil(strings.length / 2);
-    const left = await requestTranslations(strings.slice(0, middle), depth + 1);
-    const right = await requestTranslations(strings.slice(middle), depth + 1);
-    return [...left, ...right];
-  };
+  // Dil değişiminde çalışan sayfayı Türkçeden çevirmiyoruz. Arayüz yalnızca
+  // yayın öncesinde hazırlanmış, sürümlü dil paketinden boyanır. Böylece İngilizce
+  // seçildiğinde ağ/AI beklemesi olmadan doğrudan İngilizce arayüz açılır.
+  const requestTranslations = async strings => strings.map(() => "");
 
   const collect = () => {
     const targets = [];

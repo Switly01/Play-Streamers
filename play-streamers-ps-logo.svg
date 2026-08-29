@@ -2,6 +2,6 @@
   <title id="title">Play Streamers PS logosu</title>
   <desc id="desc">Tek beyaz beşgen çerçeve içinde ortalanmış ve orantılı P ve S monogramı</desc>
   <path d="M80 8 147 56 122 145H38L13 56 80 8Z" fill="none" stroke="#fff" stroke-width="5.5" stroke-linejoin="round"/>
-  <path transform="translate(16 14) scale(.58 .86)" fill="#fff" fill-rule="evenodd" d="M31 124V37h36c22 0 35 11 35 30S89 98 67 98H54v26H31Zm23-66v19h12c9 0 14-3 14-10s-5-9-14-9H54Z"/>
-  <path fill="none" stroke="#fff" stroke-width="16" stroke-linecap="round" stroke-linejoin="round" d="M122 53C114 46 105 43 96 43 81 43 71 50 71 60c0 10 8 15 25 19 15 4 22 11 22 22 0 12-9 19-23 19-12 0-23-4-31-12"/>
+  <path fill="none" stroke="#fff" stroke-width="13.5" stroke-linecap="round" stroke-linejoin="round" d="M42 120V42h22c16 0 25 8 25 21.5S80 85 64 85H42"/>
+  <path fill="none" stroke="#fff" stroke-width="13.5" stroke-linecap="round" stroke-linejoin="round" d="M119 50c-7-5-15-8-24-8-13 0-21 7-21 17 0 10 8 15 23 19 15 4 22 11 22 22 0 12-9 20-23 20-11 0-21-4-29-11"/>
 </svg>

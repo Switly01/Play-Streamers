@@ -2,31 +2,38 @@
 
 ## Güncel geliştirme durumu · 29 Ağustos 2026
 
-Site 10.10.0 / Worker 5.9 / SW Identity 1.8.1 / Desktop 0.14.4 / Play Connect
+Site 10.11.0 / Worker 6.0 / SW Identity 1.8.1 / Desktop 0.14.4 / Play Connect
 1.15.1 kaynakları hazırlandı. Site kartları ve temel yüzeyler, mobilde daha
 düşük bulanıklık kullanan belirgin sıvı cam katmanına geçirildi; giriş sonrası
 üye ana sayfası ve Dashboard aynı cam yüzey, aralık ve kart ritminde yeniden
 düzenlendi. Yıldız alanında tek `requestAnimationFrame` ile çalışan gerçek
 imleç feneri bulunur. Ortak yükleyiciyi devre dışı bırakan eski erken çıkış
 kaldırıldı; yıldız alanı, iki yörüngeli PS amblemi, 3B salınım ve hareketli
-ilerleme çizgisi artık görünür. PS monogramındaki S yeniden çizilerek üst kıvrım
-ve P ile oranı düzeltildi.
+ilerleme çizgisi artık görünür. Geçiş yükleyicisindeki PS amblemi üç yörünge,
+parlak parçacık, daha güçlü 3B salınım ve sıçrama hareketiyle görünür biçimde
+canlandırıldı. PS monogramındaki P ve S aynı yükseklik ve aynı 13,5 birim çizgi
+kalınlığıyla yeniden çizildi.
 
 SW Çeviri Botu, sürümlü `locales/*.json` paketlerini yayın öncesinde D1'deki
 onaylı karşılıklardan üretir. Dil seçimi sayfayı yenilemez: paket bellekte hazır
-olduğu için kaynak Türkçe metinler geri yüklenip seçilen dil aynı DOM üzerinde
-ilk karede uygulanır; tercih `ps15-locale` ile bütün sayfalarda kalıcıdır.
+olduğu için seçilen dil aynı DOM üzerinde ilk karede uygulanır; tercih
+`ps15-locale` ile bütün sayfalarda kalıcıdır. Tarayıcı artık dil değişiminde
+Türkçe metinleri canlı API ile çevirmez; arayüz doğrudan seçilen dilin hazır
+paketinden açılır. Dil menüsü başlığı ve süre birimleri de pakete dahildir.
 Dashboard, giriş/kayıt, destek, gizlilik ve kullanım koşulları aynı altyapıya
-bağlıdır. Sonradan oluşan bilinmeyen metinler yalnızca kurtarma yolu olarak API
-üzerinden çevrilip D1'e eklenir. D1 çeviri önbelleği `v9`, istemci önbelleği
-`ps-live-i18n-v14` ad alanını kullanır; Worker yapılandırmasında KV binding'i yoktur.
+bağlıdır. Yeni metinler yayın öncesi paket üretiminde çevrilip D1'e eklenir; canlı
+kullanıcının dil seçimi ağdaki çeviri hizmetini beklemez. D1 çeviri önbelleği
+`v9`, istemci önbelleği `ps-live-i18n-v15` ad alanını kullanır; Worker
+yapılandırmasında KV binding'i yoktur.
 Paket üreticisi uzak D1 önbelleğine erişemediğinde mevcut sürümlü yerel paketleri
 temel alır; bu nedenle yayın derlemesi hesap oturumu değişikliğinde yarıda kalmaz.
 
 Turnstile `always` görünümünde giriş/kayıt penceresi açılır açılmaz hazırlanır;
 doğrulama kutusu “Beni hatırla” satırının altında sürekli görünür. Widget artık
 sayfa dışında oluşturulup forma taşınmaz; doğrudan açık formda oluşturulur ve
-geçici ağ hatasında aynı kutu içindeki yeniden yükleme düğmesiyle baştan kurulur.
+geçici ağ hatasında aynı kutu içinde üç kontrollü otomatik denemeyle baştan kurulur.
+Genel yapılandırma isteği aksarsa yalnızca herkese açık site anahtarı güvenli
+yedek olarak kullanılır; gizli doğrulama anahtarı yalnız Worker'da kalır.
 Kutunun altında ayrı hata satırı yoktur. Pencere kapanınca widget kaldırılır ve
 sonraki açılışta temiz oluşturulur. Şifre gözünde seçim ve
 imleç konumu korunur. SW Identity izinli ürün CORS yanıtlarında `cross-origin`

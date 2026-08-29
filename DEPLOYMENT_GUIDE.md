@@ -1,5 +1,22 @@
 # Play Streamers — Güncel yükleme dosyaları
 
+## Google tabanlı statik çeviri paketleri
+
+Canlı site çeviri üretmez. Yeni arayüz metinleri yayın öncesinde Google Cloud
+Translation API ile hazırlanır ve `locales/*.json` dosyalarına yazılır.
+
+Worker üzerinde iki secret gerekir:
+
+- `GOOGLE_TRANSLATE_API_KEY`: Cloud Translation API etkin Google Cloud
+  projesine ait, yalnız Translation API ile sınırlandırılmış sunucu anahtarı.
+- `I18N_BUILD_TOKEN`: Paket üretme endpoint'ini yalnız yayın işleminin
+  kullanabilmesini sağlayan rastgele erişim anahtarı.
+
+Yayın makinesinde yalnız `I18N_BUILD_TOKEN` ortam değişkeni bulunur. Eksik
+metinleri üretmek için `node scripts/build-i18n-catalogs.mjs`, bütün eski makine
+çevirilerini Google ile yenilemek için aynı komut `--refresh-all` seçeneğiyle
+çalıştırılır. Anahtarlar hiçbir kaynak dosyasına veya frontend koduna yazılmaz.
+
 Bu sürüm iki açık dağıtım klasörü, masaüstü uygulaması ve bir eklenti paketi üretir:
 
 - `play-connect.zip`: Chrome eklentisi.

@@ -78,8 +78,8 @@ const DONATE_OAUTH_PROVIDERS = Object.freeze({
     clientSecretVariable: "TIPEEESTREAM_CLIENT_SECRET",
   }),
 });
-const CURRENT_RELEASE_VERSION = "6.3";
-const CURRENT_RELEASE_PUBLISHED_AT = "2026-08-29T18:59:46+03:00";
+const CURRENT_RELEASE_VERSION = "6.4";
+const CURRENT_RELEASE_PUBLISHED_AT = "2026-08-29T20:25:00+03:00";
 const SW_IDENTITY_ORIGIN = "https://api.swcreate.com";
 const DESKTOP_IDENTITY_REDIRECT = "playstreamers://identity/callback";
 const WEB_IDENTITY_REDIRECTS = new Set([
@@ -308,6 +308,8 @@ export default {
           identityProvider: "sw-identity",
           turnstileEnabled: isTurnstileEnabled(env),
           aiEnabled: Boolean(env.AI || env.OPENAI_API_KEY),
+          translationProvider: env.GOOGLE_TRANSLATE_API_KEY ? "google-static-build" : "static-catalogs",
+          liveTranslationEnabled: false,
         });
       }
 
@@ -786,7 +788,7 @@ export default {
   },
 };
 
-const PLAY_BOT_GLOBAL_STATUS_KEY = "sw-bot:global-status:v13";
+const PLAY_BOT_GLOBAL_STATUS_KEY = "sw-bot:global-status:v14";
 
 async function ensurePlayBotMetadataStorage(env) {
   if (!env.DB) throw new Error("Worker is missing the DB binding");
@@ -827,14 +829,14 @@ async function runScheduledPlayBotAudit(env) {
     ["Ana uygulama betiği", "https://pstreamers.com/app.js?v=5.4.8", "script"],
     ["Uygulama betiği", "https://pstreamers.com/app-final.js?v=5.11.0", "script"],
     ["Site davranış betiği", "https://pstreamers.com/site-v7.js?v=10.13.0", "script"],
-    ["Canlı çeviri betiği", "https://pstreamers.com/live-i18n.js?v=9.5.0", "script"],
-    ["İngilizce dil paketi", "https://pstreamers.com/locales/en.json?v=2026-08-29.5", "json"],
-    ["Almanca dil paketi", "https://pstreamers.com/locales/de.json?v=2026-08-29.5", "json"],
-    ["İspanyolca dil paketi", "https://pstreamers.com/locales/es.json?v=2026-08-29.5", "json"],
-    ["Fransızca dil paketi", "https://pstreamers.com/locales/fr.json?v=2026-08-29.5", "json"],
-    ["Rusça dil paketi", "https://pstreamers.com/locales/ru.json?v=2026-08-29.5", "json"],
-    ["Arapça dil paketi", "https://pstreamers.com/locales/ar.json?v=2026-08-29.5", "json"],
-    ["Japonca dil paketi", "https://pstreamers.com/locales/ja.json?v=2026-08-29.5", "json"],
+    ["Sabit çeviri betiği", "https://pstreamers.com/live-i18n.js?v=9.6.0", "script"],
+    ["İngilizce dil paketi", "https://pstreamers.com/locales/en.json?v=2026-08-29.6", "json"],
+    ["Almanca dil paketi", "https://pstreamers.com/locales/de.json?v=2026-08-29.6", "json"],
+    ["İspanyolca dil paketi", "https://pstreamers.com/locales/es.json?v=2026-08-29.6", "json"],
+    ["Fransızca dil paketi", "https://pstreamers.com/locales/fr.json?v=2026-08-29.6", "json"],
+    ["Rusça dil paketi", "https://pstreamers.com/locales/ru.json?v=2026-08-29.6", "json"],
+    ["Arapça dil paketi", "https://pstreamers.com/locales/ar.json?v=2026-08-29.6", "json"],
+    ["Japonca dil paketi", "https://pstreamers.com/locales/ja.json?v=2026-08-29.6", "json"],
     ["Premium stil dosyası", "https://pstreamers.com/site-v7.css?v=10.13.0", "style"],
     ["Oturum başlangıç betiği", "https://pstreamers.com/session-bootstrap.js?v=1.1", "script"],
     ["Site yönlendiricisi", "https://pstreamers.com/site-router.js?v=1.1", "script"],
@@ -912,7 +914,7 @@ async function runScheduledPlayBotAudit(env) {
       const validPayload = result.label === "Windows güncelleme bildirimi"
         ? Boolean(payload?.version && hasUpdaterPlatforms)
         : localeCatalog
-          ? Boolean(payload?.version === "2026-08-29.5" && payload?.sourceLanguage === "tr" && payload?.language && Object.keys(payload?.translations || {}).length >= 350)
+          ? Boolean(payload?.version === "2026-08-29.6" && payload?.sourceLanguage === "tr" && payload?.language && Object.keys(payload?.translations || {}).length >= 350)
           : Boolean(payload?.ok);
       if (!validPayload) issues.push(`${result.label} geçerli bir JSON yanıtı döndürmüyor.`);
     }
@@ -924,8 +926,8 @@ async function runScheduledPlayBotAudit(env) {
       ["app.js?v=5.4.8", "Güncel ana uygulama betiği"],
       ["app-final.js?v=5.11.0", "Güncel onarım betiği"],
       ["site-v7.js?v=10.13.0", "Güncel site davranış betiği"],
-      ["live-i18n.js?v=9.5.0", "Güncel sabit paket çeviri betiği"],
-      ["play-streamers-build\" content=\"2026-08-29-site-10.13.0", "Site 10.13.0 sürüm işareti"],
+      ["live-i18n.js?v=9.6.0", "Güncel sabit paket çeviri betiği"],
+      ["play-streamers-build\" content=\"2026-08-29-site-10.13.1", "Site 10.13.1 sürüm işareti"],
     ];
     for (const [token, label] of documentContracts) {
       if (!homeDocument.body.includes(token)) issues.push(`${label} canlı ana sayfaya bağlanmamış.`);
@@ -1009,15 +1011,14 @@ async function runScheduledPlayBotAudit(env) {
   } catch { previousStatus = null; }
   const unchanged = JSON.stringify(previousStatus?.issues || []) === JSON.stringify(uniqueIssues);
   const cachedReports = unchanged && Array.isArray(previousStatus?.reports) ? previousStatus.reports : null;
-  const aiReports = !cachedReports && uniqueIssues.length ? await explainSwBotIssuesWithAi(uniqueIssues, env).catch(() => null) : null;
-  const reports = cachedReports || (Array.isArray(aiReports?.reports) && aiReports.reports.length
-    ? aiReports.reports
-    : uniqueIssues.map(swBotDeterministicReport));
+  // SW Bot her zaman kanıta dayalı kurallarla çalışır. Sorun açıklamaları D1'de
+  // sorun kimliğine göre saklanır; zamanlanmış her kontrolde AI çağrısı yapılmaz.
+  const reports = cachedReports || await resolveSwBotReports(uniqueIssues, env);
   const status = {
     checkedAt: new Date().toISOString(),
     issues: uniqueIssues,
     reports,
-    assistant: cachedReports ? (previousStatus?.assistant || "deterministic") : aiReports?.model ? "sw-ai" : "deterministic",
+    assistant: "deterministic",
   };
   await env.DB.prepare(`INSERT INTO play_streamers_metadata (key, value, updated_at)
     VALUES (?1, ?2, datetime('now'))
@@ -1056,58 +1057,46 @@ function swBotDeterministicReport(issue) {
   return { issue: text, category, title, summary: text, action };
 }
 
-function validSwBotReports(value, issues) {
-  if (!value || !Array.isArray(value.reports)) return null;
-  const allowed = new Set(issues);
-  const reports = value.reports.filter(report => report
-    && allowed.has(String(report.issue || ""))
-    && typeof report.title === "string" && report.title.length <= 90
-    && typeof report.summary === "string" && report.summary.length <= 360
-    && typeof report.action === "string" && report.action.length <= 240)
-    .map(report => ({
-      issue: String(report.issue),
-      category: String(report.category || "system").slice(0, 32),
-      title: String(report.title),
-      summary: String(report.summary),
-      action: String(report.action),
-    }));
-  if (!reports.length) return null;
-  const byIssue = new Map(reports.map(report => [report.issue, report]));
-  return issues.map(issue => byIssue.get(issue) || swBotDeterministicReport(issue));
+let swBotReportSchemaReady = false;
+let swBotReportSchemaPromise = null;
+
+async function ensureSwBotReportStorage(env) {
+  if (swBotReportSchemaReady || !env.DB) return;
+  if (!swBotReportSchemaPromise) {
+    swBotReportSchemaPromise = env.DB.prepare(`CREATE TABLE IF NOT EXISTS sw_bot_issue_reports (
+      issue_hash TEXT PRIMARY KEY,
+      issue_text TEXT NOT NULL,
+      report_json TEXT NOT NULL,
+      created_at TEXT NOT NULL,
+      last_seen_at TEXT NOT NULL
+    )`).run().then(() => { swBotReportSchemaReady = true; }).finally(() => { swBotReportSchemaPromise = null; });
+  }
+  await swBotReportSchemaPromise;
 }
 
-async function explainSwBotIssuesWithAi(issues, env) {
-  if (!env.AI || typeof env.AI.run !== "function" || !issues.length) return null;
-  const model = "@cf/meta/llama-3.1-8b-instruct-fp8";
-  const payload = await env.AI.run(model, {
-    messages: [
-      {
-        role: "system",
-        content: "Sen SW AI'sın. SW Bot'un teknik site denetimlerini son kullanıcı için sade Türkçeye çevirirsin. Sorunun nedenini kanıt yoksa uydurma. Kullanıcıya ayar değiştirmesini, sayfayı yenilemesini veya başka bir işlem yapmasını söyleme. Yalnız sorunun ne olduğunu ve etkisini açıkla. action alanını daima 'Ekibimiz sorun üzerinde çalışıyor.' yap. Yalnız geçerli JSON döndür.",
-      },
-      {
-        role: "user",
-        content: `Sorunlar: ${JSON.stringify(issues)}\nHer issue metnini aynen koru. Yalnız şu biçimi döndür: {"reports":[{"issue":"aynı sorun","category":"kısa kategori","title":"en fazla 90 karakter","summary":"anlaşılır açıklama, en fazla 360 karakter","action":"güvenli sonraki adım, en fazla 240 karakter"}]}`,
-      },
-    ],
-    max_tokens: 1400,
-    temperature: 0.15,
-  });
-  const text = typeof payload?.response === "string"
-    ? payload.response
-    : typeof payload?.result?.response === "string"
-      ? payload.result.response
-      : typeof payload?.choices?.[0]?.message?.content === "string"
-        ? payload.choices[0].message.content
-        : "";
-  const cleaned = text.trim().replace(/^```(?:json)?\s*/i, "").replace(/\s*```$/i, "");
-  const start = cleaned.indexOf("{");
-  const end = cleaned.lastIndexOf("}");
-  if (start < 0 || end <= start) return null;
-  let parsed = null;
-  try { parsed = JSON.parse(cleaned.slice(start, end + 1)); } catch { parsed = null; }
-  const reports = validSwBotReports(parsed, issues);
-  return reports ? { reports, model } : null;
+async function resolveSwBotReports(issues, env) {
+  if (!issues.length) return [];
+  if (!env.DB) return issues.map(swBotDeterministicReport);
+  await ensureSwBotReportStorage(env);
+  const hashes = await Promise.all(issues.map(issue => sha256Hex(`sw-bot:rule:v1:${issue}`)));
+  const placeholders = hashes.map((_, index) => `?${index + 1}`).join(",");
+  const stored = await env.DB.prepare(`SELECT issue_hash, issue_text, report_json FROM sw_bot_issue_reports
+    WHERE issue_hash IN (${placeholders})`).bind(...hashes).all().catch(() => ({ results: [] }));
+  const byHash = new Map();
+  for (const row of stored?.results || []) {
+    try {
+      const report = JSON.parse(String(row.report_json || ""));
+      if (report?.issue === row.issue_text) byHash.set(String(row.issue_hash), report);
+    } catch (_) {}
+  }
+  const reports = issues.map((issue, index) => byHash.get(hashes[index]) || swBotDeterministicReport(issue));
+  const writes = reports.map((report, index) => env.DB.prepare(`INSERT INTO sw_bot_issue_reports
+    (issue_hash, issue_text, report_json, created_at, last_seen_at)
+    VALUES (?1, ?2, ?3, datetime('now'), datetime('now'))
+    ON CONFLICT(issue_hash) DO UPDATE SET last_seen_at = excluded.last_seen_at`)
+    .bind(hashes[index], issues[index], JSON.stringify(report)));
+  if (writes.length) await env.DB.batch(writes).catch(() => {});
+  return reports;
 }
 
 const INTERFACE_LANGUAGES = Object.freeze({
@@ -1120,11 +1109,6 @@ const INTERFACE_COUNTRY_LOCALES = Object.freeze({
   ES: "es", MX: "es", AR: "es", CL: "es", CO: "es", PE: "es", VE: "es", UY: "es", PY: "es", BO: "es", EC: "es", CR: "es", PA: "es", GT: "es", HN: "es", SV: "es", NI: "es", DO: "es", CU: "es",
   RU: "ru", BY: "ru", KZ: "ru",
   SA: "ar", AE: "ar", QA: "ar", KW: "ar", BH: "ar", OM: "ar", YE: "ar", EG: "ar", JO: "ar", LB: "ar", IQ: "ar", SY: "ar", DZ: "ar", MA: "ar", TN: "ar", LY: "ar", SD: "ar",
-});
-const INTERFACE_LANGUAGE_REQUIREMENTS = Object.freeze({
-  en: "English", de: "German (Deutsch)", es: "Spanish (Español)", fr: "French (Français)",
-  ru: "Russian written in Cyrillic (Русский)", ar: "Modern Standard Arabic written in Arabic script (العربية)",
-  ja: "Japanese written in Japanese script (日本語)",
 });
 const TURKISH_INTERFACE_TERMS = new Set(["giriş", "kayıt", "hakkımızda", "ürünlerimiz", "nasıl", "çalışır", "içerik", "planlama", "canlı", "analiz", "topluluk", "marka", "araçları", "gelir", "görünümleri", "yayın", "yayıncı", "hesap", "şifre", "doğrula", "indir", "destek", "sistem", "durumu", "ziyaretçi", "şu", "anda", "aktif", "hemen", "başla", "keşfet", "daha", "fazla", "burada", "mısın", "beni", "hatırla"]);
 const interfaceTranslationRateBuckets = new Map();
@@ -1168,49 +1152,44 @@ function validInterfaceTranslation(source, value, language) {
 
 async function generateInterfaceTranslations(env, language, sources) {
   if (!sources.length) return [];
-  const payload = await env.AI.run("@cf/meta/llama-3.1-8b-instruct-fast", {
-    messages: [
-      {
-        role: "system",
-        content: `You are a professional software localization engine. Translate every Turkish UI string into ${INTERFACE_LANGUAGE_REQUIREMENTS[language]}. Context: Play Streamers is a livestreaming creator dashboard. Use these meanings: yayıncı = streamer/content creator; yayın = livestream/broadcast; topluluk = community; marka araçları = brand tools; masaüstü uygulaması = desktop app; etkileşim = engagement; çalışma alanları = workspaces; panel = dashboard. Preserve Play Streamers, Play Connect, SW Create, SW Identity, SW Bot, SW AI, Product Pro, URLs, versions, numbers and shortcuts exactly. Translate headings and uppercase labels naturally, keep punctuation and item order, never summarize, and leave no Turkish UI wording. Return only valid JSON.`,
-      },
-      {
-        role: "user",
-        content: `Return {"translations":["..."]} for this array: ${JSON.stringify(sources)}`,
-      },
-    ],
-    max_completion_tokens: Math.min(7000, Math.max(1400, sources.length * 460)),
-    temperature: 0,
-    response_format: {
-      type: "json_schema",
-      json_schema: {
-        type: "object",
-        properties: { translations: { type: "array", items: { type: "string" } } },
-        required: ["translations"],
-      },
+  if (!env.GOOGLE_TRANSLATE_API_KEY) return null;
+  const response = await fetchExternal("https://translation.googleapis.com/language/translate/v2", {
+    method: "POST",
+    headers: {
+      "content-type": "application/json; charset=utf-8",
+      "x-goog-api-key": env.GOOGLE_TRANSLATE_API_KEY,
     },
+    body: JSON.stringify({ q: sources, source: "tr", target: language, format: "text" }),
+  }, {
+    operation: "google-interface-translation",
+    timeoutMs: 20_000,
+    retries: 1,
   });
-  const structured = payload?.response && typeof payload.response === "object" && !Array.isArray(payload.response)
-    ? payload.response
-    : payload?.result?.response && typeof payload.result.response === "object" && !Array.isArray(payload.result.response)
-      ? payload.result.response : null;
-  if (Array.isArray(structured?.translations) && structured.translations.length === sources.length) {
-    return structured.translations.map((value, index) => validInterfaceTranslation(sources[index], value, language) ? interfaceTranslationText(value) : "");
-  }
-  const text = typeof payload?.response === "string" ? payload.response
-    : typeof payload?.result?.response === "string" ? payload.result.response
-      : typeof payload?.choices?.[0]?.message?.content === "string" ? payload.choices[0].message.content : "";
-  if (!text) console.warn("i18n ai response has no text", Object.keys(payload || {}), typeof payload?.choices?.[0]?.message?.content);
-  const cleaned = text.trim().replace(/^```(?:json)?\s*/i, "").replace(/\s*```$/i, "");
-  const start = cleaned.indexOf("{");
-  const end = cleaned.lastIndexOf("}");
-  let generated = null;
-  try { generated = JSON.parse(cleaned.slice(start, end + 1))?.translations; } catch { generated = null; }
+  if (!response.ok) throw new Error(`Google Translation HTTP ${response.status}`);
+  const payload = await safeJson(response);
+  const generated = payload?.data?.translations;
   if (!Array.isArray(generated) || generated.length !== sources.length) return null;
-  return generated.map((value, index) => validInterfaceTranslation(sources[index], value, language) ? interfaceTranslationText(value) : "");
+  return generated.map((entry, index) => {
+    const value = decodeGoogleTranslation(entry?.translatedText);
+    return validInterfaceTranslation(sources[index], value, language) ? value : "";
+  });
 }
 
-async function translateInterfaceStrings(request, env, ctx) {
+function decodeGoogleTranslation(value) {
+  return String(value || "")
+    .replace(/&quot;/g, '"').replace(/&#39;|&apos;/g, "'")
+    .replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&amp;/g, "&")
+    .replace(/&#(\d+);/g, (_, code) => String.fromCodePoint(Number(code)))
+    .replace(/&#x([0-9a-f]+);/gi, (_, code) => String.fromCodePoint(Number.parseInt(code, 16)))
+    .trim();
+}
+
+function authorizedInterfaceCatalogBuild(request, env) {
+  const supplied = getBearerToken(request);
+  return Boolean(env.I18N_BUILD_TOKEN && supplied && constantTimeEqual(supplied, env.I18N_BUILD_TOKEN));
+}
+
+async function translateInterfaceStrings(request, env, _ctx) {
   const input = await requestJson(request);
   const language = String(input?.language || "").toLowerCase();
   const rawStrings = Array.isArray(input?.strings) ? input.strings : [];
@@ -1218,12 +1197,12 @@ async function translateInterfaceStrings(request, env, ctx) {
   if (!rawStrings.length || rawStrings.length > 60) return apiResponse(request, { error: "Çeviri paketi 1 ile 60 metin içermelidir." }, 400);
   const strings = rawStrings.map(value => String(value || "").replace(/[\u0000-\u001f\u007f]+/g, " ").replace(/\s+/g, " ").trim());
   if (strings.some(value => !value || value.length > 1200)) return apiResponse(request, { error: "Çevrilecek arayüz metni geçersiz." }, 400);
-  if (!(await allowInterfaceTranslationRequest(request, env, language))) {
+  const authorizedBuild = authorizedInterfaceCatalogBuild(request, env);
+  if (!authorizedBuild && !(await allowInterfaceTranslationRequest(request, env, language))) {
     return apiResponse(request, { error: "Canlı çeviri sınırına ulaşıldı. Kısa süre sonra yeniden dene." }, 429);
   }
   const cacheKeys = await Promise.all(strings.map(source => sha256Hex(`i18n:v9:${language}:${source}`)));
   const cachedByKey = new Map();
-  const cachedCreatedAtByKey = new Map();
   if (env.DB) {
     try {
       await ensureInterfaceTranslationStorage(env);
@@ -1245,33 +1224,37 @@ async function translateInterfaceStrings(request, env, ctx) {
         // translation is never overwritten in memory by an older fallback.
         if (cacheKey && !cachedByKey.has(cacheKey) && validInterfaceTranslation(strings[sourceIndex], translation, language)) {
           cachedByKey.set(cacheKey, translation);
-          cachedCreatedAtByKey.set(cacheKey, String(row.created_at || ""));
         }
       }
     } catch (_) { cachedByKey.clear(); }
   }
   const translations = strings.map((_, index) => cachedByKey.get(cacheKeys[index]) || "");
   const missingIndexes = translations.map((value, index) => value ? -1 : index).filter(index => index >= 0);
-  const fallbackIndexes = translations
-    .map((value, index) => value && cachedCreatedAtByKey.get(cacheKeys[index]) < "2021-01-01" ? index : -1)
-    .filter(index => index >= 0);
   if (!missingIndexes.length) {
-    // Offline translations guarantee an immediate result when the AI daily
-    // allowance is unavailable. Upgrade a tiny number in the background on
-    // later visits without delaying the language switch or consuming KV.
-    if (fallbackIndexes.length && ctx?.waitUntil && env.AI && env.DB) {
-      ctx.waitUntil(refreshInterfaceTranslationFallbacks(env, language, strings, cacheKeys, fallbackIndexes.slice(0, 2)));
-    }
-    return apiResponse(request, { ok: true, language, translations, cached: true, cache: "d1" });
+    return apiResponse(request, { ok: true, language, translations, cached: true, cache: "d1", provider: "static-catalog" });
   }
-  if (!env.AI || typeof env.AI.run !== "function") return apiResponse(request, { error: "Canlı çeviri şu anda kullanılamıyor." }, 503);
+  if (!authorizedBuild) {
+    return apiResponse(request, {
+      ok: true,
+      language,
+      translations,
+      partial: true,
+      cached: true,
+      generationDisabled: true,
+      cache: "d1",
+      provider: "static-catalog",
+    });
+  }
+  if (!env.GOOGLE_TRANSLATE_API_KEY) {
+    return apiResponse(request, { error: "Google Translation sunucu anahtarı yapılandırılmadı." }, 503);
+  }
   const missingStrings = missingIndexes.map(index => strings[index]);
   const generated = new Array(missingStrings.length).fill("");
   const groups = [];
   for (let index = 0; index < missingStrings.length; index += 8) groups.push({ index, sources: missingStrings.slice(index, index + 8) });
   await Promise.all(groups.map(async group => {
     const values = await generateInterfaceTranslations(env, language, group.sources).catch(error => {
-      console.error("i18n ai generation failed", error instanceof Error ? error.message : String(error));
+      console.error("google interface translation failed", error instanceof Error ? error.message : String(error));
       return null;
     });
     if (values) values.forEach((value, offset) => { generated[group.index + offset] = value; });
@@ -1294,22 +1277,15 @@ async function translateInterfaceStrings(request, env, ctx) {
         .bind(cacheKeys[item.sourceIndex], language, strings[item.sourceIndex], item.value));
     if (writes.length) await env.DB.batch(writes).catch(() => {});
   }
-  return apiResponse(request, { ok: true, language, translations, partial: translations.some(value => !value), cached: false, cache: "d1" });
-}
-
-async function refreshInterfaceTranslationFallbacks(env, language, strings, cacheKeys, sourceIndexes) {
-  if (!sourceIndexes.length) return;
-  const sources = sourceIndexes.map(index => strings[index]);
-  const values = await generateInterfaceTranslations(env, language, sources).catch(() => null);
-  if (!values) return;
-  const writes = sourceIndexes
-    .map((sourceIndex, valueIndex) => ({ sourceIndex, value: values[valueIndex] }))
-    .filter(item => item.value)
-    .map(item => env.DB.prepare(`INSERT INTO interface_translation_cache (cache_key, language, source_text, translation, created_at)
-      VALUES (?1, ?2, ?3, ?4, datetime('now'))
-      ON CONFLICT(cache_key) DO UPDATE SET translation = excluded.translation, created_at = excluded.created_at`)
-      .bind(cacheKeys[item.sourceIndex], language, strings[item.sourceIndex], item.value));
-  if (writes.length) await env.DB.batch(writes).catch(() => {});
+  return apiResponse(request, {
+    ok: true,
+    language,
+    translations,
+    partial: translations.some(value => !value),
+    cached: false,
+    cache: "d1",
+    provider: "google-cloud-translation",
+  });
 }
 
 async function ensureInterfaceTranslationStorage(env) {

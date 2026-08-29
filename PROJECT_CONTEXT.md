@@ -2,6 +2,23 @@
 
 ## Güncel geliştirme durumu · 29 Ağustos 2026
 
+Site 10.13.1 / Worker 6.4 çeviri maliyeti revizyonu: Canlı ziyaretçi
+akışından bütün arayüz çeviri üretimi çıkarıldı. Tarayıcı yalnız sürümlü
+`locales/*.json` paketlerini kullanır; eksik metin için Google veya Workers AI
+çağrısı yapmaz. Yeni ve değişen Türkçe arayüz metinleri yalnız yetkili yayın
+işleminde Google Cloud Translation API ile hazırlanır, D1
+`interface_translation_cache` tablosuna yazılır ve statik paketlere alınır.
+Google anahtarı ve `I18N_BUILD_TOKEN` yalnız Worker secret olarak tutulur;
+istemciye, depoya veya çıktılara eklenmez. `--refresh-all` seçeneği eski otomatik
+çevirileri yeniden üretebilir; elle düzenlenen kritik ürün sözlüğünü korur.
+
+SW Bot artık Workers AI çağırmaz. Denetimler deterministik kurallarla yapılır;
+sorun açıklamaları sorun karmasına göre D1 `sw_bot_issue_reports` tablosunda
+saklanır ve ortak durum bütün ziyaretçilere sunulur. Böylece zamanlanmış SW Bot
+kontrolleri ve ziyaretçi sayısı Workers AI kotası tüketmez. Workers AI binding'i
+yalnız Product Pro'nun ayrı, kullanıcı tarafından istenen yayın içgörüsü yedeği
+için korunur.
+
 Site 10.13.0 / Worker 6.3 / SW Identity 1.8.1 / Desktop 0.14.4 / Play Connect
 1.15.1 kaynakları hazırlandı. Site kartları ve temel yüzeyler, mobilde daha
 düşük bulanıklık kullanan belirgin sıvı cam katmanına geçirildi; giriş sonrası

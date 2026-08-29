@@ -10,12 +10,14 @@ const wrangler = join(root, 'swcreate-site', 'node_modules', 'wrangler', 'bin', 
 const config = join(root, 'wrangler.play-streamers.jsonc');
 const outputDirectory = join(root, 'locales');
 const api = 'https://api.pstreamers.com/api/i18n/translate';
-const version = '2026-08-29.5';
+const version = '2026-08-29.6';
 const languages = ['en', 'de', 'es', 'fr', 'ru', 'ar', 'ja'];
 const sourceFiles = ['index.html', 'privacy.html', 'terms.html', 'app.js', 'app-final.js', 'site-v7.js'];
 const extractionFiles = new Set(['index.html', 'privacy.html', 'terms.html', 'site-v7.js']);
 const dryRun = process.argv.includes('--dry-run');
 const noGenerate = process.argv.includes('--no-generate');
+const refreshAll = process.argv.includes('--refresh-all');
+const buildToken = String(process.env.I18N_BUILD_TOKEN || '').trim();
 
 const clean = value => String(value || '').replace(/\\n|\\r|\\t/g, ' ').replace(/\s+/g, ' ').trim();
 const decode = value => clean(String(value || '')
@@ -177,6 +179,7 @@ function readRemoteCache() {
 }
 
 async function translateMissing(language, sources) {
+  if (!buildToken) throw new Error('I18N_BUILD_TOKEN bulunamadı. Google paket üretimi yalnız yetkili yayın işleminde çalışır.');
   const completed = new Map();
   const chunks = [];
   for (let index = 0; index < sources.length; index += 16) chunks.push(sources.slice(index, index + 16));
@@ -187,7 +190,11 @@ async function translateMissing(language, sources) {
         try {
           const response = await fetch(api, {
             method: 'POST',
-            headers: { 'content-type': 'application/json', origin: 'https://pstreamers.com' },
+            headers: {
+              authorization: `Bearer ${buildToken}`,
+              'content-type': 'application/json',
+              origin: 'https://pstreamers.com',
+            },
             body: JSON.stringify({ language, strings }),
           });
           const result = await response.json().catch(() => ({}));
@@ -261,9 +268,13 @@ async function main() {
   for (const language of languages) {
     const translations = byLanguage[language];
     const missing = [...extracted].filter(source => !translations.has(source) && !passthrough(source));
-    if (missing.length && !noGenerate) {
-      console.log(`[${language}] ${translations.size} hazır, ${missing.length} eksik çeviri hazırlanıyor.`);
-      const generated = await translateMissing(language, missing);
+    const protectedSources = new Set(Object.keys(critical[language] || {}).map(clean));
+    const generationTargets = refreshAll
+      ? [...extracted].filter(source => !passthrough(source) && !protectedSources.has(source))
+      : missing;
+    if (generationTargets.length && !noGenerate) {
+      console.log(`[${language}] ${translations.size} hazır, ${generationTargets.length} metin Google Translation ile hazırlanıyor.`);
+      const generated = await translateMissing(language, generationTargets);
       generated.forEach((translation, source) => translations.set(source, translation));
     }
     const ordered = Object.fromEntries([...translations.entries()].sort(([left], [right]) => left.localeCompare(right, 'tr')));

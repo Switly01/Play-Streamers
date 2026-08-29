@@ -30,3 +30,7 @@ before enabling desktop SW Identity exchange routes.
 Kick stream runtime and minute-level viewer samples. The scheduled Worker uses
 these tables to open and close stream summaries while the site, desktop app
 and browser extension are closed. Apply it after `0010` and before Worker 5.0.
+
+`0013_sw_bot_issue_reports.sql` stores deterministic SW Bot explanations by
+issue hash. Apply it after `0012`; Worker 6.4 also creates the table lazily for
+safe rollout compatibility.

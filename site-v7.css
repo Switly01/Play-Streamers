@@ -3885,3 +3885,186 @@ body.ps-v9 #ps51AccountCenter .ps51-account-close { z-index:4!important; }
   #ps44UpdatesDialog .ps44-dialog { padding:22px 15px!important; }
   #ps44UpdatesDialog .ps48-update-history { max-height:62dvh!important; padding-right:6px!important; }
 }
+
+/* Site 10.15 — stable auth, larger dashboard, plan tools and account system. */
+body.ps-v9 .app.ps13-dashboard .workspace-tabs {
+  width:min(720px,100%)!important;
+  min-height:56px!important;
+  margin:18px auto!important;
+  padding:6px!important;
+  border-radius:18px!important;
+}
+body.ps-v9 .app.ps13-dashboard .workspace-tabs button { min-height:44px!important; font-size:11px!important; }
+body.ps-v9 .app.ps13-dashboard #panelGrid>.card,
+body.ps-v9 .app.ps13-dashboard #statsGrid>.card:nth-child(n) {
+  grid-column:span 6!important;
+  min-height:370px!important;
+}
+body.ps-v9 .app.ps13-dashboard #statsGrid>.card:last-child { grid-column:3/span 8!important; }
+body.ps-v9 .app.ps13-dashboard #streamStatus {
+  display:grid!important;
+  grid-template-columns:12px minmax(0,1fr) auto!important;
+  align-items:center!important;
+  gap:11px!important;
+  min-height:58px!important;
+  padding:9px 11px 9px 18px!important;
+}
+body.ps-v9 .app.ps13-dashboard #streamStatus>[data-live-message] {
+  display:block!important;
+  min-width:0!important;
+  line-height:1.35!important;
+  white-space:normal!important;
+}
+body.ps-v9 .app.ps13-dashboard #streamStatus>.dot { margin:0!important; }
+
+body.ps53-card-copy-open { overflow:hidden!important; }
+#ps13CardCopy {
+  position:fixed!important;
+  z-index:50000!important;
+  inset:0!important;
+  display:grid!important;
+  place-items:center!important;
+  overflow:auto!important;
+  padding:clamp(14px,3vw,36px)!important;
+  background:rgba(0,0,0,.76)!important;
+  transform:none!important;
+  contain:layout paint!important;
+}
+#ps13CardCopy>.ps13-card-copy {
+  position:relative!important;
+  inset:auto!important;
+  grid-column:auto!important;
+  width:min(1040px,calc(100vw - 40px))!important;
+  height:min(720px,calc(100dvh - 40px))!important;
+  margin:auto!important;
+  transform:none!important;
+}
+
+body.ps-v9 #ps44HomeConnection .ps44-play-connect {
+  border-color:rgba(255,255,255,.22)!important;
+  background:#070707!important;
+}
+body.ps-v9 #ps44HomeConnection .ps44-play-connect img { width:30px!important; height:30px!important; }
+
+.ps115-plan-features,.ps-plan-preview ul {
+  display:grid;
+  gap:7px;
+  margin:18px 0 22px;
+  padding:0;
+  list-style:none;
+}
+.ps115-plan-features li,.ps-plan-preview li {
+  position:relative;
+  padding-left:16px;
+  color:rgba(255,255,255,.65);
+  font-size:9px;
+  line-height:1.45;
+}
+.ps115-plan-features li::before,.ps-plan-preview li::before {
+  position:absolute;
+  left:0;
+  top:.38em;
+  width:6px;
+  height:6px;
+  border:1px solid rgba(255,255,255,.62);
+  border-radius:50%;
+  content:"";
+}
+.ps92-plan-panel article { align-content:start!important; }
+.ps92-plan-panel article>button,.ps92-plan-panel article>a { margin-top:auto!important; }
+
+#ps115PlanTools .ps44-dialog.ps115-plan-dialog {
+  width:min(1040px,calc(100vw - 28px))!important;
+  max-height:calc(100dvh - 28px)!important;
+  overflow:auto!important;
+  border-radius:26px!important;
+  padding:clamp(25px,4vw,44px)!important;
+}
+#ps115PlanTools .ps115-plan-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; margin:24px 0; }
+#ps115PlanTools .ps115-plan-grid article {
+  position:relative;
+  display:grid;
+  align-content:start;
+  gap:10px;
+  min-height:230px;
+  border:1px solid rgba(255,255,255,.12);
+  border-radius:18px;
+  padding:20px;
+  background:linear-gradient(145deg,rgba(255,255,255,.075),rgba(4,4,6,.68));
+}
+#ps115PlanTools .ps115-plan-grid article>span { color:rgba(255,255,255,.48); font:800 9px var(--display); letter-spacing:.15em; }
+#ps115PlanTools .ps115-plan-grid h3 { margin:0; font:700 20px var(--display); letter-spacing:-.035em; }
+#ps115PlanTools .ps115-plan-grid p,#ps115PlanTools .ps115-plan-grid small { margin:0; color:rgba(255,255,255,.52); font-size:9px; line-height:1.55; }
+#ps115PlanTools .ps115-plan-grid label { display:grid; gap:6px; color:rgba(255,255,255,.62); font-size:9px; }
+#ps115PlanTools .ps115-plan-grid :is(input,textarea) {
+  width:100%;
+  border:1px solid rgba(255,255,255,.15);
+  border-radius:11px;
+  padding:11px 12px;
+  color:#fff;
+  background:rgba(0,0,0,.36);
+  font:600 11px/1.5 var(--body);
+  resize:vertical;
+}
+#ps115PlanTools .ps115-plan-grid textarea { min-height:96px; }
+#ps115PlanTools .ps115-plan-grid button { min-height:41px; border:1px solid rgba(255,255,255,.26); border-radius:11px; color:#070707; background:#f4f4f1; font-size:10px; font-weight:900; }
+#ps115PlanTools .ps115-plan-grid article.locked { opacity:.52; }
+#ps115PlanTools .ps115-plan-grid article.locked::after { position:absolute; top:17px; right:17px; content:"KİLİTLİ"; color:rgba(255,255,255,.58); font:800 8px var(--display); letter-spacing:.14em; }
+
+body.ps-v9 #ps51AccountCenter .ps51-account-brand>i {
+  width:46px!important;
+  height:46px!important;
+  overflow:visible!important;
+  border:0!important;
+  border-radius:0!important;
+  padding:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+}
+body.ps-v9 #ps51AccountCenter .ps51-account-brand>i img { width:44px!important; height:44px!important; object-fit:contain!important; }
+body.ps-v9 #ps51AccountCenter .ps115-account-hero {
+  display:grid;
+  grid-template-columns:minmax(0,1fr) 116px;
+  align-items:center;
+  gap:28px;
+  margin-bottom:28px;
+  border-bottom:1px solid rgba(255,255,255,.1);
+  padding-bottom:28px;
+}
+body.ps-v9 #ps51AccountCenter .ps115-account-hero .ps51-account-lead { margin-bottom:0!important; }
+body.ps-v9 #ps51AccountCenter .ps115-account-visual {
+  display:grid;
+  width:108px;
+  height:108px;
+  place-items:center;
+  border:1px solid rgba(255,255,255,.16);
+  border-radius:30px 30px 30px 10px;
+  color:#fff;
+  background:linear-gradient(145deg,rgba(255,255,255,.13),rgba(5,5,7,.7));
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.18),0 22px 55px rgba(0,0,0,.26);
+  font-style:normal;
+}
+body.ps-v9 #ps51AccountCenter .ps115-account-visual svg { width:44px; height:44px; fill:none; stroke:currentColor; stroke-width:1.45; stroke-linecap:round; stroke-linejoin:round; }
+body.ps-v9 #ps51AccountCenter .ps115-account-visual img { width:76px; height:76px; object-fit:contain; }
+body.ps-v9 #ps51AccountCenter :is(.ps51-data-card,.ps51-account-section,.ps51-kick-card,.ps62-bridge-card,.ps62-device,.ps65-device-card,.ps67-oauth,.ps67-oauth-card,.ps55-ticket-card) {
+  -webkit-backdrop-filter:none!important;
+  backdrop-filter:none!important;
+}
+body.ps-v9 #ps51AccountCenter .ps51-profile-head { grid-template-columns:76px minmax(0,1fr)!important; gap:18px!important; border:1px solid rgba(255,255,255,.12)!important; border-radius:18px!important; padding:18px!important; background:linear-gradient(145deg,rgba(255,255,255,.08),rgba(3,3,5,.58))!important; }
+body.ps-v9 #ps51AccountCenter .ps51-profile-avatar { width:72px!important; height:72px!important; border:0!important; border-radius:20px!important; background:rgba(255,255,255,.055)!important; }
+body.ps-v9 #ps51AccountCenter .ps51-profile-avatar img { width:58px!important; height:58px!important; object-fit:contain!important; }
+
+@media(max-width:900px) {
+  body.ps-v9 .app.ps13-dashboard #statsGrid>.card:last-child { grid-column:1/-1!important; }
+  #ps115PlanTools .ps115-plan-grid { grid-template-columns:1fr; }
+  body.ps-v9 #ps51AccountCenter .ps115-account-hero { grid-template-columns:minmax(0,1fr) 86px; gap:16px; }
+  body.ps-v9 #ps51AccountCenter .ps115-account-visual { width:82px; height:82px; border-radius:22px 22px 22px 8px; }
+  body.ps-v9 #ps51AccountCenter .ps115-account-visual img { width:58px; height:58px; }
+}
+@media(max-width:620px) {
+  body.ps-v9 .app.ps13-dashboard #panelGrid>.card,body.ps-v9 .app.ps13-dashboard #statsGrid>.card:nth-child(n) { grid-column:1/-1!important; min-height:260px!important; }
+  body.ps-v9 .app.ps13-dashboard #streamStatus { grid-template-columns:10px minmax(0,1fr)!important; }
+  body.ps-v9 .app.ps13-dashboard #streamStatus>#clearBtn { grid-column:1/-1!important; width:100%!important; }
+  body.ps-v9 #ps51AccountCenter .ps115-account-hero { grid-template-columns:1fr; }
+  body.ps-v9 #ps51AccountCenter .ps115-account-visual { display:none; }
+}

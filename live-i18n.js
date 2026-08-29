@@ -1,5 +1,5 @@
 const SUPPORTED = new Set(["tr", "en", "de", "es", "fr", "ru", "ar", "ja"]);
-const CATALOG_VERSION = "2026-08-29.8";
+const CATALOG_VERSION = "2026-08-30.9";
 const catalogPromises = new Map();
 const COUNTRY_LOCALES = Object.freeze({
   TR: "tr", JP: "ja", DE: "de", AT: "de", CH: "de", LI: "de",
@@ -411,6 +411,71 @@ Object.entries({
     "Kullanıcı adın veya e-postanla giriş yap.", "kullaniciadi veya e-posta", "SW hesabı ile hızlı giriş",
     "SW IDENTITY İLE KORUNUR", "SW Identity güvenlik ve plan altyapısı", "Şifren", "Şifreyi gizle", "Şifreyi göster",
   ].forEach((source, index) => { critical[language][source] = values[index]; });
+});
+Object.entries({
+  en: ["Developed by", "SERVER DATA PIPELINE", "Reset publisher panel data", "Reset publisher statistics data", "Save workspace", "Saved"],
+  de: ["Entwickelt von", "SERVER-DATENLEITUNG", "Daten des Streamer-Panels zurücksetzen", "Streamer-Statistiken zurücksetzen", "Arbeitsstand speichern", "Gespeichert"],
+  es: ["Desarrollado por", "CANAL DE DATOS DEL SERVIDOR", "Restablecer los datos del panel del streamer", "Restablecer las estadísticas del streamer", "Guardar trabajo", "Guardado"],
+  fr: ["Développé par", "FLUX DE DONNÉES SERVEUR", "Réinitialiser les données du panneau streamer", "Réinitialiser les statistiques du streamer", "Enregistrer le travail", "Enregistré"],
+  ru: ["Разработано", "СЕРВЕРНЫЙ КАНАЛ ДАННЫХ", "Сбросить данные панели стримера", "Сбросить статистику стримера", "Сохранить работу", "Сохранено"],
+  ar: ["طُوّر بواسطة", "مسار بيانات الخادم", "إعادة ضبط بيانات لوحة البث", "إعادة ضبط إحصاءات البث", "حفظ العمل", "تم الحفظ"],
+  ja: ["開発", "サーバーデータパイプライン", "配信者パネルのデータをリセット", "配信者統計をリセット", "作業を保存", "保存しました"],
+}).forEach(([language, values]) => {
+  ["Developed by", "SUNUCU VERİ HATTI", "Yayıncı paneli verilerini sıfırla", "Yayıncı istatistikleri verilerini sıfırla", "Çalışmayı kaydet", "Kaydedildi"]
+    .forEach((source, index) => { critical[language][source] = values[index]; });
+});
+Object.assign(critical.ar, {
+  "Örn. 250 takipçi": "مثال: 250 متابعًا",
+  "Windows 10/11 masaüstü merkezi": "مركز سطح المكتب لنظام Windows 10/11",
+  "Yayın metninden kısa paylaşım taslakları oluştur.": "أنشئ مسودات منشورات قصيرة من نص البث.",
+});
+Object.entries({
+  en: ["Streamer Panel", "Streamer Statistics", "RESET STREAMER PANEL", "RESET STREAMER STATISTICS", "SERVER ONLINE", "New Members", "Follower", "1-Month Subscriber", "2+ Month Subscriber", "Gifted Subscriptions", "This month", "All time"],
+  de: ["Streamer-Panel", "Streamer-Statistiken", "STREAMER-PANEL ZURÜCKSETZEN", "STREAMER-STATISTIKEN ZURÜCKSETZEN", "SERVER AKTIV", "Neue Mitglieder", "Follower", "1-Monats-Abonnent", "Abonnent ab 2 Monaten", "Geschenkabos", "Dieser Monat", "Gesamter Zeitraum"],
+  es: ["Panel del streamer", "Estadísticas del streamer", "RESTABLECER PANEL DEL STREAMER", "RESTABLECER ESTADÍSTICAS DEL STREAMER", "SERVIDOR ACTIVO", "Nuevos miembros", "Seguidor", "Suscriptor de 1 mes", "Suscriptor de 2+ meses", "Suscripciones regaladas", "Este mes", "Todo el tiempo"],
+  fr: ["Panneau streamer", "Statistiques streamer", "RÉINITIALISER LE PANNEAU STREAMER", "RÉINITIALISER LES STATISTIQUES STREAMER", "SERVEUR ACTIF", "Nouveaux membres", "Abonné", "Abonné depuis 1 mois", "Abonné depuis 2 mois ou plus", "Abonnements offerts", "Ce mois-ci", "Toute la période"],
+  ru: ["Панель стримера", "Статистика стримера", "СБРОСИТЬ ПАНЕЛЬ СТРИМЕРА", "СБРОСИТЬ СТАТИСТИКУ СТРИМЕРА", "СЕРВЕР АКТИВЕН", "Новые участники", "Подписчик", "Подписчик 1 месяц", "Подписчик 2+ месяца", "Подарочные подписки", "Этот месяц", "За всё время"],
+  ar: ["لوحة البث", "إحصاءات البث", "إعادة ضبط لوحة البث", "إعادة ضبط إحصاءات البث", "الخادم نشط", "الأعضاء الجدد", "متابع", "مشترك لمدة شهر", "مشترك لمدة شهرين أو أكثر", "الاشتراكات المُهداة", "هذا الشهر", "كل الوقت"],
+  ja: ["配信者パネル", "配信者統計", "配信者パネルをリセット", "配信者統計をリセット", "サーバー稼働中", "新規メンバー", "フォロワー", "1か月購読者", "2か月以上の購読者", "ギフト購読", "今月", "全期間"],
+}).forEach(([language, values]) => {
+  ["Yayıncı Paneli", "Yayıncı İstatistikleri", "YAYINCI PANELİNİ SIFIRLA", "YAYINCI İSTATİSTİKLERİNİ SIFIRLA", "SUNUCU AKTİF", "Yeni Katılanlar", "Takipçi", "1 Aylık Abone", "2+ Aylık Abone", "Hediye Abonelik", "Bu ay", "Tüm zamanlar"]
+    .forEach((source, index) => { critical[language][source] = values[index]; });
+});
+Object.assign(critical.en, {
+  "Anlık görüntü": "Snapshot",
+  "Hızlı notlar": "Quick notes",
+  "Hızlı notlar ve hedef panosu": "Quick notes and goal board",
+  "İçerik dönüştürme": "Content repurposing",
+  "İçerik dönüştürme ve akıllı uyarılar": "Content repurposing and smart alerts",
+  "Mevcut Dashboard durumunu bu cihazda karşılaştırılabilir bir anlık görüntü olarak sakla.": "Save the current Dashboard state on this device as a comparable snapshot.",
+  "Oluşturulan taslak burada görünür.": "The generated draft will appear here.",
+  "Plan araçları": "Plan tools",
+  "Tarayıcıda çalışan araçlar hesabına özel olarak bu cihazda saklanır. Plan yetkisi olmayan araçlar açıkça kilitli görünür.": "Browser tools are stored on this device for your account. Tools outside your plan are clearly shown as locked.",
+  "Veri dışa aktarma": "Data export",
+  "Yayın biter. Verin kaybolmaz.": "The stream ends. Your data remains.",
+  "Yayın çalışma setin": "Creator toolkit",
+  "Yayın metni + teleprompter": "Stream script + teleprompter",
+  "Yayın metni, teleprompter ve veri dışa aktarma": "Stream script, teleprompter, and data export",
+  "Yayın metninden kısa paylaşım taslakları oluştur.": "Create short social post drafts from your stream script.",
+  "Yayın sırasında unutmaman gerekenleri yaz...": "Write down anything you do not want to forget during the stream...",
+  "Yayın zamanlayıcısı ve fikir kasası": "Stream timer and idea vault",
+  "Yayın zekâsı ve izleyici nabzı": "Stream intelligence and audience pulse",
+  "Yayından kısa not:": "Stream highlight:",
+  "Yayının kapansa da geçmişin hazır.": "Even after your stream ends, your history is ready.",
+  "Yayınını yönet. Üretimini büyüt.": "Manage your stream. Grow your production system.",
+});
+Object.entries({
+  en: ["Live event center and counter", "Quick notes and goal board", "Stream timer and idea vault", "Advanced analytics and after-stream report", "Stream script, teleprompter, and data export", "Brand, vault, and community tools", "Stream intelligence and audience pulse", "Content repurposing and smart alerts", "Media kit, revenue cockpit, and snapshots", "WINDOWS 10/11 · VERSION 0.14.4"],
+  de: ["Live-Event-Zentrale und Zähler", "Schnellnotizen und Zieltafel", "Stream-Timer und Ideenspeicher", "Erweiterte Diagramme und Stream-Bericht", "Stream-Skript, Teleprompter und Datenexport", "Marken-, Tresor- und Community-Werkzeuge", "Stream-Intelligenz und Zuschauer-Puls", "Content-Aufbereitung und intelligente Benachrichtigungen", "Medienkit, Umsatz-Cockpit und Momentaufnahmen", "WINDOWS 10/11 · VERSION 0.14.4"],
+  es: ["Centro de eventos en directo y contador", "Notas rápidas y panel de objetivos", "Temporizador de emisión y banco de ideas", "Gráficos avanzados e informe del directo", "Guion de emisión, teleprónter y exportación de datos", "Herramientas de marca, archivo y comunidad", "Inteligencia de emisión y pulso de la audiencia", "Reutilización de contenido y alertas inteligentes", "Kit de medios, panel de ingresos e instantáneas", "WINDOWS 10/11 · VERSIÓN 0.14.4"],
+  fr: ["Centre d’événements en direct et compteur", "Notes rapides et tableau d’objectifs", "Minuteur de diffusion et boîte à idées", "Graphiques avancés et rapport de diffusion", "Script de diffusion, téléprompteur et export de données", "Outils de marque, coffre et communauté", "Intelligence de diffusion et pouls de l’audience", "Déclinaison de contenu et alertes intelligentes", "Kit média, cockpit des revenus et instantanés", "WINDOWS 10/11 · VERSION 0.14.4"],
+  ru: ["Центр событий эфира и счётчик", "Быстрые заметки и доска целей", "Таймер эфира и хранилище идей", "Расширенные графики и отчёт об эфире", "Сценарий эфира, телесуфлёр и экспорт данных", "Инструменты бренда, хранилища и сообщества", "Аналитика эфира и пульс аудитории", "Адаптация контента и умные уведомления", "Медиакит, панель доходов и снимки", "WINDOWS 10/11 · ВЕРСИЯ 0.14.4"],
+  ar: ["مركز أحداث البث والعداد", "ملاحظات سريعة ولوحة الأهداف", "مؤقت البث ومستودع الأفكار", "رسوم بيانية متقدمة وتقرير البث", "نص البث والملقن وتصدير البيانات", "أدوات العلامة التجارية والخزنة والمجتمع", "ذكاء البث ومؤشر تفاعل الجمهور", "إعادة توظيف المحتوى والتنبيهات الذكية", "حزمة إعلامية ولوحة الإيرادات واللقطات", "WINDOWS 10/11 · الإصدار 0.14.4"],
+  ja: ["ライブイベントセンターとカウンター", "クイックノートと目標ボード", "配信タイマーとアイデア保管庫", "高度なグラフと配信レポート", "配信台本、テレプロンプター、データ書き出し", "ブランド、保管庫、コミュニティツール", "配信インテリジェンスと視聴者パルス", "コンテンツ再活用とスマート通知", "メディアキット、収益コックピット、スナップショット", "WINDOWS 10/11 · バージョン 0.14.4"],
+}).forEach(([language, values]) => {
+  ["Canlı olay merkezi ve sayaç", "Hızlı notlar ve hedef panosu", "Yayın zamanlayıcısı ve fikir kasası", "Gelişmiş grafikler ve yayın raporu", "Yayın metni, teleprompter ve veri dışa aktarma", "Marka, kasa ve topluluk araçları", "Yayın zekâsı ve izleyici nabzı", "İçerik dönüştürme ve akıllı uyarılar", "Medya kiti, gelir kokpiti ve anlık görüntüler", "WINDOWS 10/11 · SÜRÜM 0.14.4"]
+    .forEach((source, index) => { critical[language][source] = values[index]; });
+  critical[language]["PLAY STREAMERS WEB · v10.6.0"] = "PLAY STREAMERS WEB · v10.6.0";
 });
 
 function clean(value) { return String(value || "").replace(/\s+/g, " ").trim(); }

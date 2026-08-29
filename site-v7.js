@@ -185,7 +185,9 @@
     const navHeight = root.querySelector('.landing-nav')?.getBoundingClientRect().height || 76;
     const top = Math.max(0, target.offsetTop - navHeight - 20);
     root.scrollTo({ top, behavior: smooth ? 'smooth' : 'auto' });
-    target.scrollIntoView({ behavior: smooth ? 'smooth' : 'auto', block: 'start' });
+    requestAnimationFrame(() => {
+      if (!root.hidden) root.scrollTo({ top, behavior: 'auto' });
+    });
     root.querySelectorAll('.ps14-nav-links button').forEach((button) => {
       const buttonKey = button.dataset.info || button.dataset.ps49Info;
       button.classList.toggle('active', buttonKey === key);
@@ -407,9 +409,9 @@
           <button id="ps92-tab-create" type="button" role="tab" aria-selected="false" aria-controls="ps92-panel-create" data-ps92-plan-tab="create">SW Create Plans</button>
         </div>
         <div id="ps92-panel-play" class="ps92-plan-panel active" role="tabpanel" aria-labelledby="ps92-tab-play" data-ps92-plan-panel="play">
-          <article><span>FREE</span><h3>Play Streamers Free</h3><p>Yayına başlamak, temel verilerini görmek ve günlük üretim düzenini kurmak için.</p><b>Ücretsiz başlangıç</b><button type="button" data-ps8-action="register">Hesap oluştur <i>↗</i></button></article>
-          <article class="featured"><span>PRO</span><h3>Play Streamers Pro</h3><p>İçerik, topluluk ve marka araçlarını daha düzenli bir üretim sistemine dönüştürmek için.</p><b>Üretim sistemi</b><button type="button" data-ps8-action="register">Pro'yu keşfet <i>↗</i></button></article>
-          <article><span>PRODUCT PRO</span><h3>Play Streamers Product Pro</h3><p>Derin analiz, SW AI açıklamaları ve gelişmiş iş akışlarıyla veriyi karara çevirmek için.</p><b>Tam ürün deneyimi</b><button type="button" data-ps8-action="register">Product Pro'yu keşfet <i>↗</i></button></article>
+          <article><span>FREE</span><h3>Play Streamers Free</h3><p>Yayına başlamak, temel verilerini görmek ve günlük üretim düzenini kurmak için.</p><ul class="ps115-plan-features"><li>Canlı olay merkezi ve sayaç</li><li>Hızlı notlar ve hedef panosu</li><li>Yayın zamanlayıcısı ve fikir kasası</li></ul><b>Ücretsiz başlangıç</b><button type="button" data-ps8-action="register">Hesap oluştur <i>↗</i></button></article>
+          <article class="featured"><span>PRO</span><h3>Play Streamers Pro</h3><p>İçerik, topluluk ve marka araçlarını daha düzenli bir üretim sistemine dönüştürmek için.</p><ul class="ps115-plan-features"><li>Gelişmiş grafikler ve yayın raporu</li><li>Yayın metni, teleprompter ve veri dışa aktarma</li><li>Marka, kasa ve topluluk araçları</li></ul><b>Üretim sistemi</b><button type="button" data-ps8-action="register">Pro'yu keşfet <i>↗</i></button></article>
+          <article><span>PRODUCT PRO</span><h3>Play Streamers Product Pro</h3><p>Derin analiz, SW AI açıklamaları ve gelişmiş iş akışlarıyla veriyi karara çevirmek için.</p><ul class="ps115-plan-features"><li>Yayın zekâsı ve izleyici nabzı</li><li>İçerik dönüştürme ve akıllı uyarılar</li><li>Medya kiti, gelir kokpiti ve anlık görüntüler</li></ul><b>Tam ürün deneyimi</b><button type="button" data-ps8-action="register">Product Pro'yu keşfet <i>↗</i></button></article>
         </div>
         <div id="ps92-panel-create" class="ps92-plan-panel" role="tabpanel" aria-labelledby="ps92-tab-create" data-ps92-plan-panel="create" hidden>
           <article><span>FREE EDITION</span><h3>SW Create Free Edition</h3><p>SW Create ekosistemini ve ortak kimlik merkezini kullanmaya başlamak için.</p><b>Temel ekosistem</b><a href="https://swcreate.com" target="_blank" rel="noopener noreferrer">SW Create'e git <i>↗</i></a></article>

@@ -1,13 +1,14 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="Play Connect PC logo">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="Play Connect keskin PC amblemi">
   <defs>
-    <linearGradient id="pcGlow" x1="16" y1="10" x2="112" y2="118" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#8dff64"/>
-      <stop offset="1" stop-color="#53fc18"/>
+    <linearGradient id="pcMetal" x1="18" y1="8" x2="110" y2="120" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#fff"/>
+      <stop offset=".48" stop-color="#d7d7d9"/>
+      <stop offset="1" stop-color="#77777c"/>
     </linearGradient>
   </defs>
-  <g transform="translate(0 6) skewY(-5)">
-    <path d="M31 4h66c15 0 27 12 27 27v66c0 15-12 27-27 27H14c-6 0-10-4-10-10V31C4 16 16 4 31 4Z" fill="#050a08" stroke="url(#pcGlow)" stroke-width="3"/>
-    <path d="M31 15h66c9 0 16 7 16 16v66c0 9-7 16-16 16H17V31c0-9 6-16 14-16Z" fill="none" stroke="#53fc18" stroke-opacity=".12"/>
-    <text x="64" y="84" text-anchor="middle" fill="url(#pcGlow)" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="57" font-weight="900" letter-spacing="-5">PC</text>
-  </g>
+  <path d="M22 7h84l15 15v84l-15 15H22L7 106V22L22 7Z" fill="#050505" stroke="url(#pcMetal)" stroke-width="3"/>
+  <path d="M28 18h70l11 11v70l-11 11H28L18 99V29L28 18Z" fill="none" stroke="#fff" stroke-opacity=".18"/>
+  <path d="M31 35h29l12 12v17L60 76H43v19H31V35Zm12 11v19h13l5-5v-9l-5-5H43Z" fill="url(#pcMetal)"/>
+  <path d="M92 35h-7L72 48v34l13 13h18V83H90l-6-6V53l6-6h13V35H92Z" fill="url(#pcMetal)"/>
+  <path d="M16 104 104 16" stroke="#fff" stroke-opacity=".08"/>
 </svg>

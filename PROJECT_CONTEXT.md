@@ -1,6 +1,19 @@
 # Play Streamers — Kalıcı Proje Bağlamı
 
-## Güncel geliştirme durumu · 29 Ağustos 2026
+## Güncel geliştirme durumu · 30 Ağustos 2026
+
+Site 10.15.0 / Worker 6.7 Dashboard, hesap ve plan araçları revizyonu: Giriş ve
+kayıt pencereleri eski geçiş yükleyicisine takıldığında güvenle kurtarılır.
+Dashboard yayın durumu tek satırda ve seçili dilde gösterilir; büyütülen kartlar
+ekranın merkezinde açılır. Bağış para birimi seçili bölgesel dile göre eşleşir.
+Dashboard kartları ve sekmeleri genişletildi; bağlantı yüzeyinde güncel siyah-
+beyaz Play Connect PC amblemi kullanılır. Güncelleme tarihleri, sunucu veri hattı,
+sıfırlama kontrolleri, ürünler ve footer dahil statik dil paketleri 1.140 arayüz
+metnini kapsar. Hesap merkezinin veriler, profil, güvenlik, cihazlar, bağlantılar
+ve destek bölümleri ortak, daha dengeli görsel hiyerarşiye geçirildi. Free, Pro ve
+Product Pro planları için sırasıyla hızlı not/hedef, yayın metni/dışa aktarma ve
+içerik dönüştürme/anlık görüntü araçları eklendi. SW Bot denetimi yeni sürüm ve
+dil paketi eşiğini kontrol eder.
 
 Site 10.14.0 / Worker 6.6 üye arayüzü ve dil güvenliği revizyonu: Sonradan
 değişen astronot metinleri seçili dile bağlı kalır; Cloudflare Turnstile kutusu

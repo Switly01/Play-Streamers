@@ -8,7 +8,7 @@ import { critical } from '../live-i18n.js';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const outputDirectory = join(root, 'locales');
-const version = '2026-08-29.8';
+const version = '2026-08-30.9';
 const languages = ['en', 'de', 'es', 'fr', 'ru', 'ar', 'ja'];
 const sourceFiles = ['index.html', 'privacy.html', 'terms.html', 'app.js', 'app-final.js', 'site-v7.js'];
 const extractionFiles = new Set(['index.html', 'privacy.html', 'terms.html', 'site-v7.js']);
@@ -27,6 +27,7 @@ const decode = value => clean(String(value || '')
   .replace(/&lt;/gi, '<')
   .replace(/&gt;/gi, '>'));
 const passthrough = value => /^(?:(?:PLAY STREAMERS|SW CREATE)(?:\s+(?:APP|WEB|PLANS|FREE|PRO|PRODUCT PRO|FREE EDITION|PRO EDITION|PRODUCT PRO EDITION))?|PLAY CONNECT|PLAY|STREAMERS|SW IDENTITY|SW BOT|SW AI|PRODUCT PRO|FREE|PRO|PC|PS|APP|WEB|CONNECT|HTTP|HTTPS|API|OBS|KICK|WINDOWS)(?:\s*[·+:/-].*)?$/i.test(clean(value))
+  || /^(?:ps\d+[a-z0-9-]*|Developed by)$/i.test(clean(value))
   || /^(?:https?:\/\/|www\.|[\w.+-]+@[\w.-]+\.|(?:api\.)?[a-z0-9-]+(?:\.[a-z0-9-]+){1,}|chrome\.storage\.local$)/i.test(clean(value))
   || /^(?:cookies|notifications|offscreen|storage|webRequest):$/i.test(clean(value))
   || /^(?:ByNoGame|Dashboard|English|Language|Menü|Windows 10\/11|PRO EDITION|Pro Edition|Product Pro Edition)$/i.test(clean(value))
@@ -122,13 +123,14 @@ function addActiveRuntimeStrings(file, source, target) {
     ['function refreshInterfaceLanguage', 'window.psOpenLandingAuth'],
     ["home.className='ps-second-home", 'return true;'],
   ] : file === 'app-final.js' ? [
+    ['function showUpdates', 'function restorePublicLandingSurface'],
     ['function renderConnectionPanel', 'const infoContent'],
     ['function accountDataCard', 'function updateNotifications'],
     ['function accountDevicesPaneHtml', 'function bindAccountPane'],
     ['function supportPaneHtml', 'function showAccountCenter'],
     ['function showAccountCenter', 'window.ps28OpenConnection'],
     ['function ensureSupport', 'function normalizeTooltips'],
-    ['function ensureMemberExtras', 'function ensurePrivacyLinks'],
+    ['function showPlanTools', 'function ensurePrivacyLinks'],
   ] : [];
   ranges.forEach(([startMarker, endMarker]) => {
     const start = source.indexOf(startMarker);

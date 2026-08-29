@@ -128,7 +128,7 @@
     const info = kick();
     const playConnectDevices = Array.isArray(donateBridgeDevices) ? donateBridgeDevices.filter(device => device?.active) : [];
     const playConnectConnected = playConnectDevices.length > 0 || (Array.isArray(donateWebhookConnections) && donateWebhookConnections.length > 0);
-    panel.innerHTML = `<span class="ps44-panel-title">BAĞLANTI DURUMU</span><article class="ps44-platform"><i class="ps44-platform-mark ps44-kick-mark"><img src="./assets/kick-logo.svg?v=10.14" alt=""></i><span><b>Kick</b><small>${esc(info.copy)}</small></span>${info.connected ? '<i class="ps44-state">✓</i>' : '<button class="ps44-connect" type="button" aria-label="Kick bağlantısı kur">→</button>'}</article><article class="ps44-platform"><i class="ps44-platform-mark ps44-play-connect"><img src="./play-connect-pc-logo.svg?v=1.15.1" alt=""></i><span><b>Play Connect</b><small>${playConnectConnected ? `${playConnectDevices.length || donateWebhookConnections.length} bağlantı aktif` : 'Henüz bağlantı kurulmadı'}</small></span><i class="ps44-state${playConnectConnected ? '' : ' off'}">${playConnectConnected ? '✓' : '×'}</i></article>`;
+    panel.innerHTML = `<span class="ps44-panel-title">BAĞLANTI DURUMU</span><article class="ps44-platform"><i class="ps44-platform-mark ps44-kick-mark"><img src="./assets/kick-logo.svg?v=10.14" alt=""></i><span><b>Kick</b><small>${esc(info.copy)}</small></span>${info.connected ? '<i class="ps44-state">✓</i>' : '<button class="ps44-connect" type="button" aria-label="Kick bağlantısı kur">→</button>'}</article><article class="ps44-platform"><i class="ps44-platform-mark ps44-play-connect"><img src="./play-connect-pc-logo.svg?v=1.15.2" alt=""></i><span><b>Play Connect</b><small>${playConnectConnected ? `${playConnectDevices.length || donateWebhookConnections.length} bağlantı aktif` : 'Henüz bağlantı kurulmadı'}</small></span><i class="ps44-state${playConnectConnected ? '' : ' off'}">${playConnectConnected ? '✓' : '×'}</i></article>`;
     window.dispatchEvent(new Event('ps:i18n-refresh'));
     const connect = $('.ps44-connect', panel);
     if (connect) connect.onclick = event => {
@@ -153,6 +153,15 @@
     closeDialog($('#ps44UpdatesDialog'));
     const fallback = state().settings?.userSession ? visibleMemberRoute() : '/';
     syncCleanRoute(updatesReturnPath || fallback, true);
+  }
+  function localizedUpdateDate(value) {
+    const months = { Ocak: 0, Şubat: 1, Mart: 2, Nisan: 3, Mayıs: 4, Haziran: 5, Temmuz: 6, Ağustos: 7, Eylül: 8, Ekim: 9, Kasım: 10, Aralık: 11 };
+    const match = String(value || '').match(/^(\d{1,2})\s+([A-Za-zÇĞİÖŞÜçğıöşü]+)\s+(\d{4})$/u);
+    if (!match || !(match[2] in months)) return value;
+    const language = String(localStorage.getItem('ps15-locale') || document.documentElement.lang || 'tr').split('-')[0];
+    const locale = ({ tr: 'tr-TR', en: 'en-US', de: 'de-DE', es: 'es-ES', fr: 'fr-FR', ru: 'ru-RU', ar: 'ar-SA', ja: 'ja-JP' })[language] || 'en-US';
+    return new Intl.DateTimeFormat(locale, { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' })
+      .format(new Date(Date.UTC(Number(match[3]), months[match[2]], Number(match[1]))));
   }
   function showUpdates() {
     closeLocaleMenus(); closeHomePanels(); closeStatus(); closeNotifications();
@@ -206,7 +215,7 @@
       ['1.2','11 Temmuz 2026',['Ana sayfanın yayıncı odaklı koyu arayüzü yenilendi.','Hakkımızda, Ürünlerimiz ve Nasıl çalışır içerikleri eklendi.']],
       ['1.1','10 Temmuz 2026',['Play Streamers ana sayfası, hesap akışı ve temel Dashboard kullanıma açıldı.']]
     ];
-    const notes = history.map(([version,date,items], index) => `<article class="ps48-update-version${index === 0 ? ' is-latest ps51-update-expanded' : ''}" data-expanded="${index === 0 ? 'true' : 'false'}"><header><span class="ps50-version-heading"><b>${esc(version)}</b>${index === 0 ? '<span class="ps50-latest-badge">SON SÜRÜM</span>' : ''}</span><span class="ps51-update-meta"><time>${esc(date)}</time><button class="ps51-update-expand" type="button" aria-expanded="${index === 0}" aria-label="${esc(version)} sürüm ayrıntılarını ${index === 0 ? 'daralt' : 'büyüt'}">${index === 0 ? '&#8722;' : '+'}</button></span></header><ul${index === 0 ? '' : ' hidden'}>${items.map(item => `<li>${esc(item)}</li>`).join('')}</ul></article>`).join('');
+    const notes = history.map(([version,date,items], index) => `<article class="ps48-update-version${index === 0 ? ' is-latest ps51-update-expanded' : ''}" data-expanded="${index === 0 ? 'true' : 'false'}"><header><span class="ps50-version-heading"><b>${esc(version)}</b>${index === 0 ? '<span class="ps50-latest-badge">SON SÜRÜM</span>' : ''}</span><span class="ps51-update-meta"><time data-no-translate>${esc(localizedUpdateDate(date))}</time><button class="ps51-update-expand" type="button" aria-expanded="${index === 0}" aria-label="${esc(version)} sürüm ayrıntılarını ${index === 0 ? 'daralt' : 'büyüt'}">${index === 0 ? '&#8722;' : '+'}</button></span></header><ul${index === 0 ? '' : ' hidden'}>${items.map(item => `<li>${esc(item)}</li>`).join('')}</ul></article>`).join('');
     const layer = showDialog('ps44UpdatesDialog', `<button class="ps47-dialog-close" type="button" aria-label="Güncelleme notlarını kapat">×</button><span class="ps44-panel-title">GÜNCELLEME NOTLARI</span><h2>Tüm güncellemeler</h2><p class="ps47-lead">En yeni sürümden başlayarak bütün yayın notlarını aşağı kaydırarak inceleyebilirsin.</p><div class="ps48-update-history">${notes}</div><div class="ps44-dialog-actions"><button class="ps44-confirm" type="button">Tamam</button></div>`);
     $('.ps44-dialog', layer)?.classList.add('ps47-rich-dialog');
     window.dispatchEvent(new Event('ps:i18n-refresh'));
@@ -411,12 +420,17 @@
     if (!overlay || !hero || !product || !update) return;
     overlay.classList.add('ps-creator-landing');
     product.setAttribute('aria-label', 'Play Streamers masaüstü ve sunucu veri merkezi ön izlemesi');
-    const setText = (node, value) => { if (node && node.textContent !== value) node.textContent = value; };
+    const setText = (node, value) => {
+      if (!node || node.dataset.psSourceText === value) return;
+      node.dataset.psSourceText = value;
+      node.textContent = ui(value);
+    };
     const setMarkup = (node, value) => {
-      if (!node) return;
+      if (!node || node.dataset.psSourceMarkup === value) return;
       const template = document.createElement('template');
       template.innerHTML = value;
-      if (node.innerHTML !== template.innerHTML) node.replaceChildren(template.content.cloneNode(true));
+      node.dataset.psSourceMarkup = value;
+      node.replaceChildren(template.content.cloneNode(true));
     };
     const eyebrow = $('.eyebrow', hero); setText(eyebrow, 'PLAY STREAMERS · YAYINCI MERKEZİ');
     const title = $('h1', hero); setText(title, 'Yayın biter. Verin kaybolmaz.');
@@ -429,7 +443,7 @@
     const productWindow = $('.product-window', product); if (productWindow) productWindow.setAttribute('aria-label', 'Play Streamers masaüstü ve sunucu veri merkezi ön izlemesi');
     const productTop = $('.product-top > span:first-child', product); setText(productTop, 'PLAY STREAMERS · CREATOR WORKSPACE');
     const previewCards = $$('.preview-card', product);
-    setMarkup(previewCards[0], '<span class="preview-kicker">OTOMATİK VERİ HATTI</span><div class="preview-live"><i></i>SUNUCU AKTİF</div><p class="preview-title">Yayının kapansa da geçmişin hazır.</p><p class="preview-copy">Doğrulanmış oturumlar ve izleyici örnekleri sunucuda işlenir.</p>');
+    setMarkup(previewCards[0], '<span class="preview-kicker">SUNUCU VERİ HATTI</span><div class="preview-live"><i></i>SUNUCU AKTİF</div><p class="preview-title">Yayının kapansa da geçmişin hazır.</p><p class="preview-copy">Doğrulanmış oturumlar ve izleyici örnekleri sunucuda işlenir.</p>');
     setMarkup(previewCards[1], '<span class="preview-kicker">CREATOR OS</span><div class="mini-stat"><strong>54</strong><span>çalışma alanı</span></div><div class="mini-bars"><i style="height:34%"></i><i style="height:52%"></i><i style="height:76%"></i><i style="height:61%"></i><i style="height:88%"></i><i style="height:70%"></i></div>');
     const updateEyebrow = $('.eyebrow', update); setText(updateEyebrow, 'SİSTEM DURUMU');
     const updateTitle = $('h2', update); setText(updateTitle, '7.1 · Control Room');
@@ -487,7 +501,7 @@
         <section class="ps-product-command" aria-label="Play Streamers ana yetenekleri"><article><span>01 · CANLI MERKEZ</span><b>Doğrulanmış kanal olayları</b><small>Kick ve Play Connect üzerinden ulaşan doğrulanmış olayları tek okunabilir akışta takip et.</small></article><article><span>02 · CANLI ZEKA</span><b>Kanıtlı metrik, anlaşılır karar</b><small>Yayın oturumlarını, etkileşimi ve değişimleri doğrulanmış veriler üzerinden karşılaştır.</small></article><article><span>03 · CREATOR OS</span><b>45 hazır çalışma alanı</b><small>Free, Pro ve Product Pro içinde içerik, topluluk, marka, gelir, analiz ve yerel kasa araçları.</small></article></section>
         <section class="ps-product-proof" aria-label="Masaüstü uygulaması özellikleri"><span>45 HAZIR ARAÇ</span><span>İÇERİK PLANLAMA</span><span>YAYIN SONRASI ANALİZ</span><span>DOĞRULANMIŞ KICK OLAYLARI</span><span>PLAY CONNECT DESTEKLERİ</span><span>TOPLULUK SİSTEMLERİ</span><span>MARKA ARAÇLARI</span><span>GELİR GÖRÜNÜMLERİ</span><span>YEREL DOSYA KASASI</span><span>TELEPROMPTER</span><span>AKILLI BİLDİRİMLER</span><span>SW IDENTITY</span><span>WINDOWS 10/11</span><span>CMD PENCERESİ YOK</span></section>
         <section class="ps-desktop-release-note" aria-label="Masaüstü sürüm durumu"><b>0.14.0 birleşik tasarım</b><span>Masaüstü uygulaması sitenin keskin siyah/beyaz tasarım diliyle yenilendi; Studio ve yerel kayıt/yayın motoru rafa kaldırılmış durumda kalır.</span><b>Kurulum durumu</b><span>Güncelleme paketi kriptografik olarak doğrulanır; mağaza yayını tamamlanana kadar doğrudan EXE kurulumunda Windows uyarısı görülebilir.</span></section>
-        <section class="ps-plan-preview" aria-label="Play Streamers planları"><article><span>FREE</span><b>Yayınını düzenle</b><small>Canlı olaylar, sayaç, notlar, hedefler ve fikir kasası.</small></article><article><span>PRO</span><b>Üretim sistemini kur</b><small>İçerik akışı, teleprompter, marka ve yerel kasa araçları.</small></article><article><span>PRODUCT PRO</span><b>Veriyi avantaja çevir</b><small>Kanıtlı karşılaştırmalar, AI açıklaması, topluluk sistemleri, medya kiti ve doğrulanmış gelir görünümleri.</small></article></section><section class="ps54-sites"><span>ÜRÜN AİLESİ</span><div class="ps54-sites-grid"><a class="ps54-site-card" href="https://pstreamers.com" aria-label="Play Streamers ana sayfası"><i>PS</i><span><b>Play Streamers</b><small>Site hesap ve ürün merkezi</small></span></a><a class="ps54-site-card" href="https://swcreate.com" target="_blank" rel="noopener noreferrer"><i class="ps61-sw-site-logo"><img src="swcreate-sw-logo-transparent.png" alt=""></i><span><b>SW Identity</b><small>Ortak hesap, güvenlik ve plan yönetimi</small></span></a></div></section>`;
+        <section class="ps-plan-preview" aria-label="Play Streamers planları"><article><span>FREE</span><b>Yayınını düzenle</b><small>Canlı olaylar, sayaç, notlar, hedefler ve fikir kasası.</small><ul><li>Hızlı notlar</li><li>Hedef panosu</li><li>Canlı olay merkezi</li></ul></article><article><span>PRO</span><b>Üretim sistemini kur</b><small>İçerik akışı, teleprompter, marka ve yerel kasa araçları.</small><ul><li>Yayın raporu ve gelişmiş grafikler</li><li>Teleprompter ve veri dışa aktarma</li><li>Marka ve topluluk araçları</li></ul></article><article><span>PRODUCT PRO</span><b>Veriyi avantaja çevir</b><small>Kanıtlı karşılaştırmalar, AI açıklaması, topluluk sistemleri, medya kiti ve doğrulanmış gelir görünümleri.</small><ul><li>Yayın zekâsı ve izleyici nabzı</li><li>İçerik dönüştürme ve akıllı uyarılar</li><li>Gelir kokpiti ve anlık görüntüler</li></ul></article></section><section class="ps54-sites"><span>ÜRÜN AİLESİ</span><div class="ps54-sites-grid"><a class="ps54-site-card" href="https://pstreamers.com" aria-label="Play Streamers ana sayfası"><i>PS</i><span><b>Play Streamers</b><small>Site hesap ve ürün merkezi</small></span></a><a class="ps54-site-card" href="https://swcreate.com" target="_blank" rel="noopener noreferrer"><i class="ps61-sw-site-logo"><img src="swcreate-sw-logo-transparent.png" alt=""></i><span><b>SW Identity</b><small>Ortak hesap, güvenlik ve plan yönetimi</small></span></a></div></section>`;
     } else {
       content.innerHTML = `<span class="ps49-info-kicker">PLAY STREAMERS · ${esc(data.title).toUpperCase()}</span><h1>${esc(data.title)}</h1><p class="ps49-info-lead">${esc(data.lead)}</p><div class="ps49-info-grid">${data.cards.map((card, index) => `<article class="ps49-info-card${data.security ? ' ps54-security-card' : ''}"><span>0${index + 1}</span><h2>${esc(card[0])}</h2><p>${esc(card[1])}</p></article>`).join('')}</div>`;
     }
@@ -1252,7 +1266,7 @@
       : '';
     const canCreatePairing = donateBridgeDevicesLoaded && !donateBridgePairing;
     const pairingButton = visibleDevices.length ? 'Bağlantıyı yenile' : 'Eklentiyi eşleştir';
-    return `<article class="ps62-bridge-card"><div class="ps62-bridge-head"><i class="ps62-bridge-mark"><img src="./play-connect-pc-logo.svg" alt="Play Connect PC logosu"></i><span><b>Play Connect</b><small>Her platform için en güvenilir bağlantı otomatik seçilir: doğrudan API, SSB veya platformun OBS / Alert Box bağlantısı. OBS bağlantıları ve erişim anahtarları yalnızca kullanıcının Chrome profilinde kalır; sunucuya yalnızca doğrulanmış donate olayları gönderilir. ${donateBridgeProviderCatalog.length ? `${donateBridgeProviderCatalog.length} hazır platform` : 'Platform listesi hazırlanıyor'} · ${visibleDevices.length ? `${visibleDevices.length} cihaz bağlı.` : 'Henüz cihaz bağlı değil.'}</small></span><span class="ps62-downloads"><a class="ps51-secondary ps62-download primary" href="${DONATE_EXTENSION_DOWNLOAD_URL}" download>Play Connect'i indir</a></span></div>${providerCatalogHtml}${donateWebhookConnectionsHtml()}${donateOAuthConnectionsHtml()}<div class="ps62-bridge-actions">${canCreatePairing ? `<button id="ps62CreatePairing" class="ps51-primary" type="button" data-replaces-connection="${visibleDevices.length ? 'true' : 'false'}">${pairingButton}</button>` : ''}<button id="ps62RefreshDevices" class="ps51-secondary" type="button">Durumu yenile</button></div>${pairingHtml}${deviceHtml}<p id="ps62BridgeStatus" class="ps51-account-status" aria-live="polite"></p></article>`;
+    return `<article class="ps62-bridge-card"><div class="ps62-bridge-head"><i class="ps62-bridge-mark"><img src="./play-connect-pc-logo.svg?v=1.15.2" alt="Play Connect PC logosu"></i><span><b>Play Connect</b><small>Her platform için en güvenilir bağlantı otomatik seçilir: doğrudan API, SSB veya platformun OBS / Alert Box bağlantısı. OBS bağlantıları ve erişim anahtarları yalnızca kullanıcının Chrome profilinde kalır; sunucuya yalnızca doğrulanmış donate olayları gönderilir. ${donateBridgeProviderCatalog.length ? `${donateBridgeProviderCatalog.length} hazır platform` : 'Platform listesi hazırlanıyor'} · ${visibleDevices.length ? `${visibleDevices.length} cihaz bağlı.` : 'Henüz cihaz bağlı değil.'}</small></span><span class="ps62-downloads"><a class="ps51-secondary ps62-download primary" href="${DONATE_EXTENSION_DOWNLOAD_URL}" download>Play Connect'i indir</a></span></div>${providerCatalogHtml}${donateWebhookConnectionsHtml()}${donateOAuthConnectionsHtml()}<div class="ps62-bridge-actions">${canCreatePairing ? `<button id="ps62CreatePairing" class="ps51-primary" type="button" data-replaces-connection="${visibleDevices.length ? 'true' : 'false'}">${pairingButton}</button>` : ''}<button id="ps62RefreshDevices" class="ps51-secondary" type="button">Durumu yenile</button></div>${pairingHtml}${deviceHtml}<p id="ps62BridgeStatus" class="ps51-account-status" aria-live="polite"></p></article>`;
   }
   function accountDeviceDate(value) {
     const time = Date.parse(value || '');
@@ -2213,6 +2227,25 @@
       }, 15000);
     }
   }
+  function decorateAccountPane(pane, tab) {
+    if (!pane || $('.ps115-account-hero', pane)) return;
+    const kicker = $(':scope > .ps51-account-kicker', pane);
+    const title = $(':scope > h2', pane);
+    const lead = $(':scope > .ps51-account-lead', pane);
+    if (!kicker || !title || !lead) return;
+    const hero = document.createElement('header');
+    hero.className = 'ps115-account-hero';
+    const copy = document.createElement('div');
+    copy.className = 'ps115-account-hero-copy';
+    copy.append(kicker, title, lead);
+    const visual = document.createElement('i');
+    visual.className = `ps115-account-visual ${tab}`;
+    visual.setAttribute('aria-hidden', 'true');
+    if (tab === 'profile' || tab === 'account') visual.innerHTML = '<img src="./play-streamers-ps-logo.svg?v=10.15" alt="">';
+    else visual.innerHTML = accountNavIcons[tab] || accountNavIcons.data;
+    hero.append(copy, visual);
+    pane.prepend(hero);
+  }
   function showAccountCenter(tab = 'data', refresh = true, flash = '', quiet = false) {
     const current = state(), settings = current.settings || {}, user = settings.user || {}; if (!settings.userSession || !settings.user) return;
     const existing = $('#ps51AccountCenter'); const kickConnected = Boolean(settings.kickSession || settings.kickAccount?.id || settings.kickAccount?.username || user.kickConnected || user.kick_connected || user.kickUserId || user.kick_user_id || user.kickId || user.kick_id); const kickName = settings.kickAccount?.username ? `@${settings.kickAccount.username}` : 'Kick hesabı';
@@ -2252,6 +2285,7 @@
         const previousScroll = main?.scrollTop || 0;
         pane.classList.remove('ps53-pane-leaving','ps53-pane-entering');
         pane.dataset.pane = safeTab; pane.innerHTML = panes[safeTab]; existing.dataset.currentTab = safeTab;
+        decorateAccountPane(pane, safeTab);
         window.dispatchEvent(new Event('ps:i18n-refresh'));
         if (safeTab === 'connections') normalizeTipeeeStreamDabLogo(existing);
         if (!quiet) { void pane.offsetWidth; pane.classList.add('ps53-pane-entering'); }
@@ -2272,6 +2306,7 @@
     const initialViewVersion = accountCenterViewVersion;
     layer.innerHTML = `<article class="ps51-account-shell"><button class="ps51-account-close" type="button" aria-label="Hesap merkezini kapat">×</button><nav class="ps51-account-nav" aria-label="Hesap bölümleri"><div class="ps51-account-brand"><i><img src="./play-streamers-ps-logo.svg?v=10.14" alt=""></i><span>PLAY STREAMERS<small>SW IDENTITY</small></span></div>${[['data','Veriler'],['profile','SW Profil'],['account','SW Güvenlik'],['devices','Cihazlar'],['connections','Bağlantılar'],['support','Destek talepleri']].map(item => { const active = safeTab === item[0]; return `<button type="button" data-ps51-tab="${item[0]}" class="${active ? 'active' : ''}"${active ? ' disabled aria-current="page"' : ''}>${accountNavIcons[item[0]]}<span>${item[1]}</span></button>`; }).join('')}</nav><main class="ps51-account-main"><section class="ps51-account-pane" data-pane="${safeTab}">${panes[safeTab]}</section></main></article>`;
     document.body.classList.add('ps54-account-open'); document.body.append(layer);
+    decorateAccountPane($('.ps51-account-pane', layer), safeTab);
     window.dispatchEvent(new Event('ps:i18n-refresh'));
     if (safeTab === 'connections') normalizeTipeeeStreamDabLogo(layer);
     bindAccountPane(layer, safeTab);
@@ -3154,6 +3189,61 @@
     const health = connectionHealth();
     ['#ps20Connection','#connectionBtn'].forEach(selector => { const button = $(selector); if (!button) return; const icon = wifiIcon(health.allConnected); if (button.innerHTML !== icon) button.innerHTML = icon; button.classList.toggle('ps47-connections-incomplete', !health.allConnected); const source = health.allConnected ? 'Tüm bağlantılar hazır' : 'Eksik bağlantı var'; const label = ui(source); button.setAttribute('aria-label', label); button.dataset.psTooltipSource = source; button.dataset.psTooltip = label; });
   }
+  function currentPlanRank() {
+    const current = state();
+    const raw = [current.settings?.plan?.key, current.settings?.plan?.slug, current.settings?.plan?.tier, current.settings?.user?.plan, current.settings?.user?.planKey]
+      .filter(Boolean).join(' ').toLocaleLowerCase('en-US');
+    if (/product[\s_-]*pro|productpro/.test(raw)) return 2;
+    if (/(^|[\s_-])pro($|[\s_-])/.test(raw)) return 1;
+    return 0;
+  }
+  function showPlanTools() {
+    const rank = currentPlanRank();
+    let saved = {};
+    try { saved = JSON.parse(localStorage.getItem('ps115-plan-tools') || '{}'); } catch (_) {}
+    const lock = level => rank < level ? ' locked' : '';
+    const disabled = level => rank < level ? ' disabled aria-disabled="true"' : '';
+    const layer = showDialog('ps115PlanTools', `<button class="ps47-dialog-close" type="button" aria-label="Plan araçlarını kapat">×</button><span class="ps44-panel-title">WEB PLAN ARAÇLARI</span><h2>Yayın çalışma setin</h2><p class="ps47-lead">Tarayıcıda çalışan araçlar hesabına özel olarak bu cihazda saklanır. Plan yetkisi olmayan araçlar açıkça kilitli görünür.</p><div class="ps115-plan-grid"><article><span>FREE</span><h3>Hızlı notlar</h3><textarea id="ps115QuickNotes" data-no-translate placeholder="Yayın sırasında unutmaman gerekenleri yaz...">${esc(saved.notes || '')}</textarea></article><article><span>FREE</span><h3>Hedef panosu</h3><label>Hedef adı<input id="ps115GoalName" data-no-translate value="${esc(saved.goalName || '')}" placeholder="Örn. 250 takipçi"></label><label>İlerleme<input id="ps115GoalValue" type="number" min="0" data-no-translate value="${esc(saved.goalValue || '0')}"></label></article><article class="${lock(1)}"><span>PRO</span><h3>Yayın metni + teleprompter</h3><textarea id="ps115StreamScript" data-no-translate placeholder="Açılış, bölüm geçişleri ve kapanış metnin..."${disabled(1)}>${esc(saved.script || '')}</textarea></article><article class="${lock(1)}"><span>PRO</span><h3>Veri dışa aktarma</h3><p>Dashboard olaylarını ve istatistiklerini taşınabilir JSON dosyası olarak indir.</p><button id="ps115Export" type="button"${disabled(1)}>Dashboard verisini indir</button></article><article class="${lock(2)}"><span>PRODUCT PRO</span><h3>İçerik dönüştürme</h3><p>Yayın metninden kısa paylaşım taslakları oluştur.</p><button id="ps115Repurpose" type="button"${disabled(2)}>Taslak oluştur</button><textarea id="ps115RepurposeOutput" data-no-translate readonly placeholder="Oluşturulan taslak burada görünür.">${esc(saved.repurpose || '')}</textarea></article><article class="${lock(2)}"><span>PRODUCT PRO</span><h3>Anlık görüntü</h3><p>Mevcut Dashboard durumunu bu cihazda karşılaştırılabilir bir anlık görüntü olarak sakla.</p><button id="ps115Snapshot" type="button"${disabled(2)}>Anlık görüntü kaydet</button><small id="ps115SnapshotStatus">${saved.snapshotAt ? `${new Date(saved.snapshotAt).toLocaleString()} tarihinde kaydedildi.` : 'Henüz anlık görüntü yok.'}</small></article></div><div class="ps44-dialog-actions"><button class="ps44-cancel" type="button">Kapat</button><button class="ps44-confirm" id="ps115SaveTools" type="button">Çalışmayı kaydet</button></div>`);
+    $('.ps44-dialog', layer)?.classList.add('ps115-plan-dialog');
+    const closeTools = () => closeDialog(layer);
+    $$('.ps47-dialog-close,.ps44-cancel', layer).forEach(button => button.onclick = closeTools);
+    const readTools = () => ({
+      ...saved,
+      notes: $('#ps115QuickNotes', layer)?.value || '',
+      goalName: $('#ps115GoalName', layer)?.value || '',
+      goalValue: $('#ps115GoalValue', layer)?.value || '0',
+      script: $('#ps115StreamScript', layer)?.value || '',
+      repurpose: $('#ps115RepurposeOutput', layer)?.value || '',
+    });
+    $('#ps115SaveTools', layer).onclick = () => {
+      saved = readTools();
+      localStorage.setItem('ps115-plan-tools', JSON.stringify(saved));
+      const button = $('#ps115SaveTools', layer); button.textContent = ui('Kaydedildi');
+      window.setTimeout(() => { if (button?.isConnected) button.textContent = ui('Çalışmayı kaydet'); }, 1100);
+    };
+    const exportButton = $('#ps115Export', layer);
+    if (exportButton && rank >= 1) exportButton.onclick = () => {
+      const current = state();
+      const payload = JSON.stringify({ exportedAt: new Date().toISOString(), events: current.events || {}, totals: current.totals || {}, stats: current.stats || {} }, null, 2);
+      const url = URL.createObjectURL(new Blob([payload], { type: 'application/json' }));
+      const link = document.createElement('a'); link.href = url; link.download = `play-streamers-dashboard-${new Date().toISOString().slice(0, 10)}.json`; link.click();
+      window.setTimeout(() => URL.revokeObjectURL(url), 1000);
+    };
+    const repurposeButton = $('#ps115Repurpose', layer);
+    if (repurposeButton && rank >= 2) repurposeButton.onclick = () => {
+      const script = String($('#ps115StreamScript', layer)?.value || saved.script || '').trim();
+      const goal = String($('#ps115GoalName', layer)?.value || '').trim();
+      const output = script ? `Yayından kısa not: ${script.slice(0, 220)}${script.length > 220 ? '…' : ''}${goal ? `\nHedef: ${goal}` : ''}` : 'Önce yayın metnine bir içerik ekle.';
+      $('#ps115RepurposeOutput', layer).value = output;
+    };
+    const snapshotButton = $('#ps115Snapshot', layer);
+    if (snapshotButton && rank >= 2) snapshotButton.onclick = () => {
+      saved = { ...readTools(), snapshotAt: Date.now(), snapshot: { totals: state().totals || {}, stats: state().stats || {} } };
+      localStorage.setItem('ps115-plan-tools', JSON.stringify(saved));
+      $('#ps115SnapshotStatus', layer).textContent = `${new Date(saved.snapshotAt).toLocaleString()} tarihinde kaydedildi.`;
+    };
+    window.dispatchEvent(new Event('ps:i18n-refresh'));
+  }
   function ensureMemberExtras() {
     const home = $('#psSecondHome.ps20-member-home'); const grid = home && $('.ps20-grid', home); if (!home || !grid) return;
     if (home.dataset.ps113WorkspaceReady === '1' && $('.ps113-hero-console', home)) return;
@@ -3170,6 +3260,13 @@
     const cards = $$('.ps20-card', grid);
     cards[0]?.classList.add('ps113-update-card');
     cards[1]?.classList.add('ps113-tools-card');
+    const toolsCard = cards[1]; const offers = toolsCard && $('.ps20-offers', toolsCard);
+    if (offers && !$('[data-ps115-plan-tools]', offers)) {
+      const button = document.createElement('button');
+      button.type = 'button'; button.dataset.ps115PlanTools = '1';
+      button.innerHTML = '<strong>Plan araçları</strong><span>Free, Pro ve Product Pro web çalışma seti.</span>';
+      button.onclick = showPlanTools; offers.append(button);
+    }
     cards.slice(2).forEach(card => card.remove());
     $('[data-ps113-dashboard]', home)?.addEventListener('click', () => $('#ps17Dashboard', home)?.click());
     home.dataset.ps113WorkspaceReady = '1';
@@ -3186,11 +3283,18 @@
       if (privacy && terms && feature && developer) {
         privacy.href = 'https://pstreamers.com/privacy.html';
         terms.href = 'https://pstreamers.com/terms.html';
+        const developerSlot = developer.closest('.ps73-developer-slot');
+        if (developerSlot && !$('.ps73-developed-label', developerSlot)) {
+          const label = document.createElement('span');
+          label.className = 'ps73-developed-label';
+          label.textContent = ui('Developed by');
+          developerSlot.replaceChildren(label, document.createTextNode(' '), developer);
+        }
         footer.classList.add('ps73-footer-order');
         return;
       }
       footer.classList.add('ps73-footer-order');
-      footer.innerHTML = '<span class="ps73-privacy-slot"><a class="ps72-privacy-link" href="https://pstreamers.com/privacy.html" aria-label="Play Streamers Gizlilik Politikası">Gizlilik</a><a class="ps72-terms-link" href="https://pstreamers.com/terms.html" aria-label="Play Streamers Kullanım Koşulları">Kullanım Koşulları</a></span><span class="ps73-feature-slot">Güvenli bağlantılar · Kişisel panel · Ücretsiz başlangıç</span><span class="ps73-developer-slot">Developed by <a class="switly-link ps73-developer-link" href="https://swcreate.com" target="_blank" rel="noopener noreferrer"><strong>SW CREATE</strong></a></span>';
+      footer.innerHTML = '<span class="ps73-privacy-slot"><a class="ps72-privacy-link" href="https://pstreamers.com/privacy.html" aria-label="Play Streamers Gizlilik Politikası">Gizlilik</a><a class="ps72-terms-link" href="https://pstreamers.com/terms.html" aria-label="Play Streamers Kullanım Koşulları">Kullanım Koşulları</a></span><span class="ps73-feature-slot">Güvenli bağlantılar · Kişisel panel · Ücretsiz başlangıç</span><span class="ps73-developer-slot"><span class="ps73-developed-label">Developed by</span> <a class="switly-link ps73-developer-link" href="https://swcreate.com" target="_blank" rel="noopener noreferrer"><strong>SW CREATE</strong></a></span>';
     });
   }
 
@@ -3344,10 +3448,12 @@
   function syncDashboardResetControl(button = $('#clearBtn'), requestedView = '') {
     if (!button) return;
     const statsMode = requestedView ? requestedView === 'stats' : dashboardStatsActive();
-    const text = statsMode
+    const source = statsMode
       ? 'Yayıncı istatistikleri verilerini sıfırla'
       : 'Yayıncı paneli verilerini sıfırla';
+    const text = ui(source);
     button.dataset.psResetScope = statsMode ? 'stats' : 'panel';
+    button.dataset.psResetSource = source;
     if (button.textContent !== text) button.textContent = text;
     if (button.dataset.psTooltip !== text) button.dataset.psTooltip = text;
     if (button.getAttribute('aria-label') !== text) button.setAttribute('aria-label', text);
@@ -3463,7 +3569,7 @@
         else originalItem?.querySelector('.event-expand')?.click();
       });
     }, true);
-    layer.append(copy); layer.onclick = event => { if (event.target === layer) closeDashboardCardCopy(); }; document.body.classList.add('ps53-card-copy-open'); document.body.append(layer); normalizeDashboardCardIcons(layer); ensureSupport();
+    layer.append(copy); layer.onclick = event => { if (event.target === layer) closeDashboardCardCopy(); }; document.body.classList.add('ps53-card-copy-open'); document.body.append(layer); layer.scrollTop = 0; copy.scrollTop = 0; normalizeDashboardCardIcons(layer); ensureSupport();
   }
   function ensureDashboardExpanders(app) {
     $$('#panelGrid .expand', app).forEach(button => { button.type = 'button'; button.dataset.psTooltip = 'Kartı büyüt'; button.removeAttribute('title'); const expand = event => { event.preventDefault(); event.stopImmediatePropagation(); openDashboardCardCopy(button.closest('.card')); }; button.onpointerdown = expand; button.onclick = event => { event.preventDefault(); event.stopImmediatePropagation(); }; });
@@ -3494,11 +3600,11 @@
       $('.expand', card).onclick = () => card.classList.toggle('expanded'); panelGrid.prepend(card);
     }
     const cardLabels = { followers: 'Takipçi', onemonth: '1 Aylık Abone', multimonth: '2+ Aylık Abone', gifts: 'Hediye Abonelik', kicks: 'Kicks', donations: 'Donate' };
-    $$('.card[data-card]', app).forEach(card => { const heading = $('.title h2', card); const label = cardLabels[card.dataset.card]; if (heading && label && heading.textContent !== label) heading.textContent = label; });
+    $$('.card[data-card]', app).forEach(card => { const heading = $('.title h2', card); const source = cardLabels[card.dataset.card]; const label = source && ui(source); if (heading && label && heading.textContent !== label) { heading.dataset.psSourceLabel = source; heading.textContent = label; } });
     const panelOrder = ['followers','onemonth','multimonth','gifts','kicks','donations'];
     if (panelGrid) { const currentOrder = $$(':scope > .card[data-card]', panelGrid).map(card => card.dataset.card); if (panelOrder.some((key, index) => currentOrder[index] !== key)) panelOrder.forEach(key => { const card = $(`:scope > .card[data-card="${key}"]`, panelGrid); if (card) panelGrid.append(card); }); }
     const statLabels = { joined: 'Yeni Katılanlar', tops: 'Top Abone', 'gifts-stats': 'Top Hediye Abonelik', 'kicks-stats': 'Top Kicks', 'donate-stats': 'Top Donate' };
-    $$('#statsGrid .card', app).forEach(card => { const heading = $('.title h2', card); if (!heading) return; const text = heading.textContent.toLocaleLowerCase('tr-TR'); const key = card.dataset.card || (text.includes('hediye') ? 'gifts-stats' : text.includes('kick') ? 'kicks-stats' : text.includes('donate') ? 'donate-stats' : text.includes('top abon') ? 'tops' : 'joined'); card.dataset.card = key; const label = statLabels[key]; if (label && heading.textContent !== label) heading.textContent = label; });
+    $$('#statsGrid .card', app).forEach(card => { const heading = $('.title h2', card); if (!heading) return; const text = String(heading.dataset.psSourceLabel || heading.textContent).toLocaleLowerCase('tr-TR'); const key = card.dataset.card || (text.includes('hediye') ? 'gifts-stats' : text.includes('kick') ? 'kicks-stats' : text.includes('donate') ? 'donate-stats' : text.includes('top abon') ? 'tops' : 'joined'); card.dataset.card = key; const source = statLabels[key]; const label = source && ui(source); if (label && heading.textContent !== label) { heading.dataset.psSourceLabel = source; heading.textContent = label; } });
     const statOrder = ['joined','tops','gifts-stats','kicks-stats','donate-stats']; const statsGrid = $('#statsGrid', app);
     if (statsGrid) {
       const currentOrder = $$(':scope > .card[data-card]', statsGrid).map(card => card.dataset.card);
@@ -3520,7 +3626,6 @@
       root.inert = false;
       root.removeAttribute('aria-hidden');
       root.scrollTo({ top: Math.max(0, target.offsetTop - navHeight - 20), behavior: 'smooth' });
-      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
       const hash = { about: '#hakkimizda', products: '#urunlerimiz', how: '#nasil-calisir' }[key];
       if (hash && location.hash !== hash) history.pushState(null, '', `/${hash}`);
       return;
@@ -3570,6 +3675,16 @@
   function publicAuthTrigger(target) {
     return target?.closest('#landingLogin,#landingSignup,[data-ps52-source-id="landingLogin"],[data-ps52-source-id="landingSignup"],[data-auth="login"],[data-auth="register"]') || null;
   }
+  function dismissTransitionLoadersForAuth() {
+    document.documentElement.classList.remove('ps42-initial-loading', 'ps15-session-pending');
+    ['ps14Loader', 'ps20Loader', 'ps28Loader'].forEach(id => {
+      const loader = document.getElementById(id);
+      if (!loader) return;
+      loader.classList.remove('show', 'is-open', 'ps42-initial-loader', 'ps42-initial-leaving');
+      loader.hidden = true;
+      loader.setAttribute('aria-hidden', 'true');
+    });
+  }
   function openPublicAuth(trigger) {
     const sourceId = trigger?.dataset.ps52SourceId || trigger?.id || '';
     const mode = sourceId === 'landingSignup' || trigger?.dataset.auth === 'register' ? 'register' : 'login';
@@ -3579,9 +3694,10 @@
     syncCleanRoute(`/account?mode=${mode}`);
     closeAllFloatingSurfaces();
     hideTooltip();
+    dismissTransitionLoadersForAuth();
     if (!trigger?.closest('#ps49InfoPage')) restorePublicLandingSurface();
-    if (typeof window.psOpenLandingAuth === 'function') window.psOpenLandingAuth(mode);
-    window.requestAnimationFrame(() => {
+    const reveal = () => {
+      dismissTransitionLoadersForAuth();
       const modal = $('#landingAuthModal');
       if (modal) {
         modal.hidden = false;
@@ -3590,7 +3706,22 @@
         modal.querySelector('input')?.focus();
       }
       queueRepair();
+      return Boolean(modal);
+    };
+    if (typeof window.psOpenLandingAuth === 'function') window.psOpenLandingAuth(mode);
+    window.requestAnimationFrame(() => {
+      if (!reveal() && typeof window.psOpenLandingAuth === 'function') {
+        window.psOpenLandingAuth(mode);
+        window.requestAnimationFrame(reveal);
+      }
     });
+    window.setTimeout(() => {
+      if (!$('#landingAuthModal')) {
+        restorePublicLandingSurface();
+        window.psOpenLandingAuth?.(mode);
+      }
+      reveal();
+    }, 520);
   }
   document.addEventListener('pointerdown', event => {
     const target = event.target instanceof Element ? event.target : null;

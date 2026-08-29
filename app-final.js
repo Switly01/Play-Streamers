@@ -129,6 +129,7 @@
     const playConnectDevices = Array.isArray(donateBridgeDevices) ? donateBridgeDevices.filter(device => device?.active) : [];
     const playConnectConnected = playConnectDevices.length > 0 || (Array.isArray(donateWebhookConnections) && donateWebhookConnections.length > 0);
     panel.innerHTML = `<span class="ps44-panel-title">BAĞLANTI DURUMU</span><article class="ps44-platform"><i class="ps44-platform-mark">K</i><span><b>Kick</b><small>${esc(info.copy)}</small></span>${info.connected ? '<i class="ps44-state">✓</i>' : '<button class="ps44-connect" type="button" aria-label="Kick bağlantısı kur">→</button>'}</article><article class="ps44-platform"><i class="ps44-platform-mark ps44-play-connect"><img src="./play-connect-pc-logo.svg" alt=""></i><span><b>Play Connect</b><small>${playConnectConnected ? `${playConnectDevices.length || donateWebhookConnections.length} bağlantı aktif` : 'Henüz bağlantı kurulmadı'}</small></span><i class="ps44-state${playConnectConnected ? '' : ' off'}">${playConnectConnected ? '✓' : '×'}</i></article>`;
+    window.dispatchEvent(new Event('ps:i18n-refresh'));
     const connect = $('.ps44-connect', panel);
     if (connect) connect.onclick = event => {
       event.preventDefault();
@@ -208,6 +209,7 @@
     const notes = history.map(([version,date,items], index) => `<article class="ps48-update-version${index === 0 ? ' is-latest ps51-update-expanded' : ''}" data-expanded="${index === 0 ? 'true' : 'false'}"><header><span class="ps50-version-heading"><b>${esc(version)}</b>${index === 0 ? '<span class="ps50-latest-badge">SON SÜRÜM</span>' : ''}</span><span class="ps51-update-meta"><time>${esc(date)}</time><button class="ps51-update-expand" type="button" aria-expanded="${index === 0}" aria-label="${esc(version)} sürüm ayrıntılarını ${index === 0 ? 'daralt' : 'büyüt'}">${index === 0 ? '&#8722;' : '+'}</button></span></header><ul${index === 0 ? '' : ' hidden'}>${items.map(item => `<li>${esc(item)}</li>`).join('')}</ul></article>`).join('');
     const layer = showDialog('ps44UpdatesDialog', `<button class="ps47-dialog-close" type="button" aria-label="Güncelleme notlarını kapat">×</button><span class="ps44-panel-title">GÜNCELLEME NOTLARI</span><h2>Tüm güncellemeler</h2><p class="ps47-lead">En yeni sürümden başlayarak bütün yayın notlarını aşağı kaydırarak inceleyebilirsin.</p><div class="ps48-update-history">${notes}</div><div class="ps44-dialog-actions"><button class="ps44-confirm" type="button">Tamam</button></div>`);
     $('.ps44-dialog', layer)?.classList.add('ps47-rich-dialog');
+    window.dispatchEvent(new Event('ps:i18n-refresh'));
     $$('.ps47-dialog-close,.ps44-confirm', layer).forEach(button => button.onclick = closeUpdates);
     const timeline = $('.ps48-update-history', layer);
     const syncTimeline = () => { if (timeline) timeline.style.setProperty('--ps52-timeline-height', `${Math.max(timeline.clientHeight, timeline.scrollHeight)}px`); };
@@ -356,6 +358,7 @@
     panel.dataset.signature = JSON.stringify(items.map(item => [item.type,item.at || 0]));
     const icons = { update: '↻', 'support-sent': '✓', support: '✦' };
     panel.innerHTML = `<header class="ps57-notification-head"><i><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 9a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9ZM10 21h4"/></svg></i><span><b>BİLDİRİMLER</b><small>${items.length ? `${items.length} yeni hareket` : 'Her şey güncel'}</small></span><button class="ps57-notification-close" type="button" aria-label="Bildirimleri kapat">×</button></header><div class="ps57-notification-list">${items.length ? items.map(item => `<button class="ps55-notification-item" type="button" data-ps55-notification="${item.type}"><i class="ps57-notification-kind">${icons[item.type] || '•'}</i><span class="ps57-notification-copy"><b>${esc(item.title)}</b><small>${esc(item.copy)} · ${esc(notificationTimeLabel(item.at))}</small></span><i class="ps57-notification-arrow">→</i><em class="ps57-notification-dot" aria-hidden="true"></em></button>`).join('') : '<p class="ps55-notification-empty">Yeni bildirimin yok.</p>'}</div>`;
+    window.dispatchEvent(new Event('ps:i18n-refresh'));
     $('.ps57-notification-close', panel).onclick = closeNotifications;
     $$('[data-ps55-notification]', panel).forEach(button => button.onclick = () => {
       const read = notificationReadState();
@@ -2249,6 +2252,7 @@
         const previousScroll = main?.scrollTop || 0;
         pane.classList.remove('ps53-pane-leaving','ps53-pane-entering');
         pane.dataset.pane = safeTab; pane.innerHTML = panes[safeTab]; existing.dataset.currentTab = safeTab;
+        window.dispatchEvent(new Event('ps:i18n-refresh'));
         if (safeTab === 'connections') normalizeTipeeeStreamDabLogo(existing);
         if (!quiet) { void pane.offsetWidth; pane.classList.add('ps53-pane-entering'); }
         bindAccountPane(existing, safeTab);
@@ -2268,6 +2272,7 @@
     const initialViewVersion = accountCenterViewVersion;
     layer.innerHTML = `<article class="ps51-account-shell"><button class="ps51-account-close" type="button" aria-label="Hesap merkezini kapat">×</button><nav class="ps51-account-nav" aria-label="Hesap bölümleri"><div class="ps51-account-brand"><i><img src="./play-streamers-ps-logo.svg?v=10" alt=""></i><span>PLAY STREAMERS<small>SW IDENTITY</small></span></div>${[['data','Veriler'],['profile','SW Profil'],['account','SW Güvenlik'],['devices','Cihazlar'],['connections','Bağlantılar'],['support','Destek talepleri']].map(item => { const active = safeTab === item[0]; return `<button type="button" data-ps51-tab="${item[0]}" class="${active ? 'active' : ''}"${active ? ' disabled aria-current="page"' : ''}>${accountNavIcons[item[0]]}<span>${item[1]}</span></button>`; }).join('')}</nav><main class="ps51-account-main"><section class="ps51-account-pane" data-pane="${safeTab}">${panes[safeTab]}</section></main></article>`;
     document.body.classList.add('ps54-account-open'); document.body.append(layer);
+    window.dispatchEvent(new Event('ps:i18n-refresh'));
     if (safeTab === 'connections') normalizeTipeeeStreamDabLogo(layer);
     bindAccountPane(layer, safeTab);
     const accountMain = $('.ps51-account-main', layer); if (accountMain) accountMain.addEventListener('wheel', event => event.stopPropagation(), { passive: true });
@@ -2283,7 +2288,8 @@
     const panel = homePanel('ps44HomeMenu');
     if (!panel.hidden) return closeHomePanel(panel);
     closeHomePanels(); closeLocaleMenus(); closeStatus(); closeNotifications();
-    panel.innerHTML = '<span class="ps44-panel-title">MENÜ</span><button class="ps44-menu-button" type="button" data-ps44-menu="account">Hesabım</button><button class="ps44-menu-button" type="button" data-ps44-menu="updates">Güncelleme notları</button><button class="ps44-menu-button" type="button" data-ps44-menu="products">Ürünlerimiz</button><a class="ps44-menu-button ps72-privacy-menu" href="./privacy.html">Gizlilik</a><a class="ps44-menu-button ps72-terms-menu" href="./terms.html">Kullanım Koşulları</a><button class="ps44-menu-button danger" type="button" data-ps44-menu="logout">Çıkış yap</button>';
+    panel.innerHTML = '<span class="ps44-panel-title">MENÜ</span><button class="ps44-menu-button" type="button" data-ps44-menu="account">Hesabım</button><button class="ps44-menu-button" type="button" data-ps44-menu="updates">Güncelleme notları</button><button class="ps44-menu-button" type="button" data-ps44-menu="products">Ürünlerimiz</button><button class="ps44-menu-button danger" type="button" data-ps44-menu="logout">Çıkış yap</button>';
+    window.dispatchEvent(new Event('ps:i18n-refresh'));
     place(button, panel); revealHomePanel(panel); button.setAttribute('aria-expanded', 'true'); hideTooltip();
     $$('[data-ps44-menu]', panel).forEach(item => item.onclick = event => { event.preventDefault(); event.stopPropagation(); const action = item.dataset.ps44Menu; closeHomePanel(panel); if (action === 'updates') showUpdates(); else if (action === 'logout') requestLogout(); else if (action === 'account') openDetailedAccount(); else showMemberProducts(); });
   }
@@ -2373,7 +2379,7 @@
     const flagSources = Object.fromEntries(Object.entries(localeFlagFiles).map(([code, file]) => [code, `./assets/flags/${file}.svg?v=4.10`]));
     Object.entries(flagSources).forEach(([code, src]) => auditPlayBotAsset(`flag:${code}`, src, `${code.toUpperCase()} dil bayrağı`));
     auditPlayBotAsset('provider:tipeeestream', donateProviderIconSource('tipeeestream'), 'TipeeeStream DAB gömülü resmî logosu');
-    auditPlayBotAsset('brand:play-streamers', './play-streamers-ps-logo.svg?v=10.11', 'Play Streamers marka amblemi');
+    auditPlayBotAsset('brand:play-streamers', './play-streamers-ps-logo.svg?v=10.12', 'Play Streamers marka amblemi');
     auditPlayBotAsset('brand:sw-create', './swcreate-sw-logo-transparent.png', 'SW Create marka amblemi');
     auditPlayBotAsset('provider:kick', './assets/kick-logo.svg', 'Kick giriş amblemi');
     normalizeTipeeeStreamDabLogo(document);
@@ -2881,13 +2887,7 @@
       publicCard.classList.add('ps10-hero-metrics');
       if (publicCard.parentElement !== publicHero) publicHero.append(publicCard);
     }
-    const memberNav = $('#psSecondHome .ps20-nav');
-    const memberHero = $('#psSecondHome .ps20-hero');
-    let memberCard = $('#psSecondHome .ps61-site-metrics');
-    if (memberNav && memberHero) {
-      if (!memberCard) { memberCard = createSiteMetrics('member'); created = true; }
-      if (memberHero.nextElementSibling !== memberCard) memberHero.after(memberCard);
-    }
+    $$('#psSecondHome .ps61-site-metrics').forEach(card => card.remove());
     let cached = null;
     try { cached = JSON.parse(localStorage.getItem(SITE_METRICS_CACHE_KEY) || 'null'); } catch (_) {}
     if (created && cached?.updatedAt) renderSiteMetrics(cached);
@@ -3042,7 +3042,7 @@
       if (!mark) {
         mark = document.createElement('img');
         mark.className = 'ps103-brand-image';
-        mark.src = './play-streamers-ps-logo.svg?v=10.11';
+        mark.src = './play-streamers-ps-logo.svg?v=10.12';
         mark.alt = '';
         logo.replaceChildren(mark);
       }
@@ -3083,8 +3083,11 @@
     const form = $('.ps47-mail-form', layer); const fileInput = $('[name="attachments"]', form); const fileList = $('.ps49-file-list', form); const status = $('.ps49-mail-status', form); let selectedFiles = [];
     const fileSize = bytes => bytes >= 1024 * 1024 ? `${(bytes / 1024 / 1024).toFixed(1)} MB` : `${Math.max(1, Math.round(bytes / 1024))} KB`;
     const renderFiles = () => {
-      fileList.innerHTML = selectedFiles.map((file, index) => `<article class="ps49-file-item"><i>${/image\//.test(file.type) ? 'IMG' : 'DOS'}</i><span><b>${esc(file.name)}</b><small>${fileSize(file.size)}</small></span><button class="ps49-file-remove" type="button" data-file-index="${index}" aria-label="${esc(file.name)} dosyasını kaldır">×</button></article>`).join('');
+      const fileIcon = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3h7l4 4v14H7z"/><path d="M14 3v5h5"/></svg>';
+      const imageIcon = '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><path d="m5 18 5-5 3 3 2-2 4 4"/></svg>';
+      fileList.innerHTML = selectedFiles.map((file, index) => `<article class="ps49-file-item"><i aria-hidden="true">${/image\//.test(file.type) ? imageIcon : fileIcon}</i><span><b>${esc(file.name)}</b><small>${fileSize(file.size)}</small></span><button class="ps49-file-remove" type="button" data-file-index="${index}" aria-label="${esc(ui('Dosyayı kaldır'))}">×</button></article>`).join('');
       $$('.ps49-file-remove', fileList).forEach(button => button.onclick = () => { selectedFiles.splice(Number(button.dataset.fileIndex), 1); renderFiles(); });
+      window.dispatchEvent(new Event('ps:i18n-refresh'));
     };
     fileInput.onchange = () => {
       status.className = 'ps49-mail-status'; status.textContent = '';
@@ -3116,7 +3119,7 @@
         }
         const successCopy = result.ticketId
           ? ui('Destek ekibimiz mesajını aldı. Talebini Hesabım › Destek talepleri bölümünden takip edebilirsin.')
-          : `Mesajın destek ekibimize ulaştı. Yanıt için lütfen ${email} adresindeki mailinizden kontrol ediniz.`;
+          : ui('Mesajın destek ekibimize ulaştı. Yanıtı e-posta kutundan kontrol edebilirsin.');
         const dialog = $('.ps44-dialog', layer); dialog.innerHTML = `<button class="ps47-dialog-close" type="button" aria-label="${esc(ui('Kapat'))}">×</button><div class="ps49-support-success"><i>✓</i><h3>${esc(ui('Mesajın gönderildi'))}</h3><p>${esc(successCopy)}</p><div class="ps44-dialog-actions"><button class="ps44-confirm" type="button">${esc(ui('Tamam'))}</button></div></div>`;
         window.dispatchEvent(new Event('ps:i18n-refresh'));
         $$('.ps47-dialog-close,.ps44-confirm', dialog).forEach(button => button.onclick = () => closeDialog(layer));
@@ -3153,17 +3156,24 @@
   }
   function ensureMemberExtras() {
     const home = $('#psSecondHome.ps20-member-home'); const grid = home && $('.ps20-grid', home); if (!home || !grid) return;
-    if (home.dataset.ps72ExtrasReady === '1' && $('#ps49MemberStory', home) && !$('.ps20-connections', home)) return;
+    if (home.dataset.ps113WorkspaceReady === '1' && $('.ps113-hero-console', home)) return;
     $$('#ps47MemberExtras,#psSecondExtra,.ps47-member-extras,#ps48MemberAbout', home).forEach(node => node.remove());
+    $$('#ps49MemberStory,.ps61-site-metrics', home).forEach(node => node.remove());
     const hero = $('.ps20-hero', home); const oldConnections = hero && $('.ps20-connections', hero);
-    if (oldConnections) {
-      const guide = document.createElement('aside'); guide.className = 'ps49-hero-guide'; guide.innerHTML = '<span>YAYINCI ÇALIŞMA AKIŞI</span><article class="ps49-hero-step"><i>01</i><div><b>Hazırlığını yap</b><small>Hesabını ve yayın bağlantını kontrol ederek yayına hazır ol.</small></div></article><article class="ps49-hero-step"><i>02</i><div><b>Akışı izle</b><small>Abone, hediye ve Kicks hareketlerini tek merkezden takip et.</small></div></article><article class="ps49-hero-step"><i>03</i><div><b>Topluluğunu tanı</b><small>İstatistiklerle yayın ritmini ve izleyici hareketlerini daha net gör.</small></div></article>';
-      oldConnections.replaceWith(guide);
-    }
-    if ($('#ps49MemberStory', home)) { home.dataset.ps72ExtrasReady = '1'; return; }
-    const section = document.createElement('section'); section.id = 'ps49MemberStory'; section.className = 'ps49-member-story'; section.innerHTML = '<header class="ps49-story-head"><div><span>PLAY STREAMERS DENEYİMİ</span><h2>Yayın sırasında ihtiyacın olan bilgi, doğru anda önünde.</h2></div><p>Play Streamers; topluluk hareketlerini ayrı sekmeler arasında kaybetmeden görmen, yayın akışına odaklanman ve yayın sonrasında gelişimi okuyabilmen için tasarlandı.</p></header><div class="ps49-story-grid"><article><b>Tek bakışta canlı akış</b><p>Yeni abonelik, hediye abonelik, Kicks ve destek olaylarını düzenli bir yayın akışında izle.</p></article><article><b>Topluluk odaklı özetler</b><p>Yayına katılanları ve öne çıkan destek hareketlerini anlaşılır istatistiklerle karşılaştır.</p></article><article><b>Kişisel yayın alanı</b><p>Hesabını, bağlantını ve Dashboard deneyimini yalnızca sana ait tek merkezden yönet.</p></article></div>';
-    grid.after(section);
-    home.dataset.ps72ExtrasReady = '1';
+    const oldGuide = hero && $('.ps49-hero-guide', hero);
+    const consoleCard = document.createElement('aside');
+    consoleCard.className = 'ps113-hero-console';
+    consoleCard.innerHTML = '<span class="ps20-kicker">ÇALIŞMA MERKEZİ</span><i class="ps113-console-orbit" aria-hidden="true"><b>PS</b></i><h2>Yayın araçların hazır.</h2><p>Canlı akışı ve topluluk hareketlerini tek ekranda izlemek için Dashboard’u aç.</p><button type="button" data-ps113-dashboard>Dashboard’u aç <i>→</i></button><small>Bağlantılarını üst menüdeki durum düğmesinden kontrol edebilirsin.</small>';
+    if (oldConnections) oldConnections.replaceWith(consoleCard);
+    else if (oldGuide) oldGuide.replaceWith(consoleCard);
+    else if (hero && !$('.ps113-hero-console', hero)) hero.append(consoleCard);
+    const cards = $$('.ps20-card', grid);
+    cards[0]?.classList.add('ps113-update-card');
+    cards[1]?.classList.add('ps113-tools-card');
+    cards.slice(2).forEach(card => card.remove());
+    $('[data-ps113-dashboard]', home)?.addEventListener('click', () => $('#ps17Dashboard', home)?.click());
+    home.dataset.ps113WorkspaceReady = '1';
+    window.dispatchEvent(new Event('ps:i18n-refresh'));
   }
 
   function ensurePrivacyLinks() {

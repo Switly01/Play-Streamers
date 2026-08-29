@@ -906,7 +906,7 @@ body.ps-v9 :is(.brand-logo,.ps20-logo,.ps51-account-brand i,.ps53-products-brand
   width: 46px;
   height: 46px;
   flex-basis: 46px;
-  background: transparent url("./play-streamers-ps-logo.svg?v=10.11") center/contain no-repeat !important;
+  background: transparent url("./play-streamers-ps-logo.svg?v=10.12") center/contain no-repeat !important;
   filter: drop-shadow(0 9px 20px rgba(0,0,0,.38));
 }
 #ps9Ambient {
@@ -1170,7 +1170,7 @@ body.ps-v8 :is(.brand-logo,.ps20-logo,.ps51-account-brand i,.ps53-products-brand
   flex-basis: 44px;
   border-radius: 0;
   color: transparent !important;
-  background: transparent url("./play-streamers-ps-logo.svg?v=10.11") center/contain no-repeat !important;
+  background: transparent url("./play-streamers-ps-logo.svg?v=10.12") center/contain no-repeat !important;
   font-size: 0 !important;
   box-shadow: none !important;
 }
@@ -1861,7 +1861,7 @@ body.ps-v8 #authOverlay .landing-brand .brand-logo { transition: transform .22s 
    compatibility rule that still ships for existing accounts. */
 html[data-ps-site-version="9"] body.ps-v9 :is(.brand-logo,.ps20-logo,.ps51-account-brand i,.ps53-products-brand i) {
   width:46px !important;height:46px !important;flex-basis:46px !important;border:0 !important;border-radius:0 !important;
-  color:transparent !important;background:transparent url("./play-streamers-ps-logo.svg?v=10.11") center/contain no-repeat !important;
+  color:transparent !important;background:transparent url("./play-streamers-ps-logo.svg?v=10.12") center/contain no-repeat !important;
   box-shadow:none !important;filter:drop-shadow(0 9px 20px rgba(0,0,0,.38)) !important;font-size:0 !important;
 }
 html[data-ps-site-version="9"] body.ps-v9 :is(#authOverlay .landing-nav,#psSecondHome .ps20-nav,.app .topbar,#ps49InfoPage .landing-nav,.ps53-products-nav) {
@@ -2811,7 +2811,7 @@ html[data-ps-site-version="9"] body.ps-v9 .brand-logo:has(>.ps103-brand-image),h
    kullanır. Böylece ilk karede medya çözme maliyeti ve eski yeşil animasyon yoktur. */
 #ps28Loader,#ps20Loader,.ps14-loader{background:radial-gradient(circle at 50% 43%,rgba(255,255,255,.08),transparent 26%),rgba(0,0,0,.84)!important;-webkit-backdrop-filter:blur(18px)!important;backdrop-filter:blur(18px)!important}
 #ps28Loader .ps28-loader-card,#ps28Loader>div,#ps20Loader>div,.ps14-loader-box{position:relative;border:1px solid rgba(255,255,255,.2)!important;border-radius:28px!important;padding:30px 36px!important;background:linear-gradient(145deg,rgba(255,255,255,.12),rgba(7,7,9,.72))!important;box-shadow:0 34px 90px #000b,inset 0 1px 0 rgba(255,255,255,.28)!important;overflow:hidden}
-#ps28Loader .ps28-loader-card::before,#ps28Loader>div::before,#ps20Loader>div::before,.ps14-loader-box::before{display:block;width:58px;height:58px;margin:0 auto 18px;background:url('./play-streamers-ps-logo.svg?v=10.11') center/contain no-repeat;content:"";animation:ps104-loader-orbit 1.35s cubic-bezier(.45,.05,.3,1) infinite}
+#ps28Loader .ps28-loader-card::before,#ps28Loader>div::before,#ps20Loader>div::before,.ps14-loader-box::before{display:block;width:58px;height:58px;margin:0 auto 18px;background:url('./play-streamers-ps-logo.svg?v=10.12') center/contain no-repeat;content:"";animation:ps104-loader-orbit 1.35s cubic-bezier(.45,.05,.3,1) infinite}
 #ps28Loader :is(video,.ps14-loader-mark),#ps20Loader i{display:none!important}
 #ps28Loader b,#ps20Loader span,.ps14-loader-box span{color:#fff!important;font:800 10px/1.3 "Space Grotesk","Segoe UI",sans-serif!important;letter-spacing:.22em!important}
 @keyframes ps104-loader-orbit{50%{filter:drop-shadow(0 0 18px rgba(255,255,255,.34));transform:translateY(-5px) rotate(3deg)}100%{transform:rotate(0)}}
@@ -3017,7 +3017,7 @@ body.ps-v9 #authOverlay .ps81-hero::after { opacity:.2!important; }
   height:76px;
   margin-bottom:24px;
   border-radius:28px;
-  background:radial-gradient(circle,rgba(255,255,255,.15),transparent 68%),url('./play-streamers-ps-logo.svg?v=10.11') center/62px 62px no-repeat;
+  background:radial-gradient(circle,rgba(255,255,255,.15),transparent 68%),url('./play-streamers-ps-logo.svg?v=10.12') center/62px 62px no-repeat;
   box-shadow:0 0 0 1px rgba(255,255,255,.1),0 0 0 10px rgba(255,255,255,.025),inset 0 1px 0 rgba(255,255,255,.2);
   filter:drop-shadow(0 0 18px rgba(255,255,255,.18));
   transform-style:preserve-3d;
@@ -3341,7 +3341,7 @@ html.ps-locale-switching *,html.ps-locale-switching *::before,html.ps-locale-swi
   transition:none!important;
 }
 html.ps-i18n-booting::after {
-  background-image:radial-gradient(circle,#ffffff12,transparent 68%),url("./play-streamers-ps-logo.svg?v=10.11")!important;
+  background-image:radial-gradient(circle,#ffffff12,transparent 68%),url("./play-streamers-ps-logo.svg?v=10.12")!important;
 }
 .ps15-locale-button,.ps41-locale-button,#ps66MemberLocale,#ps66DashboardLocale {
   position:relative!important;
@@ -3558,3 +3558,166 @@ body.ps-v9 #ps44HomeConnection .ps44-platform {
   body.ps-v9 .app.ps13-dashboard #statsGrid>.card:nth-child(n) { grid-column:1/-1!important; }
   body.ps-v9 .app.ps13-dashboard .actions :is(#clearBtn,.clear) { display:none!important; }
 }
+
+/* Site 10.13 — member workspace, stable controls and focused account surfaces. */
+body.ps-v9 #psSecondHome .ps61-site-metrics { display:none!important; }
+body.ps-v9 #psSecondHome :is(#ps20Connection,#connectionBtn) {
+  position:relative!important;
+  inset:auto!important;
+  flex:0 0 42px!important;
+  width:42px!important;
+  min-width:42px!important;
+  max-width:42px!important;
+  margin:0!important;
+  padding:0!important;
+  translate:none!important;
+  transform:none!important;
+  filter:none!important;
+  contain:layout paint!important;
+  transition:color .16s ease,border-color .16s ease,background-color .16s ease,box-shadow .16s ease!important;
+}
+body.ps-v9 #psSecondHome :is(#ps20Connection,#connectionBtn):is(:hover,:focus-visible) {
+  translate:none!important;
+  transform:none!important;
+  filter:none!important;
+}
+body.ps-v9 #psSecondHome .ps20-dashboard {
+  color:#fff!important;
+  border-color:rgba(255,255,255,.25)!important;
+  background:linear-gradient(135deg,rgba(255,255,255,.17),rgba(255,255,255,.065))!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.2),0 10px 30px rgba(0,0,0,.22)!important;
+}
+body.ps-v9 #psSecondHome .ps20-dashboard:is(:hover,:focus-visible) {
+  color:#fff!important;
+  border-color:rgba(255,255,255,.45)!important;
+  background:linear-gradient(135deg,rgba(255,255,255,.25),rgba(255,255,255,.1))!important;
+}
+
+body.ps-v9 #psSecondHome .ps20-hero {
+  grid-template-columns:minmax(0,1.18fr) minmax(310px,.58fr)!important;
+  min-height:500px!important;
+  padding:clamp(42px,5vw,68px)!important;
+}
+body.ps-v9 #psSecondHome .ps20-hero-copy h1 { max-width:760px!important; font-size:clamp(58px,6.2vw,92px)!important; }
+body.ps-v9 #psSecondHome .ps113-hero-console {
+  position:relative;
+  display:flex;
+  min-width:0;
+  flex-direction:column;
+  align-items:flex-start;
+  justify-content:flex-end;
+  overflow:hidden;
+  border:1px solid rgba(255,255,255,.16);
+  border-radius:22px;
+  padding:26px;
+  background:linear-gradient(145deg,rgba(255,255,255,.115),rgba(5,5,7,.72) 55%,rgba(255,255,255,.045));
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.23),0 28px 72px rgba(0,0,0,.28);
+}
+body.ps-v9 #psSecondHome .ps113-hero-console::before {
+  position:absolute;
+  inset:0;
+  background:radial-gradient(circle at 72% 22%,rgba(255,255,255,.16),transparent 28%),linear-gradient(115deg,rgba(255,255,255,.08),transparent 34%);
+  pointer-events:none;
+  content:"";
+}
+body.ps-v9 #psSecondHome .ps113-console-orbit {
+  position:absolute;
+  top:28px;
+  right:28px;
+  display:grid;
+  width:92px;
+  aspect-ratio:1;
+  place-items:center;
+  border:1px solid rgba(255,255,255,.18);
+  border-radius:50%;
+  color:#fff;
+  font-style:normal;
+  box-shadow:0 0 0 13px rgba(255,255,255,.025),0 0 0 26px rgba(255,255,255,.015);
+}
+body.ps-v9 #psSecondHome .ps113-console-orbit::after { position:absolute; width:9px; height:9px; border-radius:50%; background:#fff; box-shadow:0 0 16px #fff; content:""; animation:ps113-console-orbit 5.4s linear infinite; transform:translateX(46px); }
+body.ps-v9 #psSecondHome .ps113-console-orbit b { font:700 20px var(--display); letter-spacing:-.08em; }
+body.ps-v9 #psSecondHome .ps113-hero-console h2 { position:relative; max-width:270px; margin:76px 0 10px; font:600 clamp(28px,3vw,40px)/1 var(--display); letter-spacing:-.055em; }
+body.ps-v9 #psSecondHome .ps113-hero-console p { position:relative; margin:0 0 22px; color:rgba(255,255,255,.66); font-size:11px; line-height:1.6; }
+body.ps-v9 #psSecondHome .ps113-hero-console>button { position:relative; display:flex; width:100%; min-height:48px; align-items:center; justify-content:space-between; border:1px solid rgba(255,255,255,.32); border-radius:13px; padding:0 15px; color:#080808; background:#f7f7f4; font-size:11px; font-weight:900; }
+body.ps-v9 #psSecondHome .ps113-hero-console>button:hover { background:#fff; box-shadow:0 12px 34px rgba(255,255,255,.11); }
+body.ps-v9 #psSecondHome .ps113-hero-console>button i { font-size:18px; font-style:normal; }
+body.ps-v9 #psSecondHome .ps113-hero-console>small { position:relative; margin-top:13px; color:rgba(255,255,255,.45); font-size:8px; line-height:1.5; }
+@keyframes ps113-console-orbit { to { transform:rotate(360deg) translateX(46px) rotate(-360deg); } }
+
+body.ps-v9 #psSecondHome .ps20-grid { grid-template-columns:repeat(12,minmax(0,1fr))!important; }
+body.ps-v9 #psSecondHome .ps20-grid>.ps20-card.ps113-update-card,
+body.ps-v9 #psSecondHome .ps20-grid>.ps20-card.ps113-tools-card { grid-column:span 6!important; min-height:360px!important; }
+body.ps-v9 #psSecondHome .ps20-card { overflow:hidden!important; }
+body.ps-v9 #psSecondHome .ps20-card::before { background:linear-gradient(110deg,rgba(255,255,255,.13),transparent 28%),radial-gradient(50% 80% at 100% 0,rgba(255,255,255,.12),transparent 75%)!important; }
+body.ps-v9 #psSecondHome .ps20-offers { grid-template-columns:1fr!important; }
+body.ps-v9 #psSecondHome .ps20-offers button { min-height:68px!important; padding:13px 15px!important; }
+
+.ps55-notification-button { flex:0 0 42px!important; width:42px!important; min-width:42px!important; height:42px!important; padding:0!important; }
+.ps55-notification-button>svg { display:block!important; width:17px!important; height:17px!important; margin:auto!important; fill:none!important; stroke:currentColor!important; stroke-width:1.7!important; }
+#ps55Notifications .ps57-notification-head { display:grid!important; grid-template-columns:32px minmax(0,1fr) 30px!important; align-items:center!important; gap:10px!important; padding:8px 7px 15px!important; }
+#ps55Notifications .ps57-notification-head>i { display:grid!important; width:30px!important; height:30px!important; place-items:center!important; border:1px solid rgba(255,255,255,.12)!important; border-radius:9px!important; }
+#ps55Notifications .ps57-notification-head>i svg { width:14px!important; height:14px!important; fill:none!important; stroke:currentColor!important; stroke-width:1.7!important; }
+#ps55Notifications .ps57-notification-head span :is(b,small) { display:block!important; }
+#ps55Notifications .ps57-notification-head span small { margin-top:3px!important; color:rgba(255,255,255,.48)!important; font-size:8px!important; letter-spacing:0!important; }
+#ps55Notifications .ps57-notification-close { width:30px!important; min-width:30px!important; height:30px!important; padding:0!important; justify-content:center!important; font-size:16px!important; }
+#ps55Notifications .ps55-notification-empty { margin:0!important; border:1px solid rgba(255,255,255,.09)!important; border-radius:11px!important; padding:20px 14px!important; color:rgba(255,255,255,.55)!important; text-align:center!important; font-size:10px!important; }
+
+body.ps-v9 #ps44HomeConnection { width:min(360px,calc(100vw - 24px))!important; padding:11px!important; }
+body.ps-v9 #ps44HomeConnection .ps44-platform { display:grid!important; grid-template-columns:42px minmax(0,1fr) 34px!important; align-items:center!important; gap:11px!important; min-height:66px!important; margin-top:7px!important; border:1px solid rgba(255,255,255,.1)!important; padding:11px!important; background:linear-gradient(135deg,rgba(255,255,255,.075),rgba(4,4,6,.66))!important; }
+body.ps-v9 #ps44HomeConnection .ps44-platform-mark { display:grid!important; width:40px!important; height:40px!important; place-items:center!important; overflow:hidden!important; border:1px solid rgba(255,255,255,.14)!important; border-radius:11px!important; color:#fff!important; background:rgba(255,255,255,.07)!important; font-style:normal!important; font-weight:900!important; }
+body.ps-v9 #ps44HomeConnection .ps44-platform-mark img { width:25px!important; height:25px!important; object-fit:contain!important; }
+body.ps-v9 #ps44HomeConnection .ps44-platform>span { min-width:0!important; }
+body.ps-v9 #ps44HomeConnection .ps44-platform>span :is(b,small) { display:block!important; overflow:hidden!important; text-overflow:ellipsis!important; white-space:nowrap!important; }
+body.ps-v9 #ps44HomeConnection .ps44-platform>span b { font-size:11px!important; }
+body.ps-v9 #ps44HomeConnection .ps44-platform>span small { margin-top:4px!important; color:rgba(255,255,255,.5)!important; font-size:8px!important; }
+body.ps-v9 #ps44HomeConnection :is(.ps44-state,.ps44-connect) { display:grid!important; width:32px!important; min-width:32px!important; height:32px!important; place-items:center!important; border:1px solid rgba(255,255,255,.14)!important; border-radius:9px!important; padding:0!important; color:#fff!important; background:rgba(255,255,255,.07)!important; font-style:normal!important; }
+
+#ps44UpdatesDialog .ps44-dialog { width:min(900px,calc(100vw - 28px))!important; max-height:min(820px,calc(100dvh - 28px))!important; border-radius:25px!important; padding:clamp(25px,4vw,42px)!important; background:radial-gradient(circle at 100% 0,rgba(255,255,255,.1),transparent 32%),rgba(8,8,10,.94)!important; }
+#ps44UpdatesDialog .ps44-dialog>h2 { max-width:620px!important; margin:10px 0 8px!important; font-size:clamp(38px,5vw,62px)!important; letter-spacing:-.065em!important; }
+#ps44UpdatesDialog .ps47-lead { max-width:580px!important; margin-bottom:24px!important; }
+#ps44UpdatesDialog .ps48-update-history { gap:10px!important; margin-top:24px!important; padding-left:0!important; }
+#ps44UpdatesDialog .ps48-update-version { position:relative!important; overflow:hidden!important; border:1px solid rgba(255,255,255,.11)!important; border-radius:16px!important; padding:0!important; background:linear-gradient(135deg,rgba(255,255,255,.065),rgba(2,2,4,.58))!important; }
+#ps44UpdatesDialog .ps48-update-version::before { display:none!important; }
+#ps44UpdatesDialog .ps48-update-version>header { min-height:62px!important; margin:0!important; padding:13px 15px!important; }
+#ps44UpdatesDialog .ps48-update-version ul { margin:0!important; border-top:1px solid rgba(255,255,255,.08)!important; padding:16px 22px 19px 38px!important; background:rgba(255,255,255,.025)!important; }
+#ps44UpdatesDialog .ps48-update-version li { margin:7px 0!important; color:rgba(255,255,255,.68)!important; font-size:10px!important; line-height:1.55!important; }
+#ps44UpdatesDialog .ps51-update-expand { flex:0 0 34px!important; width:34px!important; min-width:34px!important; height:34px!important; border-radius:10px!important; }
+
+#ps51AccountCenter { padding:18px!important; background:rgba(0,0,0,.76)!important; -webkit-backdrop-filter:blur(18px)!important; backdrop-filter:blur(18px)!important; }
+body.ps-v9 #ps51AccountCenter .ps51-account-shell { grid-template-columns:250px minmax(0,1fr)!important; width:min(1180px,calc(100vw - 36px))!important; height:min(790px,calc(100dvh - 36px))!important; overflow:hidden!important; border:1px solid rgba(255,255,255,.2)!important; border-radius:27px!important; background:linear-gradient(145deg,rgba(255,255,255,.08),rgba(6,6,8,.96) 34%)!important; box-shadow:0 45px 130px rgba(0,0,0,.7),inset 0 1px 0 rgba(255,255,255,.2)!important; }
+body.ps-v9 #ps51AccountCenter .ps51-account-nav { gap:6px!important; border-right:1px solid rgba(255,255,255,.1)!important; padding:24px 16px!important; background:linear-gradient(160deg,rgba(255,255,255,.065),rgba(5,5,7,.76))!important; }
+body.ps-v9 #ps51AccountCenter .ps51-account-brand { margin:0 8px 22px!important; }
+body.ps-v9 #ps51AccountCenter .ps51-account-nav button { min-height:47px!important; border:1px solid transparent!important; border-radius:12px!important; padding:0 12px!important; color:rgba(255,255,255,.56)!important; font-size:10px!important; }
+body.ps-v9 #ps51AccountCenter .ps51-account-nav button:hover { color:#fff!important; border-color:rgba(255,255,255,.1)!important; background:rgba(255,255,255,.045)!important; }
+body.ps-v9 #ps51AccountCenter .ps51-account-nav button.active { color:#fff!important; border-color:rgba(255,255,255,.19)!important; background:linear-gradient(135deg,rgba(255,255,255,.16),rgba(255,255,255,.06))!important; box-shadow:inset 0 1px 0 rgba(255,255,255,.14)!important; }
+body.ps-v9 #ps51AccountCenter .ps51-account-main { padding:clamp(30px,4.2vw,56px)!important; background:radial-gradient(circle at 94% 4%,rgba(255,255,255,.08),transparent 28%)!important; }
+body.ps-v9 #ps51AccountCenter .ps51-account-pane { max-width:900px!important; margin:0 auto!important; padding:0!important; background:transparent!important; box-shadow:none!important; }
+body.ps-v9 #ps51AccountCenter .ps51-account-pane::before,body.ps-v9 #ps51AccountCenter .ps51-account-pane::after { display:none!important; }
+body.ps-v9 #ps51AccountCenter .ps51-account-pane h2 { max-width:760px!important; margin:11px 0 10px!important; font-size:clamp(38px,4.6vw,60px)!important; line-height:.96!important; }
+body.ps-v9 #ps51AccountCenter .ps51-account-lead { max-width:720px!important; margin-bottom:28px!important; color:rgba(255,255,255,.57)!important; font-size:11px!important; }
+body.ps-v9 #ps51AccountCenter :is(.ps51-data-card,.ps51-account-section,.ps51-kick-card,.ps62-bridge-card,.ps62-device,.ps65-device-card,.ps67-oauth,.ps67-oauth-card,.ps55-ticket-card) { border:1px solid rgba(255,255,255,.11)!important; border-radius:16px!important; background:linear-gradient(145deg,rgba(255,255,255,.075),rgba(3,3,5,.56))!important; box-shadow:inset 0 1px 0 rgba(255,255,255,.09)!important; }
+body.ps-v9 #ps51AccountCenter .ps51-data-grid { gap:11px!important; }
+body.ps-v9 #ps51AccountCenter :is(.ps51-primary,.ps51-danger) { min-height:42px!important; border-radius:11px!important; }
+
+#ps47MailDialog .ps49-file-item { display:grid!important; grid-template-columns:38px minmax(0,1fr) 32px!important; align-items:center!important; gap:10px!important; border:1px solid rgba(255,255,255,.1)!important; border-radius:12px!important; padding:9px!important; background:rgba(255,255,255,.045)!important; }
+#ps47MailDialog .ps49-file-item>i { display:grid!important; width:36px!important; height:36px!important; place-items:center!important; border:1px solid rgba(255,255,255,.11)!important; border-radius:9px!important; color:rgba(255,255,255,.72)!important; background:rgba(255,255,255,.045)!important; font-size:0!important; }
+#ps47MailDialog .ps49-file-item>i svg { width:18px!important; height:18px!important; fill:none!important; stroke:currentColor!important; stroke-width:1.6!important; }
+#ps47MailDialog .ps49-file-item>span { min-width:0!important; }
+#ps47MailDialog .ps49-file-item>span :is(b,small) { display:block!important; overflow:hidden!important; text-overflow:ellipsis!important; white-space:nowrap!important; }
+
+@media(max-width:900px) {
+  body.ps-v9 #psSecondHome .ps20-hero { grid-template-columns:1fr!important; min-height:0!important; }
+  body.ps-v9 #psSecondHome .ps20-grid>.ps20-card.ps113-update-card,body.ps-v9 #psSecondHome .ps20-grid>.ps20-card.ps113-tools-card { grid-column:1/-1!important; }
+  body.ps-v9 #ps51AccountCenter .ps51-account-shell { grid-template-columns:1fr!important; }
+  body.ps-v9 #ps51AccountCenter .ps51-account-nav { grid-template-columns:repeat(3,minmax(0,1fr))!important; border-right:0!important; border-bottom:1px solid rgba(255,255,255,.1)!important; padding:10px 52px 10px 10px!important; }
+  body.ps-v9 #ps51AccountCenter .ps51-account-brand { display:none!important; }
+}
+@media(max-width:620px) {
+  #ps51AccountCenter { padding:6px!important; }
+  body.ps-v9 #ps51AccountCenter .ps51-account-shell { width:calc(100vw - 12px)!important; height:calc(100dvh - 12px)!important; border-radius:18px!important; }
+  body.ps-v9 #ps51AccountCenter .ps51-account-nav { grid-template-columns:repeat(2,minmax(0,1fr))!important; }
+  body.ps-v9 #ps51AccountCenter .ps51-account-nav button { min-height:38px!important; padding:0 8px!important; font-size:8px!important; }
+  body.ps-v9 #ps51AccountCenter .ps51-account-main { padding:24px 15px!important; }
+  body.ps-v9 #psSecondHome .ps113-hero-console { min-height:350px!important; }
+}
+@media(prefers-reduced-motion:reduce) { body.ps-v9 #psSecondHome .ps113-console-orbit::after { animation:none!important; } }

@@ -10,11 +10,12 @@ const wrangler = join(root, 'swcreate-site', 'node_modules', 'wrangler', 'bin', 
 const config = join(root, 'wrangler.play-streamers.jsonc');
 const outputDirectory = join(root, 'locales');
 const api = 'https://api.pstreamers.com/api/i18n/translate';
-const version = '2026-08-29.4';
+const version = '2026-08-29.5';
 const languages = ['en', 'de', 'es', 'fr', 'ru', 'ar', 'ja'];
 const sourceFiles = ['index.html', 'privacy.html', 'terms.html', 'app.js', 'app-final.js', 'site-v7.js'];
 const extractionFiles = new Set(['index.html', 'privacy.html', 'terms.html', 'site-v7.js']);
 const dryRun = process.argv.includes('--dry-run');
+const noGenerate = process.argv.includes('--no-generate');
 
 const clean = value => String(value || '').replace(/\\n|\\r|\\t/g, ' ').replace(/\s+/g, ' ').trim();
 const decode = value => clean(String(value || '')
@@ -112,6 +113,27 @@ function addJavaScriptStrings(value, target) {
   }
 }
 
+function addActiveRuntimeStrings(file, source, target) {
+  const ranges = file === 'app.js' ? [
+    ['function refreshInterfaceLanguage', 'window.psOpenLandingAuth'],
+    ["home.className='ps-second-home", 'return true;'],
+  ] : file === 'app-final.js' ? [
+    ['function renderConnectionPanel', 'const infoContent'],
+    ['function accountDataCard', 'function updateNotifications'],
+    ['function accountDevicesPaneHtml', 'function bindAccountPane'],
+    ['function supportPaneHtml', 'function showAccountCenter'],
+    ['function showAccountCenter', 'window.ps28OpenConnection'],
+    ['function ensureSupport', 'function normalizeTooltips'],
+    ['function ensureMemberExtras', 'function ensurePrivacyLinks'],
+  ] : [];
+  ranges.forEach(([startMarker, endMarker]) => {
+    const start = source.indexOf(startMarker);
+    if (start < 0) return;
+    const end = source.indexOf(endMarker, start + startMarker.length);
+    addJavaScriptStrings(source.slice(start, end > start ? end : source.length), target);
+  });
+}
+
 function printStats(extracted, rows) {
   console.log(`Arayüz kaynağı: ${extracted.size} benzersiz metin.`);
   const requestedMissing = String(process.argv.find(value => value.startsWith('--missing=')) || '').split('=')[1] || '';
@@ -196,6 +218,7 @@ async function main() {
       if (file.endsWith('.html')) addMarkupStrings(source, extracted);
       else addJavaScriptStrings(source, extracted);
     }
+    addActiveRuntimeStrings(file, source, extracted);
   }
   const corpus = corpusParts.join('\n');
   for (const dictionary of Object.values(critical)) {
@@ -238,7 +261,7 @@ async function main() {
   for (const language of languages) {
     const translations = byLanguage[language];
     const missing = [...extracted].filter(source => !translations.has(source) && !passthrough(source));
-    if (missing.length) {
+    if (missing.length && !noGenerate) {
       console.log(`[${language}] ${translations.size} hazır, ${missing.length} eksik çeviri hazırlanıyor.`);
       const generated = await translateMissing(language, missing);
       generated.forEach((translation, source) => translations.set(source, translation));

@@ -2,7 +2,7 @@
 
 ## Güncel geliştirme durumu · 29 Ağustos 2026
 
-Site 10.12.0 / Worker 6.2 / SW Identity 1.8.1 / Desktop 0.14.4 / Play Connect
+Site 10.13.0 / Worker 6.3 / SW Identity 1.8.1 / Desktop 0.14.4 / Play Connect
 1.15.1 kaynakları hazırlandı. Site kartları ve temel yüzeyler, mobilde daha
 düşük bulanıklık kullanan belirgin sıvı cam katmanına geçirildi; giriş sonrası
 üye ana sayfası ve Dashboard aynı cam yüzey, aralık ve kart ritminde yeniden

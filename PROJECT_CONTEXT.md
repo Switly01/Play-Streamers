@@ -2,7 +2,7 @@
 
 ## Güncel geliştirme durumu · 30 Ağustos 2026
 
-Site 10.15.0 / Worker 6.7 Dashboard, hesap ve plan araçları revizyonu: Giriş ve
+Site 10.15.1 / Worker 6.8 Dashboard, hesap ve plan araçları revizyonu: Giriş ve
 kayıt pencereleri eski geçiş yükleyicisine takıldığında güvenle kurtarılır.
 Dashboard yayın durumu tek satırda ve seçili dilde gösterilir; büyütülen kartlar
 ekranın merkezinde açılır. Bağış para birimi seçili bölgesel dile göre eşleşir.

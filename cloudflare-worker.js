@@ -78,8 +78,8 @@ const DONATE_OAUTH_PROVIDERS = Object.freeze({
     clientSecretVariable: "TIPEEESTREAM_CLIENT_SECRET",
   }),
 });
-const CURRENT_RELEASE_VERSION = "6.7";
-const CURRENT_RELEASE_PUBLISHED_AT = "2026-08-30T01:12:00+03:00";
+const CURRENT_RELEASE_VERSION = "6.8";
+const CURRENT_RELEASE_PUBLISHED_AT = "2026-08-30T01:25:00+03:00";
 const SW_IDENTITY_ORIGIN = "https://api.swcreate.com";
 const DESKTOP_IDENTITY_REDIRECT = "playstreamers://identity/callback";
 const WEB_IDENTITY_REDIRECTS = new Set([
@@ -831,7 +831,7 @@ async function runScheduledPlayBotAudit(env) {
     ["Ana sayfa", "https://pstreamers.com/", "document"],
     ["Ana uygulama betiği", "https://pstreamers.com/app.js?v=5.5.0", "script"],
     ["Uygulama betiği", "https://pstreamers.com/app-final.js?v=5.13.0", "script"],
-    ["Site davranış betiği", "https://pstreamers.com/site-v7.js?v=10.15.0", "script"],
+    ["Site davranış betiği", "https://pstreamers.com/site-v7.js?v=10.15.1", "script"],
     ["Sabit çeviri betiği", "https://pstreamers.com/live-i18n.js?v=9.9.0", "script"],
     ["İngilizce dil paketi", "https://pstreamers.com/locales/en.json?v=2026-08-30.9", "json"],
     ["Almanca dil paketi", "https://pstreamers.com/locales/de.json?v=2026-08-30.9", "json"],
@@ -928,9 +928,9 @@ async function runScheduledPlayBotAudit(env) {
       ["site-v7.css?v=10.15.0", "Güncel premium stil dosyası"],
       ["app.js?v=5.5.0", "Güncel ana uygulama betiği"],
       ["app-final.js?v=5.13.0", "Güncel onarım betiği"],
-      ["site-v7.js?v=10.15.0", "Güncel site davranış betiği"],
+      ["site-v7.js?v=10.15.1", "Güncel site davranış betiği"],
       ["live-i18n.js?v=9.9.0", "Güncel sabit paket çeviri betiği"],
-      ["play-streamers-build\" content=\"2026-08-30-site-10.15.0", "Site 10.15.0 sürüm işareti"],
+      ["play-streamers-build\" content=\"2026-08-30-site-10.15.1", "Site 10.15.1 sürüm işareti"],
     ];
     for (const [token, label] of documentContracts) {
       if (!homeDocument.body.includes(token)) issues.push(`${label} canlı ana sayfaya bağlanmamış.`);

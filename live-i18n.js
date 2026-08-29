@@ -475,7 +475,7 @@ Object.entries({
 }).forEach(([language, values]) => {
   ["Canlı olay merkezi ve sayaç", "Hızlı notlar ve hedef panosu", "Yayın zamanlayıcısı ve fikir kasası", "Gelişmiş grafikler ve yayın raporu", "Yayın metni, teleprompter ve veri dışa aktarma", "Marka, kasa ve topluluk araçları", "Yayın zekâsı ve izleyici nabzı", "İçerik dönüştürme ve akıllı uyarılar", "Medya kiti, gelir kokpiti ve anlık görüntüler", "WINDOWS 10/11 · SÜRÜM 0.14.4"]
     .forEach((source, index) => { critical[language][source] = values[index]; });
-  critical[language]["PLAY STREAMERS WEB · v10.6.0"] = "PLAY STREAMERS WEB · v10.6.0";
+  critical[language]["PLAY STREAMERS WEB · v10.15.0"] = "PLAY STREAMERS WEB · v10.15.0";
 });
 
 function clean(value) { return String(value || "").replace(/\s+/g, " ").trim(); }

@@ -2,6 +2,17 @@
 
 ## Güncel geliştirme durumu · 30 Ağustos 2026
 
+Site 10.17.0 / Worker 7.0 ekran koruma ve tam üye çevirisi revizyonu: Dil
+değişiminden önce Dashboard, üye ana sayfası, ürünler ve hesap alt sekmesi
+kaydedilir; çeviri tamamlanınca aynı ekran ve temiz adres geri yüklenir. Sunucu
+veri hattı, bağlantı paneli, çıkış onayı ve hesap gezinmesi doğrudan seçili dil
+paketinden üretilir. Güncelleme geçmişinin eksik 45 açıklaması yedi dile eklendi;
+dil paketleri 1.258 etkin arayüz metnini kapsar. Ürünler üye ekranının altında
+değil bağımsız tam ekran katmanında açılır. Kur bilgisi dilin para birimi simgesi
+olan kompakt düğmeye ve tıklanınca açılan ayrıntı paneline dönüştürüldü. Yükleyici
+PS ambleminin dikey zıplaması kaldırıldı; hesap merkezi görsel çerçeveleri,
+profil/kart ölçüleri, bağlantı logoları, cihazlar ve destek talepleri dengelendi.
+
 Site 10.16.0 / Worker 6.9 yükleyici, canlı kur ve üye yüzeyi revizyonu: Dil
 değişiminde zorunlu yenileme kaldırıldı, eski yükleyiciler süre sınırıyla
 kapatıldı, bildirimler seçilen dile göre anında üretiliyor, yayın durumu kırmızı

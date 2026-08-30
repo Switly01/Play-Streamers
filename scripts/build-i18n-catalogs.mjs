@@ -8,10 +8,10 @@ import { critical } from '../live-i18n.js';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const outputDirectory = join(root, 'locales');
-const version = '2026-08-30.9';
+const version = '2026-08-30.10';
 const languages = ['en', 'de', 'es', 'fr', 'ru', 'ar', 'ja'];
 const sourceFiles = ['index.html', 'privacy.html', 'terms.html', 'app.js', 'app-final.js', 'site-v7.js'];
-const extractionFiles = new Set(['index.html', 'privacy.html', 'terms.html', 'site-v7.js']);
+const extractionFiles = new Set(['index.html', 'privacy.html', 'terms.html', 'app-final.js', 'site-v7.js']);
 const dryRun = process.argv.includes('--dry-run');
 const noGenerate = process.argv.includes('--no-generate');
 const refreshAll = process.argv.includes('--refresh-all');
@@ -138,6 +138,15 @@ function addActiveRuntimeStrings(file, source, target) {
     const end = source.indexOf(endMarker, start + startMarker.length);
     addJavaScriptStrings(source.slice(start, end > start ? end : source.length), target);
   });
+  if (file === 'app-final.js') {
+    const historyStart = source.indexOf('const history = [');
+    const historyEnd = source.indexOf('const notes =', historyStart);
+    const historySource = historyStart >= 0 ? source.slice(historyStart, historyEnd > historyStart ? historyEnd : source.length) : '';
+    for (const match of historySource.matchAll(/'((?:\\.|[^'\\])*)'/g)) {
+      const candidate = clean(match[1].replace(/\\'/g, "'").replace(/\\\\/g, '\\'));
+      if (candidate.length > 30 && translatable(candidate)) target.add(candidate);
+    }
+  }
 }
 
 function printStats(extracted, rows) {

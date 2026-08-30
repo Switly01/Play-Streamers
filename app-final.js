@@ -128,7 +128,12 @@
     const info = kick();
     const playConnectDevices = Array.isArray(donateBridgeDevices) ? donateBridgeDevices.filter(device => device?.active) : [];
     const playConnectConnected = playConnectDevices.length > 0 || (Array.isArray(donateWebhookConnections) && donateWebhookConnections.length > 0);
-    panel.innerHTML = `<span class="ps44-panel-title">BAĞLANTI DURUMU</span><article class="ps44-platform"><i class="ps44-platform-mark ps44-kick-mark"><img src="./assets/kick-logo.svg?v=10.14" alt=""></i><span><b>Kick</b><small>${esc(info.copy)}</small></span>${info.connected ? '<i class="ps44-state">✓</i>' : '<button class="ps44-connect" type="button" aria-label="Kick bağlantısı kur">→</button>'}</article><article class="ps44-platform"><i class="ps44-platform-mark ps44-play-connect"><img src="./play-connect-pc-logo.svg?v=1.15.2" alt=""></i><span><b>Play Connect</b><small>${playConnectConnected ? `${playConnectDevices.length || donateWebhookConnections.length} bağlantı aktif` : 'Henüz bağlantı kurulmadı'}</small></span><i class="ps44-state${playConnectConnected ? '' : ' off'}">${playConnectConnected ? '✓' : '×'}</i></article>`;
+    const kickCopy = info.copy.startsWith('@') ? `${info.copy} · ${ui('bağlı')}` : ui(info.copy);
+    const connectionCount = playConnectDevices.length || donateWebhookConnections.length;
+    const playConnectCopy = playConnectConnected
+      ? ui('{count} bağlantı aktif').replace('{count}', String(connectionCount))
+      : ui('Henüz bağlantı kurulmadı');
+    panel.innerHTML = `<span class="ps44-panel-title">${esc(ui('BAĞLANTI DURUMU'))}</span><article class="ps44-platform"><i class="ps44-platform-mark ps44-kick-mark"><img src="./assets/kick-logo.svg?v=10.14" alt=""></i><span><b>Kick</b><small>${esc(kickCopy)}</small></span>${info.connected ? '<i class="ps44-state">✓</i>' : `<button class="ps44-connect" type="button" aria-label="${esc(ui('Kick bağlantısı kur'))}">→</button>`}</article><article class="ps44-platform"><i class="ps44-platform-mark ps44-play-connect"><img src="./play-connect-pc-logo.svg?v=1.15.2" alt=""></i><span><b>Play Connect</b><small>${esc(playConnectCopy)}</small></span><i class="ps44-state${playConnectConnected ? '' : ' off'}">${playConnectConnected ? '✓' : '×'}</i></article>`;
     window.dispatchEvent(new Event('ps:i18n-refresh'));
     const connect = $('.ps44-connect', panel);
     if (connect) connect.onclick = event => {
@@ -439,16 +444,29 @@
     if (!overlay || !hero || !product || !update) return;
     overlay.classList.add('ps-creator-landing');
     product.setAttribute('aria-label', 'Play Streamers masaüstü ve sunucu veri merkezi ön izlemesi');
+    const renderedLocale = () => String(document.documentElement.lang || localStorage.getItem('ps15-locale') || 'tr').split('-')[0];
     const setText = (node, value) => {
-      if (!node || node.dataset.psSourceText === value) return;
+      if (!node || (node.dataset.psSourceText === value && node.dataset.psRenderedLocale === renderedLocale())) return;
       node.dataset.psSourceText = value;
+      node.dataset.psRenderedLocale = renderedLocale();
       node.textContent = ui(value);
     };
     const setMarkup = (node, value) => {
-      if (!node || node.dataset.psSourceMarkup === value) return;
+      if (!node || (node.dataset.psSourceMarkup === value && node.dataset.psRenderedLocale === renderedLocale())) return;
       const template = document.createElement('template');
       template.innerHTML = value;
+      const walker = document.createTreeWalker(template.content, NodeFilter.SHOW_TEXT);
+      let textNode;
+      while ((textNode = walker.nextNode())) {
+        const source = String(textNode.nodeValue || '');
+        const cleanSource = source.trim();
+        if (!cleanSource) continue;
+        const leading = source.match(/^\s*/)?.[0] || '';
+        const trailing = source.match(/\s*$/)?.[0] || '';
+        textNode.nodeValue = `${leading}${ui(cleanSource)}${trailing}`;
+      }
       node.dataset.psSourceMarkup = value;
+      node.dataset.psRenderedLocale = renderedLocale();
       node.replaceChildren(template.content.cloneNode(true));
     };
     const eyebrow = $('.eyebrow', hero); setText(eyebrow, 'PLAY STREAMERS · YAYINCI MERKEZİ');
@@ -585,7 +603,6 @@
         }
       } finally {
         document.documentElement.classList.remove('ps-i18n-booting', 'ps-locale-switching');
-        window.psRescueVisibleSurface?.();
       }
     });
   }
@@ -680,6 +697,7 @@
   function hideMemberProductsLayer() {
     const layer = $('#ps49InfoPage');
     if (layer?.classList.contains('ps53-products-copy')) { layer.hidden = true; layer.className = ''; }
+    document.body.classList.remove('ps117-products-open');
   }
   function restoreMemberProductsOrigin(origin = memberProductsOrigin) {
     hideMemberProductsLayer();
@@ -706,6 +724,8 @@
     layer.innerHTML = '<article class="ps53-products-shell"><header class="ps53-products-nav"><button class="ps53-products-brand" type="button" aria-label="İkinci ana sayfaya dön"><i>PS</i><span>PLAY STREAMERS</span></button><button class="ps53-products-close ps53-products-back" type="button" aria-label="İkinci ana sayfaya dön"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 5-7 7 7 7"/></svg></button></header><main class="ps53-products-main"><section class="ps49-info-content"></section></main><footer class="landing-footer"><span>Güvenli bağlantılar · Kişisel panel · Ücretsiz başlangıç</span><span>Developed by <a href="https://swcreate.com" target="_blank" rel="noopener noreferrer">SW CREATE</a></span></footer></article>';
     renderInfoContent(layer, 'products', false);
     layer.hidden = false;
+    document.body.classList.add('ps117-products-open');
+    window.dispatchEvent(new Event('ps:i18n-refresh'));
     const brand = $('.ps53-products-brand', layer), back = $('.ps53-products-back', layer);
     if (brand) { brand.onpointerdown = event => { event.preventDefault(); event.stopImmediatePropagation(); goMemberProductsHome(); }; brand.onclick = event => { event.preventDefault(); event.stopImmediatePropagation(); }; }
     if (back) { back.onpointerdown = event => { event.preventDefault(); event.stopImmediatePropagation(); goBackFromMemberProducts(); }; back.onclick = event => { event.preventDefault(); event.stopImmediatePropagation(); }; }
@@ -723,6 +743,15 @@
     connections: '<svg viewBox="0 0 24 24"><path d="M8.5 15.5 6 18a3.5 3.5 0 1 1-5-5l4-4a3.5 3.5 0 0 1 5 0M15.5 8.5 18 6a3.5 3.5 0 1 1 5 5l-4 4a3.5 3.5 0 0 1-5 0M8 16l8-8"/></svg>',
     support: '<svg viewBox="0 0 24 24"><path d="M4 5h16v11H8l-4 4V5Z"/><path d="M8 9h8M8 13h5"/></svg>'
   };
+  const accountNavLabels = Object.freeze({ data: 'Veriler', profile: 'SW Profil', account: 'SW Güvenlik', devices: 'Cihazlar', connections: 'Bağlantılar', support: 'Destek talepleri' });
+  function localizeAccountNavigation(layer = $('#ps51AccountCenter')) {
+    if (!layer) return;
+    $$('[data-ps51-tab]', layer).forEach(button => {
+      const label = $('span', button);
+      const source = accountNavLabels[button.dataset.ps51Tab];
+      if (label && source) label.textContent = ui(source);
+    });
+  }
   function saveAccountState(next) { localStorage.setItem(STORE, JSON.stringify(next)); }
   function accountAvatar(user) {
     const current = state(), local = current.settings?.localAvatarUserId === user.id ? current.settings?.localAvatar : '';
@@ -2304,6 +2333,7 @@
         button.disabled = active;
         button.setAttribute('aria-current', active ? 'page' : 'false');
       });
+      localizeAccountNavigation(existing);
       const pane = $('.ps51-account-pane', existing);
       if (!pane) { existing.remove(); return showAccountCenter(safeTab, refresh, flash, quiet); }
       const updatePane = () => {
@@ -2331,9 +2361,10 @@
     }
     const layer = document.createElement('section'); layer.id = 'ps51AccountCenter'; layer.dataset.currentTab = safeTab;
     const initialViewVersion = accountCenterViewVersion;
-    layer.innerHTML = `<article class="ps51-account-shell"><button class="ps51-account-close" type="button" aria-label="Hesap merkezini kapat">×</button><nav class="ps51-account-nav" aria-label="Hesap bölümleri"><div class="ps51-account-brand"><i><img src="./play-streamers-ps-logo.svg?v=10.14" alt=""></i><span>PLAY STREAMERS<small>SW IDENTITY</small></span></div>${[['data','Veriler'],['profile','SW Profil'],['account','SW Güvenlik'],['devices','Cihazlar'],['connections','Bağlantılar'],['support','Destek talepleri']].map(item => { const active = safeTab === item[0]; return `<button type="button" data-ps51-tab="${item[0]}" class="${active ? 'active' : ''}"${active ? ' disabled aria-current="page"' : ''}>${accountNavIcons[item[0]]}<span>${item[1]}</span></button>`; }).join('')}</nav><main class="ps51-account-main"><section class="ps51-account-pane" data-pane="${safeTab}">${panes[safeTab]}</section></main></article>`;
+    layer.innerHTML = `<article class="ps51-account-shell"><button class="ps51-account-close" type="button" aria-label="${esc(ui('Hesap merkezini kapat'))}">×</button><nav class="ps51-account-nav" aria-label="${esc(ui('Hesap bölümleri'))}"><div class="ps51-account-brand"><i><img src="./play-streamers-ps-logo.svg?v=10.14" alt=""></i><span>PLAY STREAMERS<small>SW IDENTITY</small></span></div>${Object.entries(accountNavLabels).map(item => { const active = safeTab === item[0]; return `<button type="button" data-ps51-tab="${item[0]}" class="${active ? 'active' : ''}"${active ? ' disabled aria-current="page"' : ''}>${accountNavIcons[item[0]]}<span>${esc(ui(item[1]))}</span></button>`; }).join('')}</nav><main class="ps51-account-main"><section class="ps51-account-pane" data-pane="${safeTab}">${panes[safeTab]}</section></main></article>`;
     document.body.classList.add('ps54-account-open'); document.body.append(layer);
     decorateAccountPane($('.ps51-account-pane', layer), safeTab);
+    localizeAccountNavigation(layer);
     window.dispatchEvent(new Event('ps:i18n-refresh'));
     if (safeTab === 'connections') normalizeTipeeeStreamDabLogo(layer);
     bindAccountPane(layer, safeTab);
@@ -3381,10 +3412,10 @@
   }
 
   function requestLogout() {
-    const layer = showDialog('ps44LogoutDialog', '<span class="ps44-panel-title">OTURUMU KAPAT</span><h2>Çıkış yapmak istiyor musun?</h2><p>Bu cihazdaki oturumun kapatılacak. Tekrar giriş yaparak hesabına dönebilirsin.</p><div class="ps44-dialog-actions"><button class="ps44-cancel" type="button">Vazgeç</button><button class="ps44-confirm danger" type="button">Çıkış yap</button></div>');
+    const layer = showDialog('ps44LogoutDialog', `<span class="ps44-panel-title">${esc(ui('OTURUMU KAPAT'))}</span><h2>${esc(ui('Çıkış yapmak istiyor musun?'))}</h2><p>${esc(ui('Bu cihazdaki oturumun kapatılacak. Tekrar giriş yaparak hesabına dönebilirsin.'))}</p><div class="ps44-dialog-actions"><button class="ps44-cancel" type="button">${esc(ui('Vazgeç'))}</button><button class="ps44-confirm danger" type="button">${esc(ui('Çıkış yap'))}</button></div>`);
     $('.ps44-cancel', layer).onclick = () => close(layer);
     $('.ps44-confirm', layer).onclick = async () => {
-      const button = $('.ps44-confirm', layer); button.disabled = true; button.textContent = 'Çıkış yapılıyor…';
+      const button = $('.ps44-confirm', layer); button.disabled = true; button.textContent = ui('Çıkış yapılıyor…');
       const current = state(), token = String(current.settings?.userSession || '');
       try { if (token) await fetch('https://api.pstreamers.com/api/auth/logout', { method: 'POST', headers: { Authorization: `Bearer ${token}` } }); } catch (_) { /* Local session is still safely closed. */ }
       current.settings ||= {}; delete current.settings.userSession; delete current.settings.user; current.settings.rememberUser = false; localStorage.setItem(STORE, JSON.stringify(current));
@@ -3805,7 +3836,62 @@
   document.addEventListener('focusout', hideTooltip, true);
   document.addEventListener('pointerdown', hideTooltip, true);
   document.addEventListener('scroll', hideTooltip, true);
-  window.addEventListener('ps:i18n-ready', () => { hideTooltip(); updateConnectionIcon(); updateNotifications(); const panel = $('#ps55Notifications'); if (panel && !panel.hidden) renderNotificationPanel(panel); });
+  let localeSurfaceSnapshot = null;
+  function surfaceVisible(node) {
+    return Boolean(node && !node.hidden && node.getClientRects().length && getComputedStyle(node).display !== 'none');
+  }
+  function captureLocaleSurface() {
+    const account = $('#ps51AccountCenter');
+    const info = $('#ps49InfoPage');
+    const updates = $('#ps44UpdatesDialog');
+    if (surfaceVisible(account)) return { type: 'account', tab: account.dataset.currentTab || 'data', path: location.pathname };
+    if (surfaceVisible(info) && info.classList.contains('ps53-products-copy')) return { type: 'products', origin: memberProductsOrigin, path: location.pathname };
+    if (surfaceVisible(updates)) return { type: 'updates', path: location.pathname };
+    if (surfaceVisible(info)) return { type: 'info', key: info.dataset.current || 'about', path: location.pathname };
+    if (surfaceVisible($('.app'))) return { type: 'dashboard', path: location.pathname };
+    if (surfaceVisible($('#psSecondHome'))) return { type: 'member', path: location.pathname };
+    return { type: 'public', path: location.pathname };
+  }
+  function restoreLocaleSurface(snapshot) {
+    if (!snapshot) return;
+    if (snapshot.type === 'dashboard') window.ps66RestoreDashboardSurface?.();
+    else if (snapshot.type === 'member') showMemberHome(false, false);
+    else if (snapshot.type === 'account') showAccountCenter(snapshot.tab, false, '', true);
+    else if (snapshot.type === 'products') {
+      memberProductsOrigin = snapshot.origin || 'member';
+      const layer = $('#ps49InfoPage');
+      if (layer?.classList.contains('ps53-products-copy')) {
+        renderInfoContent(layer, 'products', false);
+        layer.hidden = false;
+        document.body.classList.add('ps117-products-open');
+        window.dispatchEvent(new Event('ps:i18n-refresh'));
+      }
+    } else if (snapshot.type === 'updates') showUpdates();
+    else if (snapshot.type === 'info') showPublicInfo(snapshot.key);
+    else restorePublicLandingSurface();
+    syncCleanRoute(snapshot.path || visibleMemberRoute(), true);
+  }
+  function refreshLocalizedDynamicSurfaces() {
+    hideTooltip();
+    refreshCreatorLanding();
+    updateConnectionIcon();
+    updateNotifications();
+    const notifications = $('#ps55Notifications');
+    if (notifications && !notifications.hidden) renderNotificationPanel(notifications);
+    const connection = $('#ps44HomeConnection');
+    if (connection && !connection.hidden) renderConnectionPanel(connection);
+    localizeAccountNavigation();
+  }
+  window.addEventListener('ps:locale-will-change', () => { localeSurfaceSnapshot = captureLocaleSurface(); });
+  window.addEventListener('ps:locale-change', () => {
+    const snapshot = localeSurfaceSnapshot || captureLocaleSurface();
+    window.setTimeout(() => {
+      refreshLocalizedDynamicSurfaces();
+      restoreLocaleSurface(snapshot);
+      localeSurfaceSnapshot = null;
+    }, 0);
+  });
+  window.addEventListener('ps:i18n-ready', refreshLocalizedDynamicSurfaces);
   document.addEventListener('click', event => {
     const tab = event.target instanceof Element ? event.target.closest('.workspace-tabs button[data-view]') : null;
     if (tab) {
@@ -4068,25 +4154,80 @@
       else if (button.textContent !== translated) button.textContent = translated;
     });
   }
-  function rateStatusCopy(snapshot) {
+  function localeCurrency() {
     const language = String(localStorage.getItem('ps15-locale') || document.documentElement.lang || 'tr').split('-')[0];
     const target = ({tr:'TRY',en:'USD',de:'EUR',es:'EUR',fr:'EUR',ru:'RUB',ar:'SAR',ja:'JPY'})[language] || 'USD';
+    return { language, target, symbol: ({TRY:'₺',USD:'$',EUR:'€',RUB:'₽',SAR:'ر.س',JPY:'¥'})[target] || target };
+  }
+  function rateDetails(snapshot) {
+    const { target } = localeCurrency();
     const rates = snapshot?.rates || {};
     const source = target === 'TRY' ? 'EUR' : 'TRY';
-    if (!Number.isFinite(Number(rates[source])) || !Number.isFinite(Number(rates[target]))) return ui('Kurlar hazırlanıyor');
+    if (!Number.isFinite(Number(rates[source])) || !Number.isFinite(Number(rates[target]))) return { target, source, copy: ui('Kurlar hazırlanıyor'), refreshed: '—' };
     const rate = Number(rates[target]) / Number(rates[source]);
     const formatted = new Intl.NumberFormat(document.documentElement.lang || 'tr', { maximumFractionDigits: target === 'JPY' ? 2 : 4 }).format(rate);
     const refreshed = snapshot.rateDate || (snapshot.refreshedAt ? new Intl.DateTimeFormat(document.documentElement.lang || 'tr', { hour:'2-digit', minute:'2-digit' }).format(new Date(snapshot.refreshedAt)) : '—');
-    return `1 ${source} = ${formatted} ${target} · ${ui('Son yenileme')} ${refreshed}`;
+    return { target, source, copy: `1 ${source} = ${formatted} ${target}`, refreshed };
+  }
+  function closeRatePanel() {
+    const panel = $('#ps117ExchangePanel');
+    if (panel) panel.hidden = true;
+    $('#ps117ExchangeButton')?.setAttribute('aria-expanded', 'false');
+  }
+  function positionRatePanel(button, panel) {
+    if (!button || !panel || panel.hidden) return;
+    const rect = button.getBoundingClientRect();
+    const width = Math.min(320, innerWidth - 24);
+    panel.style.width = `${width}px`;
+    panel.style.left = `${Math.max(12, Math.min(innerWidth - width - 12, rect.right - width))}px`;
+    panel.style.top = `${Math.min(innerHeight - panel.offsetHeight - 12, rect.bottom + 10)}px`;
+  }
+  function renderRatePanel(snapshot = window.psExchangeRates) {
+    const button = $('#ps117ExchangeButton');
+    let panel = $('#ps117ExchangePanel');
+    if (!button) return;
+    if (!panel) {
+      panel = document.createElement('aside');
+      panel.id = 'ps117ExchangePanel';
+      panel.hidden = true;
+      document.body.append(panel);
+    }
+    const details = rateDetails(snapshot);
+    panel.innerHTML = `<header><span>${ui('GÜNCEL KUR')}</span><button type="button" aria-label="${ui('Kapat')}">×</button></header><strong>${details.copy}</strong><dl><div><dt>${ui('Para birimi')}</dt><dd>${details.target}</dd></div><div><dt>${ui('Son yenileme')}</dt><dd>${details.refreshed}</dd></div><div><dt>${ui('Referans kur')}</dt><dd>${esc(snapshot?.provider || 'Frankfurter')}</dd></div></dl><p>${ui('Bağışlar güncel merkez bankası referans kurlarıyla hesaplanır.')}</p>`;
+    $('header button', panel).onclick = closeRatePanel;
+    positionRatePanel(button, panel);
   }
   function renderRateStatus(snapshot = window.psExchangeRates) {
     const actions = $('#psSecondHome .ps20-actions');
     const status = $('#ps66MemberSystemStatus');
     if (!actions || !status) return;
-    let pill = $('#ps116ExchangeStatus', actions);
-    if (!pill) { pill = document.createElement('span'); pill.id = 'ps116ExchangeStatus'; pill.className = 'ps116-exchange-status'; status.after(pill); }
-    pill.textContent = rateStatusCopy(snapshot);
-    pill.title = `${ui('Bağışlar güncel merkez bankası referans kurlarıyla hesaplanır.')} ${snapshot?.provider || ''}`.trim();
+    $('#ps116ExchangeStatus', actions)?.remove();
+    let button = $('#ps117ExchangeButton', actions);
+    if (!button) {
+      button = document.createElement('button');
+      button.type = 'button';
+      button.id = 'ps117ExchangeButton';
+      button.className = 'ps117-exchange-button';
+      button.setAttribute('aria-haspopup', 'dialog');
+      button.setAttribute('aria-expanded', 'false');
+      status.after(button);
+      button.onclick = event => {
+        event.preventDefault(); event.stopPropagation();
+        const panel = $('#ps117ExchangePanel');
+        const opening = !panel || panel.hidden;
+        if (!opening) return closeRatePanel();
+        renderRatePanel(window.psExchangeRates);
+        const readyPanel = $('#ps117ExchangePanel');
+        readyPanel.hidden = false;
+        button.setAttribute('aria-expanded', 'true');
+        positionRatePanel(button, readyPanel);
+      };
+    }
+    const currency = localeCurrency();
+    button.textContent = currency.symbol;
+    button.setAttribute('aria-label', `${ui('Kur bilgisi')}: ${currency.target}`);
+    button.title = `${ui('Kur bilgisi')}: ${currency.target}`;
+    if (!$('#ps117ExchangePanel')?.hidden) renderRatePanel(snapshot);
   }
   function refreshDynamicLanguage() {
     localizeActionButtons(); renderRateStatus();
@@ -4097,6 +4238,9 @@
   window.addEventListener('ps:locale-change', () => window.setTimeout(refreshDynamicLanguage, 80));
   window.addEventListener('ps:i18n-ready', refreshDynamicLanguage);
   window.addEventListener('ps:i18n-refresh', () => window.setTimeout(localizeActionButtons, 0));
+  document.addEventListener('click', event => { if (!event.target.closest?.('#ps117ExchangeButton,#ps117ExchangePanel')) closeRatePanel(); });
+  document.addEventListener('keydown', event => { if (event.key === 'Escape') closeRatePanel(); });
+  window.addEventListener('resize', () => positionRatePanel($('#ps117ExchangeButton'), $('#ps117ExchangePanel')));
   window.addEventListener('pageshow', () => { dismissStaleLoaders(true); refreshDynamicLanguage(); });
   window.setInterval(() => dismissStaleLoaders(false), 900);
   window.setTimeout(() => { dismissStaleLoaders(true); refreshDynamicLanguage(); }, 5600);

@@ -1,5 +1,5 @@
 const SUPPORTED = new Set(["tr", "en", "de", "es", "fr", "ru", "ar", "ja"]);
-const CATALOG_VERSION = "2026-08-30.9";
+const CATALOG_VERSION = "2026-08-30.10";
 const catalogPromises = new Map();
 const COUNTRY_LOCALES = Object.freeze({
   TR: "tr", JP: "ja", DE: "de", AT: "de", CH: "de", LI: "de",
@@ -492,6 +492,60 @@ Object.entries({
   critical[language]["PLAY STREAMERS WEB · v10.15.0"] = "PLAY STREAMERS WEB · v10.15.0";
 });
 
+const criticalMemberSurfaceSources = [
+  "Veriler", "SW Profil", "SW Güvenlik", "Cihazlar", "Bağlantılar", "Destek talepleri",
+  "BAĞLANTI DURUMU", "Kick hesabın bağlı", "Henüz Kick bağlantısı yok", "bağlı",
+  "{count} bağlantı aktif", "Henüz bağlantı kurulmadı", "Kick bağlantısı kur",
+  "OTURUMU KAPAT", "Çıkış yapmak istiyor musun?",
+  "Bu cihazdaki oturumun kapatılacak. Tekrar giriş yaparak hesabına dönebilirsin.",
+  "Vazgeç", "Çıkış yap", "Çıkış yapılıyor…", "Hesap merkezini kapat", "Hesap bölümleri",
+  "Yayının kapansa da geçmişin hazır.",
+  "Doğrulanmış oturumlar ve izleyici örnekleri sunucuda işlenir.",
+  "Kur bilgisi", "GÜNCEL KUR", "Referans kur", "Para birimi",
+  "Bağışlar güncel merkez bankası referans kurlarıyla hesaplanır."
+];
+const criticalMemberSurfaceCopy = Object.freeze({
+  en: ["Data", "SW Profile", "SW Security", "Devices", "Connections", "Support requests", "CONNECTION STATUS", "Your Kick account is connected", "No Kick connection yet", "connected", "{count} active connections", "No connection yet", "Connect Kick", "SIGN OUT", "Do you want to sign out?", "Your session on this device will end. You can return to your account by signing in again.", "Stay signed in", "Sign out", "Signing out…", "Close account center", "Account sections", "Even after your stream ends, your history is ready.", "Verified sessions and audience samples are processed on the server.", "Exchange rates", "LIVE RATE", "Reference rate", "Currency", "Donations are calculated using current central-bank reference rates."],
+  de: ["Daten", "SW-Profil", "SW-Sicherheit", "Geräte", "Verbindungen", "Supportanfragen", "VERBINDUNGSSTATUS", "Dein Kick-Konto ist verbunden", "Noch keine Kick-Verbindung", "verbunden", "{count} aktive Verbindungen", "Noch keine Verbindung", "Kick verbinden", "ABMELDEN", "Möchtest du dich abmelden?", "Deine Sitzung auf diesem Gerät wird beendet. Du kannst dich erneut anmelden, um zu deinem Konto zurückzukehren.", "Angemeldet bleiben", "Abmelden", "Abmeldung läuft…", "Kontocenter schließen", "Kontobereiche", "Auch nach Ende deines Streams bleibt dein Verlauf verfügbar.", "Verifizierte Sitzungen und Zuschauerstichproben werden auf dem Server verarbeitet.", "Wechselkurse", "LIVE-KURS", "Referenzkurs", "Währung", "Spenden werden mit aktuellen Referenzkursen der Zentralbanken berechnet."],
+  es: ["Datos", "Perfil SW", "Seguridad SW", "Dispositivos", "Conexiones", "Solicitudes de soporte", "ESTADO DE CONEXIÓN", "Tu cuenta de Kick está conectada", "Aún no hay conexión con Kick", "conectado", "{count} conexiones activas", "Aún no hay ninguna conexión", "Conectar Kick", "CERRAR SESIÓN", "¿Quieres cerrar sesión?", "Se cerrará la sesión de este dispositivo. Puedes volver a tu cuenta iniciando sesión de nuevo.", "Seguir conectado", "Cerrar sesión", "Cerrando sesión…", "Cerrar centro de cuenta", "Secciones de la cuenta", "Aunque termine tu directo, tu historial seguirá disponible.", "Las sesiones verificadas y las muestras de audiencia se procesan en el servidor.", "Tipos de cambio", "TIPO ACTUAL", "Tipo de referencia", "Moneda", "Las donaciones se calculan con los tipos de referencia actuales de los bancos centrales."],
+  fr: ["Données", "Profil SW", "Sécurité SW", "Appareils", "Connexions", "Demandes d’assistance", "ÉTAT DES CONNEXIONS", "Votre compte Kick est connecté", "Aucune connexion Kick pour le moment", "connecté", "{count} connexions actives", "Aucune connexion pour le moment", "Connecter Kick", "SE DÉCONNECTER", "Voulez-vous vous déconnecter ?", "Votre session sur cet appareil sera fermée. Vous pourrez retrouver votre compte en vous reconnectant.", "Rester connecté", "Se déconnecter", "Déconnexion…", "Fermer le centre de compte", "Sections du compte", "Même après la fin du direct, votre historique reste disponible.", "Les sessions vérifiées et les échantillons d’audience sont traités sur le serveur.", "Taux de change", "TAUX ACTUEL", "Taux de référence", "Devise", "Les dons sont calculés selon les taux de référence actuels des banques centrales."],
+  ru: ["Данные", "Профиль SW", "Безопасность SW", "Устройства", "Подключения", "Обращения в поддержку", "СОСТОЯНИЕ ПОДКЛЮЧЕНИЙ", "Аккаунт Kick подключён", "Kick ещё не подключён", "подключено", "Активных подключений: {count}", "Подключений пока нет", "Подключить Kick", "ВЫЙТИ", "Выйти из аккаунта?", "Сеанс на этом устройстве будет завершён. Чтобы вернуться в аккаунт, войдите снова.", "Остаться", "Выйти", "Выход…", "Закрыть центр аккаунта", "Разделы аккаунта", "Даже после завершения трансляции история останется доступна.", "Проверенные сеансы и выборки аудитории обрабатываются на сервере.", "Курсы валют", "ТЕКУЩИЙ КУРС", "Справочный курс", "Валюта", "Суммы пожертвований рассчитываются по актуальным справочным курсам центральных банков."],
+  ar: ["البيانات", "ملف SW", "أمان SW", "الأجهزة", "الاتصالات", "طلبات الدعم", "حالة الاتصال", "حساب Kick متصل", "لم يتم ربط Kick بعد", "متصل", "اتصالات نشطة: {count}", "لا توجد اتصالات بعد", "ربط Kick", "تسجيل الخروج", "هل تريد تسجيل الخروج؟", "ستنتهي جلستك على هذا الجهاز. يمكنك العودة إلى حسابك بتسجيل الدخول مرة أخرى.", "البقاء مسجّلًا", "تسجيل الخروج", "جارٍ تسجيل الخروج…", "إغلاق مركز الحساب", "أقسام الحساب", "حتى بعد انتهاء البث، سيظل السجل متاحًا.", "تُعالَج الجلسات الموثقة وعينات الجمهور على الخادم.", "أسعار الصرف", "السعر الحالي", "السعر المرجعي", "العملة", "تُحسب التبرعات وفق أحدث الأسعار المرجعية للبنوك المركزية."],
+  ja: ["データ", "SWプロフィール", "SWセキュリティ", "デバイス", "接続", "サポート依頼", "接続状況", "Kickアカウントは接続済みです", "Kickはまだ接続されていません", "接続済み", "有効な接続：{count}件", "まだ接続されていません", "Kickを接続", "ログアウト", "ログアウトしますか？", "このデバイスのセッションを終了します。再度ログインするとアカウントに戻れます。", "ログインを続ける", "ログアウト", "ログアウト中…", "アカウントセンターを閉じる", "アカウントのセクション", "配信が終了しても履歴は利用できます。", "確認済みセッションと視聴者サンプルはサーバーで処理されます。", "為替レート", "現在のレート", "基準レート", "通貨", "寄付額は中央銀行の最新の基準レートで換算されます。"]
+});
+Object.entries(criticalMemberSurfaceCopy).forEach(([language, values]) => {
+  criticalMemberSurfaceSources.forEach((source, index) => { critical[language][source] = values[index]; });
+});
+Object.assign(critical.ar, {
+  "01 · CANLI MERKEZ": "01 · المركز المباشر",
+  "02 · CANLI ZEKA": "02 · ذكاء البث المباشر",
+  "45 HAZIR ARAÇ": "45 أداة جاهزة",
+  "AKILLI BİLDİRİMLER": "إشعارات ذكية",
+  "Canlı olay merkezi": "مركز الأحداث المباشرة",
+  "CMD PENCERESİ YOK": "من دون نافذة CMD",
+  "Free, Pro ve Product Pro içinde içerik, topluluk, marka, gelir, analiz ve yerel kasa araçları.": "أدوات للمحتوى والمجتمع والعلامة التجارية والإيرادات والتحليلات والتخزين المحلي ضمن خطط Free وPro وProduct Pro.",
+  "Kanıtlı karşılaştırmalar, AI açıklaması, topluluk sistemleri, medya kiti ve doğrulanmış gelir görünümleri.": "مقارنات موثقة وشروحات بالذكاء الاصطناعي وأنظمة للمجتمع وحزمة إعلامية وعروض إيرادات موثقة.",
+  "Masaüstü sürüm durumu": "حالة إصدار سطح المكتب",
+  "Masaüstü uygulaması özellikleri": "ميزات تطبيق سطح المكتب",
+  "PLAY CONNECT DESTEKLERİ": "دعم PLAY CONNECT",
+  "Site hesap ve ürün merkezi": "مركز الحساب والمنتجات على الموقع",
+  "ÜRÜN AİLESİ": "عائلة المنتجات",
+  "WINDOWS MASAÜSTÜ UYGULAMASI": "تطبيق سطح المكتب لنظام WINDOWS",
+  "Yayın oturumlarını, etkileşimi ve değişimleri doğrulanmış veriler üzerinden karşılaştır.": "قارن جلسات البث والتفاعل والتغيّرات اعتمادًا على بيانات موثقة."
+});
+Object.assign(critical.ar, {
+  "Bilgi sayfalarındaki giriş/kayıt pencereleri bulunduğu sayfada açılıyor; Google ve Kick sosyal girişleri yeniden yan yana çalışıyor.": "تُفتح نوافذ تسجيل الدخول وإنشاء الحساب داخل صفحة المعلومات الحالية، وعاد تسجيل الدخول عبر Google وKick للعمل جنبًا إلى جنب.",
+  "Doğrulama sonrası yinelenen geçiş kaldırıldı; giriş ve kayıt ekranlarındaki Kick ile devam düğmesi kaldırıldı.": "أُزيل الانتقال المتكرر بعد التحقق، كما أُزيل زر المتابعة عبر Kick من شاشتي تسجيل الدخول وإنشاء الحساب.",
+  "Donate olaylarının ayrı büyütme simgesi kaldırıldı; ayrıntı artık donate satırının tamamına tıklanarak açılıyor.": "أُزيل رمز التكبير المنفصل لأحداث التبرع؛ ويمكن الآن فتح التفاصيل بالنقر على صف التبرع كاملًا.",
+  "Genel arayüz onarımının canlı sayaçlarda tekrar tekrar çalışarak oluşturduğu titreme ve yeniden çizim döngüsü kaldırıldı; Google girişi, dil menüsü ve ikinci ana sayfa tekil etkileşim katmanına alındı.": "أُزيلت حلقة الوميض وإعادة الرسم التي كان يسببها إصلاح الواجهة المتكرر في العدادات المباشرة؛ ووُحّدت تفاعلات تسجيل الدخول عبر Google وقائمة اللغة والصفحة الرئيسية الثانية.",
+  "Ko-fi, Buy Me a Coffee, Patreon, Fourthwall, TipeeeStream, DonationAlerts ve Pally.gg global platform listesine eklendi; bütün sağlayıcılara görsel ikon verildi.": "أُضيفت منصات Ko-fi وBuy Me a Coffee وPatreon وFourthwall وTipeeeStream وDonationAlerts وPally.gg إلى القائمة العالمية، وأصبح لكل مزود رمز مرئي.",
+  "Play Streamers Donate Connector Chrome eklentisi; ByNoGame, Klasgame, Streamlabs, StreamElements ve Diğerleri platform listesiyle eklendi.": "أُضيفت إضافة Play Streamers Donate Connector لمتصفح Chrome مع قائمة منصات تشمل ByNoGame وKlasgame وStreamlabs وStreamElements وخيار منصات أخرى.",
+  "Site ve Chrome eklentisi bağlantı kesme durumu iki yönlü eşitlendi; yinelenen eski Chrome cihaz kayıtları temizlendi.": "تتم الآن مزامنة حالة قطع الاتصال بين الموقع وإضافة Chrome في الاتجاهين، كما حُذفت سجلات أجهزة Chrome القديمة المكررة.",
+  "SSB platform seçicisi özel açılır menüyle yenilendi, DAB ve platform logo yedekleri düzeltildi; Play Connect merkezi DAB bağlantılarını artık sade biçimde gösteriyor.": "جُدّد محدد منصات SSB بقائمة منسدلة مخصصة، وأُصلحت بدائل شعارات DAB والمنصات؛ كما يعرض مركز Play Connect اتصالات DAB بصورة أبسط.",
+  "Sunucuya doğrudan bağlı platformların eklentide ikinci kez taranması engellendi; tüm kaynaklar aynı D1 olay kaydı, kimlik denetimi ve Dashboard Donate toplamında birleştirildi.": "مُنعت الإضافة من فحص المنصات المتصلة مباشرةً بالخادم مرة ثانية، ووُحّدت جميع المصادر في سجل أحداث D1 نفسه والتحقق من الهوية وإجمالي التبرعات في لوحة التحكم.",
+  "TipeeeStream DAB logosu gömülü güvenli kaynağa sabitlendi; Play Connect DAB görünümünün sayfa yüksekliğini bozması engellendi.": "ثُبّت شعار TipeeeStream DAB على مصدر آمن مضمّن، ومُنع عرض Play Connect DAB من التأثير في ارتفاع الصفحة."
+});
+
 function clean(value) { return String(value || "").replace(/\s+/g, " ").trim(); }
 const TURKISH_TERMS = new Set(["giriş", "kayıt", "hakkımızda", "ürünlerimiz", "nasıl", "çalışır", "içerik", "planlama", "canlı", "analiz", "topluluk", "marka", "araçları", "gelir", "görünümleri", "yayın", "yayıncı", "hesap", "şifre", "doğrula", "indir", "destek", "sistem", "durumu", "ziyaretçi", "şu", "anda", "aktif", "hemen", "başla", "keşfet", "daha", "fazla", "burada", "mısın", "beni", "hatırla"]);
 function containsTurkishCopy(value) {
@@ -770,6 +824,7 @@ if (typeof window !== "undefined" && document.body && !location.protocol.startsW
       localStorage.setItem("ps15-locale", language);
       localStorage.setItem("ps-locale-source", source);
       if (liveI18n.language === language) { liveI18n.refresh(); return true; }
+      window.dispatchEvent(new CustomEvent("ps:locale-will-change", { detail: { language, source, previousLanguage: liveI18n.language } }));
       document.documentElement.classList.add("ps-locale-switching");
       delete document.documentElement.dataset.psI18nReady;
       const safety = window.setTimeout(() => {

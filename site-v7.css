@@ -4195,3 +4195,128 @@ body.ps-v9 #ps51AccountCenter :is(.ps51-data-card,.ps51-account-section,.ps51-ki
   body.ps-v9 #ps51AccountCenter .ps115-account-hero { grid-template-columns:1fr!important; }
   body.ps-v9 #ps51AccountCenter .ps115-account-visual { display:none!important; }
 }
+
+/* Site 10.17 — route-safe locale changes and compact account surfaces. */
+body.ps-v9 > #ps49InfoPage,
+body.ps-v9 > #ps49InfoPage.ps53-products-copy {
+  position:fixed!important;
+  z-index:19000!important;
+  inset:0!important;
+  width:100vw!important;
+  height:100dvh!important;
+  margin:0!important;
+  overflow:auto!important;
+}
+body.ps117-products-open { overflow:hidden!important; }
+
+/* The loader remains animated, but the PS mark no longer jumps vertically. */
+#ps28Loader .ps110-loader-emblem { animation:none!important; }
+#ps28Loader .ps110-loader-emblem img {
+  animation:ps117-logo-pulse 1.15s ease-in-out infinite!important;
+}
+@keyframes ps117-logo-pulse {
+  0%,100% { transform:rotateY(-8deg) rotateZ(-2deg) scale(.94); filter:drop-shadow(0 0 15px rgba(255,255,255,.24)); }
+  50% { transform:rotateY(9deg) rotateZ(2deg) scale(1.08); filter:drop-shadow(0 0 36px rgba(255,255,255,.68)); }
+}
+
+.ps117-exchange-button {
+  display:grid!important;
+  width:38px!important;
+  min-width:38px!important;
+  height:38px!important;
+  min-height:38px!important;
+  place-items:center!important;
+  border:1px solid rgba(255,255,255,.16)!important;
+  border-radius:11px!important;
+  padding:0!important;
+  color:#fff!important;
+  background:rgba(255,255,255,.055)!important;
+  font:800 15px/1 var(--display)!important;
+  transition:border-color .16s ease,background .16s ease!important;
+}
+.ps117-exchange-button:hover,.ps117-exchange-button:focus-visible,.ps117-exchange-button[aria-expanded="true"] {
+  border-color:rgba(255,255,255,.42)!important;
+  background:rgba(255,255,255,.12)!important;
+  outline:none!important;
+}
+#ps117ExchangePanel {
+  position:fixed;
+  z-index:22100;
+  border:1px solid rgba(255,255,255,.16);
+  border-radius:16px;
+  padding:16px;
+  color:#fff;
+  background:linear-gradient(150deg,rgba(27,27,30,.98),rgba(7,7,9,.98));
+  box-shadow:0 24px 70px rgba(0,0,0,.5),inset 0 1px rgba(255,255,255,.09);
+}
+#ps117ExchangePanel[hidden] { display:none!important; }
+#ps117ExchangePanel header { display:flex; align-items:center; justify-content:space-between; gap:12px; }
+#ps117ExchangePanel header span { color:rgba(255,255,255,.52); font:800 9px var(--display); letter-spacing:.15em; }
+#ps117ExchangePanel header button { display:grid; width:28px; height:28px; place-items:center; border:1px solid rgba(255,255,255,.14); border-radius:8px; color:#fff; background:transparent; font-size:17px; }
+#ps117ExchangePanel>strong { display:block; margin:15px 0; font:700 22px var(--display); letter-spacing:-.035em; }
+#ps117ExchangePanel dl { display:grid; gap:7px; margin:0; }
+#ps117ExchangePanel dl div { display:flex; align-items:center; justify-content:space-between; gap:14px; border-top:1px solid rgba(255,255,255,.08); padding-top:7px; }
+#ps117ExchangePanel :is(dt,dd) { margin:0; font-size:9px; }
+#ps117ExchangePanel dt { color:rgba(255,255,255,.46); }
+#ps117ExchangePanel dd { color:rgba(255,255,255,.78); font-weight:700; }
+#ps117ExchangePanel>p { margin:13px 0 0; color:rgba(255,255,255,.43); font-size:8px; line-height:1.55; }
+
+body.ps-v9 #ps51AccountCenter .ps115-account-hero {
+  grid-template-columns:1fr!important;
+  gap:0!important;
+  margin-bottom:18px!important;
+  padding-bottom:18px!important;
+}
+body.ps-v9 #ps51AccountCenter .ps115-account-visual { display:none!important; }
+body.ps-v9 #ps51AccountCenter .ps51-account-pane h2 { font-size:clamp(24px,2.7vw,34px)!important; }
+body.ps-v9 #ps51AccountCenter .ps51-account-lead { max-width:760px!important; font-size:10px!important; }
+body.ps-v9 #ps51AccountCenter .ps54-kick-profile {
+  grid-template-columns:52px minmax(0,1fr) auto!important;
+  gap:13px!important;
+  border-color:rgba(255,255,255,.1)!important;
+  border-radius:14px!important;
+  padding:13px!important;
+  background:rgba(255,255,255,.035)!important;
+}
+body.ps-v9 #ps51AccountCenter .ps54-kick-avatar { width:50px!important; height:50px!important; border-width:1px!important; border-radius:13px!important; }
+body.ps-v9 #ps51AccountCenter .ps54-kick-profile b { font-size:15px!important; }
+body.ps-v9 #ps51AccountCenter .ps54-kick-profile small { font-size:9px!important; }
+body.ps-v9 #ps51AccountCenter .ps51-data-card { min-height:104px!important; padding:14px!important; }
+body.ps-v9 #ps51AccountCenter .ps51-data-card>b { font-size:22px!important; }
+body.ps-v9 #ps51AccountCenter .ps51-profile-head {
+  display:grid!important;
+  grid-template-columns:54px minmax(0,1fr)!important;
+  gap:13px!important;
+  border:0!important;
+  border-bottom:1px solid rgba(255,255,255,.1)!important;
+  border-radius:0!important;
+  padding:0 0 16px!important;
+  background:transparent!important;
+}
+body.ps-v9 #ps51AccountCenter .ps51-profile-avatar { width:52px!important; height:52px!important; border-radius:13px!important; }
+body.ps-v9 #ps51AccountCenter .ps51-profile-avatar img { width:38px!important; height:38px!important; }
+body.ps-v9 #ps51AccountCenter .ps10-identity-handoff { border-width:0 0 0 2px!important; border-radius:0!important; padding:4px 0 4px 16px!important; background:transparent!important; box-shadow:none!important; }
+body.ps-v9 #ps51AccountCenter .ps67-oauth { display:block!important; padding:14px!important; }
+body.ps-v9 #ps51AccountCenter .ps67-oauth-grid { grid-template-columns:repeat(2,minmax(0,1fr))!important; gap:9px!important; }
+body.ps-v9 #ps51AccountCenter .ps67-oauth-card {
+  display:grid!important;
+  grid-template-columns:38px minmax(0,1fr)!important;
+  grid-template-areas:"icon copy" "actions actions"!important;
+  align-items:center!important;
+  gap:9px!important;
+  padding:12px!important;
+}
+body.ps-v9 #ps51AccountCenter .ps67-oauth-icon { width:36px!important; height:36px!important; min-width:36px!important; border-radius:10px!important; }
+body.ps-v9 #ps51AccountCenter .ps67-oauth-icon img { width:24px!important; height:24px!important; max-width:24px!important; max-height:24px!important; }
+body.ps-v9 #ps51AccountCenter .ps67-oauth-copy b { font-size:12px!important; }
+body.ps-v9 #ps51AccountCenter .ps67-oauth-copy small { font-size:8px!important; line-height:1.45!important; }
+body.ps-v9 #ps51AccountCenter :is(.ps65-device-card,.ps62-device,.ps55-ticket) { border-radius:12px!important; box-shadow:none!important; background:rgba(255,255,255,.035)!important; }
+body.ps-v9 #ps51AccountCenter .ps65-device-icon { width:38px!important; height:38px!important; min-width:38px!important; border-radius:10px!important; }
+body.ps-v9 #ps51AccountCenter .ps65-device-icon svg { width:18px!important; height:18px!important; }
+body.ps-v9 #ps51AccountCenter .ps55-ticket>header { padding:13px!important; }
+body.ps-v9 #ps51AccountCenter .ps55-ticket-messages { padding:11px!important; }
+@media(max-width:760px) {
+  body.ps-v9 #ps51AccountCenter .ps67-oauth-grid { grid-template-columns:1fr!important; }
+  body.ps-v9 #ps51AccountCenter .ps54-kick-profile { grid-template-columns:48px minmax(0,1fr)!important; }
+  body.ps-v9 #ps51AccountCenter .ps54-kick-badge { grid-column:1/-1!important; }
+}

@@ -6,6 +6,17 @@
   let lastRefresh = 0;
   let lastData = null;
 
+  const ui = (source) => typeof window.psTranslateInterface === 'function'
+    ? window.psTranslateInterface(source)
+    : source;
+  const interfaceLocale = () => ({ tr:'tr-TR', en:'en-US', de:'de-DE', es:'es-ES', fr:'fr-FR', ru:'ru-RU', ar:'ar-SA', ja:'ja-JP' })[
+    String(localStorage.getItem('ps15-locale') || document.documentElement.lang || 'tr').split('-')[0]
+  ] || 'en-US';
+  const interpolate = (template, values) => Object.entries(values).reduce(
+    (output, [key, value]) => output.replaceAll(`{${key}}`, String(value)),
+    template
+  );
+
   function readSession() {
     try {
       const state = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
@@ -20,7 +31,9 @@
     if (!value) return '—';
     const hours = Math.floor(value / 3600);
     const minutes = Math.floor((value % 3600) / 60);
-    return hours ? `${hours} sa ${minutes} dk` : `${minutes} dk`;
+    return hours
+      ? interpolate(ui('{hours} sa {minutes} dk'), { hours, minutes })
+      : interpolate(ui('{minutes} dk'), { minutes });
   }
 
   function metric(label, value, detail) {
@@ -43,7 +56,7 @@
     if (card) return card;
     card = document.createElement('section');
     card.className = 'ps-server-analytics';
-    card.setAttribute('aria-label', 'Sunucudan otomatik yayın analizi');
+    card.setAttribute('aria-label', ui('Sunucudan otomatik yayın analizi'));
     grid.prepend(card);
     return card;
   }
@@ -61,7 +74,7 @@
     const latest = sessions.find((item) => Number(item?.endedAt || 0) > 0) || null;
     const isLive = monitor.status === 'live';
     const average = Number(latest?.summary?.averageViewers || 0);
-    const ended = latest?.endedAt ? new Date(latest.endedAt).toLocaleString('tr-TR', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' }) : 'İlk yayın bekleniyor';
+    const ended = latest?.endedAt ? new Date(latest.endedAt).toLocaleString(interfaceLocale(), { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' }) : ui('İlk yayın bekleniyor');
 
     card.replaceChildren();
     const header = document.createElement('header');
@@ -69,28 +82,29 @@
     const kicker = document.createElement('span');
     const heading = document.createElement('b');
     const state = document.createElement('i');
-    kicker.textContent = 'SUNUCU VERİ HATTI';
-    heading.textContent = isLive ? (monitor.title || 'Yayın otomatik ölçülüyor') : 'Uygulama kapalıyken de ölçüm açık';
+    card.setAttribute('aria-label', ui('Sunucudan otomatik yayın analizi'));
+    kicker.textContent = ui('SUNUCU VERİ HATTI');
+    heading.textContent = isLive ? (monitor.title || ui('Yayın otomatik ölçülüyor')) : ui('Uygulama kapalıyken de ölçüm açık');
     state.className = `ps-server-state${isLive ? ' live' : ''}`;
-    state.textContent = isLive ? '● CANLI' : monitor.connected ? 'HAZIR' : 'KICK BAĞLANTISI GEREKİYOR';
+    state.textContent = isLive ? ui('● CANLI') : monitor.connected ? ui('HAZIR') : ui('KICK BAĞLANTISI GEREKİYOR');
     title.append(kicker, heading);
     header.append(title, state);
 
     const metrics = document.createElement('div');
     metrics.className = 'ps-server-metrics';
     metrics.append(
-      metric(isLive ? 'Anlık izleyici' : 'Son yayın ortalaması', isLive ? String(monitor.currentViewers || 0) : (latest ? String(average) : '—'), isLive ? 'Dakikalık sunucu örneği' : ended),
-      metric('Tepe izleyici', latest ? String(latest.peakViewers || 0) : '—', 'Kick API ölçümü'),
-      metric('Etkileşim', latest ? String(latest.interactions || 0) : '—', latest ? `+${latest.followersGained || 0} takipçi` : 'İmzalı olay bekleniyor'),
-      metric('Yayın süresi', latest ? durationLabel(latest.summary?.durationSeconds || ((latest.endedAt - latest.startedAt) / 1000)) : '—', 'Sunucu oturumu')
+      metric(ui(isLive ? 'Anlık izleyici' : 'Son yayın ortalaması'), isLive ? String(monitor.currentViewers || 0) : (latest ? String(average) : '—'), isLive ? ui('Dakikalık sunucu örneği') : ended),
+      metric(ui('Tepe izleyici'), latest ? String(latest.peakViewers || 0) : '—', ui('Kick API ölçümü')),
+      metric(ui('Etkileşim'), latest ? String(latest.interactions || 0) : '—', latest ? interpolate(ui('+{count} takipçi'), { count: latest.followersGained || 0 }) : ui('İmzalı olay bekleniyor')),
+      metric(ui('Yayın süresi'), latest ? durationLabel(latest.summary?.durationSeconds || ((latest.endedAt - latest.startedAt) / 1000)) : '—', ui('Sunucu oturumu'))
     );
 
     const footer = document.createElement('div');
     footer.className = 'ps-server-foot';
     const copy = document.createElement('span');
     const health = document.createElement('strong');
-    copy.textContent = 'Siteyi, uygulamayı veya eklentiyi kapatsan da Kick bağlantın açık kaldığı sürece yayın oturumu sunucuda oluşur.';
-    health.textContent = monitor.healthy === false ? 'Ölçüm yeniden denenecek' : 'Otomatik ve sunucu tabanlı';
+    copy.textContent = ui('Siteyi, uygulamayı veya eklentiyi kapatsan da Kick bağlantın açık kaldığı sürece yayın oturumu sunucuda oluşur.');
+    health.textContent = monitor.healthy === false ? ui('Ölçüm yeniden denenecek') : ui('Otomatik ve sunucu tabanlı');
     footer.append(copy, health);
     card.append(header, metrics, footer);
   }
@@ -104,15 +118,16 @@
     const kicker = document.createElement('span');
     const heading = document.createElement('b');
     const state = document.createElement('i');
-    kicker.textContent = 'SUNUCU VERİ HATTI';
-    heading.textContent = message;
+    card.setAttribute('aria-label', ui('Sunucudan otomatik yayın analizi'));
+    kicker.textContent = ui('SUNUCU VERİ HATTI');
+    heading.textContent = ui(message);
     state.className = 'ps-server-state error';
-    state.textContent = navigator.onLine ? 'YENİDEN DENENECEK' : 'ÇEVRİMDIŞI';
+    state.textContent = navigator.onLine ? ui('YENİDEN DENENECEK') : ui('ÇEVRİMDIŞI');
     title.append(kicker, heading);
     header.append(title, state);
     const copy = document.createElement('p');
     copy.className = 'ps-server-empty';
-    copy.textContent = 'Mevcut yayın verilerin kaybolmaz. Bağlantı geri geldiğinde bu alan otomatik olarak yenilenir.';
+    copy.textContent = ui('Mevcut yayın verilerin kaybolmaz. Bağlantı geri geldiğinde bu alan otomatik olarak yenilenir.');
     card.append(header, copy);
   }
 
@@ -155,6 +170,12 @@
   document.addEventListener('visibilitychange', () => { if (!document.hidden) void refresh(true); });
   window.addEventListener('online', () => { lastData = null; void refresh(true); });
   window.addEventListener('offline', () => { if (homeIsVisible()) paintError(); });
+  const repaintForLocale = () => {
+    if (lastData) paint(lastData);
+    else if (homeIsVisible()) paintError();
+  };
+  window.addEventListener('ps:locale-change', repaintForLocale);
+  window.addEventListener('ps:i18n-ready', repaintForLocale);
   window.setInterval(() => { if (!document.hidden) void refresh(); }, 60_000);
   void refresh(true);
 })();

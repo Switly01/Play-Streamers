@@ -2,6 +2,18 @@
 
 ## Güncel geliştirme durumu · 30 Ağustos 2026
 
+Site 10.18.0 / Worker 7.1 oturum, doğrudan çeviri ve sabit arayüz revizyonu:
+Geçici ağ veya API hatası artık yerel oturumu silmez; kayıtlı oturum ilk çizimde
+üye yüzeyine yönelir ve yalnızca doğrulanmış 401/403 yanıtında kapatılır. Dil
+değişimi tüm uygulamayı yeniden çizmek yerine açık yüzeyi koruyarak metin ve kur
+verisini yeniler. Sunucu veri hattı kartının bütün başlık, durum, metrik, süre ve
+tarih alanları yedi dil paketinden doğrudan üretilir. Yükleme ekranındaki PS
+amblemi tamamen sabittir. Kur düğmesinin ayrıntı paneli sağlamlaştırıldı;
+Dashboard kartları yalnızca büyütme düğmesiyle açılır. Menü ve bağlantı yüzeyleri
+hareket etmeyen sabit kontroller haline getirildi. Plan yetkileri oturum yanıtında
+yenilenir ve Plan Araçları menüden erişilebilir. Hesap merkezinin altı bölümü
+daha kompakt tipografi, görsel ve kart ölçüleriyle yeniden dengelenmiştir.
+
 Site 10.17.0 / Worker 7.0 ekran koruma ve tam üye çevirisi revizyonu: Dil
 değişiminden önce Dashboard, üye ana sayfası, ürünler ve hesap alt sekmesi
 kaydedilir; çeviri tamamlanınca aynı ekran ve temiz adres geri yüklenir. Sunucu
@@ -648,9 +660,10 @@ bağlantı durumları sade ama güçlü bir arayüzde sunulmalıdır.
   kodu ile yapılır.
 - Kod yaklaşık 10 dakika geçerli; yeniden gönderme düğmesi 40 saniye sonra
   kullanılabilir olur.
-- “Beni hatırla” seçildiyse oturum en fazla 30 gün geri yüklenir. Seçilmezse
-  oturum yalnızca mevcut tarayıcı oturumunda kullanılır; sonraki ziyarette
-  istemci ve sunucu oturumu kapatılarak birinci ana sayfa gösterilir.
+- “Beni hatırla” seçildiyse oturum en fazla 30 gün geri yüklenir. Geçerli bir
+  yerel oturum bulunduğunda yeni sekme veya sayfa açılışı kullanıcıyı otomatik
+  olarak dışarı atmaz; oturum yalnız açık çıkış isteği, süre sonu veya API'nin
+  iki kez doğrulanan yetkisiz yanıtıyla kapatılır.
 - Hesap tamamlama: kullanıcı adı, parola, parola tekrarı, doğum tarihi/18+
   kontrolü ve Çıkış yap. Bu sayfada Google/Kick sosyal düğmeleri görünmez.
 

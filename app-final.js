@@ -8,6 +8,27 @@
   const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
   const esc = value => { const node = document.createElement('span'); node.textContent = String(value ?? ''); return node.innerHTML; };
   const ui = source => typeof window.psTranslateInterface === 'function' ? window.psTranslateInterface(source) : source;
+  function localizeInterfaceMarkup(markup) {
+    const template = document.createElement('template');
+    template.innerHTML = String(markup || '');
+    $$('*', template.content).forEach(node => {
+      ['aria-label', 'aria-description', 'title', 'placeholder'].forEach(attribute => {
+        const source = node.getAttribute(attribute);
+        if (source) node.setAttribute(attribute, ui(source));
+      });
+    });
+    const walker = document.createTreeWalker(template.content, NodeFilter.SHOW_TEXT);
+    const textNodes = [];
+    while (walker.nextNode()) textNodes.push(walker.currentNode);
+    textNodes.forEach(node => {
+      if (node.parentElement?.closest('script,style,code,pre,textarea,[contenteditable],[data-no-translate]')) return;
+      const source = String(node.nodeValue || '').trim();
+      if (!source) return;
+      const translated = ui(source);
+      if (translated !== source) node.nodeValue = String(node.nodeValue).replace(source, translated);
+    });
+    return template.innerHTML;
+  }
   const state = () => { try { return JSON.parse(localStorage.getItem(STORE) || '{}'); } catch (_) { return {}; } };
   const INFO_ROUTE_PATHS = Object.freeze({ about: '/about', products: '/products', how: '/how-it-works' });
   const ACCOUNT_ROUTE_PATHS = Object.freeze({ data: '/account/data', profile: '/account/profile', account: '/account/security', devices: '/account/devices', connections: '/account/connections', support: '/account/support' });
@@ -791,7 +812,8 @@
     return { profile, followerCount, activeFollowerCount, activeSubscribers, followedThisMonth: Math.max(followedThisMonth, Number(insights.followedThisMonth || 0)) };
   }
   function accountDataCard(metric, label, value) {
-    return `<article class="ps51-data-card" data-ps59-card="${metric}" role="button" tabindex="0" aria-label="${esc(label)} grafiğini aç"><span class="ps59-data-expand" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M9 4H4v5M15 4h5v5M9 20H4v-5m11 5h5v-5"/></svg></span><span>${esc(label)}</span><b>${esc(value)}</b></article>`;
+    const localized = ui(label);
+    return `<article class="ps51-data-card" data-ps59-card="${metric}" role="button" tabindex="0" aria-label="${esc(localized)}"><span class="ps59-data-expand" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M9 4H4v5M15 4h5v5M9 20H4v-5m11 5h5v-5"/></svg></span><span>${esc(localized)}</span><b>${esc(value)}</b></article>`;
   }
   function normalizeAccountMetricZeroes() {
     $$('[data-ps59-card="subscribers"]').forEach(card => {
@@ -2312,7 +2334,7 @@
       accountDataCard('monthFollowers', 'BU AY TAKİP EDEN', kickConnected ? kickSummary.followedThisMonth : '—')
     ];
     const dataNote = '* Kick Public API toplam takipçi ve aktif abone sayılarını her hesapta doğrudan sunmadığı için kartlar, erişilebildiğinde Kick kanal özetini; aksi halde Play Streamers’a ulaşan doğrulanmış takip ve abonelik olaylarından bilinen en güvenli değeri gösterir. Grafikler son üç aylık hareketleri gösterir.';
-    const panes = {
+    const paneSources = {
       data: `<span class="ps51-account-kicker">HESAP MERKEZİ · VERİLER</span><h2>Hesap özeti</h2><p class="ps51-account-lead">Bağlı Kick profilini ve işlenen kanal hareketlerini tek bakışta gör.</p>${kickSummary.profile}<div class="ps51-data-grid">${dataCards.join('')}<p class="ps54-data-note">${esc(dataNote)}</p></div>`,
       profile: `<span class="ps51-account-kicker">SW IDENTITY · PROFİL</span><h2>Merkezi SW profilin</h2><p class="ps51-account-lead">Kullanıcı adı, profil görseli ve ürün kimliğin artık tek SW Identity hesabından yönetilir.</p><div class="ps51-profile-head"><div class="ps51-profile-avatar"><img src="./play-streamers-ps-logo.svg?v=10.14" alt=""></div><div><b>${esc(user.username || user.name || 'SW Identity kullanıcısı')}</b><p>${esc(user.email || 'SW Identity hesabı')}</p></div></div><article class="ps51-account-section ps10-identity-handoff"><h3>SW Identity hesap merkezine geç</h3><p>Profil değişikliklerin SW Create ve Play Streamers dahil tüm bağlı ürünlerde aynı kimlikle güncellenir.</p><a class="ps51-primary" href="https://swcreate.com/center/?view=profile" target="_blank" rel="noopener noreferrer">SW profilimi yönet <span>↗</span></a></article>`,
       account: `<span class="ps51-account-kicker">SW IDENTITY · GÜVENLİK</span><h2>E-posta, şifre ve güvenlik</h2><p class="ps51-account-lead">E-posta, parola, iki adımlı doğrulama, güvenilir cihazlar ve merkezi hesap silme işlemi SW Identity tarafından yönetilir.</p><article class="ps51-account-section ps10-identity-handoff"><h3>Tek güvenlik merkezi</h3><p>Play Streamers ayrı parola veya ayrı hesap oluşturmaz. Güvenlik değişiklikleri bütün SW ürünlerine tek noktadan uygulanır.</p><a class="ps51-primary" href="https://swcreate.com/center/?view=security" target="_blank" rel="noopener noreferrer">SW güvenlik merkezini aç <span>↗</span></a><small>SW Identity altyapısıyla korunur · güvenlik doğrulaması hesap merkezinin içinde tamamlanır.</small></article>`,
@@ -2320,6 +2342,7 @@
       connections: `<span class="ps51-account-kicker">HESAP MERKEZİ · BAĞLANTILAR</span><h2>Yayın bağlantıları</h2><p class="ps51-account-lead">Kick kanalını ve Play Connect cihazlarını tek merkezden yönet. Donate platformlarında doğrudan API veya sunucu bildirimi varsa bu yöntem; yoksa bir defalık girişten sonra sekme gerektirmeyen arka plan bağlantısı kullanılır. Platform oturumları ve erişim anahtarları cihazda kalır; sunucuda yalnızca cihaz anahtarının özeti ile doğrulanmış olaylar tutulur.</p><article class="ps51-kick-card"><i class="ps51-kick-mark"><img src="./assets/kick-logo.svg?v=10.14" alt=""></i><span><b>Kick</b><small>${kickConnected ? `${esc(kickName)} bağlı` : 'Henüz yayın hesabı bağlı değil'}</small></span>${kickConnected ? '<button id="ps51KickDisconnect" class="ps51-danger" type="button">Bağlantıyı kes</button>' : '<button id="ps51KickConnect" class="ps51-primary" type="button">Kick bağla</button>'}</article>${donateBridgeConnectionsHtml()}<p class="ps51-account-status${flash ? ' success' : ''}" aria-live="polite">${esc(flash)}</p>`,
       support: `<span class="ps51-account-kicker">HESAP MERKEZİ · DESTEK TALEPLERİ</span><h2>Destek konuşmaların</h2><p class="ps51-account-lead">Gönderdiğin talepler ve destek ekibinden gelen cevaplar burada aynı konuşma içinde görünür.</p>${supportPaneHtml()}`
     };
+    const panes = Object.fromEntries(Object.entries(paneSources).map(([key, markup]) => [key, localizeInterfaceMarkup(markup)]));
     const safeTab = panes[tab] ? tab : 'data';
     syncCleanRoute(ACCOUNT_ROUTE_PATHS[safeTab] || ACCOUNT_ROUTE_PATHS.data);
     if (existing) {
@@ -2381,10 +2404,10 @@
     const panel = homePanel('ps44HomeMenu');
     if (!panel.hidden) return closeHomePanel(panel);
     closeHomePanels(); closeLocaleMenus(); closeStatus(); closeNotifications();
-    panel.innerHTML = '<span class="ps44-panel-title">MENÜ</span><button class="ps44-menu-button" type="button" data-ps44-menu="account">Hesabım</button><button class="ps44-menu-button" type="button" data-ps44-menu="updates">Güncelleme notları</button><button class="ps44-menu-button" type="button" data-ps44-menu="products">Ürünlerimiz</button><button class="ps44-menu-button danger" type="button" data-ps44-menu="logout">Çıkış yap</button>';
+    panel.innerHTML = localizeInterfaceMarkup('<span class="ps44-panel-title">MENÜ</span><button class="ps44-menu-button" type="button" data-ps44-menu="account">Hesabım</button><button class="ps44-menu-button" type="button" data-ps44-menu="tools">Plan araçları</button><button class="ps44-menu-button" type="button" data-ps44-menu="updates">Güncelleme notları</button><button class="ps44-menu-button" type="button" data-ps44-menu="products">Ürünlerimiz</button><button class="ps44-menu-button danger" type="button" data-ps44-menu="logout">Çıkış yap</button>');
     window.dispatchEvent(new Event('ps:i18n-refresh'));
     place(button, panel); revealHomePanel(panel); button.setAttribute('aria-expanded', 'true'); hideTooltip();
-    $$('[data-ps44-menu]', panel).forEach(item => item.onclick = event => { event.preventDefault(); event.stopPropagation(); const action = item.dataset.ps44Menu; closeHomePanel(panel); if (action === 'updates') showUpdates(); else if (action === 'logout') requestLogout(); else if (action === 'account') openDetailedAccount(); else showMemberProducts(); });
+    $$('[data-ps44-menu]', panel).forEach(item => item.onclick = event => { event.preventDefault(); event.stopPropagation(); const action = item.dataset.ps44Menu; closeHomePanel(panel); if (action === 'updates') showUpdates(); else if (action === 'logout') requestLogout(); else if (action === 'account') openDetailedAccount(); else if (action === 'tools') showPlanTools(); else showMemberProducts(); });
   }
   window.ps28OpenConnection = openConnection;
   window.ps28OpenMenu = openMenu;
@@ -3229,7 +3252,7 @@
   let tooltipTimer = 0;
   function tooltipLayer() { let layer = $('#ps46Tooltip'); if (!layer) { layer = document.createElement('div'); layer.id = 'ps46Tooltip'; layer.hidden = true; document.body.append(layer); } return layer; }
   function ownsOpenSurface(target) { const statusPanel = $('#ps44StatusPopover'), localePanel = $('#ps41LocaleMenu') || $('#ps15LocaleMenu'), connectionPanel = $('#ps44HomeConnection'), menuPanel = $('#ps44HomeMenu'); if (target.matches('#ps17SystemStatus,#ps54InfoSystemStatus,#ps66MemberSystemStatus,#ps66DashboardSystemStatus,.ps17-system-status') && statusPanel && !statusPanel.hidden) return true; if (target.matches('.ps41-locale-button,.ps15-locale-button,#ps66MemberLocale,#ps66DashboardLocale') && localePanel && !localePanel.hidden) return true; if (target.matches('#ps20Connection,#connectionBtn') && connectionPanel && !connectionPanel.hidden) return true; if (target.matches('#ps20MenuButton,#menuBtn') && menuPanel && !menuPanel.hidden) return true; return target.getAttribute('aria-expanded') === 'true'; }
-  function showTooltip(target) { const source = target?.dataset?.psTooltipSource || target?.dataset?.psTooltip; const copy = source ? ui(source) : ''; if (!copy || ownsOpenSurface(target)) return hideTooltip(); const layer = tooltipLayer(); tooltipOwner = target; window.clearTimeout(tooltipTimer); layer.textContent = copy; layer.hidden = false; const rect = target.getBoundingClientRect(); const width = layer.offsetWidth; const height = layer.offsetHeight; const below = rect.bottom + 9; layer.style.left = `${Math.max(8, Math.min(innerWidth - width - 8, rect.left + rect.width / 2 - width / 2))}px`; layer.style.top = `${below + height < innerHeight - 8 ? below : Math.max(8, rect.top - height - 9)}px`; tooltipTimer = window.setTimeout(hideTooltip, 2200); }
+  function showTooltip(target) { if (target?.matches?.('#ps20Connection,#connectionBtn,#ps20MenuButton,#menuBtn')) return hideTooltip(); const source = target?.dataset?.psTooltipSource || target?.dataset?.psTooltip; const copy = source ? ui(source) : ''; if (!copy || ownsOpenSurface(target)) return hideTooltip(); const layer = tooltipLayer(); tooltipOwner = target; window.clearTimeout(tooltipTimer); layer.textContent = copy; layer.hidden = false; const rect = target.getBoundingClientRect(); const width = layer.offsetWidth; const height = layer.offsetHeight; const below = rect.bottom + 9; layer.style.left = `${Math.max(8, Math.min(innerWidth - width - 8, rect.left + rect.width / 2 - width / 2))}px`; layer.style.top = `${below + height < innerHeight - 8 ? below : Math.max(8, rect.top - height - 9)}px`; tooltipTimer = window.setTimeout(hideTooltip, 2200); }
   function hideTooltip() { window.clearTimeout(tooltipTimer); tooltipTimer = 0; tooltipOwner = null; const layer = $('#ps46Tooltip'); if (layer) layer.hidden = true; }
   function enableMemberBrand() {
     const home = $('#psSecondHome.ps20-member-home'); const brand = home && ($('#ps20Brand', home) || $('#ps12HomeBrand', home) || $('.ps-second-brand', home)); if (!brand) return;
@@ -3245,11 +3268,11 @@
   function removeRetiredSurfaces() { $$('#ps45DashboardHeading,#ps42UpdatesDialog,#ps11Notes,#ps12UpdateOverlay,#ps17ReleaseOverlay,#psDashboardShortcut').forEach(node => node.remove()); $$('.release-note.legacy,.ps-release-note.beta,.ps11-update.beta,.app .beta-badge').forEach(node => node.remove()); }
   function updateConnectionIcon() {
     const health = connectionHealth();
-    ['#ps20Connection','#connectionBtn'].forEach(selector => { const button = $(selector); if (!button) return; const icon = wifiIcon(health.allConnected); if (button.innerHTML !== icon) button.innerHTML = icon; button.classList.toggle('ps47-connections-incomplete', !health.allConnected); const source = health.allConnected ? 'Tüm bağlantılar hazır' : 'Eksik bağlantı var'; const label = ui(source); button.setAttribute('aria-label', label); button.dataset.psTooltipSource = source; button.dataset.psTooltip = label; });
+    ['#ps20Connection','#connectionBtn'].forEach(selector => { const button = $(selector); if (!button) return; const icon = wifiIcon(health.allConnected); if (button.innerHTML !== icon) button.innerHTML = icon; button.classList.toggle('ps47-connections-incomplete', !health.allConnected); const source = health.allConnected ? 'Tüm bağlantılar hazır' : 'Eksik bağlantı var'; const label = ui(source); button.setAttribute('aria-label', label); delete button.dataset.psTooltipSource; delete button.dataset.psTooltip; });
   }
   function currentPlanRank() {
     const current = state();
-    const raw = [current.settings?.plan?.key, current.settings?.plan?.slug, current.settings?.plan?.tier, current.settings?.user?.plan, current.settings?.user?.planKey]
+    const raw = [current.settings?.plan?.key, current.settings?.plan?.slug, current.settings?.plan?.tier, current.settings?.plan?.id, current.settings?.plan?.name, current.settings?.plan?.label, current.settings?.user?.plan, current.settings?.user?.planKey, current.settings?.user?.planTier]
       .filter(Boolean).join(' ').toLocaleLowerCase('en-US');
     if (/product[\s_-]*pro|productpro/.test(raw)) return 2;
     if (/(^|[\s_-])pro($|[\s_-])/.test(raw)) return 1;
@@ -3261,7 +3284,7 @@
     try { saved = JSON.parse(localStorage.getItem('ps115-plan-tools') || '{}'); } catch (_) {}
     const lock = level => rank < level ? ' locked' : '';
     const disabled = level => rank < level ? ' disabled aria-disabled="true"' : '';
-    const layer = showDialog('ps115PlanTools', `<button class="ps47-dialog-close" type="button" aria-label="Plan araçlarını kapat">×</button><span class="ps44-panel-title">WEB PLAN ARAÇLARI</span><h2>Yayın çalışma setin</h2><p class="ps47-lead">Tarayıcıda çalışan araçlar hesabına özel olarak bu cihazda saklanır. Plan yetkisi olmayan araçlar açıkça kilitli görünür.</p><div class="ps115-plan-grid"><article><span>FREE</span><h3>Hızlı notlar</h3><textarea id="ps115QuickNotes" data-no-translate placeholder="Yayın sırasında unutmaman gerekenleri yaz...">${esc(saved.notes || '')}</textarea></article><article><span>FREE</span><h3>Hedef panosu</h3><label>Hedef adı<input id="ps115GoalName" data-no-translate value="${esc(saved.goalName || '')}" placeholder="Örn. 250 takipçi"></label><label>İlerleme<input id="ps115GoalValue" type="number" min="0" data-no-translate value="${esc(saved.goalValue || '0')}"></label></article><article class="${lock(1)}"><span>PRO</span><h3>Yayın metni + teleprompter</h3><textarea id="ps115StreamScript" data-no-translate placeholder="Açılış, bölüm geçişleri ve kapanış metnin..."${disabled(1)}>${esc(saved.script || '')}</textarea></article><article class="${lock(1)}"><span>PRO</span><h3>Veri dışa aktarma</h3><p>Dashboard olaylarını ve istatistiklerini taşınabilir JSON dosyası olarak indir.</p><button id="ps115Export" type="button"${disabled(1)}>Dashboard verisini indir</button></article><article class="${lock(2)}"><span>PRODUCT PRO</span><h3>İçerik dönüştürme</h3><p>Yayın metninden kısa paylaşım taslakları oluştur.</p><button id="ps115Repurpose" type="button"${disabled(2)}>Taslak oluştur</button><textarea id="ps115RepurposeOutput" data-no-translate readonly placeholder="Oluşturulan taslak burada görünür.">${esc(saved.repurpose || '')}</textarea></article><article class="${lock(2)}"><span>PRODUCT PRO</span><h3>Anlık görüntü</h3><p>Mevcut Dashboard durumunu bu cihazda karşılaştırılabilir bir anlık görüntü olarak sakla.</p><button id="ps115Snapshot" type="button"${disabled(2)}>Anlık görüntü kaydet</button><small id="ps115SnapshotStatus">${saved.snapshotAt ? `${new Date(saved.snapshotAt).toLocaleString()} tarihinde kaydedildi.` : 'Henüz anlık görüntü yok.'}</small></article></div><div class="ps44-dialog-actions"><button class="ps44-cancel" type="button">Kapat</button><button class="ps44-confirm" id="ps115SaveTools" type="button">Çalışmayı kaydet</button></div>`);
+    const layer = showDialog('ps115PlanTools', localizeInterfaceMarkup(`<button class="ps47-dialog-close" type="button" aria-label="Plan araçlarını kapat">×</button><span class="ps44-panel-title">WEB PLAN ARAÇLARI</span><h2>Yayın çalışma setin</h2><p class="ps47-lead">Tarayıcıda çalışan araçlar hesabına özel olarak bu cihazda saklanır. Plan yetkisi olmayan araçlar açıkça kilitli görünür.</p><div class="ps115-plan-grid"><article><span>FREE</span><h3>Hızlı notlar</h3><textarea id="ps115QuickNotes" data-no-translate placeholder="Yayın sırasında unutmaman gerekenleri yaz...">${esc(saved.notes || '')}</textarea></article><article><span>FREE</span><h3>Hedef panosu</h3><label>Hedef adı<input id="ps115GoalName" data-no-translate value="${esc(saved.goalName || '')}" placeholder="Örn. 250 takipçi"></label><label>İlerleme<input id="ps115GoalValue" type="number" min="0" data-no-translate value="${esc(saved.goalValue || '0')}"></label></article><article class="${lock(1)}"><span>PRO</span><h3>Yayın metni + teleprompter</h3><textarea id="ps115StreamScript" data-no-translate placeholder="Açılış, bölüm geçişleri ve kapanış metnin..."${disabled(1)}>${esc(saved.script || '')}</textarea></article><article class="${lock(1)}"><span>PRO</span><h3>Veri dışa aktarma</h3><p>Dashboard olaylarını ve istatistiklerini taşınabilir JSON dosyası olarak indir.</p><button id="ps115Export" type="button"${disabled(1)}>Dashboard verisini indir</button></article><article class="${lock(2)}"><span>PRODUCT PRO</span><h3>İçerik dönüştürme</h3><p>Yayın metninden kısa paylaşım taslakları oluştur.</p><button id="ps115Repurpose" type="button"${disabled(2)}>Taslak oluştur</button><textarea id="ps115RepurposeOutput" data-no-translate readonly placeholder="Oluşturulan taslak burada görünür.">${esc(saved.repurpose || '')}</textarea></article><article class="${lock(2)}"><span>PRODUCT PRO</span><h3>Anlık görüntü</h3><p>Mevcut Dashboard durumunu bu cihazda karşılaştırılabilir bir anlık görüntü olarak sakla.</p><button id="ps115Snapshot" type="button"${disabled(2)}>Anlık görüntü kaydet</button><small id="ps115SnapshotStatus">${saved.snapshotAt ? `${new Date(saved.snapshotAt).toLocaleString()} tarihinde kaydedildi.` : 'Henüz anlık görüntü yok.'}</small></article></div><div class="ps44-dialog-actions"><button class="ps44-cancel" type="button">Kapat</button><button class="ps44-confirm" id="ps115SaveTools" type="button">Çalışmayı kaydet</button></div>`));
     $('.ps44-dialog', layer)?.classList.add('ps115-plan-dialog');
     const closeTools = () => closeDialog(layer);
     $$('.ps47-dialog-close,.ps44-cancel', layer).forEach(button => button.onclick = closeTools);
@@ -3302,6 +3325,7 @@
     };
     window.dispatchEvent(new Event('ps:i18n-refresh'));
   }
+  window.psOpenPlanTools = showPlanTools;
   function ensureMemberExtras() {
     const home = $('#psSecondHome.ps20-member-home'); const grid = home && $('.ps20-grid', home); if (!home || !grid) return;
     if (home.dataset.ps113WorkspaceReady === '1' && $('.ps113-hero-console', home)) return;
@@ -3389,7 +3413,8 @@
       else if (Date.now() >= Number(settings.rememberUntil)) forcePublicHome();
       return;
     }
-    if (!sessionStorage.getItem('ps48CurrentVisit') && !sessionStorage.getItem('psCurrentSession')) forcePublicHome();
+    // Geçerli yerel oturum, yeni sekmede de sunucu tarafından doğrulanır. Bir
+    // sekme işaretinin bulunmaması artık kullanıcıyı kendiliğinden çıkışa atmaz.
   }
   function ensureRememberControls() {
     $$('#landingAuthForm,#standaloneAuthForm,#ps30AuthForm').forEach(form => {
@@ -3532,9 +3557,9 @@
       updates.onclick = event => { event.preventDefault(); event.stopImmediatePropagation(); showUpdates(); };
     });
     const connection = $('#connectionBtn');
-    if (connection) { connection.removeAttribute('title'); }
+    if (connection) { connection.removeAttribute('title'); delete connection.dataset.psTooltip; delete connection.dataset.psTooltipSource; }
     const menu = $('#menuBtn');
-    if (menu) { menu.dataset.psTooltip = 'Menü'; menu.removeAttribute('title'); menu.setAttribute('aria-label', 'Menü'); }
+    if (menu) { delete menu.dataset.psTooltip; delete menu.dataset.psTooltipSource; menu.removeAttribute('title'); menu.setAttribute('aria-label', ui('Menü')); }
     const clearCandidates = $$('#clearBtn');
     let clear = clearCandidates.shift();
     clearCandidates.forEach(extra => extra.remove());
@@ -3639,9 +3664,8 @@
       button.className = 'ps52-stats-expand'; if (button.textContent !== '⤢') button.textContent = '⤢'; button.setAttribute('aria-label', 'Kartı büyüt'); button.dataset.psTooltip = 'Kartı büyüt'; button.removeAttribute('title');
       const expand = event => { event.preventDefault(); event.stopImmediatePropagation(); openDashboardCardCopy(card); };
       button.onpointerdown = expand; button.onclick = event => { event.preventDefault(); event.stopImmediatePropagation(); };
-      card.setAttribute('role', 'button'); card.setAttribute('tabindex', '0'); card.setAttribute('aria-label', `${$('.title h2', card)?.textContent || 'İstatistik'} kartını büyüt`);
-      card.onclick = event => { if (event.target instanceof Element && event.target.closest('button,a,input,select,textarea')) return; openDashboardCardCopy(card); };
-      card.onkeydown = event => { if ((event.key === 'Enter' || event.key === ' ') && !(event.target instanceof Element && event.target.closest('button,a,input,select,textarea'))) { event.preventDefault(); openDashboardCardCopy(card); } };
+      card.removeAttribute('role'); card.removeAttribute('tabindex'); card.removeAttribute('aria-label');
+      card.onclick = null; card.onkeydown = null;
     });
     bindStatsPeriodControls(app);
   }
@@ -4197,6 +4221,18 @@
     $('header button', panel).onclick = closeRatePanel;
     positionRatePanel(button, panel);
   }
+  function toggleRatePanel(button = $('#ps117ExchangeButton')) {
+    if (!button) return;
+    let panel = $('#ps117ExchangePanel');
+    const opening = !panel || panel.hidden;
+    if (!opening) return closeRatePanel();
+    renderRatePanel(window.psExchangeRates);
+    panel = $('#ps117ExchangePanel');
+    if (!panel) return;
+    panel.hidden = false;
+    button.setAttribute('aria-expanded', 'true');
+    window.requestAnimationFrame(() => positionRatePanel(button, panel));
+  }
   function renderRateStatus(snapshot = window.psExchangeRates) {
     const actions = $('#psSecondHome .ps20-actions');
     const status = $('#ps66MemberSystemStatus');
@@ -4211,17 +4247,7 @@
       button.setAttribute('aria-haspopup', 'dialog');
       button.setAttribute('aria-expanded', 'false');
       status.after(button);
-      button.onclick = event => {
-        event.preventDefault(); event.stopPropagation();
-        const panel = $('#ps117ExchangePanel');
-        const opening = !panel || panel.hidden;
-        if (!opening) return closeRatePanel();
-        renderRatePanel(window.psExchangeRates);
-        const readyPanel = $('#ps117ExchangePanel');
-        readyPanel.hidden = false;
-        button.setAttribute('aria-expanded', 'true');
-        positionRatePanel(button, readyPanel);
-      };
+      button.onclick = event => { event.preventDefault(); event.stopImmediatePropagation(); toggleRatePanel(button); };
     }
     const currency = localeCurrency();
     button.textContent = currency.symbol;

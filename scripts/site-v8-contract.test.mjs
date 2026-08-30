@@ -11,12 +11,12 @@ test('site 10 assets are cache-busted and use fluid monochrome glass', async () 
     read('site-v7.css'),
     read('play-streamers-ps-logo.svg'),
   ]);
-  assert.match(html, /play-streamers-build" content="2026-08-30-site-10\.17\.0"/);
-  assert.match(html, /site-v7\.css\?v=10\.17\.0/);
-  assert.match(html, /app\.js\?v=5\.6\.0/);
+  assert.match(html, /play-streamers-build" content="2026-08-30-site-10\.18\.0"/);
+  assert.match(html, /site-v7\.css\?v=10\.18\.0/);
+  assert.match(html, /app\.js\?v=5\.7\.0/);
   assert.match(html, /site-v7\.js\?v=10\.15\.1/);
-  assert.match(html, /app-final\.js\?v=5\.15\.0/);
-  assert.match(html, /live-i18n\.js\?v=10\.1\.0/);
+  assert.match(html, /app-final\.js\?v=5\.16\.0/);
+  assert.match(html, /live-i18n\.js\?v=10\.2\.0/);
   assert.match(css, /html\[data-ps-site-version="8"\]/);
   assert.match(css, /--signal: #f5f5f2/);
   assert.match(css, /@keyframes ps82-meteor/);
@@ -129,7 +129,7 @@ test('SW Bot audits deterministically and translation generation is release-only
   assert.match(worker, /swBotDeterministicReport/);
   assert.match(worker, /resolveSwBotReports/);
   assert.match(worker, /sw_bot_issue_reports/);
-  assert.match(worker, /site-v7\.css\?v=10\.17\.0/);
+  assert.match(worker, /site-v7\.css\?v=10\.18\.0/);
   assert.match(worker, /site-v7\.js\?v=10\.15\.1/);
   assert.match(worker, /\/api\/i18n\/translate/);
   assert.match(worker, /i18n:v9/);
@@ -142,7 +142,7 @@ test('SW Bot audits deterministically and translation generation is release-only
   assert.match(worker, /EXCHANGE_CACHE_SECONDS/);
   assert.doesNotMatch(worker, /EXCHANGE.*KV/);
   assert.match(worker, /Fransızca dil paketi/);
-  assert.match(worker, /locales\/fr\.json\?v=2026-08-30\.10/);
+  assert.match(worker, /locales\/fr\.json\?v=2026-08-30\.11/);
   assert.doesNotMatch(worker, /env\.SESSIONS/);
   assert.match(worker, /LEGACY_PLAY_STREAMERS_AUTH_PATHS/);
   assert.match(worker, /SW_IDENTITY_REQUIRED/);
@@ -217,13 +217,14 @@ test('versioned locale catalogs cover public, account, support and legal surface
     'SW Identity hesabı oluştur', 'Yayın akışı', 'ÇALIŞMA MERKEZİ',
     'Yayın araçların hazır.', 'BİLDİRİMLER', 'HESAP MERKEZİ · VERİLER',
     'HESAP MERKEZİ · DESTEK TALEPLERİ', 'Dosyayı kaldır',
-    'SUNUCU VERİ HATTI', 'Doğrulanmış oturumlar ve izleyici örnekleri sunucuda işlenir.',
+    'SUNUCU VERİ HATTI', 'Uygulama kapalıyken de ölçüm açık', 'Tepe izleyici', 'Sunucu oturumu',
+    'Doğrulanmış oturumlar ve izleyici örnekleri sunucuda işlenir.',
     'BAĞLANTI DURUMU', 'Çıkış yapmak istiyor musun?', 'Veriler', 'Destek talepleri',
     'Play Bot, SW Bot oldu; canlı dosyalar, arayüz kontrolleri, bağlantılar ve katman çakışmaları daha geniş kapsamda denetleniyor.',
   ];
   for (const language of ['en', 'de', 'es', 'fr', 'ru', 'ar', 'ja']) {
     const catalog = JSON.parse(await read(`locales/${language}.json`));
-    assert.equal(catalog.version, '2026-08-30.10');
+    assert.equal(catalog.version, '2026-08-30.11');
     assert.equal(catalog.sourceLanguage, 'tr');
     assert.equal(catalog.language, language);
     assert.ok(Object.keys(catalog.translations).length >= 1000);

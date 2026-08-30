@@ -4320,3 +4320,125 @@ body.ps-v9 #ps51AccountCenter .ps55-ticket-messages { padding:11px!important; }
   body.ps-v9 #ps51AccountCenter .ps54-kick-profile { grid-template-columns:48px minmax(0,1fr)!important; }
   body.ps-v9 #ps51AccountCenter .ps54-kick-badge { grid-column:1/-1!important; }
 }
+
+/* Site 10.18 — stable first paint, static loader mark and compact account center. */
+#ps28Loader .ps110-loader-emblem,
+#ps28Loader .ps110-loader-emblem img {
+  animation:none!important;
+  transform:none!important;
+  translate:none!important;
+}
+
+body.ps-v9 :is(#ps44HomeMenu,#ps44HomeConnection) {
+  animation:none!important;
+  transform:none!important;
+  translate:none!important;
+  transition:opacity .12s ease,border-color .12s ease!important;
+}
+body.ps-v9 :is(#ps44HomeMenu,#ps44HomeConnection).ps47-popover-closing {
+  opacity:0!important;
+  animation:none!important;
+  transform:none!important;
+  translate:none!important;
+}
+body.ps-v9 :is(#ps20Connection,#connectionBtn,#ps20MenuButton,#menuBtn) {
+  flex:none!important;
+  translate:none!important;
+  transform:none!important;
+  contain:layout paint!important;
+  transition:color .14s ease,border-color .14s ease,background-color .14s ease!important;
+}
+body.ps-v9 :is(#ps20Connection,#connectionBtn,#ps20MenuButton,#menuBtn):is(:hover,:focus-visible,:active) {
+  translate:none!important;
+  transform:none!important;
+}
+
+#ps117ExchangeButton {
+  position:relative!important;
+  z-index:3!important;
+  translate:none!important;
+  transform:none!important;
+}
+#ps117ExchangePanel { isolation:isolate!important; pointer-events:auto!important; }
+
+body.ps-v9 .app :is(#panelGrid,#statsGrid)>.card { cursor:default!important; }
+body.ps-v9 .app :is(#panelGrid,#statsGrid)>.card :is(.expand,.ps52-stats-expand) { cursor:pointer!important; }
+
+body.ps-v9 #ps51AccountCenter .ps51-account-shell {
+  grid-template-columns:208px minmax(0,1fr)!important;
+  width:min(1080px,calc(100vw - 32px))!important;
+  height:min(740px,calc(100dvh - 32px))!important;
+  border-radius:22px!important;
+}
+body.ps-v9 #ps51AccountCenter .ps51-account-nav {
+  gap:4px!important;
+  padding:18px 12px!important;
+}
+body.ps-v9 #ps51AccountCenter .ps51-account-brand { margin:0 7px 15px!important; }
+body.ps-v9 #ps51AccountCenter .ps51-account-brand i { width:38px!important; height:38px!important; }
+body.ps-v9 #ps51AccountCenter .ps51-account-brand i img { width:31px!important; height:31px!important; }
+body.ps-v9 #ps51AccountCenter .ps51-account-nav button {
+  min-height:40px!important;
+  border-radius:10px!important;
+  padding:0 10px!important;
+  font-size:9px!important;
+}
+body.ps-v9 #ps51AccountCenter .ps51-account-nav button svg { width:16px!important; height:16px!important; }
+body.ps-v9 #ps51AccountCenter .ps51-account-main {
+  padding:26px clamp(20px,3vw,34px)!important;
+  background:radial-gradient(circle at 94% 3%,rgba(255,255,255,.055),transparent 25%)!important;
+}
+body.ps-v9 #ps51AccountCenter .ps51-account-pane { max-width:800px!important; }
+body.ps-v9 #ps51AccountCenter .ps115-account-hero {
+  margin-bottom:14px!important;
+  padding-bottom:14px!important;
+}
+body.ps-v9 #ps51AccountCenter .ps51-account-pane h2 {
+  max-width:700px!important;
+  margin:7px 0 7px!important;
+  font-size:clamp(23px,2.5vw,31px)!important;
+  line-height:1.02!important;
+}
+body.ps-v9 #ps51AccountCenter .ps51-account-kicker { font-size:8px!important; }
+body.ps-v9 #ps51AccountCenter .ps51-account-lead {
+  max-width:700px!important;
+  margin-bottom:17px!important;
+  font-size:9px!important;
+  line-height:1.55!important;
+}
+body.ps-v9 #ps51AccountCenter .ps51-data-grid {
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  gap:9px!important;
+}
+body.ps-v9 #ps51AccountCenter .ps51-data-card {
+  min-height:82px!important;
+  padding:12px!important;
+}
+body.ps-v9 #ps51AccountCenter .ps51-data-card>b { margin-top:13px!important; font-size:19px!important; }
+body.ps-v9 #ps51AccountCenter .ps51-data-card>span { font-size:7px!important; }
+body.ps-v9 #ps51AccountCenter .ps54-data-note { grid-column:1/-1!important; font-size:8px!important; line-height:1.55!important; }
+body.ps-v9 #ps51AccountCenter :is(.ps51-data-card,.ps51-account-section,.ps51-kick-card,.ps62-bridge-card,.ps62-device,.ps65-device-card,.ps67-oauth,.ps67-oauth-card,.ps55-ticket-card) {
+  min-height:0!important;
+  border-radius:12px!important;
+  padding:13px!important;
+  background:rgba(255,255,255,.035)!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.065)!important;
+}
+body.ps-v9 #ps51AccountCenter :is(.ps54-kick-profile,.ps51-kick-card,.ps62-device,.ps65-device-card,.ps67-oauth,.ps67-oauth-card) {
+  gap:10px!important;
+}
+body.ps-v9 #ps51AccountCenter :is(.ps54-kick-avatar,.ps51-profile-avatar) { width:44px!important; height:44px!important; min-width:44px!important; }
+body.ps-v9 #ps51AccountCenter :is(.ps54-kick-avatar,.ps51-profile-avatar) img { width:32px!important; height:32px!important; max-width:32px!important; max-height:32px!important; }
+body.ps-v9 #ps51AccountCenter :is(.ps51-kick-mark,.ps65-device-icon,.ps67-oauth-icon) { width:32px!important; height:32px!important; min-width:32px!important; }
+body.ps-v9 #ps51AccountCenter :is(.ps51-kick-mark,.ps65-device-icon,.ps67-oauth-icon) :is(img,svg) { width:20px!important; height:20px!important; max-width:20px!important; max-height:20px!important; }
+body.ps-v9 #ps51AccountCenter :is(.ps51-account-section,.ps51-kick-card,.ps62-bridge-card,.ps62-device,.ps65-device-card,.ps67-oauth,.ps67-oauth-card,.ps55-ticket-card) :is(h3,b,strong) { font-size:11px!important; line-height:1.35!important; }
+body.ps-v9 #ps51AccountCenter :is(.ps51-account-section,.ps51-kick-card,.ps62-bridge-card,.ps62-device,.ps65-device-card,.ps67-oauth,.ps67-oauth-card,.ps55-ticket-card) :is(p,small) { font-size:8px!important; line-height:1.5!important; }
+body.ps-v9 #ps51AccountCenter .ps10-identity-handoff { border:1px solid rgba(255,255,255,.1)!important; border-radius:12px!important; padding:14px!important; background:rgba(255,255,255,.025)!important; }
+
+@media(max-width:900px) {
+  body.ps-v9 #ps51AccountCenter .ps51-account-shell { grid-template-columns:1fr!important; }
+}
+@media(max-width:620px) {
+  body.ps-v9 #ps51AccountCenter .ps51-data-grid { grid-template-columns:1fr!important; }
+  body.ps-v9 #ps51AccountCenter .ps51-account-main { padding:20px 13px 26px!important; }
+}

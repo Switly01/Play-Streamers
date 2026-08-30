@@ -2,6 +2,7 @@ try {
   const storedState = JSON.parse(localStorage.getItem("play-streamers-v17-site") || "{}");
   if (storedState.settings?.userSession || storedState.userSession) {
     document.documentElement.classList.add("ps15-session-pending");
+    document.documentElement.dataset.psSessionTarget = sessionStorage.getItem("ps-second-dashboard") === "1" ? "dashboard" : "home";
     if (sessionStorage.getItem("ps-second-dashboard") === "1") {
       document.documentElement.dataset.psDashboardRestore = "1";
     }

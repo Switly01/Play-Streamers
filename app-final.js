@@ -1354,7 +1354,7 @@
     const refreshedCopy = accountDevicesRefreshedAt
       ? new Date(accountDevicesRefreshedAt).toLocaleString('tr-TR', { dateStyle: 'medium', timeStyle: 'medium' })
       : 'Henüz yenilenmedi';
-    const toolbar = `<div class="ps65-device-toolbar"><span>Son yenileme: <b>${esc(refreshedCopy)}</b> · Açıkken 5 saniyede bir kontrol edilir.</span><button id="ps65RefreshAccountDevices" class="ps51-secondary" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6v5h-5M4 18v-5h5"/><path d="M18.3 9A7 7 0 0 0 6.2 6.2L4 8M5.7 15A7 7 0 0 0 17.8 17.8L20 16"/></svg>Yenile</button></div>`;
+    const toolbar = `<div class="ps65-device-toolbar"><span>Son yenileme: <b>${esc(refreshedCopy)}</b></span><button id="ps65RefreshAccountDevices" class="ps51-secondary" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6v5h-5M4 18v-5h5"/><path d="M18.3 9A7 7 0 0 0 6.2 6.2L4 8M5.7 15A7 7 0 0 0 17.8 17.8L20 16"/></svg>Yenile</button></div>`;
     if (!accountDevicesLoaded) return `${toolbar}<p class="ps65-device-empty">Hesabındaki cihazlar kontrol ediliyor…</p>`;
     if (accountDevicesError) return `${toolbar}<p class="ps65-device-empty">${esc(accountDevicesError)} Yenile düğmesiyle tekrar deneyebilirsin.</p>`;
     if (!accountDevices.length) return `${toolbar}<p class="ps65-device-empty">Sunucuda bu hesaba ait cihaz kaydı bulunamadı. Yenile düğmesi mevcut cihazı otomatik olarak kaydeder.</p>`;
@@ -4209,7 +4209,7 @@
     const width = Math.min(320, innerWidth - 24);
     panel.style.width = `${width}px`;
     panel.style.left = `${Math.max(12, Math.min(innerWidth - width - 12, rect.right - width))}px`;
-    panel.style.top = `${Math.min(innerHeight - panel.offsetHeight - 12, rect.bottom + 10)}px`;
+    panel.style.top = `${Math.max(12, Math.min(innerHeight - panel.offsetHeight - 12, rect.bottom + 10))}px`;
   }
   let activeRateButton = null;
   function renderRatePanel(snapshot = window.psExchangeRates, button = activeRateButton || $('[data-ps119-exchange]')) {
@@ -4279,14 +4279,19 @@
   window.addEventListener('ps:locale-change', () => window.setTimeout(refreshDynamicLanguage, 80));
   window.addEventListener('ps:i18n-ready', refreshDynamicLanguage);
   window.addEventListener('ps:i18n-refresh', () => window.setTimeout(localizeActionButtons, 0));
+  let lastRatePointerPress = 0;
   document.addEventListener('pointerdown', event => {
     const button = event.target instanceof Element ? event.target.closest('[data-ps119-exchange]') : null;
-    if (button) { event.preventDefault(); event.stopImmediatePropagation(); toggleRatePanel(button); return; }
+    if (button) { lastRatePointerPress = Date.now(); event.preventDefault(); event.stopImmediatePropagation(); toggleRatePanel(button); return; }
     if (!event.target.closest?.('#ps119ExchangePanel')) closeRatePanel();
   }, true);
   document.addEventListener('click', event => {
     const button = event.target instanceof Element ? event.target.closest('[data-ps119-exchange]') : null;
-    if (button) { event.preventDefault(); event.stopImmediatePropagation(); if (event.detail === 0) toggleRatePanel(button); return; }
+    if (button) {
+      event.preventDefault(); event.stopImmediatePropagation();
+      if (Date.now() - lastRatePointerPress > 700) toggleRatePanel(button);
+      return;
+    }
     if (!event.target.closest?.('#ps119ExchangePanel')) closeRatePanel();
   }, true);
   document.addEventListener('keydown', event => { if (event.key === 'Escape') closeRatePanel(); });

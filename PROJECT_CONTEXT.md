@@ -2,6 +2,14 @@
 
 ## Güncel geliştirme durumu · 30 Ağustos 2026
 
+Site 10.20.0 / Worker 7.3 hesap okunabilirliği ve medya önizleme revizyonu:
+Kur simgesi pointer ve klavye dışındaki sentetik tıklamalarda da aynı ayrıntı
+penceresini güvenilir biçimde açar. Hesap merkezinin genel alanı, sol bölüm
+başlıkları, Veriler, SW Profil ve SW Güvenlik içerikleri okunaklı ölçülere
+büyütüldü. Cihazların son yenileme satırı sadeleştirildi; gereksiz otomatik
+kontrol açıklaması kaldırıldı. Bağlantılardaki platform logoları sabit küçük
+kartlara, destek talebi görselleri ise 112×76 piksel önizlemelere sınırlandı.
+
 Site 10.19.0 / Worker 7.2 hesap merkezi, ortak kur paneli ve güvenlik revizyonu:
 Hesabım yüzeyi; kullanıcı ve plan özeti, erişilebilir altı bölümlü gezinme,
 sabit bölüm başlığı, dengeli veri/profil/cihaz/bağlantı/destek kartları ve mobil

@@ -78,8 +78,8 @@ const DONATE_OAUTH_PROVIDERS = Object.freeze({
     clientSecretVariable: "TIPEEESTREAM_CLIENT_SECRET",
   }),
 });
-const CURRENT_RELEASE_VERSION = "7.1";
-const CURRENT_RELEASE_PUBLISHED_AT = "2026-08-30T18:22:31+03:00";
+const CURRENT_RELEASE_VERSION = "7.2";
+const CURRENT_RELEASE_PUBLISHED_AT = "2026-08-30T19:07:58+03:00";
 const EXCHANGE_CURRENCIES = Object.freeze(["EUR", "TRY", "USD", "RUB", "SAR", "JPY"]);
 const EXCHANGE_CACHE_SECONDS = 60 * 60;
 const SW_IDENTITY_ORIGIN = "https://api.swcreate.com";
@@ -842,17 +842,17 @@ async function runScheduledPlayBotAudit(env) {
   const resources = [
     ["Ana sayfa", "https://pstreamers.com/", "document"],
     ["Ana uygulama betiği", "https://pstreamers.com/app.js?v=5.7.0", "script"],
-    ["Uygulama betiği", "https://pstreamers.com/app-final.js?v=5.16.0", "script"],
+    ["Uygulama betiği", "https://pstreamers.com/app-final.js?v=5.17.0", "script"],
     ["Site davranış betiği", "https://pstreamers.com/site-v7.js?v=10.15.1", "script"],
     ["Sabit çeviri betiği", "https://pstreamers.com/live-i18n.js?v=10.2.0", "script"],
-    ["İngilizce dil paketi", "https://pstreamers.com/locales/en.json?v=2026-08-30.11", "json"],
-    ["Almanca dil paketi", "https://pstreamers.com/locales/de.json?v=2026-08-30.11", "json"],
-    ["İspanyolca dil paketi", "https://pstreamers.com/locales/es.json?v=2026-08-30.11", "json"],
-    ["Fransızca dil paketi", "https://pstreamers.com/locales/fr.json?v=2026-08-30.11", "json"],
-    ["Rusça dil paketi", "https://pstreamers.com/locales/ru.json?v=2026-08-30.11", "json"],
-    ["Arapça dil paketi", "https://pstreamers.com/locales/ar.json?v=2026-08-30.11", "json"],
-    ["Japonca dil paketi", "https://pstreamers.com/locales/ja.json?v=2026-08-30.11", "json"],
-    ["Premium stil dosyası", "https://pstreamers.com/site-v7.css?v=10.18.0", "style"],
+    ["İngilizce dil paketi", "https://pstreamers.com/locales/en.json?v=2026-08-30.12", "json"],
+    ["Almanca dil paketi", "https://pstreamers.com/locales/de.json?v=2026-08-30.12", "json"],
+    ["İspanyolca dil paketi", "https://pstreamers.com/locales/es.json?v=2026-08-30.12", "json"],
+    ["Fransızca dil paketi", "https://pstreamers.com/locales/fr.json?v=2026-08-30.12", "json"],
+    ["Rusça dil paketi", "https://pstreamers.com/locales/ru.json?v=2026-08-30.12", "json"],
+    ["Arapça dil paketi", "https://pstreamers.com/locales/ar.json?v=2026-08-30.12", "json"],
+    ["Japonca dil paketi", "https://pstreamers.com/locales/ja.json?v=2026-08-30.12", "json"],
+    ["Premium stil dosyası", "https://pstreamers.com/site-v7.css?v=10.19.0", "style"],
     ["Oturum başlangıç betiği", "https://pstreamers.com/session-bootstrap.js?v=1.2", "script"],
     ["Site yönlendiricisi", "https://pstreamers.com/site-router.js?v=1.1", "script"],
     ["Sunucu analiz betiği", "https://pstreamers.com/server-analytics.js?v=6.1", "script"],
@@ -929,7 +929,7 @@ async function runScheduledPlayBotAudit(env) {
       const validPayload = result.label === "Windows güncelleme bildirimi"
         ? Boolean(payload?.version && hasUpdaterPlatforms)
         : localeCatalog
-          ? Boolean(payload?.version === "2026-08-30.11" && payload?.sourceLanguage === "tr" && payload?.language && Object.keys(payload?.translations || {}).length >= 1220)
+          ? Boolean(payload?.version === "2026-08-30.12" && payload?.sourceLanguage === "tr" && payload?.language && Object.keys(payload?.translations || {}).length >= 1220)
           : Boolean(payload?.ok);
       if (!validPayload) issues.push(`${result.label} geçerli bir JSON yanıtı döndürmüyor.`);
     }
@@ -937,12 +937,12 @@ async function runScheduledPlayBotAudit(env) {
   const homeDocument = results.find(result => result.type === "document");
   if (homeDocument?.ok) {
     const documentContracts = [
-      ["site-v7.css?v=10.18.0", "Güncel premium stil dosyası"],
+      ["site-v7.css?v=10.19.0", "Güncel premium stil dosyası"],
       ["app.js?v=5.7.0", "Güncel ana uygulama betiği"],
-      ["app-final.js?v=5.16.0", "Güncel onarım betiği"],
+      ["app-final.js?v=5.17.0", "Güncel onarım betiği"],
       ["site-v7.js?v=10.15.1", "Güncel site davranış betiği"],
       ["live-i18n.js?v=10.2.0", "Güncel sabit paket çeviri betiği"],
-      ["play-streamers-build\" content=\"2026-08-30-site-10.18.0", "Site 10.18.0 sürüm işareti"],
+      ["play-streamers-build\" content=\"2026-08-30-site-10.19.0", "Site 10.19.0 sürüm işareti"],
     ];
     for (const [token, label] of documentContracts) {
       if (!homeDocument.body.includes(token)) issues.push(`${label} canlı ana sayfaya bağlanmamış.`);
@@ -1561,7 +1561,8 @@ function legacyTurnstileOAuthPage(provider, purpose, mode, env) {
   const safeProvider = provider === "kick" ? "Kick" : "Google";
   const payload = JSON.stringify({ provider, purpose, mode });
   const siteKey = String(env.TURNSTILE_SITE_KEY || "").replace(/[<>&"']/g, "");
-  return new Response(`<!doctype html><html lang="tr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Play Streamers güvenlik kontrolü</title><script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" async defer></script></head><body style="margin:0;display:grid;min-height:100vh;place-items:center;padding:20px;background:radial-gradient(circle at 80% 0,#202020,transparent 38%),#050505;color:#f5f5f2;font-family:'Segoe UI',Arial,sans-serif"><main style="width:min(440px,calc(100vw - 40px));padding:34px;border:1px solid #ffffff38;border-radius:24px;background:linear-gradient(145deg,#191919f2,#090909f5);box-shadow:0 28px 90px #000b,inset 0 1px 0 #ffffff16"><b style="color:#f5f5f2;letter-spacing:.16em;font:900 11px/1 'Courier New',monospace">PLAY STREAMERS · GÜVENLİK</b><h1 style="font-size:28px;letter-spacing:-.04em;margin:18px 0 10px">Kısa bir güvenlik kontrolü</h1><p style="color:#bdbdb8;line-height:1.65">${safeProvider} bağlantısını başlatmadan önce gerçek bir ziyaretçi olduğunu doğruluyoruz.</p><div id="turnstile" style="min-height:65px;margin:22px 0;border:1px solid #ffffff20;border-radius:15px;padding:12px;background:#ffffff08"></div><p id="status" style="min-height:20px;color:#bdbdb8"></p></main><script>const payload=${payload};const status=document.getElementById('status');function start(token){status.textContent='Bağlantı hazırlanıyor...';fetch('/api/auth/oauth/start',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({...payload,turnstileToken:token})}).then(async r=>({ok:r.ok,data:await r.json().catch(()=>({}))})).then(({ok,data})=>{if(!ok)throw new Error(data.error||'Güvenlik doğrulaması tamamlanamadı.');location.replace(data.authorizeUrl)}).catch(e=>{status.textContent=e.message||'İşlem tamamlanamadı. Lütfen sayfayı yenile.';window.turnstile?.reset()})}let turnstileRendered=false;let turnstileAttempts=0;function renderTurnstile(){if(turnstileRendered)return;if(window.turnstile&&typeof window.turnstile.render==='function'){turnstileRendered=true;window.turnstile.render('#turnstile',{sitekey:'${siteKey}',theme:'dark',callback:start,'error-callback':()=>{status.textContent='Güvenlik kontrolü yüklenemedi. Lütfen tekrar dene.';turnstileRendered=false}});return}if(turnstileAttempts++<80){setTimeout(renderTurnstile,100)}else{status.textContent='Güvenlik kontrolü yüklenemedi. Lütfen sayfayı yenile.'}}window.addEventListener('load',renderTurnstile);setTimeout(renderTurnstile,100);</script></body></html>`, { headers: { "content-type": "text/html; charset=utf-8", "cache-control": "no-store" } });
+  const nonce = randomBase64Url(18);
+  return new Response(`<!doctype html><html lang="tr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Play Streamers güvenlik kontrolü</title><script nonce="${nonce}" src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" async defer></script></head><body style="margin:0;display:grid;min-height:100vh;place-items:center;padding:20px;background:radial-gradient(circle at 80% 0,#202020,transparent 38%),#050505;color:#f5f5f2;font-family:'Segoe UI',Arial,sans-serif"><main style="width:min(440px,calc(100vw - 40px));padding:34px;border:1px solid #ffffff38;border-radius:24px;background:linear-gradient(145deg,#191919f2,#090909f5);box-shadow:0 28px 90px #000b,inset 0 1px 0 #ffffff16"><b style="color:#f5f5f2;letter-spacing:.16em;font:900 11px/1 'Courier New',monospace">PLAY STREAMERS · GÜVENLİK</b><h1 style="font-size:28px;letter-spacing:-.04em;margin:18px 0 10px">Kısa bir güvenlik kontrolü</h1><p style="color:#bdbdb8;line-height:1.65">${safeProvider} bağlantısını başlatmadan önce gerçek bir ziyaretçi olduğunu doğruluyoruz.</p><div id="turnstile" style="min-height:65px;margin:22px 0;border:1px solid #ffffff20;border-radius:15px;padding:12px;background:#ffffff08"></div><p id="status" style="min-height:20px;color:#bdbdb8"></p></main><script nonce="${nonce}">const payload=${payload};const status=document.getElementById('status');function start(token){status.textContent='Bağlantı hazırlanıyor...';fetch('/api/auth/oauth/start',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({...payload,turnstileToken:token})}).then(async r=>({ok:r.ok,data:await r.json().catch(()=>({}))})).then(({ok,data})=>{if(!ok)throw new Error(data.error||'Güvenlik doğrulaması tamamlanamadı.');location.replace(data.authorizeUrl)}).catch(e=>{status.textContent=e.message||'İşlem tamamlanamadı. Lütfen sayfayı yenile.';window.turnstile?.reset()})}let turnstileRendered=false;let turnstileAttempts=0;function renderTurnstile(){if(turnstileRendered)return;if(window.turnstile&&typeof window.turnstile.render==='function'){turnstileRendered=true;window.turnstile.render('#turnstile',{sitekey:'${siteKey}',theme:'dark',callback:start,'error-callback':()=>{status.textContent='Güvenlik kontrolü yüklenemedi. Lütfen tekrar dene.';turnstileRendered=false}});return}if(turnstileAttempts++<80){setTimeout(renderTurnstile,100)}else{status.textContent='Güvenlik kontrolü yüklenemedi. Lütfen sayfayı yenile.'}}window.addEventListener('load',renderTurnstile);setTimeout(renderTurnstile,100);</script></body></html>`, { headers: workerPageHeaders("text/html; charset=utf-8", nonce) });
 }
 
 // OAuth doğrulama sayfası statik bir sayfa olduğu için Turnstile'ın implicit
@@ -1570,6 +1571,7 @@ function legacyTurnstileOAuthPage(provider, purpose, mode, env) {
 function turnstileOAuthPage(provider, purpose, mode, env, remember = false) {
   const safeProvider = provider === "kick" ? "Kick" : "Google";
   const siteKey = String(env.TURNSTILE_SITE_KEY || "").replace(/[<>&"']/g, "");
+  const nonce = randomBase64Url(18);
   return new Response(`<!doctype html>
 <html lang="tr">
 <head>
@@ -1580,7 +1582,7 @@ function turnstileOAuthPage(provider, purpose, mode, env, remember = false) {
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cpath d='M12 5h40a7 7 0 0 1 7 7v40a7 7 0 0 1-7 7H19L5 48V12a7 7 0 0 1 7-7Z' fill='%23050a08' stroke='%2353fc18' stroke-width='3'/%3E%3Ctext x='32' y='41' text-anchor='middle' fill='%2353fc18' font-family='Arial,sans-serif' font-size='27' font-weight='900'%3EPS%3C/text%3E%3C/svg%3E">
   <link rel="preconnect" href="https://challenges.cloudflare.com" crossorigin>
   <link rel="dns-prefetch" href="//challenges.cloudflare.com">
-  <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" defer fetchpriority="high"></script>
+  <script nonce="${nonce}" src="https://challenges.cloudflare.com/turnstile/v0/api.js" defer fetchpriority="high"></script>
   <style>
     :root{color-scheme:dark;--ink:#f5f5f2;--muted:#adada8;--lime:#f5f5f2;--line:rgba(255,255,255,.16);--panel:rgba(15,15,15,.84)}
     *{box-sizing:border-box}html,body{min-height:100%;margin:0}body{position:relative;display:grid;min-height:100vh;place-items:center;overflow:hidden;padding:28px;color:var(--ink);background:#050505;font-family:"Plus Jakarta Sans","Segoe UI",Arial,sans-serif}
@@ -1616,7 +1618,7 @@ function turnstileOAuthPage(provider, purpose, mode, env, remember = false) {
     <p id="status" aria-live="polite">Güvenlik kontrolü hazırlanıyor...</p>
     <p class="fine-print">Bu doğrulama Play Streamers hesabını ve bağlantılarını otomatik isteklerden korur.</p>
   </main>
-  <script>
+  <script nonce="${nonce}">
     const status=document.getElementById('status');
     const form=document.getElementById('oauth-form');
     const tokenField=document.getElementById('turnstile-token');
@@ -1639,7 +1641,7 @@ function turnstileOAuthPage(provider, purpose, mode, env, remember = false) {
     // it is missing and overwrite a genuine success message after 20 seconds.
   </script>
 </body>
-</html>`, { headers: workerPageHeaders() });
+</html>`, { headers: workerPageHeaders("text/html; charset=utf-8", nonce) });
 }
 
 async function beginKickLogin(env, purpose = "connection", mode = "register", linkUserId = null, remember = false) {
@@ -8337,15 +8339,21 @@ function redirectWithUserSession(url, sessionId) {
 
 // Worker tarafından sunulan küçük doğrulama ve bilgi sayfaları için ortak,
 // tarayıcı tarafında etkisiz ama güvenliği güçlendiren başlıklar.
-function workerPageHeaders(contentType = "text/html; charset=utf-8") {
+function workerPageHeaders(contentType = "text/html; charset=utf-8", scriptNonce = "") {
+  const scriptPolicy = scriptNonce
+    ? `script-src 'nonce-${scriptNonce}' https://challenges.cloudflare.com`
+    : "script-src 'none'";
   return {
     "content-type": contentType,
     "cache-control": "no-store",
     "x-content-type-options": "nosniff",
     "x-frame-options": "DENY",
+    "strict-transport-security": "max-age=31536000; includeSubDomains",
     "referrer-policy": "no-referrer",
     "permissions-policy": "camera=(), geolocation=(), microphone=(), payment=(), usb=()",
     "cross-origin-opener-policy": "same-origin",
+    "cross-origin-resource-policy": "same-origin",
+    "content-security-policy": `default-src 'none'; ${scriptPolicy}; style-src 'unsafe-inline'; img-src data:; frame-src https://challenges.cloudflare.com; connect-src 'self' https://challenges.cloudflare.com; form-action 'self'; frame-ancestors 'none'; base-uri 'none'`,
   };
 }
 
@@ -8455,14 +8463,9 @@ function apiResponse(request, data, status = 200) {
 
 function htmlPage(title, message, success) {
   const stateColor = success ? "#f5f5f2" : "#ffb4bb";
-  return new Response(`<!doctype html><html lang="tr"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Play Streamers</title><body style="margin:0;display:grid;min-height:100vh;place-items:center;padding:20px;background:radial-gradient(circle at 80% 0,#202020,transparent 38%),#050505;color:#f5f5f2;font-family:'Segoe UI',Arial,sans-serif"><main style="width:min(440px,calc(100vw - 40px));padding:34px;border:1px solid #ffffff38;border-radius:24px;background:linear-gradient(145deg,#191919f2,#090909f5);box-shadow:0 28px 90px #000b,inset 0 1px 0 #ffffff16"><div style="font:900 11px/1 'Courier New',monospace;color:${stateColor};letter-spacing:.16em">PLAY STREAMERS · ${success ? "TAMAMLANDI" : "BİLGİ"}</div><h1 style="font-size:28px;letter-spacing:-.04em;margin:18px 0 10px">${title}</h1><p style="line-height:1.65;color:#bdbdb8">${message}</p><a style="display:inline-block;margin-top:12px;padding:13px 17px;border:1px solid #fff;border-radius:11px;background:#f5f5f2;color:#070707;font-weight:850;text-decoration:none" href="${FRONTEND_URL}">Panele dön</a></main></body></html>`, {
-    headers: {
-      "content-type": "text/html; charset=utf-8",
-      "cache-control": "no-store",
-      "x-content-type-options": "nosniff",
-      "referrer-policy": "no-referrer",
-      "permissions-policy": "camera=(), geolocation=(), microphone=(), payment=(), usb=()",
-    },
+  const escapePageHtml = (value) => String(value || "").replace(/[<>&"']/g, (character) => ({ "<": "&lt;", ">": "&gt;", "&": "&amp;", '"': "&quot;", "'": "&#39;" }[character]));
+  return new Response(`<!doctype html><html lang="tr"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Play Streamers</title><body style="margin:0;display:grid;min-height:100vh;place-items:center;padding:20px;background:radial-gradient(circle at 80% 0,#202020,transparent 38%),#050505;color:#f5f5f2;font-family:'Segoe UI',Arial,sans-serif"><main style="width:min(440px,calc(100vw - 40px));padding:34px;border:1px solid #ffffff38;border-radius:24px;background:linear-gradient(145deg,#191919f2,#090909f5);box-shadow:0 28px 90px #000b,inset 0 1px 0 #ffffff16"><div style="font:900 11px/1 'Courier New',monospace;color:${stateColor};letter-spacing:.16em">PLAY STREAMERS · ${success ? "TAMAMLANDI" : "BİLGİ"}</div><h1 style="font-size:28px;letter-spacing:-.04em;margin:18px 0 10px">${escapePageHtml(title)}</h1><p style="line-height:1.65;color:#bdbdb8">${escapePageHtml(message)}</p><a style="display:inline-block;margin-top:12px;padding:13px 17px;border:1px solid #fff;border-radius:11px;background:#f5f5f2;color:#070707;font-weight:850;text-decoration:none" href="${FRONTEND_URL}">Panele dön</a></main></body></html>`, {
+    headers: workerPageHeaders(),
   });
 }
 

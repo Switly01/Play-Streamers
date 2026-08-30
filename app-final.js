@@ -82,7 +82,7 @@
   function revealHomePanel(node) { window.clearTimeout(node.ps48CloseTimer); node.classList.remove('ps47-popover-closing'); node.hidden = false; window.requestAnimationFrame(repositionOpenFloatingSurfaces); }
   function closeHomePanels() { closeHomePanel($('#ps44HomeConnection')); closeHomePanel($('#ps44HomeMenu')); }
   function closeAllFloatingSurfaces() {
-    closeHomePanels(); closeLocaleMenus(); closeStatus(); closeNotifications(); hideTooltip();
+    closeHomePanels(); closeLocaleMenus(); closeStatus(); closeNotifications(); window.ps119CloseRatePanel?.(); hideTooltip();
     ['#ps20ConnectionPopover','#ps20Menu','#psSecondMenu','#connections','#sideMenu','#ps13MemberConnections','#ps14MemberConnections','#ps28DashboardConnection','#ps28DashboardMenu','#ps44HomeConnection','#ps44HomeMenu','#ps44StatusPopover','#ps41LocaleMenu','#ps15LocaleMenu'].forEach(selector => {
       const node = $(selector); if (!node) return;
       window.clearTimeout(node.ps48CloseTimer); node.hidden = true;
@@ -2306,22 +2306,21 @@
     }
   }
   function decorateAccountPane(pane, tab) {
-    if (!pane || $('.ps115-account-hero', pane)) return;
+    if (!pane || $('.ps119-account-hero', pane)) return;
     const kicker = $(':scope > .ps51-account-kicker', pane);
     const title = $(':scope > h2', pane);
     const lead = $(':scope > .ps51-account-lead', pane);
     if (!kicker || !title || !lead) return;
     const hero = document.createElement('header');
-    hero.className = 'ps115-account-hero';
+    hero.className = 'ps119-account-hero';
     const copy = document.createElement('div');
-    copy.className = 'ps115-account-hero-copy';
+    copy.className = 'ps119-account-hero-copy';
     copy.append(kicker, title, lead);
-    const visual = document.createElement('i');
-    visual.className = `ps115-account-visual ${tab}`;
-    visual.setAttribute('aria-hidden', 'true');
-    if (tab === 'profile' || tab === 'account') visual.innerHTML = '<img src="./play-streamers-ps-logo.svg?v=10.15" alt="">';
-    else visual.innerHTML = accountNavIcons[tab] || accountNavIcons.data;
-    hero.append(copy, visual);
+    const sectionMark = document.createElement('span');
+    sectionMark.className = `ps119-account-section-mark ${tab}`;
+    sectionMark.setAttribute('aria-hidden', 'true');
+    sectionMark.innerHTML = accountNavIcons[tab] || accountNavIcons.data;
+    hero.append(copy, sectionMark);
     pane.prepend(hero);
   }
   function showAccountCenter(tab = 'data', refresh = true, flash = '', quiet = false) {
@@ -2344,6 +2343,7 @@
     };
     const panes = Object.fromEntries(Object.entries(paneSources).map(([key, markup]) => [key, localizeInterfaceMarkup(markup)]));
     const safeTab = panes[tab] ? tab : 'data';
+    const currentSectionLabel = ui(accountNavLabels[safeTab]);
     syncCleanRoute(ACCOUNT_ROUTE_PATHS[safeTab] || ACCOUNT_ROUTE_PATHS.data);
     if (existing) {
       const requestVersion = accountCenterViewVersion;
@@ -2357,6 +2357,8 @@
         button.setAttribute('aria-current', active ? 'page' : 'false');
       });
       localizeAccountNavigation(existing);
+      const sectionLabel = $('.ps119-account-section-label', existing);
+      if (sectionLabel) sectionLabel.textContent = currentSectionLabel;
       const pane = $('.ps51-account-pane', existing);
       if (!pane) { existing.remove(); return showAccountCenter(safeTab, refresh, flash, quiet); }
       const updatePane = () => {
@@ -2384,7 +2386,10 @@
     }
     const layer = document.createElement('section'); layer.id = 'ps51AccountCenter'; layer.dataset.currentTab = safeTab;
     const initialViewVersion = accountCenterViewVersion;
-    layer.innerHTML = `<article class="ps51-account-shell"><button class="ps51-account-close" type="button" aria-label="${esc(ui('Hesap merkezini kapat'))}">×</button><nav class="ps51-account-nav" aria-label="${esc(ui('Hesap bölümleri'))}"><div class="ps51-account-brand"><i><img src="./play-streamers-ps-logo.svg?v=10.14" alt=""></i><span>PLAY STREAMERS<small>SW IDENTITY</small></span></div>${Object.entries(accountNavLabels).map(item => { const active = safeTab === item[0]; return `<button type="button" data-ps51-tab="${item[0]}" class="${active ? 'active' : ''}"${active ? ' disabled aria-current="page"' : ''}>${accountNavIcons[item[0]]}<span>${esc(ui(item[1]))}</span></button>`; }).join('')}</nav><main class="ps51-account-main"><section class="ps51-account-pane" data-pane="${safeTab}">${panes[safeTab]}</section></main></article>`;
+    const accountName = String(user.username || user.name || user.email || 'SW Identity').trim();
+    const accountInitial = accountName.slice(0, 1).toLocaleUpperCase(document.documentElement.lang || 'tr') || 'P';
+    const planName = String(settings.plan?.name || settings.plan?.label || user.planName || user.plan || 'Free').trim();
+    layer.innerHTML = `<article class="ps51-account-shell ps119-account-shell"><nav class="ps51-account-nav" aria-label="${esc(ui('Hesap bölümleri'))}"><div class="ps51-account-brand"><i><img src="./play-streamers-ps-logo.svg?v=10.19" alt=""></i><span>PLAY STREAMERS<small>${esc(ui('HESAP MERKEZİ'))}</small></span></div><div class="ps119-account-user"><i aria-hidden="true">${esc(accountInitial)}</i><span><b>${esc(accountName)}</b><small>${esc(user.email || 'SW Identity')}</small></span><em>${esc(planName)}</em></div><span class="ps119-account-nav-heading">${esc(ui('Hesap bölümleri'))}</span><div class="ps119-account-nav-list">${Object.entries(accountNavLabels).map(item => { const active = safeTab === item[0]; return `<button type="button" data-ps51-tab="${item[0]}" class="${active ? 'active' : ''}"${active ? ' disabled aria-current="page"' : ''}>${accountNavIcons[item[0]]}<span>${esc(ui(item[1]))}</span><i aria-hidden="true">›</i></button>`; }).join('')}</div><div class="ps119-account-trust"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5 19 6v5.5c0 4.4-3 7.9-7 9-4-1.1-7-4.6-7-9V6l7-2.5Z"/><path d="m8.8 11.8 2.1 2.1 4.5-4.5"/></svg><span><b>SW IDENTITY</b><small>${esc(ui('Güvenli hesap altyapısı'))}</small></span></div></nav><main class="ps51-account-main"><header class="ps119-account-topbar"><span><small>${esc(ui('HESAP MERKEZİ'))}</small><b class="ps119-account-section-label">${esc(currentSectionLabel)}</b></span><button class="ps51-account-close" type="button" aria-label="${esc(ui('Hesap merkezini kapat'))}">×</button></header><section class="ps51-account-pane" data-pane="${safeTab}">${panes[safeTab]}</section></main></article>`;
     document.body.classList.add('ps54-account-open'); document.body.append(layer);
     decorateAccountPane($('.ps51-account-pane', layer), safeTab);
     localizeAccountNavigation(layer);
@@ -3746,7 +3751,7 @@
       window.setTimeout(() => brand.classList.remove('ps10-brand-return'), 650);
     };
   }
-  function repair() { applyRememberPolicy(); installStatus(); bindLocaleControl(); normalizeLocaleFlags(); ensureRememberControls(); normalizeEyes(); normalizeProviderButtons(); decorateDialogs(); normalizeLogos(); normalizeSwCreate(); stripKickFromCompletion(); removeReleaseBanners(); removeRetiredSurfaces(); refreshCreatorLanding(); bindCurrentControls(); bindPublicNavigation(); enableMemberBrand(); ensureSupport(); ensureMemberExtras(); ensureSiteMetricsCards(); ensurePrivacyLinks(); startSiteMetrics(); ensureDashboardLayout(); ensureStatsResetControl(); ensureNotificationControls(); normalizeAccountMetricZeroes(); normalizeTipeeeStreamDabLogo(document); normalizeTooltips(); updateConnectionIcon(); memberLoadingTransition(); }
+  function repair() { applyRememberPolicy(); installStatus(); window.ps119RenderRateStatus?.(); bindLocaleControl(); normalizeLocaleFlags(); ensureRememberControls(); normalizeEyes(); normalizeProviderButtons(); decorateDialogs(); normalizeLogos(); normalizeSwCreate(); stripKickFromCompletion(); removeReleaseBanners(); removeRetiredSurfaces(); refreshCreatorLanding(); bindCurrentControls(); bindPublicNavigation(); enableMemberBrand(); ensureSupport(); ensureMemberExtras(); ensureSiteMetricsCards(); ensurePrivacyLinks(); startSiteMetrics(); ensureDashboardLayout(); ensureStatsResetControl(); ensureNotificationControls(); normalizeAccountMetricZeroes(); normalizeTipeeeStreamDabLogo(document); normalizeTooltips(); updateConnectionIcon(); memberLoadingTransition(); }
   let queued = false; const queueRepair = () => { if (!queued) { queued = true; requestAnimationFrame(() => { queued = false; repair(); }); } };
   let lastStatusPress = 0;
   let lastNavPress = 0;
@@ -4194,9 +4199,9 @@
     return { target, source, copy: `1 ${source} = ${formatted} ${target}`, refreshed };
   }
   function closeRatePanel() {
-    const panel = $('#ps117ExchangePanel');
+    const panel = $('#ps119ExchangePanel');
     if (panel) panel.hidden = true;
-    $('#ps117ExchangeButton')?.setAttribute('aria-expanded', 'false');
+    $$('[data-ps119-exchange]').forEach(button => button.setAttribute('aria-expanded', 'false'));
   }
   function positionRatePanel(button, panel) {
     if (!button || !panel || panel.hidden) return;
@@ -4206,13 +4211,15 @@
     panel.style.left = `${Math.max(12, Math.min(innerWidth - width - 12, rect.right - width))}px`;
     panel.style.top = `${Math.min(innerHeight - panel.offsetHeight - 12, rect.bottom + 10)}px`;
   }
-  function renderRatePanel(snapshot = window.psExchangeRates) {
-    const button = $('#ps117ExchangeButton');
-    let panel = $('#ps117ExchangePanel');
+  let activeRateButton = null;
+  function renderRatePanel(snapshot = window.psExchangeRates, button = activeRateButton || $('[data-ps119-exchange]')) {
+    let panel = $('#ps119ExchangePanel');
     if (!button) return;
     if (!panel) {
       panel = document.createElement('aside');
-      panel.id = 'ps117ExchangePanel';
+      panel.id = 'ps119ExchangePanel';
+      panel.setAttribute('role', 'dialog');
+      panel.setAttribute('aria-label', ui('Kur bilgisi'));
       panel.hidden = true;
       document.body.append(panel);
     }
@@ -4221,40 +4228,48 @@
     $('header button', panel).onclick = closeRatePanel;
     positionRatePanel(button, panel);
   }
-  function toggleRatePanel(button = $('#ps117ExchangeButton')) {
+  function toggleRatePanel(button = activeRateButton || $('[data-ps119-exchange]')) {
     if (!button) return;
-    let panel = $('#ps117ExchangePanel');
-    const opening = !panel || panel.hidden;
+    let panel = $('#ps119ExchangePanel');
+    const opening = !panel || panel.hidden || activeRateButton !== button;
     if (!opening) return closeRatePanel();
-    renderRatePanel(window.psExchangeRates);
-    panel = $('#ps117ExchangePanel');
+    closeRatePanel();
+    activeRateButton = button;
+    renderRatePanel(window.psExchangeRates, button);
+    panel = $('#ps119ExchangePanel');
     if (!panel) return;
     panel.hidden = false;
     button.setAttribute('aria-expanded', 'true');
     window.requestAnimationFrame(() => positionRatePanel(button, panel));
   }
   function renderRateStatus(snapshot = window.psExchangeRates) {
-    const actions = $('#psSecondHome .ps20-actions');
-    const status = $('#ps66MemberSystemStatus');
-    if (!actions || !status) return;
-    $('#ps116ExchangeStatus', actions)?.remove();
-    let button = $('#ps117ExchangeButton', actions);
-    if (!button) {
-      button = document.createElement('button');
-      button.type = 'button';
-      button.id = 'ps117ExchangeButton';
-      button.className = 'ps117-exchange-button';
-      button.setAttribute('aria-haspopup', 'dialog');
-      button.setAttribute('aria-expanded', 'false');
-      status.after(button);
-      button.onclick = event => { event.preventDefault(); event.stopImmediatePropagation(); toggleRatePanel(button); };
-    }
     const currency = localeCurrency();
-    button.textContent = currency.symbol;
-    button.setAttribute('aria-label', `${ui('Kur bilgisi')}: ${currency.target}`);
-    button.title = `${ui('Kur bilgisi')}: ${currency.target}`;
-    if (!$('#ps117ExchangePanel')?.hidden) renderRatePanel(snapshot);
+    [
+      { actions: $('#psSecondHome .ps20-actions'), status: $('#ps66MemberSystemStatus'), surface: 'member' },
+      { actions: $('.app .topbar .actions'), status: $('#ps66DashboardSystemStatus'), surface: 'dashboard' }
+    ].forEach(({ actions, status, surface }) => {
+      if (!actions || !status) return;
+      let button = $(`[data-ps119-exchange="${surface}"]`, actions);
+      if (!button) {
+        button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'ps119-exchange-button';
+        button.dataset.ps119Exchange = surface;
+        button.setAttribute('aria-haspopup', 'dialog');
+        button.setAttribute('aria-expanded', 'false');
+        status.after(button);
+      }
+      button.textContent = currency.symbol;
+      button.setAttribute('aria-label', `${ui('Kur bilgisi')}: ${currency.target}`);
+      button.dataset.psTooltipSource = `${ui('Kur bilgisi')}: ${currency.target}`;
+      button.dataset.psTooltip = `${ui('Kur bilgisi')}: ${currency.target}`;
+      button.removeAttribute('title');
+    });
+    const panel = $('#ps119ExchangePanel');
+    if (panel && !panel.hidden && activeRateButton?.isConnected) renderRatePanel(snapshot, activeRateButton);
   }
+  window.ps119CloseRatePanel = closeRatePanel;
+  window.ps119RenderRateStatus = renderRateStatus;
   function refreshDynamicLanguage() {
     localizeActionButtons(); renderRateStatus();
     const panel = $('#ps55Notifications');
@@ -4264,9 +4279,19 @@
   window.addEventListener('ps:locale-change', () => window.setTimeout(refreshDynamicLanguage, 80));
   window.addEventListener('ps:i18n-ready', refreshDynamicLanguage);
   window.addEventListener('ps:i18n-refresh', () => window.setTimeout(localizeActionButtons, 0));
-  document.addEventListener('click', event => { if (!event.target.closest?.('#ps117ExchangeButton,#ps117ExchangePanel')) closeRatePanel(); });
+  document.addEventListener('pointerdown', event => {
+    const button = event.target instanceof Element ? event.target.closest('[data-ps119-exchange]') : null;
+    if (button) { event.preventDefault(); event.stopImmediatePropagation(); toggleRatePanel(button); return; }
+    if (!event.target.closest?.('#ps119ExchangePanel')) closeRatePanel();
+  }, true);
+  document.addEventListener('click', event => {
+    const button = event.target instanceof Element ? event.target.closest('[data-ps119-exchange]') : null;
+    if (button) { event.preventDefault(); event.stopImmediatePropagation(); if (event.detail === 0) toggleRatePanel(button); return; }
+    if (!event.target.closest?.('#ps119ExchangePanel')) closeRatePanel();
+  }, true);
   document.addEventListener('keydown', event => { if (event.key === 'Escape') closeRatePanel(); });
-  window.addEventListener('resize', () => positionRatePanel($('#ps117ExchangeButton'), $('#ps117ExchangePanel')));
+  window.addEventListener('resize', () => positionRatePanel(activeRateButton, $('#ps119ExchangePanel')));
+  window.addEventListener('scroll', () => positionRatePanel(activeRateButton, $('#ps119ExchangePanel')), true);
   window.addEventListener('pageshow', () => { dismissStaleLoaders(true); refreshDynamicLanguage(); });
   window.setInterval(() => dismissStaleLoaders(false), 900);
   window.setTimeout(() => { dismissStaleLoaders(true); refreshDynamicLanguage(); }, 5600);

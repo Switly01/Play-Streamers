@@ -2,6 +2,18 @@
 
 ## Güncel geliştirme durumu · 30 Ağustos 2026
 
+Site 10.19.0 / Worker 7.2 hesap merkezi, ortak kur paneli ve güvenlik revizyonu:
+Hesabım yüzeyi; kullanıcı ve plan özeti, erişilebilir altı bölümlü gezinme,
+sabit bölüm başlığı, dengeli veri/profil/cihaz/bağlantı/destek kartları ve mobil
+yatay sekmelerle baştan kuruldu. Eski işlevler korunurken üst üste binmiş görsel
+katmanların etkisi son öncelik katmanında sıfırlandı. Kur simgesi hem kullanıcı
+ana sayfasında hem Dashboard üst çubuğunda üretilir; aynı sabit ayrıntı paneli
+fare ve klavyeyle açılır, sahibi değişince yeniden konumlanır ve dış etkileşimde
+güvenle kapanır. Yedi dil paketi 1.282 etkin arayüz metnini eksiksiz kapsar.
+Worker doğrulama ve bilgi sayfaları HSTS, çerçeveleme engeli, kaynak politikaları
+ve nonce tabanlı içerik güvenlik politikasıyla sıkılaştırıldı; dinamik HTML
+değerleri kaçışlanır ve yeni sekme bağlantılarında opener koruması zorunludur.
+
 Site 10.18.0 / Worker 7.1 oturum, doğrudan çeviri ve sabit arayüz revizyonu:
 Geçici ağ veya API hatası artık yerel oturumu silmez; kayıtlı oturum ilk çizimde
 üye yüzeyine yönelir ve yalnızca doğrulanmış 401/403 yanıtında kapatılır. Dil

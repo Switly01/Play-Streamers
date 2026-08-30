@@ -78,8 +78,10 @@ const DONATE_OAUTH_PROVIDERS = Object.freeze({
     clientSecretVariable: "TIPEEESTREAM_CLIENT_SECRET",
   }),
 });
-const CURRENT_RELEASE_VERSION = "6.8";
-const CURRENT_RELEASE_PUBLISHED_AT = "2026-08-30T01:25:00+03:00";
+const CURRENT_RELEASE_VERSION = "6.9";
+const CURRENT_RELEASE_PUBLISHED_AT = "2026-08-30T04:10:00+03:00";
+const EXCHANGE_CURRENCIES = Object.freeze(["EUR", "TRY", "USD", "RUB", "SAR", "JPY"]);
+const EXCHANGE_CACHE_SECONDS = 60 * 60;
 const SW_IDENTITY_ORIGIN = "https://api.swcreate.com";
 const DESKTOP_IDENTITY_REDIRECT = "playstreamers://identity/callback";
 const WEB_IDENTITY_REDIRECTS = new Set([
@@ -345,6 +347,10 @@ export default {
           country: /^[A-Z]{2}$/.test(country) ? country : null,
           suggestedLocale: INTERFACE_COUNTRY_LOCALES[country] || "en",
         });
+      }
+
+      if (url.pathname === "/api/public/exchange-rates" && request.method === "GET") {
+        return readPublicExchangeRates(request);
       }
 
       if (url.pathname === "/api/i18n/translate" && request.method === "POST") {
@@ -829,10 +835,10 @@ async function runScheduledPlayBotAudit(env) {
   await ensurePlayBotMetadataStorage(env);
   const resources = [
     ["Ana sayfa", "https://pstreamers.com/", "document"],
-    ["Ana uygulama betiği", "https://pstreamers.com/app.js?v=5.5.0", "script"],
-    ["Uygulama betiği", "https://pstreamers.com/app-final.js?v=5.13.0", "script"],
+    ["Ana uygulama betiği", "https://pstreamers.com/app.js?v=5.6.0", "script"],
+    ["Uygulama betiği", "https://pstreamers.com/app-final.js?v=5.14.0", "script"],
     ["Site davranış betiği", "https://pstreamers.com/site-v7.js?v=10.15.1", "script"],
-    ["Sabit çeviri betiği", "https://pstreamers.com/live-i18n.js?v=9.9.0", "script"],
+    ["Sabit çeviri betiği", "https://pstreamers.com/live-i18n.js?v=10.0.0", "script"],
     ["İngilizce dil paketi", "https://pstreamers.com/locales/en.json?v=2026-08-30.9", "json"],
     ["Almanca dil paketi", "https://pstreamers.com/locales/de.json?v=2026-08-30.9", "json"],
     ["İspanyolca dil paketi", "https://pstreamers.com/locales/es.json?v=2026-08-30.9", "json"],
@@ -840,7 +846,7 @@ async function runScheduledPlayBotAudit(env) {
     ["Rusça dil paketi", "https://pstreamers.com/locales/ru.json?v=2026-08-30.9", "json"],
     ["Arapça dil paketi", "https://pstreamers.com/locales/ar.json?v=2026-08-30.9", "json"],
     ["Japonca dil paketi", "https://pstreamers.com/locales/ja.json?v=2026-08-30.9", "json"],
-    ["Premium stil dosyası", "https://pstreamers.com/site-v7.css?v=10.15.0", "style"],
+    ["Premium stil dosyası", "https://pstreamers.com/site-v7.css?v=10.16.0", "style"],
     ["Oturum başlangıç betiği", "https://pstreamers.com/session-bootstrap.js?v=1.1", "script"],
     ["Site yönlendiricisi", "https://pstreamers.com/site-router.js?v=1.1", "script"],
     ["Sunucu analiz betiği", "https://pstreamers.com/server-analytics.js?v=6.0", "script"],
@@ -925,12 +931,12 @@ async function runScheduledPlayBotAudit(env) {
   const homeDocument = results.find(result => result.type === "document");
   if (homeDocument?.ok) {
     const documentContracts = [
-      ["site-v7.css?v=10.15.0", "Güncel premium stil dosyası"],
-      ["app.js?v=5.5.0", "Güncel ana uygulama betiği"],
-      ["app-final.js?v=5.13.0", "Güncel onarım betiği"],
+      ["site-v7.css?v=10.16.0", "Güncel premium stil dosyası"],
+      ["app.js?v=5.6.0", "Güncel ana uygulama betiği"],
+      ["app-final.js?v=5.14.0", "Güncel onarım betiği"],
       ["site-v7.js?v=10.15.1", "Güncel site davranış betiği"],
-      ["live-i18n.js?v=9.9.0", "Güncel sabit paket çeviri betiği"],
-      ["play-streamers-build\" content=\"2026-08-30-site-10.15.1", "Site 10.15.1 sürüm işareti"],
+      ["live-i18n.js?v=10.0.0", "Güncel sabit paket çeviri betiği"],
+      ["play-streamers-build\" content=\"2026-08-30-site-10.16.0", "Site 10.16.0 sürüm işareti"],
     ];
     for (const [token, label] of documentContracts) {
       if (!homeDocument.body.includes(token)) issues.push(`${label} canlı ana sayfaya bağlanmamış.`);
@@ -8361,6 +8367,56 @@ function isExtensionTranslationRequest(request, origin) {
     ? String(request.headers.get("Access-Control-Request-Method") || "").toUpperCase()
     : request.method;
   return method === "POST";
+}
+
+async function readPublicExchangeRates(request) {
+  const cacheKey = new Request(`${API_ORIGIN}/__edge-cache/exchange-rates-v1`, { method: "GET" });
+  try {
+    const cached = await caches.default.match(cacheKey);
+    if (cached) {
+      const body = await cached.json();
+      return apiResponse(request, { ...body, cache: "edge" });
+    }
+  } catch {
+    // Edge cache is an optimisation. A provider request can still complete safely.
+  }
+
+  const quotes = EXCHANGE_CURRENCIES.filter(currency => currency !== "EUR").join(",");
+  const providerResponse = await fetch(`https://api.frankfurter.dev/v2/rates?base=EUR&quotes=${quotes}`, {
+    headers: { accept: "application/json" },
+    cf: { cacheEverything: true, cacheTtl: EXCHANGE_CACHE_SECONDS },
+  });
+  const providerRows = await providerResponse.json().catch(() => []);
+  if (!providerResponse.ok || !Array.isArray(providerRows)) {
+    return apiResponse(request, { error: "Güncel kur verisi şu anda alınamadı.", code: "EXCHANGE_PROVIDER_UNAVAILABLE" }, 503);
+  }
+  const rates = { EUR: 1 };
+  let rateDate = "";
+  providerRows.forEach(row => {
+    const quote = String(row?.quote || "").toUpperCase();
+    const rate = Number(row?.rate);
+    if (EXCHANGE_CURRENCIES.includes(quote) && Number.isFinite(rate) && rate > 0) rates[quote] = rate;
+    if (!rateDate && /^\d{4}-\d{2}-\d{2}$/.test(String(row?.date || ""))) rateDate = String(row.date);
+  });
+  if (!EXCHANGE_CURRENCIES.every(currency => Number.isFinite(rates[currency]))) {
+    return apiResponse(request, { error: "Kur tablosu eksik geldi.", code: "EXCHANGE_RATES_INCOMPLETE" }, 503);
+  }
+  const body = {
+    ok: true,
+    base: "EUR",
+    rates,
+    rateDate,
+    refreshedAt: new Date().toISOString(),
+    provider: "Frankfurter · central bank reference rates",
+  };
+  try {
+    await caches.default.put(cacheKey, new Response(JSON.stringify(body), {
+      headers: { "content-type": "application/json; charset=utf-8", "cache-control": `public, max-age=${EXCHANGE_CACHE_SECONDS}` },
+    }));
+  } catch {
+    // A cache write failure must not hide valid exchange data from the user.
+  }
+  return apiResponse(request, { ...body, cache: "fresh" });
 }
 
 function apiResponse(request, data, status = 200) {

@@ -2,6 +2,15 @@
 
 ## Güncel geliştirme durumu · 30 Ağustos 2026
 
+Site 10.16.0 / Worker 6.9 yükleyici, canlı kur ve üye yüzeyi revizyonu: Dil
+değişiminde zorunlu yenileme kaldırıldı, eski yükleyiciler süre sınırıyla
+kapatıldı, bildirimler seçilen dile göre anında üretiliyor, yayın durumu kırmızı
+ve yeşil yanıp sönen lambayla gösteriliyor, bağışlar ücretsiz ve anahtarsız
+Frankfurter merkez bankası referans kurlarıyla seçilen para birimine çevriliyor.
+Kur tablosu Worker Cache API'de bir saat tutulur; KV kullanılmaz. Dashboard kart
+başlıkları ve büyütülmüş kart ikonları oranlandı, hesap merkezinin altı bölümü
+tek ve daha kompakt kart düzeninde birleştirildi.
+
 Site 10.15.1 / Worker 6.8 Dashboard, hesap ve plan araçları revizyonu: Giriş ve
 kayıt pencereleri eski geçiş yükleyicisine takıldığında güvenle kurtarılır.
 Dashboard yayın durumu tek satırda ve seçili dilde gösterilir; büyütülen kartlar

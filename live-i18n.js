@@ -190,6 +190,20 @@ Object.entries(criticalMemberCopy).forEach(([language, values]) => {
   criticalMemberSources.forEach((source, index) => { critical[language][source] = values[index]; });
 });
 
+const criticalRuntimeActionSources = ["Doğrula", "İptal et", "Kurlar hazırlanıyor", "Votre demande d’assistance a reçu une réponse"];
+const criticalRuntimeActionCopy = Object.freeze({
+  en: ["Verify", "Cancel", "Preparing exchange rates", "Your support request received a reply"],
+  de: ["Bestätigen", "Abbrechen", "Wechselkurse werden vorbereitet", "Deine Supportanfrage wurde beantwortet"],
+  es: ["Verificar", "Cancelar", "Preparando tipos de cambio", "Tu solicitud de soporte fue respondida"],
+  fr: ["Vérifier", "Annuler", "Préparation des taux de change", "Une réponse a été apportée à votre demande d’assistance"],
+  ru: ["Подтвердить", "Отмена", "Подготовка курсов валют", "Получен ответ на ваше обращение"],
+  ar: ["تحقق", "إلغاء", "جارٍ إعداد أسعار الصرف", "تم الرد على طلب الدعم"],
+  ja: ["確認", "キャンセル", "為替レートを準備中", "サポート依頼に返信がありました"],
+});
+Object.entries(criticalRuntimeActionCopy).forEach(([language, values]) => {
+  criticalRuntimeActionSources.forEach((source, index) => { critical[language][source] = values[index]; });
+});
+
 const criticalVerificationSources = [
   "Güvenlik doğrulaması", "Güvenlik doğrulaması yüklenemedi.", "Doğrulamayı yeniden dene",
   "Güvenlik doğrulaması tamamlanamadı. Aşağıdaki kontrolü yeniden yapıp tekrar dene.",
@@ -758,14 +772,24 @@ if (typeof window !== "undefined" && document.body && !location.protocol.startsW
       if (liveI18n.language === language) { liveI18n.refresh(); return true; }
       document.documentElement.classList.add("ps-locale-switching");
       delete document.documentElement.dataset.psI18nReady;
-      const catalog = await loadCatalog(language);
-      liveI18n.dispose({ restore: true });
-      liveI18n = installLiveI18n({ getLocale: () => language, catalog });
-      window.psLiveI18n = liveI18n;
-      liveI18n.refresh();
-      window.dispatchEvent(new CustomEvent("ps:locale-change", { detail: { language, source } }));
-      window.setTimeout(() => document.documentElement.classList.remove("ps-locale-switching"), 120);
-      return true;
+      const safety = window.setTimeout(() => {
+        document.documentElement.classList.remove("ps-locale-switching", "ps-i18n-booting");
+        document.documentElement.dataset.psI18nReady = "1";
+        window.psRescueVisibleSurface?.();
+      }, 2200);
+      try {
+        const catalog = await loadCatalog(language);
+        liveI18n.dispose({ restore: true });
+        liveI18n = installLiveI18n({ getLocale: () => language, catalog });
+        window.psLiveI18n = liveI18n;
+        liveI18n.refresh();
+        window.dispatchEvent(new CustomEvent("ps:locale-change", { detail: { language, source } }));
+        return true;
+      } finally {
+        window.clearTimeout(safety);
+        document.documentElement.classList.remove("ps-locale-switching", "ps-i18n-booting");
+        document.documentElement.dataset.psI18nReady = "1";
+      }
     };
     window.psWarmLocaleCatalogs = () => warmCatalogs(liveI18n.language);
     window.addEventListener("ps:i18n-refresh", () => liveI18n.refresh());

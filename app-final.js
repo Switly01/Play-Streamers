@@ -302,14 +302,28 @@
   let notificationSyncLoading = null;
   let lastNotificationSyncAt = 0;
   const notificationChannel = typeof BroadcastChannel === 'function' ? new BroadcastChannel('play-streamers-notifications') : null;
+  const notificationCopy = Object.freeze({
+    en: ['A new update is available with version {version}','View update notes','Your support request was sent','View “{subject}”','View support request','Your support request was answered','View the support conversation','{count} new activities','New','Now','{count} min ago','{count} hr ago'],
+    de: ['Mit Version {version} ist ein neues Update verfügbar','Aktualisierungshinweise ansehen','Deine Supportanfrage wurde gesendet','„{subject}“ ansehen','Supportanfrage ansehen','Deine Supportanfrage wurde beantwortet','Support-Unterhaltung ansehen','{count} neue Aktivitäten','Neu','Jetzt','vor {count} Min.','vor {count} Std.'],
+    es: ['Hay una nueva actualización disponible con la versión {version}','Ver notas de actualización','Tu solicitud de soporte fue enviada','Ver “{subject}”','Ver solicitud de soporte','Tu solicitud de soporte fue respondida','Ver conversación de soporte','{count} actividades nuevas','Nuevo','Ahora','hace {count} min','hace {count} h'],
+    fr: ['Une nouvelle mise à jour est disponible avec la version {version}','Voir les notes de mise à jour','Votre demande d’assistance a été envoyée','Voir « {subject} »','Voir la demande d’assistance','Votre demande d’assistance a reçu une réponse','Voir la conversation d’assistance','{count} nouvelles activités','Nouveau','Maintenant','il y a {count} min','il y a {count} h'],
+    ru: ['Доступно новое обновление версии {version}','Открыть примечания к обновлению','Обращение в поддержку отправлено','Открыть «{subject}»','Открыть обращение','Получен ответ на ваше обращение','Открыть переписку с поддержкой','Новых действий: {count}','Новое','Сейчас','{count} мин назад','{count} ч назад'],
+    ar: ['يتوفر تحديث جديد بالإصدار {version}','عرض ملاحظات التحديث','تم إرسال طلب الدعم','عرض «{subject}»','عرض طلب الدعم','تم الرد على طلب الدعم','عرض محادثة الدعم','{count} أنشطة جديدة','جديد','الآن','قبل {count} د','قبل {count} س'],
+    ja: ['バージョン{version}の新しい更新があります','更新履歴を見る','サポート依頼を送信しました','「{subject}」を見る','サポート依頼を見る','サポート依頼に返信がありました','サポートの会話を見る','新しいアクティビティ {count} 件','新着','今','{count}分前','{count}時間前']
+  });
+  function localizedNotification(index, values = {}) {
+    const language = String(localStorage.getItem('ps15-locale') || document.documentElement.lang || 'tr').split('-')[0];
+    const turkish = ['{version} sürümüyle yeni güncelleme mevcut','Güncelleme notlarını görüntüle','Destek talebiniz gönderildi','“{subject}” talebini görüntüle','Destek talebini görüntüle','Destek talebiniz yanıtlandı','Destek konuşmasını görüntüle','{count} yeni hareket','Yeni','Şimdi','{count} dk önce','{count} sa önce'];
+    return String((notificationCopy[language] || turkish)[index] || turkish[index]).replace(/\{(\w+)\}/g, (_, key) => String(values[key] ?? ''));
+  }
   function notificationTimeLabel(value) {
     const timestamp = Number(value || 0);
-    if (!timestamp) return 'Yeni';
+    if (!timestamp) return localizedNotification(8);
     const seconds = Math.max(0, Math.round((Date.now() - timestamp) / 1000));
-    if (seconds < 60) return 'Şimdi';
-    if (seconds < 3600) return `${Math.floor(seconds / 60)} dk önce`;
-    if (seconds < 86400) return `${Math.floor(seconds / 3600)} sa önce`;
-    return new Date(timestamp).toLocaleDateString('tr-TR', { day: '2-digit', month: 'short' });
+    if (seconds < 60) return localizedNotification(9);
+    if (seconds < 3600) return localizedNotification(10, { count: Math.floor(seconds / 60) });
+    if (seconds < 86400) return localizedNotification(11, { count: Math.floor(seconds / 3600) });
+    return new Date(timestamp).toLocaleDateString(document.documentElement.lang || 'tr', { day: '2-digit', month: 'short' });
   }
   async function syncLiveNotifications(force = false) {
     const current = state();
@@ -364,9 +378,14 @@
   }
   function renderNotificationPanel(panel) {
     const items = notificationItems();
+    items.forEach(item => {
+      if (item.type === 'update') { item.title = localizedNotification(0, { version: liveReleaseVersion }); item.copy = localizedNotification(1); }
+      else if (item.type === 'support-sent') { item.title = localizedNotification(2); item.copy = item.copy.includes('“') ? localizedNotification(3, { subject: notificationReadState().supportSent?.subject || '' }) : localizedNotification(4); }
+      else if (item.type === 'support') { item.title = localizedNotification(5); item.copy = localizedNotification(6); }
+    });
     panel.dataset.signature = JSON.stringify(items.map(item => [item.type,item.at || 0]));
     const icons = { update: '↻', 'support-sent': '✓', support: '✦' };
-    panel.innerHTML = `<header class="ps57-notification-head"><i><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 9a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9ZM10 21h4"/></svg></i><span><b>BİLDİRİMLER</b><small>${items.length ? `${items.length} yeni hareket` : 'Her şey güncel'}</small></span><button class="ps57-notification-close" type="button" aria-label="Bildirimleri kapat">×</button></header><div class="ps57-notification-list">${items.length ? items.map(item => `<button class="ps55-notification-item" type="button" data-ps55-notification="${item.type}"><i class="ps57-notification-kind">${icons[item.type] || '•'}</i><span class="ps57-notification-copy"><b>${esc(item.title)}</b><small>${esc(item.copy)} · ${esc(notificationTimeLabel(item.at))}</small></span><i class="ps57-notification-arrow">→</i><em class="ps57-notification-dot" aria-hidden="true"></em></button>`).join('') : '<p class="ps55-notification-empty">Yeni bildirimin yok.</p>'}</div>`;
+    panel.innerHTML = `<header class="ps57-notification-head"><i><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 9a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9ZM10 21h4"/></svg></i><span><b>${esc(ui('BİLDİRİMLER'))}</b><small>${items.length ? esc(localizedNotification(7,{count:items.length})) : esc(ui('Her şey güncel'))}</small></span><button class="ps57-notification-close" type="button" aria-label="${esc(ui('Bildirimleri kapat'))}">×</button></header><div class="ps57-notification-list">${items.length ? items.map(item => `<button class="ps55-notification-item" type="button" data-ps55-notification="${item.type}"><i class="ps57-notification-kind">${icons[item.type] || '•'}</i><span class="ps57-notification-copy"><b>${esc(item.title)}</b><small>${esc(item.copy)} · ${esc(notificationTimeLabel(item.at))}</small></span><i class="ps57-notification-arrow">→</i><em class="ps57-notification-dot" aria-hidden="true"></em></button>`).join('') : `<p class="ps55-notification-empty">${esc(ui('Yeni bildirimin yok.'))}</p>`}</div>`;
     window.dispatchEvent(new Event('ps:i18n-refresh'));
     $('.ps57-notification-close', panel).onclick = closeNotifications;
     $$('[data-ps55-notification]', panel).forEach(button => button.onclick = () => {
@@ -558,8 +577,16 @@
       localStorage.setItem('ps15-locale', language);
       localStorage.setItem('ps-locale-source', 'user');
       closeLocaleMenus();
-      if (typeof window.psSetLocale === 'function') await window.psSetLocale(language);
-      else { document.documentElement.classList.add('ps-i18n-booting'); location.reload(); }
+      try {
+        if (typeof window.psSetLocale === 'function') await window.psSetLocale(language);
+        else {
+          document.documentElement.lang = language;
+          window.dispatchEvent(new CustomEvent('ps:locale-change', { detail: { language, source: 'user' } }));
+        }
+      } finally {
+        document.documentElement.classList.remove('ps-i18n-booting', 'ps-locale-switching');
+        window.psRescueVisibleSurface?.();
+      }
     });
   }
   function buildPublicInfoFrame(layer) {
@@ -3778,7 +3805,7 @@
   document.addEventListener('focusout', hideTooltip, true);
   document.addEventListener('pointerdown', hideTooltip, true);
   document.addEventListener('scroll', hideTooltip, true);
-  window.addEventListener('ps:i18n-ready', () => { hideTooltip(); updateConnectionIcon(); });
+  window.addEventListener('ps:i18n-ready', () => { hideTooltip(); updateConnectionIcon(); updateNotifications(); const panel = $('#ps55Notifications'); if (panel && !panel.hidden) renderNotificationPanel(panel); });
   document.addEventListener('click', event => {
     const tab = event.target instanceof Element ? event.target.closest('.workspace-tabs button[data-view]') : null;
     if (tab) {
@@ -4006,6 +4033,73 @@
   });
   window.psGetPublicAuthReturnPath = () => publicAuthReturnPath || '/';
   repair();
+})();
+(() => {
+  'use strict';
+  const $ = (selector, root = document) => root.querySelector(selector);
+  const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
+  const ui = source => typeof window.psTranslateInterface === 'function' ? window.psTranslateInterface(source) : source;
+  const loaderOpenedAt = new WeakMap();
+  function dismissStaleLoaders(force = false) {
+    if (force) document.documentElement.classList.remove('ps-i18n-booting', 'ps-locale-switching');
+    $$('#ps14Loader,#ps20Loader,.ps14-loader').forEach(loader => {
+      loader.hidden = true; loader.classList.remove('show', 'is-open'); loader.setAttribute('aria-hidden', 'true');
+    });
+    const loader = $('#ps28Loader');
+    if (!loader) return;
+    const open = loader.classList.contains('is-open') && !loader.hidden;
+    if (!open) { loaderOpenedAt.delete(loader); return; }
+    if (!loaderOpenedAt.has(loader)) loaderOpenedAt.set(loader, Date.now());
+    if (!force && Date.now() - loaderOpenedAt.get(loader) < 5200) return;
+    loader.classList.remove('is-open', 'show', 'ps42-initial-loader');
+    loader.classList.add('is-closing'); loader.hidden = true; loader.setAttribute('aria-hidden', 'true');
+    document.documentElement.classList.remove('ps42-initial-loading');
+    window.psRescueVisibleSurface?.();
+  }
+  function localizeActionButtons(root = document) {
+    const sources = new Set(['İptal','İptal et','Vazgeç','Onayla','Tamam','Devam et','Kapat','Kaydet','Sil','Bağlantıyı kes','Çıkış yap','Yeniden dene','Doğrula','Gönder']);
+    $$('button,input[type="button"],input[type="submit"]', root).forEach(button => {
+      const value = button instanceof HTMLInputElement ? button.value : button.textContent;
+      const source = button.dataset.ps116ActionSource || String(value || '').trim();
+      if (!sources.has(source)) return;
+      button.dataset.ps116ActionSource = source;
+      const translated = ui(source);
+      if (button instanceof HTMLInputElement) button.value = translated;
+      else if (button.textContent !== translated) button.textContent = translated;
+    });
+  }
+  function rateStatusCopy(snapshot) {
+    const language = String(localStorage.getItem('ps15-locale') || document.documentElement.lang || 'tr').split('-')[0];
+    const target = ({tr:'TRY',en:'USD',de:'EUR',es:'EUR',fr:'EUR',ru:'RUB',ar:'SAR',ja:'JPY'})[language] || 'USD';
+    const rates = snapshot?.rates || {};
+    const source = target === 'TRY' ? 'EUR' : 'TRY';
+    if (!Number.isFinite(Number(rates[source])) || !Number.isFinite(Number(rates[target]))) return ui('Kurlar hazırlanıyor');
+    const rate = Number(rates[target]) / Number(rates[source]);
+    const formatted = new Intl.NumberFormat(document.documentElement.lang || 'tr', { maximumFractionDigits: target === 'JPY' ? 2 : 4 }).format(rate);
+    const refreshed = snapshot.rateDate || (snapshot.refreshedAt ? new Intl.DateTimeFormat(document.documentElement.lang || 'tr', { hour:'2-digit', minute:'2-digit' }).format(new Date(snapshot.refreshedAt)) : '—');
+    return `1 ${source} = ${formatted} ${target} · ${ui('Son yenileme')} ${refreshed}`;
+  }
+  function renderRateStatus(snapshot = window.psExchangeRates) {
+    const actions = $('#psSecondHome .ps20-actions');
+    const status = $('#ps66MemberSystemStatus');
+    if (!actions || !status) return;
+    let pill = $('#ps116ExchangeStatus', actions);
+    if (!pill) { pill = document.createElement('span'); pill.id = 'ps116ExchangeStatus'; pill.className = 'ps116-exchange-status'; status.after(pill); }
+    pill.textContent = rateStatusCopy(snapshot);
+    pill.title = `${ui('Bağışlar güncel merkez bankası referans kurlarıyla hesaplanır.')} ${snapshot?.provider || ''}`.trim();
+  }
+  function refreshDynamicLanguage() {
+    localizeActionButtons(); renderRateStatus();
+    const panel = $('#ps55Notifications');
+    if (panel && !panel.hidden) panel.dataset.signature = '';
+  }
+  window.addEventListener('ps:exchange-rates', event => renderRateStatus(event.detail));
+  window.addEventListener('ps:locale-change', () => window.setTimeout(refreshDynamicLanguage, 80));
+  window.addEventListener('ps:i18n-ready', refreshDynamicLanguage);
+  window.addEventListener('ps:i18n-refresh', () => window.setTimeout(localizeActionButtons, 0));
+  window.addEventListener('pageshow', () => { dismissStaleLoaders(true); refreshDynamicLanguage(); });
+  window.setInterval(() => dismissStaleLoaders(false), 900);
+  window.setTimeout(() => { dismissStaleLoaders(true); refreshDynamicLanguage(); }, 5600);
 })();
 (() => {
   const STORE = 'play-streamers-v17-site';

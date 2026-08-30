@@ -11,12 +11,12 @@ test('site 10 assets are cache-busted and use fluid monochrome glass', async () 
     read('site-v7.css'),
     read('play-streamers-ps-logo.svg'),
   ]);
-  assert.match(html, /play-streamers-build" content="2026-08-30-site-10\.15\.1"/);
-  assert.match(html, /site-v7\.css\?v=10\.15\.0/);
-  assert.match(html, /app\.js\?v=5\.5\.0/);
+  assert.match(html, /play-streamers-build" content="2026-08-30-site-10\.16\.0"/);
+  assert.match(html, /site-v7\.css\?v=10\.16\.0/);
+  assert.match(html, /app\.js\?v=5\.6\.0/);
   assert.match(html, /site-v7\.js\?v=10\.15\.1/);
-  assert.match(html, /app-final\.js\?v=5\.13\.0/);
-  assert.match(html, /live-i18n\.js\?v=9\.9\.0/);
+  assert.match(html, /app-final\.js\?v=5\.14\.0/);
+  assert.match(html, /live-i18n\.js\?v=10\.0\.0/);
   assert.match(css, /html\[data-ps-site-version="8"\]/);
   assert.match(css, /--signal: #f5f5f2/);
   assert.match(css, /@keyframes ps82-meteor/);
@@ -120,7 +120,7 @@ test('SW Bot audits deterministically and translation generation is release-only
   assert.match(worker, /swBotDeterministicReport/);
   assert.match(worker, /resolveSwBotReports/);
   assert.match(worker, /sw_bot_issue_reports/);
-  assert.match(worker, /site-v7\.css\?v=10\.15\.0/);
+  assert.match(worker, /site-v7\.css\?v=10\.16\.0/);
   assert.match(worker, /site-v7\.js\?v=10\.15\.1/);
   assert.match(worker, /\/api\/i18n\/translate/);
   assert.match(worker, /i18n:v9/);
@@ -128,6 +128,10 @@ test('SW Bot audits deterministically and translation generation is release-only
   assert.match(worker, /STATIC_I18N_ONLY/);
   assert.doesNotMatch(worker, /GOOGLE_TRANSLATE_API_KEY/);
   assert.doesNotMatch(worker, /translation\.googleapis\.com/);
+  assert.match(worker, /\/api\/public\/exchange-rates/);
+  assert.match(worker, /api\.frankfurter\.dev\/v2\/rates/);
+  assert.match(worker, /EXCHANGE_CACHE_SECONDS/);
+  assert.doesNotMatch(worker, /EXCHANGE.*KV/);
   assert.match(worker, /Fransızca dil paketi/);
   assert.match(worker, /locales\/fr\.json\?v=2026-08-30\.9/);
   assert.doesNotMatch(worker, /env\.SESSIONS/);

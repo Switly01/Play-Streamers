@@ -3720,6 +3720,115 @@ body.ps-v9 #ps51AccountCenter :is(.ps51-primary,.ps51-danger) { min-height:42px!
   body.ps-v9 #ps51AccountCenter .ps51-account-main { padding:24px 15px!important; }
   body.ps-v9 #psSecondHome .ps113-hero-console { min-height:350px!important; }
 }
+
+/* Site 10.16 — bounded transitions, live rates and unified member surfaces. */
+body.ps28-stable-loaders :is(#ps14Loader,#ps20Loader,.ps14-loader) { display:none!important; }
+#ps28Loader:not(.is-open),#ps28Loader[hidden] { display:none!important; pointer-events:none!important; }
+
+body.ps-v9 .app.ps13-dashboard #streamStatus>.dot {
+  width:10px!important;
+  height:10px!important;
+  border-radius:50%!important;
+  background:#8a8a8e!important;
+  box-shadow:0 0 0 4px rgba(255,255,255,.055)!important;
+}
+body.ps-v9 .app.ps13-dashboard #streamStatus:is(.offline,.is-offline)>.dot {
+  background:#ff3b48!important;
+  box-shadow:0 0 0 4px rgba(255,59,72,.11),0 0 17px rgba(255,59,72,.75)!important;
+  animation:ps116-live-lamp 1.15s ease-in-out infinite!important;
+}
+body.ps-v9 .app.ps13-dashboard #streamStatus:is(.live,.is-live)>.dot {
+  background:#43ed83!important;
+  box-shadow:0 0 0 4px rgba(67,237,131,.11),0 0 17px rgba(67,237,131,.7)!important;
+  animation:ps116-live-lamp 1.15s ease-in-out infinite!important;
+}
+@keyframes ps116-live-lamp { 0%,100%{opacity:.45;transform:scale(.86)} 50%{opacity:1;transform:scale(1.12)} }
+
+body.ps-v9 .app.ps13-dashboard .card-head>.title {
+  display:grid!important;
+  grid-template-columns:38px minmax(0,1fr)!important;
+  align-items:center!important;
+  gap:12px!important;
+}
+body.ps-v9 .app.ps13-dashboard .card-head>.title>h2 { margin:0!important; text-align:left!important; }
+#ps13CardCopy .ps13-card-copy .ps53-dashboard-icon {
+  flex:0 0 34px!important;
+  width:34px!important;
+  height:34px!important;
+  border-radius:10px!important;
+}
+#ps13CardCopy .ps13-card-copy .ps53-dashboard-icon svg { width:16px!important; height:16px!important; }
+#ps13CardCopy .ps13-card-copy :is(.source-badge,.event-icon,.logo):not(.ps53-dashboard-icon) { max-width:40px!important; max-height:40px!important; }
+
+.ps116-exchange-status {
+  display:flex;
+  max-width:260px;
+  min-height:34px;
+  align-items:center;
+  overflow:hidden;
+  border:1px solid rgba(255,255,255,.12);
+  border-radius:999px;
+  padding:0 12px;
+  color:rgba(255,255,255,.62);
+  background:rgba(255,255,255,.045);
+  font:700 8px/1.25 var(--body);
+  letter-spacing:.015em;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+
+body.ps-v9 #ps51AccountCenter .ps51-account-shell { grid-template-columns:228px minmax(0,1fr)!important; }
+body.ps-v9 #ps51AccountCenter .ps51-account-main { padding:32px clamp(24px,4vw,48px)!important; }
+body.ps-v9 #ps51AccountCenter .ps51-account-pane { width:100%!important; max-width:940px!important; }
+body.ps-v9 #ps51AccountCenter .ps115-account-hero {
+  grid-template-columns:minmax(0,1fr) 82px!important;
+  gap:20px!important;
+  margin-bottom:20px!important;
+  padding-bottom:20px!important;
+}
+body.ps-v9 #ps51AccountCenter .ps115-account-visual { width:78px!important; height:78px!important; border-radius:21px 21px 21px 8px!important; }
+body.ps-v9 #ps51AccountCenter .ps115-account-visual svg { width:30px!important; height:30px!important; }
+body.ps-v9 #ps51AccountCenter .ps115-account-visual img { width:52px!important; height:52px!important; }
+body.ps-v9 #ps51AccountCenter .ps51-account-pane h2 { margin:7px 0 8px!important; font-size:clamp(27px,3.2vw,42px)!important; line-height:1!important; }
+body.ps-v9 #ps51AccountCenter .ps51-account-lead { max-width:680px!important; margin:0!important; font-size:10px!important; line-height:1.65!important; }
+body.ps-v9 #ps51AccountCenter .ps51-data-grid { grid-template-columns:repeat(3,minmax(0,1fr))!important; gap:12px!important; }
+body.ps-v9 #ps51AccountCenter :is(.ps51-data-card,.ps51-account-section,.ps51-kick-card,.ps62-bridge-card,.ps62-device,.ps65-device-card,.ps67-oauth,.ps67-oauth-card,.ps55-ticket-card) {
+  min-height:0!important;
+  overflow:hidden!important;
+  border-radius:15px!important;
+  padding:16px!important;
+}
+body.ps-v9 #ps51AccountCenter :is(.ps51-kick-mark,.ps62-device>i,.ps65-device-card>i,.ps67-oauth>i,.ps67-oauth-card>i) {
+  width:42px!important;
+  height:42px!important;
+  min-width:42px!important;
+  border-radius:12px!important;
+}
+body.ps-v9 #ps51AccountCenter :is(.ps51-kick-mark,.ps62-device>i,.ps65-device-card>i,.ps67-oauth>i,.ps67-oauth-card>i) :is(img,svg) {
+  width:22px!important;
+  height:22px!important;
+  object-fit:contain!important;
+}
+body.ps-v9 #ps51AccountCenter :is(.ps51-kick-card,.ps62-device,.ps65-device-card,.ps67-oauth,.ps67-oauth-card) {
+  display:grid!important;
+  grid-template-columns:42px minmax(0,1fr) auto!important;
+  align-items:center!important;
+  gap:13px!important;
+}
+body.ps-v9 #ps51AccountCenter :is(.ps51-kick-card,.ps62-device,.ps65-device-card,.ps67-oauth,.ps67-oauth-card) :is(b,strong,h3,p,small) { overflow-wrap:anywhere!important; }
+
+@media(max-width:900px) {
+  .ps116-exchange-status { max-width:170px; }
+  body.ps-v9 #ps51AccountCenter .ps51-data-grid { grid-template-columns:1fr!important; }
+}
+@media(max-width:700px) {
+  .ps116-exchange-status { display:none; }
+  body.ps-v9 #ps51AccountCenter .ps115-account-hero { grid-template-columns:1fr!important; }
+  body.ps-v9 #ps51AccountCenter .ps115-account-visual { display:none!important; }
+}
+@media(prefers-reduced-motion:reduce) {
+  body.ps-v9 .app.ps13-dashboard #streamStatus>.dot { animation:none!important; transform:none!important; }
+}
 @media(prefers-reduced-motion:reduce) { body.ps-v9 #psSecondHome .ps113-console-orbit::after { animation:none!important; } }
 
 /* Site 10.14 — language-safe member surfaces and compact product marks. */
@@ -4067,4 +4176,22 @@ body.ps-v9 #ps51AccountCenter .ps51-profile-avatar img { width:58px!important; h
   body.ps-v9 .app.ps13-dashboard #streamStatus>#clearBtn { grid-column:1/-1!important; width:100%!important; }
   body.ps-v9 #ps51AccountCenter .ps115-account-hero { grid-template-columns:1fr; }
   body.ps-v9 #ps51AccountCenter .ps115-account-visual { display:none; }
+}
+
+/* Site 10.16 final cascade ownership. */
+body.ps-v9 #ps51AccountCenter .ps51-account-shell { grid-template-columns:228px minmax(0,1fr)!important; }
+body.ps-v9 #ps51AccountCenter .ps51-account-main { padding:32px clamp(24px,4vw,48px)!important; }
+body.ps-v9 #ps51AccountCenter .ps51-account-pane h2 { margin:7px 0 8px!important; font-size:clamp(27px,3.2vw,42px)!important; line-height:1!important; }
+body.ps-v9 #ps51AccountCenter .ps115-account-hero { grid-template-columns:minmax(0,1fr) 82px!important; gap:20px!important; margin-bottom:20px!important; padding-bottom:20px!important; }
+body.ps-v9 #ps51AccountCenter .ps115-account-visual { width:78px!important; height:78px!important; border-radius:21px 21px 21px 8px!important; }
+body.ps-v9 #ps51AccountCenter .ps115-account-visual :is(img,svg) { width:44px!important; height:44px!important; }
+body.ps-v9 #ps51AccountCenter .ps51-data-grid { grid-template-columns:repeat(3,minmax(0,1fr))!important; gap:12px!important; }
+body.ps-v9 #ps51AccountCenter :is(.ps51-data-card,.ps51-account-section,.ps51-kick-card,.ps62-bridge-card,.ps62-device,.ps65-device-card,.ps67-oauth,.ps67-oauth-card,.ps55-ticket-card) { min-height:0!important; overflow:hidden!important; border-radius:15px!important; padding:16px!important; }
+@media(max-width:900px) {
+  body.ps-v9 #ps51AccountCenter .ps51-account-shell { grid-template-columns:1fr!important; }
+  body.ps-v9 #ps51AccountCenter .ps51-data-grid { grid-template-columns:1fr!important; }
+}
+@media(max-width:620px) {
+  body.ps-v9 #ps51AccountCenter .ps115-account-hero { grid-template-columns:1fr!important; }
+  body.ps-v9 #ps51AccountCenter .ps115-account-visual { display:none!important; }
 }

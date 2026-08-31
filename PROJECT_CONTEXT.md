@@ -2,6 +2,17 @@
 
 ## Güncel geliştirme durumu · 31 Ağustos 2026
 
+Site 10.22.0 / Worker 7.5 genel performans revizyonu: Çeviri gözlemcisi artık
+menü, tooltip ve kartların yalnız görünürlüğü değiştiğinde tüm belgeyi yeniden
+taramaz; sayısal canlı veri değişimleri de gereksiz çeviri turu başlatmaz.
+Eski arayüz onarım gözlemcisi yüksek frekanslı Dashboard ve hesap yüzeylerini
+atlar. Bağış, bildirim, oturum, sayaç ve bağlantı kontrolleri görünür yüzey ve
+daha dengeli yenileme aralıklarıyla çalışır. Ana sayfanın ekran dışındaki
+bölümleri çizim bütçesinden çıkarılır ve animasyonları duraklatılır; arka plan
+sekmesinde tüm dekoratif hareketler bekler. İmleç feneri 30 FPS ile, önceden
+ölçülen geometri üzerinden çalışır. Hareketli yıldız sayısı azaltıldı ve sıvı
+cam bulanıklığı görsel kimlik korunarak daha düşük GPU maliyetine çekildi.
+
 Site 10.21.0 / Worker 7.4 hesap merkezi ve SW Identity iç yönetim revizyonu:
 Hesabım ekranı masaüstünde daha geniş bir çalışma alanına, daha büyük sol bölüm
 başlıklarına ve belirgin Kick veri kartlarına geçirildi; veri ayrıntı grafikleri

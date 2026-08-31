@@ -49,15 +49,15 @@
   // gecikmeyi azaltırken aynı isteğin üst üste başlatılmasını engelleyen
   // mevcut `loading/busy` kilitleriyle birlikte kullanılır.
   const LIVE_CONTROL_INTERVALS = Object.freeze({
-    connectionUi: 2_500,
-    notifications: 3_000,
-    session: 15_000,
-    sessionMinimum: 12_000,
-    donateOAuth: 5_000,
-    siteMetrics: 10_000,
-    devices: 5_000,
-    bridgeConnections: 2_000,
-    surfaceRescue: 2_000
+    connectionUi: 5_000,
+    notifications: 15_000,
+    session: 30_000,
+    sessionMinimum: 25_000,
+    donateOAuth: 30_000,
+    siteMetrics: 30_000,
+    devices: 10_000,
+    bridgeConnections: 5_000,
+    surfaceRescue: 4_000
   });
   const SITE_METRICS_CACHE_KEY = 'ps61-site-metrics-cache';
   const SITE_METRICS_VISITOR_KEY = 'ps61-site-visitor';
@@ -4426,12 +4426,12 @@
   window.addEventListener('resize', () => positionRatePanel(activeRateButton, $('#ps119ExchangePanel')));
   window.addEventListener('scroll', () => positionRatePanel(activeRateButton, $('#ps119ExchangePanel')), true);
   window.addEventListener('pageshow', () => { dismissStaleLoaders(true); refreshDynamicLanguage(); });
-  window.setInterval(() => dismissStaleLoaders(false), 900);
+  window.setInterval(() => dismissStaleLoaders(false), 3_000);
   window.setTimeout(() => { dismissStaleLoaders(true); refreshDynamicLanguage(); }, 5600);
 })();
 (() => {
   const STORE = 'play-streamers-v17-site';
-  const SURFACE_RESCUE_INTERVAL_MS = 2_000;
+  const SURFACE_RESCUE_INTERVAL_MS = 4_000;
 
   function dashboardIsVisible() {
     const app = document.querySelector('.app');

@@ -28,10 +28,14 @@
     if (document.documentElement.dataset.ps9MotionBound === '1') return;
     document.documentElement.dataset.ps9MotionBound = '1';
     let pointerFrame = 0;
+    let lastPointerPaint = 0;
     document.addEventListener('pointermove', (event) => {
-      if (!matchMedia('(pointer:fine)').matches || pointerFrame) return;
+      const publicRoot = document.getElementById('authOverlay');
+      if (document.hidden || publicRoot?.hidden || !matchMedia('(pointer:fine)').matches || pointerFrame) return;
+      if (event.timeStamp - lastPointerPaint < 30) return;
       pointerFrame = requestAnimationFrame(() => {
         pointerFrame = 0;
+        lastPointerPaint = event.timeStamp;
         document.documentElement.style.setProperty('--ps9-pointer-x', `${((event.clientX / Math.max(innerWidth, 1)) * 100).toFixed(2)}%`);
         document.documentElement.style.setProperty('--ps9-pointer-y', `${((event.clientY / Math.max(innerHeight, 1)) * 100).toFixed(2)}%`);
         document.documentElement.style.setProperty('--ps9-drift-x', `${(((event.clientX / Math.max(innerWidth, 1)) - .5) * 18).toFixed(2)}px`);
@@ -39,11 +43,13 @@
       });
     }, { passive: true });
     let scrollFrame = 0;
-    window.addEventListener('scroll', () => {
+    const pageScrollRoot = document.getElementById('authOverlay') || window;
+    pageScrollRoot.addEventListener('scroll', () => {
       if (scrollFrame) return;
       scrollFrame = requestAnimationFrame(() => {
         scrollFrame = 0;
-        document.documentElement.style.setProperty('--ps9-page-scroll', `${Math.min(120, scrollY * .055).toFixed(2)}px`);
+        const pageScroll = pageScrollRoot === window ? scrollY : pageScrollRoot.scrollTop;
+        document.documentElement.style.setProperty('--ps9-page-scroll', `${Math.min(120, pageScroll * .055).toFixed(2)}px`);
       });
     }, { passive: true });
   }
@@ -126,10 +132,16 @@
       hero.prepend(lantern);
     }
     let pointerFrame = 0;
+    let pointerRect = null;
+    let lastPointerPaint = 0;
+    const refreshPointerRect = () => { pointerRect = hero.getBoundingClientRect(); };
+    hero.addEventListener('pointerenter', refreshPointerRect, { passive: true });
     hero.addEventListener('pointermove', (event) => {
-      if (pointerFrame) cancelAnimationFrame(pointerFrame);
+      if (document.hidden || event.timeStamp - lastPointerPaint < 30 || pointerFrame) return;
       pointerFrame = requestAnimationFrame(() => {
-        const rect = hero.getBoundingClientRect();
+        pointerFrame = 0;
+        lastPointerPaint = event.timeStamp;
+        const rect = pointerRect || hero.getBoundingClientRect();
         hero.style.setProperty('--ps82-x', `${((event.clientX - rect.left) / rect.width) * 100}%`);
         hero.style.setProperty('--ps82-y', `${((event.clientY - rect.top) / rect.height) * 100}%`);
         hero.style.setProperty('--ps83-px', `${((((event.clientX - rect.left) / rect.width) - .5) * 28).toFixed(2)}px`);
@@ -139,6 +151,7 @@
       });
     }, { passive: true });
     hero.addEventListener('pointerleave', () => {
+      pointerRect = null;
       hero.style.setProperty('--ps82-x', '50%');
       hero.style.setProperty('--ps82-y', '42%');
       hero.style.setProperty('--ps83-px', '0px');
@@ -155,8 +168,25 @@
         hero.style.setProperty('--ps83-scroll', `${(progress * 38).toFixed(2)}px`);
       });
     };
-    window.addEventListener('scroll', syncScrollMotion, { passive: true });
+    const scrollRoot = document.getElementById('authOverlay');
+    scrollRoot?.addEventListener('scroll', () => { pointerRect = null; syncScrollMotion(); }, { passive: true });
+    window.addEventListener('resize', () => { pointerRect = null; }, { passive: true });
     syncScrollMotion();
+  }
+
+  function installPerformanceGovernor(home) {
+    if (!home || home.dataset.psPerformanceGovernor === '1') return;
+    home.dataset.psPerformanceGovernor = '1';
+    const sections = home.querySelectorAll('.ps81-showcase,.ps8-boundary,.ps8-features,.ps8-steps,.ps8-final-cta,.ps8-footer');
+    if ('IntersectionObserver' in window) {
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => entry.target.classList.toggle('ps-perf-offscreen', !entry.isIntersecting));
+      }, { root: document.getElementById('authOverlay'), rootMargin: '220px 0px' });
+      sections.forEach(section => observer.observe(section));
+    }
+    const syncVisibility = () => document.documentElement.classList.toggle('ps-page-backgrounded', document.hidden);
+    document.addEventListener('visibilitychange', syncVisibility, { passive: true });
+    syncVisibility();
   }
 
   const publicSectionTargets = {
@@ -318,11 +348,12 @@
     }
     if (current.classList.contains('ps8-home')) {
       activatePublicMotion(current);
+      installPerformanceGovernor(current);
       activatePlanTabs(current);
       scheduleAstronaut(current);
       return;
     }
-    const warpStars = Array.from({ length: 40 }, (_, index) => {
+    const warpStars = Array.from({ length: 24 }, (_, index) => {
       const x = (5 + ((index * 37) % 91)).toFixed(2);
       const y = (7 + ((index * 53) % 86)).toFixed(2);
       const delay = (-((index * .73) % 11)).toFixed(2);
@@ -451,6 +482,7 @@
       </section>`;
     current.replaceWith(home);
     activatePublicMotion(home);
+    installPerformanceGovernor(home);
     activatePlanTabs(home);
     scheduleAstronaut(home);
     root.querySelector('.landing-update-preview')?.setAttribute('aria-hidden', 'true');

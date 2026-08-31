@@ -635,9 +635,23 @@ function loadCatalog(language) {
   return request;
 }
 
-function warmCatalogs(activeLanguage) {
+async function warmCatalogs(activeLanguage, preferredLanguage = "") {
   const languages = [...SUPPORTED].filter(language => language !== "tr" && language !== activeLanguage);
-  return Promise.allSettled(languages.map(loadCatalog));
+  if (languages.includes(preferredLanguage)) {
+    languages.splice(languages.indexOf(preferredLanguage), 1);
+    languages.unshift(preferredLanguage);
+  }
+  const results = [];
+  // Dil paketlerini tek karede indirip ayrıştırmak yerine boş ana iş parçacığı
+  // dilimlerine yay. Seçilen dil yine `loadCatalog` üzerinden anında öne geçer.
+  for (const language of languages) {
+    await new Promise(resolve => {
+      if (typeof requestIdleCallback === "function") requestIdleCallback(resolve, { timeout: 1400 });
+      else window.setTimeout(resolve, 220);
+    });
+    results.push(await loadCatalog(language));
+  }
+  return results;
 }
 
 function browserLocale() {
@@ -803,8 +817,22 @@ export function installLiveI18n({ localeKey = "ps15-locale", getLocale, root = d
     // Bir DOM dalgasında yüzlerce metin değişse bile yalnızca tek tarama yap.
     window.setTimeout(translate, 36);
   };
-  const observer = new MutationObserver(schedule);
-  observer.observe(root, { childList: true, subtree: true, characterData: true, attributes: true, attributeFilter: ["placeholder", "title", "aria-label", "aria-description", "alt", "data-ps-tooltip", "hidden"] });
+  const mutationNeedsTranslation = record => {
+    if (record.type === "characterData") return translatable(clean(record.target.nodeValue));
+    if (record.type === "attributes") return translatable(clean(record.target.getAttribute(record.attributeName)));
+    return [...record.addedNodes].some(node => {
+      if (node.nodeType === Node.TEXT_NODE) return translatable(clean(node.nodeValue));
+      if (node.nodeType !== Node.ELEMENT_NODE || node.matches?.(SKIP_TEXT_SELECTOR)) return false;
+      return translatable(clean(node.textContent));
+    });
+  };
+  const observer = new MutationObserver(records => {
+    if (records.some(mutationNeedsTranslation)) schedule();
+  });
+  // `hidden` yalnız görünürlüğü değiştirir; metni değiştirmez. Menü, tooltip ve
+  // Dashboard kartlarının her açılışında tüm belgeyi yeniden taramamak için bu
+  // öznitelik artık çeviri gözlemcisini uyandırmaz.
+  observer.observe(root, { childList: true, subtree: true, characterData: true, attributes: true, attributeFilter: ["placeholder", "title", "aria-label", "aria-description", "alt", "data-ps-tooltip"] });
   schedule();
   return {
     language,
@@ -867,12 +895,24 @@ if (typeof window !== "undefined" && document.body && !location.protocol.startsW
         document.documentElement.dataset.psI18nReady = "1";
       }
     };
-    window.psWarmLocaleCatalogs = () => warmCatalogs(liveI18n.language);
+    let catalogWarmPromise = null;
+    const warm = preferred => {
+      if (!catalogWarmPromise) catalogWarmPromise = warmCatalogs(liveI18n.language, preferred);
+      return catalogWarmPromise;
+    };
+    window.psWarmLocaleCatalogs = preferred => warm(String(preferred || "").toLowerCase());
     window.addEventListener("ps:i18n-refresh", () => liveI18n.refresh());
     window.addEventListener("ps-route-change", () => liveI18n.refresh());
-    const warm = () => { void warmCatalogs(liveI18n.language); };
-    if (typeof requestIdleCallback === "function") requestIdleCallback(warm, { timeout: 800 });
-    else window.setTimeout(warm, 180);
+    const warmOnLocaleIntent = event => {
+      const target = event.target instanceof Element ? event.target.closest('[data-language],[data-ps15-lang],.ps41-locale-button,.ps15-locale-button') : null;
+      if (!target) return;
+      document.removeEventListener("pointerover", warmOnLocaleIntent, true);
+      document.removeEventListener("focusin", warmOnLocaleIntent, true);
+      void warm(target.dataset.language || target.dataset.ps15Lang || "");
+    };
+    document.addEventListener("pointerover", warmOnLocaleIntent, { capture: true, passive: true });
+    document.addEventListener("focusin", warmOnLocaleIntent, true);
+    window.setTimeout(() => { void warm(""); }, 8_000);
     void detectCountryLocale(liveI18n.language, "ps15-locale");
   })();
 }

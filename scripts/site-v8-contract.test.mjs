@@ -11,12 +11,12 @@ test('site 10 assets are cache-busted and use fluid monochrome glass', async () 
     read('site-v7.css'),
     read('play-streamers-ps-logo.svg'),
   ]);
-  assert.match(html, /play-streamers-build" content="2026-08-31-site-10\.21\.0"/);
-  assert.match(html, /site-v7\.css\?v=10\.21\.0/);
-  assert.match(html, /app\.js\?v=5\.7\.0/);
-  assert.match(html, /site-v7\.js\?v=10\.15\.1/);
-  assert.match(html, /app-final\.js\?v=5\.19\.0/);
-  assert.match(html, /live-i18n\.js\?v=10\.2\.0/);
+  assert.match(html, /play-streamers-build" content="2026-08-31-site-10\.22\.0"/);
+  assert.match(html, /site-v7\.css\?v=10\.22\.0/);
+  assert.match(html, /app\.js\?v=5\.8\.0/);
+  assert.match(html, /site-v7\.js\?v=10\.16\.0/);
+  assert.match(html, /app-final\.js\?v=5\.20\.0/);
+  assert.match(html, /live-i18n\.js\?v=10\.3\.0/);
   assert.match(css, /html\[data-ps-site-version="8"\]/);
   assert.match(css, /--signal: #f5f5f2/);
   assert.match(css, /@keyframes ps82-meteor/);
@@ -54,6 +54,9 @@ test('site 10 assets are cache-busted and use fluid monochrome glass', async () 
   assert.match(css, /html\.ps-locale-switching/);
   assert.match(css, /Site 10\.20/);
   assert.match(css, /Site 10\.21/);
+  assert.match(css, /Site 10\.22/);
+  assert.match(css, /content-visibility:auto/);
+  assert.match(css, /ps-perf-offscreen/);
   assert.match(css, /\.ps63-provider-chip>img\[hidden\]/);
   assert.match(css, /\.ps57-ticket-image-loading\[hidden\]/);
   assert.match(css, /width:84px!important;height:58px!important/);
@@ -84,6 +87,8 @@ test('public home promotes the desktop app without restoring legacy hero', async
   assert.match(source, /className = 'ps81-nav-download'/);
   assert.match(source, /class="ps82-motion-field"/);
   assert.match(source, /IntersectionObserver/);
+  assert.match(source, /installPerformanceGovernor/);
+  assert.match(source, /Array\.from\(\{ length: 24 \}/);
   assert.match(source, /ps83-metrics-empty/);
   assert.match(source, /ensurePremiumAmbient/);
   assert.match(source, /animateNewSurfaces/);
@@ -142,8 +147,8 @@ test('SW Bot audits deterministically and translation generation is release-only
   assert.match(worker, /swBotDeterministicReport/);
   assert.match(worker, /resolveSwBotReports/);
   assert.match(worker, /sw_bot_issue_reports/);
-  assert.match(worker, /site-v7\.css\?v=10\.21\.0/);
-  assert.match(worker, /site-v7\.js\?v=10\.15\.1/);
+  assert.match(worker, /site-v7\.css\?v=10\.22\.0/);
+  assert.match(worker, /site-v7\.js\?v=10\.16\.0/);
   assert.match(worker, /\/api\/i18n\/translate/);
   assert.match(worker, /i18n:v9/);
   assert.match(worker, /translationProvider: "local-static-build"/);

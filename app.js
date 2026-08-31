@@ -2603,9 +2603,9 @@
   const STORE = 'play-streamers-v17-site';
   const CURSOR_PREFIX = 'play-streamers-donate-connector-cursor:';
   const SEEN_PREFIX = 'play-streamers-donate-connector-seen:';
-  // Only a visible signed-in page polls. A one-second interval keeps the
-  // extension -> Worker -> dashboard path responsive without background reads.
-  const POLL_MS = 1_000;
+  // Yalnız görünür üye yüzeyi sorgulanır. 2,5 saniye canlı bağış akışını hızlı
+  // tutarken her sekmede saniyelik ağ/DOM turunu ortadan kaldırır.
+  const POLL_MS = 2_500;
   const PROVIDER_URLS = {
     bynogame: 'https://donate.bynogame.com/',
     klasgame: 'https://www.klasgame.com/',
@@ -2628,6 +2628,12 @@
     doneru: 'https://doneru.jp/'
   };
   let syncing = false;
+
+  function memberSurfaceIsActive() {
+    const dashboard = document.querySelector('.app');
+    const memberHome = document.querySelector('#psSecondHome');
+    return [dashboard, memberHome].some(node => Boolean(node && !node.hidden && node.getClientRects().length));
+  }
 
   function readState() {
     try { return JSON.parse(localStorage.getItem(STORE) || '{}'); } catch { return {}; }
@@ -2657,7 +2663,7 @@
     return safeId ? `assets/providers/${safeId}.png` : '';
   }
   async function syncDonateEvents() {
-    if (syncing || document.visibilityState !== 'visible' || navigator.onLine === false) return;
+    if (syncing || document.visibilityState !== 'visible' || navigator.onLine === false || !memberSurfaceIsActive()) return;
     if (!window.PlayStreamers?.addEvent) return;
     const current = readState();
     const token = String(current?.settings?.userSession || current?.userSession || '');
@@ -4013,8 +4019,12 @@
     normalizeDashboard();
   };
   const queueRepair = () => { if (!queued) { queued = true; requestAnimationFrame(repair); } };
-  new MutationObserver(() => {
+  const legacyRepairIgnoredSurface = '#ps51AccountCenter,#ps55Notifications,#ps44StatusPopover,#ps44UpdatesDialog,#ps59AccountDataDialog,#ps69AccountMetricDayDialog,#panelView,#statsView,#streamStatus,.ps-tooltip,#ps119ExchangePanel';
+  new MutationObserver(records => {
     if (document.documentElement.classList.contains('ps-locale-switching')) return;
+    const structuralRecords = records.filter(record => [...record.addedNodes, ...record.removedNodes].some(node => node.nodeType === Node.ELEMENT_NODE));
+    if (!structuralRecords.length) return;
+    if (structuralRecords.every(record => record.target instanceof Element && record.target.closest(legacyRepairIgnoredSurface))) return;
     queueRepair();
   }).observe(document.documentElement, { childList: true, subtree: true });
   window.addEventListener('pageshow', queueRepair);

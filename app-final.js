@@ -1194,6 +1194,9 @@
   let accountDevicesRefreshedAt = 0;
   let currentAccountDeviceId = '';
   let accountCenterViewVersion = 0;
+  let swIdentityAccount = null;
+  let swIdentityAccountLoaded = false;
+  let swIdentityAccountRequest = null;
   async function accountGet(path) {
     const current = state(), token = String(current.settings?.userSession || current.userSession || '');
     const headers = token ? { Authorization: `Bearer ${token}` } : {};
@@ -1201,6 +1204,18 @@
     const result = await response.json().catch(() => ({}));
     if (!response.ok) throw new Error(result.error || 'Bağlantı bilgisi alınamadı.');
     return result;
+  }
+  async function refreshSwIdentityAccount(force = false) {
+    if (swIdentityAccountRequest) return swIdentityAccountRequest;
+    if (swIdentityAccountLoaded && !force) return swIdentityAccount;
+    swIdentityAccountRequest = accountGet('/api/sw-identity/account')
+      .then(result => {
+        swIdentityAccount = result;
+        swIdentityAccountLoaded = true;
+        return result;
+      })
+      .finally(() => { swIdentityAccountRequest = null; });
+    return swIdentityAccountRequest;
   }
   async function refreshDonateBridgeDevices() {
     const [bridgeResult, oauthResult] = await Promise.allSettled([
@@ -1369,7 +1384,11 @@
       const mapUrl = mapQuery ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(mapQuery)}` : '';
       const current = Boolean(device.current || device.id === currentAccountDeviceId);
       const groupedSessions = Number(device.sessionCount || 0) > 1 ? ` · Aynı IP üzerinde ${Number(device.sessionCount)} oturum` : '';
-      return `<article class="ps65-device-card"><i class="ps65-device-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="13" rx="2.5"/><path d="M8 21h8M12 17v4"/></svg></i><span class="ps65-device-copy"><b>${esc(device.name || 'Bilinmeyen cihaz')}<small class="ps65-device-badge${device.active ? ' active' : ''}">${device.active ? 'OTURUM AÇIK' : 'OTURUM KAPALI'}</small>${current ? '<small class="ps65-device-current">BU CİHAZ</small>' : ''}</b><small>İlk giriş: ${esc(accountDeviceDate(device.firstSignedInAt))}<br>Son aktiflik: ${esc(accountDeviceDate(device.lastActiveAt))} · ${esc(locationLabel)}${groupedSessions}</small></span><span class="ps65-device-actions">${mapUrl ? `<a class="ps51-secondary ps65-device-map" href="${esc(mapUrl)}" target="_blank" rel="noopener noreferrer">Konumu göster</a>` : ''}${device.active ? `<button class="ps51-danger" type="button" data-ps65-revoke="${esc(device.id)}">${current ? 'Bu cihazdan çık' : 'Cihazdan çıkış yap'}</button>` : `<button class="ps51-danger ps65-device-remove" type="button" data-ps65-remove="${esc(device.id)}">Kaydı sil</button>`}</span></article>`;
+      const mobile = /android|ios|ipados|iphone|ipad|mobil/i.test(`${device.operatingSystem || ''} ${device.name || ''}`);
+      const deviceIcon = mobile
+        ? '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="6.5" y="2.5" width="11" height="19" rx="2.5"/><path d="M10 5h4M11 18.5h2"/></svg>'
+        : '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="13" rx="2.5"/><path d="M8 21h8M12 17v4"/></svg>';
+      return `<article class="ps65-device-card"><i class="ps65-device-icon" title="${mobile ? 'Mobil cihaz' : 'Bilgisayar'}">${deviceIcon}</i><span class="ps65-device-copy"><b>${esc(device.name || 'Bilinmeyen cihaz')}<small class="ps65-device-badge${device.active ? ' active' : ''}">${device.active ? 'OTURUM AÇIK' : 'OTURUM KAPALI'}</small>${current ? '<small class="ps65-device-current">BU CİHAZ</small>' : ''}</b><small>İlk giriş: ${esc(accountDeviceDate(device.firstSignedInAt))}<br>Son aktiflik: ${esc(accountDeviceDate(device.lastActiveAt))} · ${esc(locationLabel)}${groupedSessions}</small></span><span class="ps65-device-actions">${mapUrl ? `<a class="ps51-secondary ps65-device-map" href="${esc(mapUrl)}" target="_blank" rel="noopener noreferrer">Konumu göster</a>` : ''}${device.active ? `<button class="ps51-danger" type="button" data-ps65-revoke="${esc(device.id)}">${current ? 'Bu cihazdan çık' : 'Cihazdan çıkış yap'}</button>` : `<button class="ps51-danger ps65-device-remove" type="button" data-ps65-remove="${esc(device.id)}">Kaydı sil</button>`}</span></article>`;
     }).join('')}</div>`;
   }
   async function startKickConnection(button) {
@@ -1812,7 +1831,7 @@
     $$('[data-ps51-tab]', layer).forEach(button => button.onclick = () => {
       const nextTab = button.dataset.ps51Tab;
       accountCenterViewVersion += 1;
-      showAccountCenter(nextTab, ['devices', 'connections', 'support'].includes(nextTab));
+      showAccountCenter(nextTab, ['profile', 'account', 'devices', 'connections', 'support'].includes(nextTab));
     });
     $('.ps51-account-close', layer).onclick = closeAccountCenter;
     layer.onclick = event => {
@@ -1840,6 +1859,94 @@
       card.onclick = open;
       card.onkeydown = open;
     });
+    const swProfileForm = $('#ps121SwProfileForm', layer);
+    if (swProfileForm) {
+      $$('input[name="avatarPreset"]', swProfileForm).forEach(input => input.onchange = () => {
+        $$('.ps121-avatar-choice', swProfileForm).forEach(choice => choice.classList.toggle('selected', Boolean($('input', choice)?.checked)));
+      });
+      swProfileForm.onsubmit = async event => {
+        event.preventDefault();
+        const status = $('.ps51-account-status', swProfileForm);
+        const submit = $('button[type="submit"]', swProfileForm);
+        if (submit) submit.disabled = true;
+        if (status) { status.className = 'ps51-account-status'; status.textContent = 'SW Identity profili kaydediliyor…'; }
+        try {
+          swIdentityAccount = await accountPost('/api/sw-identity/account/profile', {
+            username: String(swProfileForm.elements.username?.value || '').trim(),
+            avatarPreset: String(swProfileForm.elements.avatarPreset?.value || 'orbit-cyan')
+          });
+          swIdentityAccountLoaded = true;
+          const next = state(); next.settings ||= {}; next.settings.user ||= {};
+          if (swIdentityAccount?.user?.username) {
+            next.settings.user.username = swIdentityAccount.user.username;
+            next.settings.user.name = swIdentityAccount.user.username;
+            next.settings.user.displayName = swIdentityAccount.user.displayName || swIdentityAccount.user.username;
+            saveAccountState(next);
+          }
+          showAccountCenter('profile', false, 'SW profilin bütün bağlı ürünler için güncellendi.', true);
+        } catch (error) {
+          if (submit) submit.disabled = false;
+          if (status) { status.className = 'ps51-account-status error'; status.textContent = error.message; }
+        }
+      };
+    }
+    $$('[data-ps121-challenge]', layer).forEach(button => button.onclick = async () => {
+      const form = button.closest('form');
+      const status = form ? $('.ps51-account-status', form) : null;
+      const action = String(button.dataset.ps121Challenge || '');
+      const payload = { action, currentPassword: String(form?.elements.currentPassword?.value || '') };
+      if (action === 'email_change') payload.newEmail = String(form?.elements.newEmail?.value || '').trim();
+      button.disabled = true;
+      if (status) { status.className = 'ps51-account-status'; status.textContent = 'Güvenlik doğrulaması hazırlanıyor…'; }
+      try {
+        const result = await accountPost('/api/sw-identity/account/security/challenge', payload);
+        form.dataset.ps121ChallengeReady = action;
+        if (status) status.textContent = result.method === 'totp' ? 'Authenticator kodunu gir.' : 'Doğrulama kodu gönderildi.';
+        form.elements.code?.focus({ preventScroll: true });
+      } catch (error) {
+        if (status) { status.className = 'ps51-account-status error'; status.textContent = error.message; }
+      } finally { button.disabled = false; }
+    });
+    const swEmailForm = $('#ps121SwEmailForm', layer);
+    if (swEmailForm) swEmailForm.onsubmit = async event => {
+      event.preventDefault();
+      const status = $('.ps51-account-status', swEmailForm);
+      if (swEmailForm.dataset.ps121ChallengeReady !== 'email_change') { status.className = 'ps51-account-status error'; status.textContent = 'Önce doğrulama kodunu gönder.'; return; }
+      const submit = $('button[type="submit"]', swEmailForm); submit.disabled = true;
+      try {
+        swIdentityAccount = await accountPost('/api/sw-identity/account/email', {
+          newEmail: String(swEmailForm.elements.newEmail.value || '').trim(),
+          currentPassword: String(swEmailForm.elements.currentPassword.value || ''),
+          code: String(swEmailForm.elements.code.value || '').trim()
+        });
+        swIdentityAccountLoaded = true;
+        showAccountCenter('account', false, 'E-posta adresin merkezi SW hesabında güncellendi.', true);
+      } catch (error) {
+        submit.disabled = false; status.className = 'ps51-account-status error'; status.textContent = error.message;
+      }
+    };
+    const swPasswordForm = $('#ps121SwPasswordForm', layer);
+    if (swPasswordForm) swPasswordForm.onsubmit = async event => {
+      event.preventDefault();
+      const status = $('.ps51-account-status', swPasswordForm);
+      const newPassword = String(swPasswordForm.elements.newPassword.value || '');
+      const repeat = String(swPasswordForm.elements.newPasswordRepeat.value || '');
+      if (newPassword !== repeat) { status.className = 'ps51-account-status error'; status.textContent = 'Yeni şifreler aynı değil.'; return; }
+      if (swPasswordForm.dataset.ps121ChallengeReady !== 'password_change') { status.className = 'ps51-account-status error'; status.textContent = 'Önce doğrulama kodunu gönder.'; return; }
+      const submit = $('button[type="submit"]', swPasswordForm); submit.disabled = true;
+      try {
+        await accountPost('/api/sw-identity/account/password', {
+          currentPassword: String(swPasswordForm.elements.currentPassword.value || ''),
+          newPassword,
+          newPasswordRepeat: repeat,
+          code: String(swPasswordForm.elements.code.value || '').trim()
+        });
+        swPasswordForm.reset();
+        if (status) { status.className = 'ps51-account-status success'; status.textContent = 'Şifren bütün bağlı SW ürünleri için güncellendi.'; }
+      } catch (error) {
+        submit.disabled = false; status.className = 'ps51-account-status error'; status.textContent = error.message;
+      }
+    };
     const usernameForm = $('#ps51UsernameForm', layer);
     if (usernameForm) usernameForm.onsubmit = async event => {
       event.preventDefault();
@@ -2323,6 +2430,24 @@
     hero.append(copy, sectionMark);
     pane.prepend(hero);
   }
+  function swIdentityProfileMarkup(user) {
+    const identity = swIdentityAccount?.user || {};
+    const username = String(identity.username || identity.displayName || user.username || user.name || '').trim();
+    const email = String(identity.email || user.email || 'SW Identity hesabı');
+    const selectedAvatar = String(identity.avatar?.value || 'orbit-cyan');
+    const avatars = [
+      ['orbit-cyan', 'Yörünge'], ['signal-acid', 'Sinyal'], ['core-cobalt', 'Çekirdek'],
+      ['flare-coral', 'Parlama'], ['node-violet', 'Düğüm'], ['identity-paper', 'Kimlik']
+    ];
+    return `<span class="ps51-account-kicker">SW IDENTITY · PROFİL</span><h2>Merkezi SW profilin</h2><p class="ps51-account-lead">Kullanıcı adını ve ortak SW profil görünümünü bu sayfadan yönet. Kaydettiğin değişiklikler SW Create ve Play Streamers arasında eşitlenir.</p><div class="ps51-profile-head ps121-profile-head"><div class="ps51-profile-avatar ps121-avatar-${esc(selectedAvatar)}"><span>${esc(username.slice(0, 1).toUpperCase() || 'S')}</span></div><div><b>${esc(username || 'SW Identity kullanıcısı')}</b><p>${esc(email)}</p></div></div><form id="ps121SwProfileForm" class="ps121-identity-form"><label>Kullanıcı adı<input name="username" value="${esc(username)}" minlength="3" maxlength="32" pattern="[A-Za-z0-9._-]{3,32}" autocomplete="username" required></label><fieldset><legend>Profil görünümü</legend><div class="ps121-avatar-grid">${avatars.map(([value, label]) => `<label class="ps121-avatar-choice ps121-avatar-${value}${selectedAvatar === value ? ' selected' : ''}"><input type="radio" name="avatarPreset" value="${value}"${selectedAvatar === value ? ' checked' : ''}><i>${esc((username || 'S').slice(0, 1).toUpperCase())}</i><span>${esc(label)}</span></label>`).join('')}</div></fieldset><div class="ps121-form-actions"><button class="ps51-primary" type="submit">Profili kaydet</button><small>Değişiklikler merkezi SW Identity hesabına güvenli biçimde yazılır.</small></div><p class="ps51-account-status" aria-live="polite"></p></form>`;
+  }
+  function swIdentitySecurityMarkup(user) {
+    const identity = swIdentityAccount?.user || {};
+    const security = swIdentityAccount?.security || {};
+    const email = String(identity.email || user.email || '');
+    const twoFactor = Boolean(security.twoFactorEnabled);
+    return `<span class="ps51-account-kicker">SW IDENTITY · GÜVENLİK</span><h2>E-posta, şifre ve güvenlik</h2><p class="ps51-account-lead">Güvenlik değişikliklerini Play Streamers içinden yap. İşlemler merkezi SW Identity hesabına uygulanır ve diğer SW ürünleriyle eşitlenir.</p><section class="ps121-security-summary"><article><span>E-posta</span><b>${esc(email || 'Doğrulanmış adres yok')}</b></article><article><span>İki adımlı doğrulama</span><b class="${twoFactor ? 'active' : ''}">${twoFactor ? 'Açık' : 'Kapalı'}</b></article><article><span>Veri akışı</span><b>Doğrulanmış</b></article></section><div class="ps121-security-grid"><form id="ps121SwEmailForm" class="ps121-identity-form"><h3>E-posta adresini değiştir</h3><p>Yeni adrese gönderilen kodla değişikliği doğrula.</p><label>Yeni e-posta<input name="newEmail" type="email" autocomplete="email" required></label><label>Mevcut şifre<input name="currentPassword" type="password" autocomplete="current-password" required></label><div class="ps121-code-row"><label>Doğrulama kodu<input name="code" inputmode="numeric" autocomplete="one-time-code" maxlength="8" required></label><button type="button" class="ps51-secondary" data-ps121-challenge="email_change">Kodu gönder</button></div><button class="ps51-primary" type="submit">E-postayı güncelle</button><p class="ps51-account-status" aria-live="polite"></p></form><form id="ps121SwPasswordForm" class="ps121-identity-form"><h3>Şifreni değiştir</h3><p>${twoFactor ? 'İşlemi Authenticator kodunla doğrula.' : 'E-postana gönderilen kodla işlemi doğrula.'}</p><label>Mevcut şifre<input name="currentPassword" type="password" autocomplete="current-password" required></label><label>Yeni şifre<input name="newPassword" type="password" minlength="10" maxlength="200" autocomplete="new-password" required></label><label>Yeni şifre tekrar<input name="newPasswordRepeat" type="password" minlength="10" maxlength="200" autocomplete="new-password" required></label><div class="ps121-code-row"><label>Doğrulama kodu<input name="code" inputmode="numeric" autocomplete="one-time-code" maxlength="8" required></label><button type="button" class="ps51-secondary" data-ps121-challenge="password_change">Kodu gönder</button></div><button class="ps51-primary" type="submit">Şifreyi güncelle</button><p class="ps51-account-status" aria-live="polite"></p></form></div><p class="ps121-security-note">İki adımlı doğrulama ayarın SW Identity’den okunur. Açık olduğunda e-posta kodu yerine Authenticator kodun kullanılır.</p>`;
+  }
   function showAccountCenter(tab = 'data', refresh = true, flash = '', quiet = false) {
     const current = state(), settings = current.settings || {}, user = settings.user || {}; if (!settings.userSession || !settings.user) return;
     const existing = $('#ps51AccountCenter'); const kickConnected = Boolean(settings.kickSession || settings.kickAccount?.id || settings.kickAccount?.username || user.kickConnected || user.kick_connected || user.kickUserId || user.kick_user_id || user.kickId || user.kick_id); const kickName = settings.kickAccount?.username ? `@${settings.kickAccount.username}` : 'Kick hesabı';
@@ -2334,9 +2459,9 @@
     ];
     const dataNote = '* Kick Public API toplam takipçi ve aktif abone sayılarını her hesapta doğrudan sunmadığı için kartlar, erişilebildiğinde Kick kanal özetini; aksi halde Play Streamers’a ulaşan doğrulanmış takip ve abonelik olaylarından bilinen en güvenli değeri gösterir. Grafikler son üç aylık hareketleri gösterir.';
     const paneSources = {
-      data: `<span class="ps51-account-kicker">HESAP MERKEZİ · VERİLER</span><h2>Hesap özeti</h2><p class="ps51-account-lead">Bağlı Kick profilini ve işlenen kanal hareketlerini tek bakışta gör.</p>${kickSummary.profile}<div class="ps51-data-grid">${dataCards.join('')}<p class="ps54-data-note">${esc(dataNote)}</p></div>`,
-      profile: `<span class="ps51-account-kicker">SW IDENTITY · PROFİL</span><h2>Merkezi SW profilin</h2><p class="ps51-account-lead">Kullanıcı adı, profil görseli ve ürün kimliğin artık tek SW Identity hesabından yönetilir.</p><div class="ps51-profile-head"><div class="ps51-profile-avatar"><img src="./play-streamers-ps-logo.svg?v=10.14" alt=""></div><div><b>${esc(user.username || user.name || 'SW Identity kullanıcısı')}</b><p>${esc(user.email || 'SW Identity hesabı')}</p></div></div><article class="ps51-account-section ps10-identity-handoff"><h3>SW Identity hesap merkezine geç</h3><p>Profil değişikliklerin SW Create ve Play Streamers dahil tüm bağlı ürünlerde aynı kimlikle güncellenir.</p><a class="ps51-primary" href="https://swcreate.com/center/?view=profile" target="_blank" rel="noopener noreferrer">SW profilimi yönet <span>↗</span></a></article>`,
-      account: `<span class="ps51-account-kicker">SW IDENTITY · GÜVENLİK</span><h2>E-posta, şifre ve güvenlik</h2><p class="ps51-account-lead">E-posta, parola, iki adımlı doğrulama, güvenilir cihazlar ve merkezi hesap silme işlemi SW Identity tarafından yönetilir.</p><article class="ps51-account-section ps10-identity-handoff"><h3>Tek güvenlik merkezi</h3><p>Play Streamers ayrı parola veya ayrı hesap oluşturmaz. Güvenlik değişiklikleri bütün SW ürünlerine tek noktadan uygulanır.</p><a class="ps51-primary" href="https://swcreate.com/center/?view=security" target="_blank" rel="noopener noreferrer">SW güvenlik merkezini aç <span>↗</span></a><small>SW Identity altyapısıyla korunur · güvenlik doğrulaması hesap merkezinin içinde tamamlanır.</small></article>`,
+      data: `<span class="ps51-account-kicker">HESAP MERKEZİ · VERİLER</span><h2>Hesap özeti</h2><p class="ps51-account-lead">Bağlı Kick profilini ve işlenen kanal hareketlerini tek bakışta gör.</p><div class="ps121-kick-overview">${kickSummary.profile}<div class="ps51-data-grid ps121-kick-metrics">${dataCards.join('')}</div></div><p class="ps54-data-note">${esc(dataNote)}</p>`,
+      profile: swIdentityProfileMarkup(user),
+      account: swIdentitySecurityMarkup(user),
       devices: `<span class="ps51-account-kicker">HESAP MERKEZİ · CİHAZLAR</span><h2>Oturum açılan cihazlar</h2><p class="ps51-account-lead">Hesabına giriş yapılan cihazları, açık oturumları, son aktiflik saatini ve Cloudflare tarafından sağlanan yaklaşık konumu buradan kontrol et. Cihaz geçmişi bu özellik etkinleştirildikten sonraki oturumları kapsar.</p>${accountDevicesPaneHtml()}<p class="ps51-account-status${flash ? ' success' : ''}" aria-live="polite">${esc(flash)}</p>`,
       connections: `<span class="ps51-account-kicker">HESAP MERKEZİ · BAĞLANTILAR</span><h2>Yayın bağlantıları</h2><p class="ps51-account-lead">Kick kanalını ve Play Connect cihazlarını tek merkezden yönet. Donate platformlarında doğrudan API veya sunucu bildirimi varsa bu yöntem; yoksa bir defalık girişten sonra sekme gerektirmeyen arka plan bağlantısı kullanılır. Platform oturumları ve erişim anahtarları cihazda kalır; sunucuda yalnızca cihaz anahtarının özeti ile doğrulanmış olaylar tutulur.</p><article class="ps51-kick-card"><i class="ps51-kick-mark"><img src="./assets/kick-logo.svg?v=10.14" alt=""></i><span><b>Kick</b><small>${kickConnected ? `${esc(kickName)} bağlı` : 'Henüz yayın hesabı bağlı değil'}</small></span>${kickConnected ? '<button id="ps51KickDisconnect" class="ps51-danger" type="button">Bağlantıyı kes</button>' : '<button id="ps51KickConnect" class="ps51-primary" type="button">Kick bağla</button>'}</article>${donateBridgeConnectionsHtml()}<p class="ps51-account-status${flash ? ' success' : ''}" aria-live="polite">${esc(flash)}</p>`,
       support: `<span class="ps51-account-kicker">HESAP MERKEZİ · DESTEK TALEPLERİ</span><h2>Destek konuşmaların</h2><p class="ps51-account-lead">Gönderdiğin talepler ve destek ekibinden gelen cevaplar burada aynı konuşma içinde görünür.</p>${supportPaneHtml()}`
@@ -2380,6 +2505,7 @@
         if (safeTab === 'support') refreshSupportTickets(true).catch(() => {});
         else if (safeTab === 'devices') refreshAccountDevices().then(() => { if (existing.isConnected && existing.dataset.currentTab === safeTab && requestVersion === accountCenterViewVersion) showAccountCenter(safeTab, false, flash, true); }).catch(error => { if (existing.isConnected && existing.dataset.currentTab === safeTab && requestVersion === accountCenterViewVersion) showAccountCenter(safeTab, false, error.message, true); });
         else if (safeTab === 'connections') Promise.allSettled([refreshAccountData(), refreshDonateBridgeDevices()]).then(() => { if (existing.isConnected && existing.dataset.currentTab === safeTab && requestVersion === accountCenterViewVersion) showAccountCenter(safeTab, false, flash, true); });
+        else if (safeTab === 'profile' || safeTab === 'account') refreshSwIdentityAccount(true).then(() => { if (existing.isConnected && existing.dataset.currentTab === safeTab && requestVersion === accountCenterViewVersion) showAccountCenter(safeTab, false, flash, true); }).catch(error => { if (existing.isConnected && existing.dataset.currentTab === safeTab && requestVersion === accountCenterViewVersion) { const status = $('.ps51-account-status', existing); if (status) { status.className = 'ps51-account-status error'; status.textContent = error.message; } } });
         else refreshAccountData().then(updated => { if (updated && existing.isConnected && existing.dataset.currentTab === safeTab && requestVersion === accountCenterViewVersion) showAccountCenter(safeTab, false, flash, true); }).catch(() => {});
       }
       return;
@@ -2401,6 +2527,7 @@
       if (safeTab === 'support') refreshSupportTickets(true).catch(() => {});
       else if (safeTab === 'devices') refreshAccountDevices().then(() => { if (layer.isConnected && layer.dataset.currentTab === safeTab && initialViewVersion === accountCenterViewVersion) showAccountCenter(safeTab, false, flash, true); }).catch(error => { if (layer.isConnected && layer.dataset.currentTab === safeTab && initialViewVersion === accountCenterViewVersion) showAccountCenter(safeTab, false, error.message, true); });
       else if (safeTab === 'connections') Promise.allSettled([refreshAccountData(), refreshDonateBridgeDevices()]).then(() => { if (layer.isConnected && layer.dataset.currentTab === safeTab && initialViewVersion === accountCenterViewVersion) showAccountCenter(safeTab, false, flash, true); });
+      else if (safeTab === 'profile' || safeTab === 'account') refreshSwIdentityAccount(true).then(() => { if (layer.isConnected && layer.dataset.currentTab === safeTab && initialViewVersion === accountCenterViewVersion) showAccountCenter(safeTab, false, flash, true); }).catch(error => { const status = $('.ps51-account-status', layer); if (status) { status.className = 'ps51-account-status error'; status.textContent = error.message; } });
       else refreshAccountData().then(updated => { if (updated && layer.isConnected && layer.dataset.currentTab === safeTab && initialViewVersion === accountCenterViewVersion) showAccountCenter(safeTab, false, flash, true); }).catch(() => {});
     }
   }
@@ -2409,6 +2536,7 @@
     const panel = homePanel('ps44HomeMenu');
     if (!panel.hidden) return closeHomePanel(panel);
     closeHomePanels(); closeLocaleMenus(); closeStatus(); closeNotifications();
+    ['sideMenu','ps20Menu','psSecondMenu','ps28DashboardMenu'].forEach(id => { const legacy = document.getElementById(id); if (legacy) { legacy.hidden = true; legacy.classList.remove('open','show','active','visible'); legacy.setAttribute('aria-hidden', 'true'); } });
     panel.innerHTML = localizeInterfaceMarkup('<span class="ps44-panel-title">MENÜ</span><button class="ps44-menu-button" type="button" data-ps44-menu="account">Hesabım</button><button class="ps44-menu-button" type="button" data-ps44-menu="tools">Plan araçları</button><button class="ps44-menu-button" type="button" data-ps44-menu="updates">Güncelleme notları</button><button class="ps44-menu-button" type="button" data-ps44-menu="products">Ürünlerimiz</button><button class="ps44-menu-button danger" type="button" data-ps44-menu="logout">Çıkış yap</button>');
     window.dispatchEvent(new Event('ps:i18n-refresh'));
     place(button, panel); revealHomePanel(panel); button.setAttribute('aria-expanded', 'true'); hideTooltip();

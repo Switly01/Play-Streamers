@@ -78,8 +78,8 @@ const DONATE_OAUTH_PROVIDERS = Object.freeze({
     clientSecretVariable: "TIPEEESTREAM_CLIENT_SECRET",
   }),
 });
-const CURRENT_RELEASE_VERSION = "7.3";
-const CURRENT_RELEASE_PUBLISHED_AT = "2026-08-30T21:50:00+03:00";
+const CURRENT_RELEASE_VERSION = "7.4";
+const CURRENT_RELEASE_PUBLISHED_AT = "2026-08-31T20:00:00+03:00";
 const EXCHANGE_CURRENCIES = Object.freeze(["EUR", "TRY", "USD", "RUB", "SAR", "JPY"]);
 const EXCHANGE_CACHE_SECONDS = 60 * 60;
 const SW_IDENTITY_ORIGIN = "https://api.swcreate.com";
@@ -467,6 +467,20 @@ export default {
         return apiResponse(request, { error: "Güvenlik doğrulaması geçersiz. Sayfayı yenileyip tekrar dene." }, 403);
       }
 
+      if (url.pathname === "/api/sw-identity/account" && request.method === "GET") {
+        return proxySwIdentityAccountRequest(request, env, "", "GET");
+      }
+
+      const swIdentityAccountRoutes = new Map([
+        ["/api/sw-identity/account/profile", "profile"],
+        ["/api/sw-identity/account/security/challenge", "security/challenge"],
+        ["/api/sw-identity/account/email", "email"],
+        ["/api/sw-identity/account/password", "password"],
+      ]);
+      if (request.method === "POST" && swIdentityAccountRoutes.has(url.pathname)) {
+        return proxySwIdentityAccountRequest(request, env, swIdentityAccountRoutes.get(url.pathname), "POST");
+      }
+
       if (url.pathname === "/api/donate-bridge/pairing-code" && request.method === "POST") {
         return createDonateBridgePairingCode(request, env);
       }
@@ -842,17 +856,17 @@ async function runScheduledPlayBotAudit(env) {
   const resources = [
     ["Ana sayfa", "https://pstreamers.com/", "document"],
     ["Ana uygulama betiği", "https://pstreamers.com/app.js?v=5.7.0", "script"],
-    ["Uygulama betiği", "https://pstreamers.com/app-final.js?v=5.18.0", "script"],
+    ["Uygulama betiği", "https://pstreamers.com/app-final.js?v=5.19.0", "script"],
     ["Site davranış betiği", "https://pstreamers.com/site-v7.js?v=10.15.1", "script"],
     ["Sabit çeviri betiği", "https://pstreamers.com/live-i18n.js?v=10.2.0", "script"],
-    ["İngilizce dil paketi", "https://pstreamers.com/locales/en.json?v=2026-08-30.12", "json"],
-    ["Almanca dil paketi", "https://pstreamers.com/locales/de.json?v=2026-08-30.12", "json"],
-    ["İspanyolca dil paketi", "https://pstreamers.com/locales/es.json?v=2026-08-30.12", "json"],
-    ["Fransızca dil paketi", "https://pstreamers.com/locales/fr.json?v=2026-08-30.12", "json"],
-    ["Rusça dil paketi", "https://pstreamers.com/locales/ru.json?v=2026-08-30.12", "json"],
-    ["Arapça dil paketi", "https://pstreamers.com/locales/ar.json?v=2026-08-30.12", "json"],
-    ["Japonca dil paketi", "https://pstreamers.com/locales/ja.json?v=2026-08-30.12", "json"],
-    ["Premium stil dosyası", "https://pstreamers.com/site-v7.css?v=10.20.0", "style"],
+    ["İngilizce dil paketi", "https://pstreamers.com/locales/en.json?v=2026-08-31.1", "json"],
+    ["Almanca dil paketi", "https://pstreamers.com/locales/de.json?v=2026-08-31.1", "json"],
+    ["İspanyolca dil paketi", "https://pstreamers.com/locales/es.json?v=2026-08-31.1", "json"],
+    ["Fransızca dil paketi", "https://pstreamers.com/locales/fr.json?v=2026-08-31.1", "json"],
+    ["Rusça dil paketi", "https://pstreamers.com/locales/ru.json?v=2026-08-31.1", "json"],
+    ["Arapça dil paketi", "https://pstreamers.com/locales/ar.json?v=2026-08-31.1", "json"],
+    ["Japonca dil paketi", "https://pstreamers.com/locales/ja.json?v=2026-08-31.1", "json"],
+    ["Premium stil dosyası", "https://pstreamers.com/site-v7.css?v=10.21.0", "style"],
     ["Oturum başlangıç betiği", "https://pstreamers.com/session-bootstrap.js?v=1.2", "script"],
     ["Site yönlendiricisi", "https://pstreamers.com/site-router.js?v=1.1", "script"],
     ["Sunucu analiz betiği", "https://pstreamers.com/server-analytics.js?v=6.1", "script"],
@@ -929,7 +943,7 @@ async function runScheduledPlayBotAudit(env) {
       const validPayload = result.label === "Windows güncelleme bildirimi"
         ? Boolean(payload?.version && hasUpdaterPlatforms)
         : localeCatalog
-          ? Boolean(payload?.version === "2026-08-30.12" && payload?.sourceLanguage === "tr" && payload?.language && Object.keys(payload?.translations || {}).length >= 1220)
+          ? Boolean(payload?.version === "2026-08-31.1" && payload?.sourceLanguage === "tr" && payload?.language && Object.keys(payload?.translations || {}).length >= 1220)
           : Boolean(payload?.ok);
       if (!validPayload) issues.push(`${result.label} geçerli bir JSON yanıtı döndürmüyor.`);
     }
@@ -937,12 +951,12 @@ async function runScheduledPlayBotAudit(env) {
   const homeDocument = results.find(result => result.type === "document");
   if (homeDocument?.ok) {
     const documentContracts = [
-      ["site-v7.css?v=10.20.0", "Güncel premium stil dosyası"],
+      ["site-v7.css?v=10.21.0", "Güncel premium stil dosyası"],
       ["app.js?v=5.7.0", "Güncel ana uygulama betiği"],
-      ["app-final.js?v=5.18.0", "Güncel onarım betiği"],
+      ["app-final.js?v=5.19.0", "Güncel onarım betiği"],
       ["site-v7.js?v=10.15.1", "Güncel site davranış betiği"],
       ["live-i18n.js?v=10.2.0", "Güncel sabit paket çeviri betiği"],
-      ["play-streamers-build\" content=\"2026-08-30-site-10.20.0", "Site 10.20.0 sürüm işareti"],
+      ["play-streamers-build\" content=\"2026-08-31-site-10.21.0", "Site 10.21.0 sürüm işareti"],
     ];
     for (const [token, label] of documentContracts) {
       if (!homeDocument.body.includes(token)) issues.push(`${label} canlı ana sayfaya bağlanmamış.`);
@@ -2212,6 +2226,39 @@ async function exchangeDesktopSwIdentity(request, env) {
   return WEB_IDENTITY_REDIRECTS.has(redirectUri)
     ? authenticatedApiResponse(request, payload, 200, sessionId)
     : apiResponse(request, payload);
+}
+
+async function proxySwIdentityAccountRequest(request, env, route = "", method = "GET") {
+  if (!env.SW_PRODUCT_SSO_SECRET) return apiResponse(request, { error: "SW Identity ürün köprüsü yapılandırılmamış." }, 503);
+  await ensureUsersSchema(env);
+  const current = await readUserSession(request, env);
+  if (!current?.session?.user?.id) return apiResponse(request, { error: "Oturum bulunamadı." }, 401);
+  const localUser = await env.DB.prepare("SELECT sw_identity_user_id AS swIdentityUserId FROM users WHERE id = ?1 LIMIT 1")
+    .bind(current.session.user.id).first();
+  const identityUserId = String(localUser?.swIdentityUserId || "").trim();
+  if (!/^[A-Za-z0-9_-]{8,128}$/.test(identityUserId)) {
+    return apiResponse(request, { error: "Bu hesap henüz merkezi SW Identity profiline bağlı değil." }, 409);
+  }
+  const body = method === "POST" ? JSON.stringify(await requestJson(request)) : undefined;
+  const identityResponse = await fetchExternal(`${SW_IDENTITY_ORIGIN}/api/internal/account${route ? `/${route}` : ""}`, {
+    method,
+    headers: {
+      authorization: `Bearer ${env.SW_PRODUCT_SSO_SECRET}`,
+      "content-type": "application/json",
+      "x-sw-identity-user-id": identityUserId,
+    },
+    ...(body ? { body } : {}),
+  });
+  const result = await safeJson(identityResponse);
+  if (!identityResponse.ok) {
+    const status = [400, 401, 403, 404, 409, 413, 415, 429, 503].includes(identityResponse.status) ? identityResponse.status : 502;
+    return apiResponse(request, { error: result?.error || "SW Identity hesap işlemi tamamlanamadı." }, status);
+  }
+  if (route === "profile" && result?.user?.displayName) {
+    await env.DB.prepare("UPDATE users SET display_name = ?1, updated_at = ?2 WHERE id = ?3")
+      .bind(String(result.user.displayName).slice(0, 120), new Date().toISOString(), current.session.user.id).run();
+  }
+  return apiResponse(request, result || { ok: true });
 }
 
 async function desktopPlatformBootstrap(request, env) {

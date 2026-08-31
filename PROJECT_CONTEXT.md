@@ -1,6 +1,19 @@
 # Play Streamers — Kalıcı Proje Bağlamı
 
-## Güncel geliştirme durumu · 30 Ağustos 2026
+## Güncel geliştirme durumu · 31 Ağustos 2026
+
+Site 10.21.0 / Worker 7.4 hesap merkezi ve SW Identity iç yönetim revizyonu:
+Hesabım ekranı masaüstünde daha geniş bir çalışma alanına, daha büyük sol bölüm
+başlıklarına ve belirgin Kick veri kartlarına geçirildi; veri ayrıntı grafikleri
+de genişletildi. Cihaz satırları yeniden sıkılaştırıldı ve mobil/bilgisayar
+simgesi cihaz türüne göre gösterilir. Bağış platformu logoları 28 piksele,
+destek görsel önizlemeleri 84×58 piksele sınırlandı. Eski menü katmanları kalıcı
+olarak emekliye ayrılarak açılıştaki çift menü parlaması giderildi. SW Profil ve
+SW Güvenlik artık kullanıcıyı SW Create sitesine göndermez; iki Worker arasında
+paylaşılan sunucu sırrıyla doğrulanan iç API üzerinden profil, e-posta ve şifre
+işlemleri Play Streamers Hesap Merkezi içinde merkezi SW Identity hesabına
+uygulanır. Plan Araçları eksik metinleri dahil dil paketleri 31 Ağustos sürümüne
+yenilendi ve yedi dilin tamamı kapsandı.
 
 Site 10.20.0 / Worker 7.3 hesap okunabilirliği ve medya önizleme revizyonu:
 Kur simgesi pointer ve klavye dışındaki sentetik tıklamalarda da aynı ayrıntı

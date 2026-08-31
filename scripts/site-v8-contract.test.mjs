@@ -11,11 +11,11 @@ test('site 10 assets are cache-busted and use fluid monochrome glass', async () 
     read('site-v7.css'),
     read('play-streamers-ps-logo.svg'),
   ]);
-  assert.match(html, /play-streamers-build" content="2026-08-30-site-10\.20\.0"/);
-  assert.match(html, /site-v7\.css\?v=10\.20\.0/);
+  assert.match(html, /play-streamers-build" content="2026-08-31-site-10\.21\.0"/);
+  assert.match(html, /site-v7\.css\?v=10\.21\.0/);
   assert.match(html, /app\.js\?v=5\.7\.0/);
   assert.match(html, /site-v7\.js\?v=10\.15\.1/);
-  assert.match(html, /app-final\.js\?v=5\.18\.0/);
+  assert.match(html, /app-final\.js\?v=5\.19\.0/);
   assert.match(html, /live-i18n\.js\?v=10\.2\.0/);
   assert.match(css, /html\[data-ps-site-version="8"\]/);
   assert.match(css, /--signal: #f5f5f2/);
@@ -53,9 +53,10 @@ test('site 10 assets are cache-busted and use fluid monochrome glass', async () 
   assert.match(css, /Site 10\.12/);
   assert.match(css, /html\.ps-locale-switching/);
   assert.match(css, /Site 10\.20/);
+  assert.match(css, /Site 10\.21/);
   assert.match(css, /\.ps63-provider-chip>img\[hidden\]/);
   assert.match(css, /\.ps57-ticket-image-loading\[hidden\]/);
-  assert.match(css, /width:112px!important;height:76px!important/);
+  assert.match(css, /width:84px!important;height:58px!important/);
   assert.match(css, /#panelGrid>\.card \{ grid-column:span 4/);
   assert.match(css, /Site 10\.17/);
   assert.match(css, /#ps117ExchangePanel/);
@@ -141,7 +142,7 @@ test('SW Bot audits deterministically and translation generation is release-only
   assert.match(worker, /swBotDeterministicReport/);
   assert.match(worker, /resolveSwBotReports/);
   assert.match(worker, /sw_bot_issue_reports/);
-  assert.match(worker, /site-v7\.css\?v=10\.20\.0/);
+  assert.match(worker, /site-v7\.css\?v=10\.21\.0/);
   assert.match(worker, /site-v7\.js\?v=10\.15\.1/);
   assert.match(worker, /\/api\/i18n\/translate/);
   assert.match(worker, /i18n:v9/);
@@ -154,7 +155,7 @@ test('SW Bot audits deterministically and translation generation is release-only
   assert.match(worker, /EXCHANGE_CACHE_SECONDS/);
   assert.doesNotMatch(worker, /EXCHANGE.*KV/);
   assert.match(worker, /Fransızca dil paketi/);
-  assert.match(worker, /locales\/fr\.json\?v=2026-08-30\.12/);
+  assert.match(worker, /locales\/fr\.json\?v=2026-08-31\.1/);
   assert.match(worker, /content-security-policy/);
   assert.match(worker, /frame-ancestors 'none'/);
   assert.match(worker, /strict-transport-security/);
@@ -195,8 +196,11 @@ test('SW Identity owns direct login and registration without legacy account leak
   assert.match(identityWorker, /hostname === \"pstreamers\.com\"/);
   assert.match(app, /installIdentityCalendar/);
   assert.match(app, /productRedirectUrl/);
-  assert.match(identityWorker, /SW_IDENTITY_VERSION = "1\.8\.1"/);
+  assert.match(identityWorker, /SW_IDENTITY_VERSION = "1\.8\.2"/);
   assert.match(identityWorker, /createProductHandoffTarget/);
+  assert.match(identityWorker, /handleInternalProductAccount/);
+  assert.match(identityWorker, /\/api\/internal\/account\/profile/);
+  assert.match(identityWorker, /\/api\/internal\/account\/security\/challenge/);
   assert.match(i18n, /ps-live-i18n-v16/);
   assert.match(i18n, /criticalVerificationSources/);
   assert.match(i18n, /\/locales\/\$\{language\}\.json/);
@@ -213,7 +217,9 @@ test('SW Identity owns direct login and registration without legacy account leak
   assert.match(callback, /sw_identity_callback/);
   const worker = await read('cloudflare-worker.js');
   assert.match(worker, /proxySwIdentityCredentialRequest/);
+  assert.match(worker, /proxySwIdentityAccountRequest/);
   assert.match(worker, /\/api\/sw-identity\/login/);
+  assert.match(worker, /\/api\/sw-identity\/account\/profile/);
 });
 
 test('privacy and terms share the premium legal design', async () => {
@@ -235,11 +241,15 @@ test('versioned locale catalogs cover public, account, support and legal surface
     'SUNUCU VERİ HATTI', 'Uygulama kapalıyken de ölçüm açık', 'Tepe izleyici', 'Sunucu oturumu',
     'Doğrulanmış oturumlar ve izleyici örnekleri sunucuda işlenir.',
     'BAĞLANTI DURUMU', 'Çıkış yapmak istiyor musun?', 'Veriler', 'Destek talepleri',
+    'Hedef panosu', 'Hedef adı', 'İlerleme', 'Dashboard verisini indir',
+    'Taslak oluştur', 'Anlık görüntü kaydet', 'Henüz anlık görüntü yok.',
+    'E-posta adresini değiştir', 'Şifreyi güncelle', 'Kodu gönder',
+    'Profil görünümü', 'Profili kaydet', 'E-posta', 'Doğrulanmış',
     'Play Bot, SW Bot oldu; canlı dosyalar, arayüz kontrolleri, bağlantılar ve katman çakışmaları daha geniş kapsamda denetleniyor.',
   ];
   for (const language of ['en', 'de', 'es', 'fr', 'ru', 'ar', 'ja']) {
     const catalog = JSON.parse(await read(`locales/${language}.json`));
-    assert.equal(catalog.version, '2026-08-30.12');
+    assert.equal(catalog.version, '2026-08-31.1');
     assert.equal(catalog.sourceLanguage, 'tr');
     assert.equal(catalog.language, language);
     assert.ok(Object.keys(catalog.translations).length >= 1000);

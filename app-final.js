@@ -947,7 +947,7 @@
     const completedPoints = points.filter(point => String(point?.key || '') < todayKey);
     const valid = completedPoints.map((point, index) => ({ ...point, index, numeric: Number(point.value) })).filter(point => Number.isFinite(point.numeric));
     if (!valid.length) return '<p class="ps59-chart-empty">Grafik oluşturmak için henüz yeterli Kick verisi bulunmuyor.</p>';
-    const width = Math.max(1460, completedPoints.length * 24), height = 500, left = 70, right = 28, top = 38, bottom = 100;
+    const width = Math.max(1180, completedPoints.length * 15), height = 460, left = 62, right = 24, top = 34, bottom = 76;
     const chartWidth = width - left - right, chartHeight = height - top - bottom;
     const rawMax = Math.max(...valid.map(point => point.numeric));
     const max = Math.max(1, Math.ceil(rawMax));
@@ -1532,7 +1532,7 @@
       const messageBody = message.sender === 'support' ? cleanDisplayedSupportReply(message.body) : String(message.body || '');
       const sentAt = supportMessageTime(message.createdAt);
       const attachments = Array.isArray(message.attachments) ? message.attachments : [];
-      return `<article class="ps55-ticket-message ${message.sender === 'support' ? 'support' : 'user'}"><b>${message.sender === 'support' ? 'Destek ekibi' : 'Sen'}</b><p>${esc(messageBody)}</p>${attachments.length ? `<div class="ps57-ticket-files"><div class="ps57-ticket-files-title">EKLER · ${attachments.length}</div><div class="ps55-ticket-attachments">${attachments.map(attachment => supportAttachmentHtml(message, attachment)).join('')}</div></div>` : ''}${sentAt ? `<time datetime="${esc(message.createdAt || '')}">${esc(sentAt)}</time>` : ''}</article>`;
+      return `<article class="ps55-ticket-message ${message.sender === 'support' ? 'support' : 'user'}"><header class="ps124-ticket-message-head"><b>${message.sender === 'support' ? 'Destek ekibi' : 'Sen'}</b>${sentAt ? `<time datetime="${esc(message.createdAt || '')}">${esc(sentAt)}</time>` : ''}</header><p>${esc(messageBody)}</p>${attachments.length ? `<div class="ps57-ticket-files"><div class="ps57-ticket-files-title">EKLER · ${attachments.length}</div><div class="ps55-ticket-attachments">${attachments.map(attachment => supportAttachmentHtml(message, attachment)).join('')}</div></div>` : ''}</article>`;
     }).join('');
     const source = ticket.source === 'play-connect' ? 'play-connect' : 'play-streamers';
     const sourceLabel = source === 'play-connect' ? 'PLAY CONNECT' : 'PLAY STREAMERS';
@@ -3013,8 +3013,16 @@
       host.classList.add('ps28-password-host');
       $$('.password-toggle,.ps27-password-eye,.ps30-eye,.ps-eye,.ps28-eye:not([data-ps48-eye="1"])', host).forEach(button => button.remove());
       let button = $('.ps28-eye[data-ps48-eye="1"]', host);
-      if (!button) { button = document.createElement('button'); button.type = 'button'; button.className = 'ps28-eye'; button.dataset.ps48Eye = '1'; button.innerHTML = '<svg class="ps47-eye-closed" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 3l18 18M10.6 10.7a2.2 2.2 0 0 0 2.8 2.7M9.1 5.9A10.8 10.8 0 0 1 12 5.5c6.2 0 9.5 6.5 9.5 6.5a16.4 16.4 0 0 1-2.6 3.3M6.2 7.2A16.7 16.7 0 0 0 2.5 12s3.3 6.5 9.5 6.5a10.9 10.9 0 0 0 3.1-.4"/></svg><svg class="ps47-eye-open" viewBox="0 0 24 24" aria-hidden="true"><path d="M2.5 12s3.3-5.5 9.5-5.5S21.5 12 21.5 12 18.2 17.5 12 17.5 2.5 12 2.5 12Z"/><circle cx="12" cy="12" r="2.7"/></svg>'; host.append(button); }
-      const sync = () => { const visible = input.type === 'text'; button.classList.toggle('is-open', visible); button.setAttribute('aria-label', visible ? 'Şifreyi gizle' : 'Şifreyi göster'); button.setAttribute('aria-pressed', String(visible)); };
+      if (!button) { button = document.createElement('button'); button.type = 'button'; button.className = 'ps28-eye'; button.dataset.ps48Eye = '1'; host.append(button); }
+      const sync = () => {
+        const visible = input.type === 'text';
+        button.classList.toggle('is-open', visible);
+        button.setAttribute('aria-label', visible ? ui('Şifreyi gizle') : ui('Şifreyi göster'));
+        button.setAttribute('aria-pressed', String(visible));
+        button.innerHTML = visible
+          ? '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2.5 12s3.3-5.5 9.5-5.5S21.5 12 21.5 12 18.2 17.5 12 17.5 2.5 12 2.5 12Z"/><circle cx="12" cy="12" r="2.7"/></svg>'
+          : '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 3l18 18M10.6 10.7a2.2 2.2 0 0 0 2.8 2.7M9.1 5.9A10.8 10.8 0 0 1 12 5.5c6.2 0 9.5 6.5 9.5 6.5a16.4 16.4 0 0 1-2.6 3.3M6.2 7.2A16.7 16.7 0 0 0 2.5 12s3.3 6.5 9.5 6.5a10.9 10.9 0 0 0 3.1-.4"/></svg>';
+      };
       button.onpointerdown = event => event.preventDefault();
       button.onclick = event => { event.preventDefault(); event.stopImmediatePropagation(); if (button.dataset.psEyeBusy === '1') return; const selectionStart = input.selectionStart; const selectionEnd = input.selectionEnd; const selectionDirection = input.selectionDirection; button.dataset.psEyeBusy = '1'; button.classList.remove('is-switching'); void button.offsetWidth; button.classList.add('is-switching'); input.type = input.type === 'password' ? 'text' : 'password'; sync(); window.requestAnimationFrame(() => { input.focus({ preventScroll: true }); if (selectionStart !== null && selectionEnd !== null) { try { input.setSelectionRange(selectionStart, selectionEnd, selectionDirection || 'none'); } catch (_) {} } }); window.setTimeout(() => { button.classList.remove('is-switching'); delete button.dataset.psEyeBusy; }, 480); }; sync();
     });
@@ -4281,6 +4289,7 @@
   'use strict';
   const $ = (selector, root = document) => root.querySelector(selector);
   const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
+  const esc = value => { const node = document.createElement('span'); node.textContent = String(value ?? ''); return node.innerHTML; };
   const ui = source => typeof window.psTranslateInterface === 'function' ? window.psTranslateInterface(source) : source;
   const loaderOpenedAt = new WeakMap();
   function dismissStaleLoaders(force = false) {
@@ -4392,6 +4401,11 @@
       button.dataset.psTooltipSource = `${ui('Kur bilgisi')}: ${currency.target}`;
       button.dataset.psTooltip = `${ui('Kur bilgisi')}: ${currency.target}`;
       button.removeAttribute('title');
+      button.onclick = event => {
+        event.preventDefault();
+        event.stopPropagation();
+        toggleRatePanel(button);
+      };
     });
     const panel = $('#ps119ExchangePanel');
     if (panel && !panel.hidden && activeRateButton?.isConnected) renderRatePanel(snapshot, activeRateButton);
@@ -4407,19 +4421,14 @@
   window.addEventListener('ps:locale-change', () => window.setTimeout(refreshDynamicLanguage, 80));
   window.addEventListener('ps:i18n-ready', refreshDynamicLanguage);
   window.addEventListener('ps:i18n-refresh', () => window.setTimeout(localizeActionButtons, 0));
-  let lastRatePointerPress = 0;
   document.addEventListener('pointerdown', event => {
     const button = event.target instanceof Element ? event.target.closest('[data-ps119-exchange]') : null;
-    if (button) { lastRatePointerPress = Date.now(); event.preventDefault(); event.stopImmediatePropagation(); toggleRatePanel(button); return; }
+    if (button) return;
     if (!event.target.closest?.('#ps119ExchangePanel')) closeRatePanel();
   }, true);
   document.addEventListener('click', event => {
     const button = event.target instanceof Element ? event.target.closest('[data-ps119-exchange]') : null;
-    if (button) {
-      event.preventDefault(); event.stopImmediatePropagation();
-      if (Date.now() - lastRatePointerPress > 700) toggleRatePanel(button);
-      return;
-    }
+    if (button) return;
     if (!event.target.closest?.('#ps119ExchangePanel')) closeRatePanel();
   }, true);
   document.addEventListener('keydown', event => { if (event.key === 'Escape') closeRatePanel(); });

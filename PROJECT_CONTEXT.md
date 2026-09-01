@@ -2,6 +2,18 @@
 
 ## Güncel geliştirme durumu · 1 Eylül 2026
 
+Site 10.24.0 / Worker 7.7 hesap verileri ve bağlantı arayüzü revizyonu: Üye ana sayfası ve
+Dashboard'daki ortak kur düğmesi tek tıklama sahibine geçirildi; sabit kur
+ayrıntı penceresi artık fare, dokunma ve klavye tıklamalarında güvenilir biçimde
+açılır. Hesap verilerindeki aktif takipçi, aktif abone ve bu ay takip eden
+kartları büyütüldü. Son 90 günlük SVG grafik eski yedi sütun düzeninden ayrıldı;
+yatay taşma, günlük sütun seçimi, ipucu ve saatlik ayrıntı penceresi okunabilir
+bir analiz yüzeyinde çalışır. Parola gözleri üst üste iki SVG ve geçiş
+animasyonları yerine tek, sabit bir simge kullanır. SSB platform logolarına etkin
+stil paketinde kesin 24 piksel sınırı eklendi. Destek talepleri durum, kaynak,
+gönderen, zaman, mesaj ve ekler birbirinden kolay ayrılacak konuşma balonlarıyla
+yeniden düzenlendi.
+
 Microsoft Store görsel düzeltmesi: Sertifikasyon geri bildiriminde, paketteki
 beyaz PS işaretinin şeffaf zemin nedeniyle mağaza kartında yeterince net
 görünmediği bildirildi. Koyu ve tamamen opak arka planlı 300×300 App tile,

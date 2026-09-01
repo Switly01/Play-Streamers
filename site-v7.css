@@ -2807,6 +2807,216 @@ html[data-ps-site-version="9"] body.ps-v9 .brand-logo:has(>.ps103-brand-image),h
   }
 }
 
+/* Site 10.24 — reliable exchange details, readable account metrics, compact
+   SSB provider marks and clearly separated support conversations. */
+.ps28-password-host > .ps28-eye[data-ps48-eye="1"] {
+  top:50%!important;
+  right:9px!important;
+  width:34px!important;
+  height:34px!important;
+  overflow:hidden!important;
+  border:1px solid rgba(255,255,255,.16)!important;
+  border-radius:10px!important;
+  padding:0!important;
+  background:rgba(255,255,255,.045)!important;
+  box-shadow:none!important;
+  transform:translateY(-50%)!important;
+}
+.ps28-password-host > .ps28-eye[data-ps48-eye="1"] svg {
+  position:static!important;
+  display:block!important;
+  width:18px!important;
+  height:18px!important;
+  opacity:1!important;
+  fill:none!important;
+  stroke:currentColor!important;
+  stroke-width:1.8!important;
+  transform:none!important;
+  transition:none!important;
+}
+.ps28-password-host > .ps28-eye[data-ps48-eye="1"]:is(:hover,:focus-visible) {
+  border-color:rgba(255,255,255,.38)!important;
+  color:#fff!important;
+  background:rgba(255,255,255,.09)!important;
+  outline:none!important;
+}
+
+body.ps-v9 #ps51AccountCenter .ps121-kick-metrics {
+  gap:18px!important;
+}
+body.ps-v9 #ps51AccountCenter .ps121-kick-metrics .ps51-data-card {
+  min-height:194px!important;
+  border-radius:20px!important;
+  padding:26px!important;
+  cursor:pointer!important;
+}
+body.ps-v9 #ps51AccountCenter .ps121-kick-metrics .ps51-data-card > span:not(.ps59-data-expand) {
+  font-size:11px!important;
+  letter-spacing:.06em!important;
+}
+body.ps-v9 #ps51AccountCenter .ps121-kick-metrics .ps51-data-card > b {
+  margin-top:34px!important;
+  font-size:48px!important;
+}
+body.ps-v9 #ps51AccountCenter .ps124-data-hint {
+  display:block!important;
+  margin-top:18px!important;
+  color:rgba(255,255,255,.42)!important;
+  font-size:8px!important;
+  font-weight:700!important;
+}
+body.ps-v9 #ps51AccountCenter .ps59-data-expand {
+  width:40px!important;
+  height:40px!important;
+  border-radius:11px!important;
+}
+body.ps-v9 #ps51AccountCenter .ps59-data-expand svg { width:18px!important;height:18px!important;fill:none!important;stroke:currentColor!important;stroke-width:1.8!important; }
+
+body.ps-v9 #ps59AccountDataDialog .ps44-dialog {
+  display:flex!important;
+  max-height:calc(100dvh - 28px)!important;
+  flex-direction:column!important;
+  overflow:hidden!important;
+}
+body.ps-v9 #ps59AccountDataDialog .ps59-chart-summary {
+  display:flex!important;
+  flex:0 0 auto!important;
+  align-items:center!important;
+  gap:20px!important;
+  border:1px solid rgba(255,255,255,.1)!important;
+  border-radius:16px!important;
+  background:rgba(255,255,255,.035)!important;
+}
+body.ps-v9 #ps59AccountDataDialog .ps59-chart-summary span { color:rgba(255,255,255,.52)!important;font-size:10px!important;line-height:1.6!important; }
+body.ps-v9 #ps59AccountDataDialog .ps59-chart {
+  position:relative!important;
+  display:block!important;
+  min-height:0!important;
+  flex:1 1 auto!important;
+  overflow:auto!important;
+  overscroll-behavior:contain!important;
+  border:1px solid rgba(255,255,255,.09)!important;
+  border-radius:16px!important;
+  padding:14px!important;
+  background:rgba(0,0,0,.22)!important;
+  scrollbar-color:rgba(255,255,255,.25) transparent!important;
+}
+body.ps-v9 #ps59AccountDataDialog .ps59-chart > svg {
+  display:block!important;
+  width:100%!important;
+  min-width:1040px!important;
+  height:430px!important;
+}
+body.ps-v9 #ps59AccountDataDialog .ps59-grid line { stroke:rgba(255,255,255,.09);stroke-width:1; }
+body.ps-v9 #ps59AccountDataDialog .ps59-grid text,
+body.ps-v9 #ps59AccountDataDialog .ps59-axis text { fill:rgba(255,255,255,.48);font:10px var(--body); }
+body.ps-v9 #ps59AccountDataDialog .ps69-day-bar { fill:url(#ps59BarGradient);cursor:pointer;transition:filter .15s ease,opacity .15s ease; }
+body.ps-v9 #ps59AccountDataDialog .ps69-day-bar:is(:hover,:focus) { filter:brightness(1.35);outline:none; }
+body.ps-v9 #ps59AccountDataDialog .ps59-chart-empty { display:grid;min-height:360px;place-items:center;margin:0;color:rgba(255,255,255,.48);text-align:center; }
+body.ps-v9 #ps59AccountDataDialog .ps59-chart-foot { flex:0 0 auto;margin:11px 0 0!important;color:rgba(255,255,255,.42)!important;font-size:9px!important; }
+body.ps-v9 .ps70-chart-tooltip { position:absolute;z-index:4;display:grid;width:210px;gap:4px;border:1px solid rgba(255,255,255,.16);border-radius:12px;padding:11px;color:#fff;background:rgba(8,8,10,.96);box-shadow:0 16px 40px rgba(0,0,0,.55);pointer-events:none; }
+body.ps-v9 .ps70-chart-tooltip[hidden] { display:none!important; }
+body.ps-v9 .ps70-chart-tooltip :is(b,span,small) { display:block; }
+body.ps-v9 .ps70-chart-tooltip span { color:rgba(255,255,255,.7);font-size:10px; }
+body.ps-v9 .ps70-chart-tooltip small { color:rgba(255,255,255,.42);font-size:8px; }
+body.ps-v9 #ps69AccountMetricDayDialog .ps69-hourly-chart { overflow-x:auto!important;min-height:360px!important;gap:8px!important; }
+
+body.ps-v9 #ps51AccountCenter .ps66-webhooks {
+  position:relative!important;
+  display:grid!important;
+  gap:14px!important;
+  margin:18px 0!important;
+  border:1px solid rgba(255,255,255,.1)!important;
+  border-radius:18px!important;
+  padding:18px!important;
+  background:rgba(255,255,255,.025)!important;
+}
+body.ps-v9 #ps51AccountCenter .ps66-title span { display:grid!important;gap:5px!important; }
+body.ps-v9 #ps51AccountCenter .ps66-title b { font-size:11px!important;letter-spacing:.12em!important; }
+body.ps-v9 #ps51AccountCenter .ps66-title small { color:rgba(255,255,255,.48)!important;font-size:9px!important;line-height:1.6!important; }
+body.ps-v9 #ps51AccountCenter .ps66-create { display:grid!important;grid-template-columns:minmax(260px,1fr) auto!important;align-items:end!important;gap:10px!important; }
+body.ps-v9 #ps51AccountCenter .ps66-provider-select { position:relative!important;display:grid!important;gap:6px!important;color:rgba(255,255,255,.48)!important;font-size:9px!important;font-weight:800!important; }
+body.ps-v9 #ps51AccountCenter .ps66-provider-control {
+  display:grid!important;
+  grid-template-columns:34px minmax(0,1fr) 14px!important;
+  min-height:52px!important;
+  align-items:center!important;
+  gap:10px!important;
+  width:100%!important;
+  border:1px solid rgba(255,255,255,.12)!important;
+  border-radius:13px!important;
+  padding:8px 11px!important;
+  color:#f5f5f2!important;
+  background:rgba(0,0,0,.24)!important;
+  text-align:left!important;
+}
+body.ps-v9 #ps51AccountCenter :is(.ps66-provider-mark,.ps66-provider-option-mark) {
+  display:grid!important;
+  width:34px!important;
+  height:34px!important;
+  min-width:34px!important;
+  place-items:center!important;
+  overflow:hidden!important;
+  border:1px solid rgba(255,255,255,.11)!important;
+  border-radius:9px!important;
+  background:#090909!important;
+}
+body.ps-v9 #ps51AccountCenter :is(.ps66-provider-mark,.ps66-provider-option-mark) img {
+  display:block!important;
+  width:24px!important;
+  height:24px!important;
+  max-width:24px!important;
+  max-height:24px!important;
+  object-fit:contain!important;
+}
+body.ps-v9 #ps51AccountCenter :is(.ps66-provider-mark,.ps66-provider-option-mark) :is(img,i)[hidden] { display:none!important; }
+body.ps-v9 #ps51AccountCenter :is(.ps66-provider-mark,.ps66-provider-option-mark) i { display:grid;width:100%;height:100%;place-items:center;color:#fff;font-size:11px;font-style:normal;font-weight:900; }
+body.ps-v9 #ps51AccountCenter .ps66-provider-native { display:grid!important;min-width:0!important;gap:3px!important; }
+body.ps-v9 #ps51AccountCenter .ps66-provider-native :is(b,small) { overflow:hidden!important;text-overflow:ellipsis!important;white-space:nowrap!important; }
+body.ps-v9 #ps51AccountCenter .ps66-provider-native b { font-size:10px!important; }
+body.ps-v9 #ps51AccountCenter .ps66-provider-native small { color:rgba(255,255,255,.43)!important;font-size:8px!important; }
+body.ps-v9 #ps51AccountCenter .ps66-provider-chevron { width:8px;height:8px;border-right:1px solid currentColor;border-bottom:1px solid currentColor;transform:rotate(45deg); }
+body.ps-v9 #ps51AccountCenter .ps66-provider-menu { z-index:40!important;top:calc(100% + 7px)!important;right:0!important;left:0!important;width:100%!important;max-height:280px!important;overflow-y:auto!important;padding:7px!important; }
+body.ps-v9 #ps51AccountCenter .ps66-provider-menu button { display:grid!important;grid-template-columns:34px minmax(0,1fr) auto!important;min-height:50px!important;gap:10px!important;padding:7px!important; }
+body.ps-v9 #ps51AccountCenter .ps66-provider-menu button > span:not(.ps66-provider-option-mark) { display:grid!important;min-width:0!important;gap:2px!important; }
+body.ps-v9 #ps51AccountCenter .ps66-provider-menu button :is(b,small) { overflow:hidden!important;text-overflow:ellipsis!important;white-space:nowrap!important; }
+
+body.ps-v9 #ps51AccountCenter .ps58-ticket-toolbar { display:flex!important;flex-wrap:wrap!important;gap:8px!important;margin:20px 0!important; }
+body.ps-v9 #ps51AccountCenter .ps58-ticket-filter { min-height:36px!important;border:1px solid rgba(255,255,255,.13)!important;border-radius:999px!important;padding:0 13px!important;color:rgba(255,255,255,.58)!important;background:rgba(255,255,255,.03)!important;font-size:9px!important;font-weight:800!important; }
+body.ps-v9 #ps51AccountCenter .ps58-ticket-filter.active { border-color:#f5f5f2!important;color:#080808!important;background:#f5f5f2!important; }
+body.ps-v9 #ps51AccountCenter .ps58-ticket-group { display:grid!important;gap:13px!important;margin-top:22px!important; }
+body.ps-v9 #ps51AccountCenter .ps58-ticket-group-head { display:flex!important;align-items:center!important;gap:10px!important;margin:0!important;color:rgba(255,255,255,.72)!important;font-size:10px!important;letter-spacing:.1em!important; }
+body.ps-v9 #ps51AccountCenter .ps58-ticket-group-head::after { height:1px;flex:1;background:linear-gradient(90deg,rgba(255,255,255,.18),transparent);content:""; }
+body.ps-v9 #ps51AccountCenter .ps58-ticket-group-head small { display:grid!important;min-width:24px!important;height:24px!important;place-items:center!important;border:1px solid rgba(255,255,255,.14)!important;border-radius:8px!important;font-size:9px!important; }
+body.ps-v9 #ps51AccountCenter .ps55-ticket { overflow:hidden!important;border-radius:18px!important;padding:0!important;background:rgba(255,255,255,.025)!important; }
+body.ps-v9 #ps51AccountCenter .ps55-ticket > header { display:flex!important;align-items:flex-start!important;justify-content:space-between!important;gap:14px!important;padding:17px 18px!important;border-bottom:1px solid rgba(255,255,255,.09)!important; }
+body.ps-v9 #ps51AccountCenter .ps55-ticket > header h3 { margin:6px 0 4px!important;font-size:13px!important; }
+body.ps-v9 #ps51AccountCenter .ps55-ticket-source { display:inline-flex!important;border:1px solid rgba(255,255,255,.14)!important;border-radius:999px!important;padding:4px 7px!important;color:rgba(255,255,255,.68)!important;background:rgba(255,255,255,.035)!important;font-size:8px!important;font-style:normal!important;letter-spacing:.08em!important; }
+body.ps-v9 #ps51AccountCenter .ps55-ticket-status { flex:0 0 auto!important;border:1px solid rgba(255,255,255,.16)!important;border-radius:999px!important;padding:6px 8px!important;font-size:8px!important;letter-spacing:.06em!important; }
+body.ps-v9 #ps51AccountCenter .ps55-ticket-status.waiting { color:#ffe08a!important;border-color:rgba(245,193,80,.4)!important;background:rgba(245,193,80,.08)!important; }
+body.ps-v9 #ps51AccountCenter .ps55-ticket-status.answered { color:#caffb8!important;border-color:rgba(83,252,24,.35)!important;background:rgba(83,252,24,.07)!important; }
+body.ps-v9 #ps51AccountCenter .ps55-ticket-status.failed { color:#ffc1c8!important;border-color:rgba(255,102,116,.42)!important;background:rgba(255,102,116,.08)!important; }
+body.ps-v9 #ps51AccountCenter .ps55-ticket-messages { display:grid!important;gap:14px!important;padding:18px!important; }
+body.ps-v9 #ps51AccountCenter .ps55-ticket-message { width:min(82%,720px)!important;max-width:none!important;border:1px solid rgba(255,255,255,.1)!important;border-radius:15px 15px 15px 5px!important;padding:14px 16px!important;color:rgba(255,255,255,.76)!important;background:rgba(255,255,255,.045)!important;font-size:10px!important;line-height:1.65!important; }
+body.ps-v9 #ps51AccountCenter .ps55-ticket-message.user { justify-self:end!important;border-color:rgba(255,255,255,.18)!important;border-radius:15px 15px 5px 15px!important;background:rgba(255,255,255,.09)!important; }
+body.ps-v9 #ps51AccountCenter .ps55-ticket-message.support { justify-self:start!important;border-color:rgba(120,255,95,.2)!important;background:rgba(83,252,24,.045)!important; }
+body.ps-v9 #ps51AccountCenter .ps124-ticket-message-head { display:flex!important;align-items:center!important;justify-content:space-between!important;gap:12px!important;margin-bottom:8px!important; }
+body.ps-v9 #ps51AccountCenter .ps124-ticket-message-head b { color:#fff!important;font-size:10px!important; }
+body.ps-v9 #ps51AccountCenter .ps124-ticket-message-head time { color:rgba(255,255,255,.4)!important;font-size:8px!important;white-space:nowrap!important; }
+body.ps-v9 #ps51AccountCenter .ps55-ticket-message p { margin:0!important;color:inherit!important;font-size:10px!important;line-height:1.7!important;white-space:pre-wrap!important;overflow-wrap:anywhere!important; }
+body.ps-v9 #ps51AccountCenter .ps57-ticket-files { margin-top:12px!important;border-top:1px solid rgba(255,255,255,.09)!important;padding-top:10px!important; }
+
+@media(max-width:720px) {
+  body.ps-v9 #ps51AccountCenter .ps121-kick-metrics .ps51-data-card { min-height:150px!important;padding:21px!important; }
+  body.ps-v9 #ps51AccountCenter .ps121-kick-metrics .ps51-data-card > b { margin-top:24px!important;font-size:40px!important; }
+  body.ps-v9 #ps59AccountDataDialog .ps44-dialog { padding:22px!important; }
+  body.ps-v9 #ps59AccountDataDialog .ps59-chart-summary { align-items:flex-start!important;flex-direction:column!important;gap:5px!important; }
+  body.ps-v9 #ps59AccountDataDialog .ps59-chart > svg { min-width:860px!important;height:390px!important; }
+  body.ps-v9 #ps51AccountCenter .ps66-create { grid-template-columns:1fr!important; }
+  body.ps-v9 #ps51AccountCenter .ps55-ticket > header { flex-direction:column!important; }
+  body.ps-v9 #ps51AccountCenter .ps55-ticket-message { width:94%!important; }
+}
+
 /* Ortak geçiş yükleyicisi video yerine hızlı, erişilebilir bir cam portal
    kullanır. Böylece ilk karede medya çözme maliyeti ve eski yeşil animasyon yoktur. */
 #ps28Loader,#ps20Loader,.ps14-loader{background:radial-gradient(circle at 50% 43%,rgba(255,255,255,.08),transparent 26%),rgba(0,0,0,.84)!important;-webkit-backdrop-filter:blur(18px)!important;backdrop-filter:blur(18px)!important}
@@ -4869,4 +5079,29 @@ body.ps-v9:not(.auth-locked) #ps9Ambient :is(i,span,b) {
     width:48px!important;
     height:48px!important;
   }
+}
+
+/* 10.24 final priority — later historical account layers must not shrink the
+   rebuilt metric cards, charts or conversation bubbles. */
+.ps28-password-host > .ps28-eye[data-ps48-eye="1"] {
+  top:26px!important;
+  bottom:auto!important;
+  transform:none!important;
+}
+body.ps-v9 #ps51AccountCenter .ps121-kick-metrics { gap:18px!important; }
+body.ps-v9 #ps51AccountCenter .ps121-kick-metrics .ps51-data-card { min-height:194px!important;border-radius:20px!important;padding:26px!important; }
+body.ps-v9 #ps51AccountCenter .ps121-kick-metrics .ps51-data-card > span:not(.ps59-data-expand) { font-size:11px!important; }
+body.ps-v9 #ps51AccountCenter .ps121-kick-metrics .ps51-data-card > b { margin-top:34px!important;font-size:48px!important; }
+body.ps-v9 #ps59AccountDataDialog .ps44-dialog { display:flex!important;max-height:calc(100dvh - 28px)!important;flex-direction:column!important;overflow:hidden!important; }
+body.ps-v9 #ps59AccountDataDialog .ps59-chart { position:relative!important;display:block!important;min-height:0!important;flex:1 1 auto!important;overflow:auto!important; }
+body.ps-v9 #ps59AccountDataDialog .ps59-chart > svg { display:block!important;width:100%!important;min-width:1040px!important;height:430px!important; }
+body.ps-v9 #ps51AccountCenter .ps55-ticket-message { width:min(82%,720px)!important;max-width:none!important;padding:14px 16px!important;font-size:10px!important;line-height:1.65!important; }
+body.ps-v9 #ps51AccountCenter .ps55-ticket-message.user { justify-self:end!important; }
+body.ps-v9 #ps51AccountCenter .ps55-ticket-message.support { justify-self:start!important; }
+body.ps-v9 #ps51AccountCenter .ps55-ticket-message p { font-size:10px!important;line-height:1.7!important; }
+@media(max-width:720px) {
+  body.ps-v9 #ps51AccountCenter .ps121-kick-metrics .ps51-data-card { min-height:150px!important;padding:21px!important; }
+  body.ps-v9 #ps51AccountCenter .ps121-kick-metrics .ps51-data-card > b { margin-top:24px!important;font-size:40px!important; }
+  body.ps-v9 #ps59AccountDataDialog .ps59-chart > svg { min-width:860px!important;height:390px!important; }
+  body.ps-v9 #ps51AccountCenter .ps55-ticket-message { width:94%!important; }
 }

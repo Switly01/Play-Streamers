@@ -11,11 +11,11 @@ test('site 10 assets are cache-busted and use fluid monochrome glass', async () 
     read('site-v7.css'),
     read('play-streamers-ps-logo.svg'),
   ]);
-  assert.match(html, /play-streamers-build" content="2026-09-01-site-10\.23\.0"/);
-  assert.match(html, /site-v7\.css\?v=10\.23\.0/);
+  assert.match(html, /play-streamers-build" content="2026-09-01-site-10\.24\.0"/);
+  assert.match(html, /site-v7\.css\?v=10\.24\.0/);
   assert.match(html, /app\.js\?v=5\.8\.0/);
-  assert.match(html, /site-v7\.js\?v=10\.17\.0/);
-  assert.match(html, /app-final\.js\?v=5\.20\.0/);
+  assert.match(html, /site-v7\.js\?v=10\.18\.0/);
+  assert.match(html, /app-final\.js\?v=5\.21\.1/);
   assert.match(html, /live-i18n\.js\?v=10\.3\.0/);
   assert.match(css, /html\[data-ps-site-version="8"\]/);
   assert.match(css, /--signal: #f5f5f2/);
@@ -137,8 +137,10 @@ test('SW Bot audits deterministically and translation generation is release-only
   assert.match(app, /surface: 'member'/);
   assert.match(app, /surface: 'dashboard'/);
   assert.match(app, /ps119ExchangePanel/);
-  assert.match(app, /let lastRatePointerPress = 0/);
-  assert.match(app, /Date\.now\(\) - lastRatePointerPress > 700/);
+  assert.match(app, /button\.onclick = event => \{/);
+  assert.match(app, /toggleRatePanel\(button\);/);
+  assert.doesNotMatch(app, /lastRatePointerPress/);
+  assert.equal((app.match(/const esc = value =>/g) || []).length, 2);
   assert.doesNotMatch(app, /Açıkken 5 saniyede bir kontrol edilir/);
   assert.match(app, /ps119-account-shell/);
   assert.match(app, /ps119-account-user/);
@@ -148,8 +150,8 @@ test('SW Bot audits deterministically and translation generation is release-only
   assert.match(worker, /swBotDeterministicReport/);
   assert.match(worker, /resolveSwBotReports/);
   assert.match(worker, /sw_bot_issue_reports/);
-  assert.match(worker, /site-v7\.css\?v=10\.23\.0/);
-  assert.match(worker, /site-v7\.js\?v=10\.17\.0/);
+  assert.match(worker, /site-v7\.css\?v=10\.24\.0/);
+  assert.match(worker, /site-v7\.js\?v=10\.18\.0/);
   assert.match(worker, /\/api\/i18n\/translate/);
   assert.match(worker, /i18n:v9/);
   assert.match(worker, /translationProvider: "local-static-build"/);

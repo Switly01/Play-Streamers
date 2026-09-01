@@ -2,6 +2,21 @@
 
 ## Güncel geliştirme durumu · 1 Eylül 2026
 
+Site 10.27.0 / Worker 8.0 / Play Connect 1.15.2 bağış, kur ve analiz
+revizyonu: tarih tarayan eklenti kaynakları yalnız son 15 dakikadaki yeni
+olayları API'ye gönderebilir; 24 saatten eski kuyruk ve Dashboard bağışları
+gösterilmez. Bağış geldiğinde boş durum metni bütün olay kartlarında kesin
+olarak gizlenir ve platform işaretleri dengeli küçük ölçüde çizilir. Kur paneli
+TCMB döviz satış EUR/TRY değerini, ECB/Frankfurter çapraz referanslarını, bütün
+kayıtlı para karşılıklarını, saniyeli yenileme zamanını ve elle yenilemeyi
+gösterir; önbellek beş dakikaya indirilmiştir. Son 90 günlük grafik tek yüzeye
+sığar ve yatay kaydırma üretmez. Üye üst çubuğunun ortasında SmartScreen
+uyarısı üretmeyen Microsoft Store kurulum eylemi bulunur; sitedeki doğrudan
+indirme alanları güncel 0.14.4 kurucusunu sunmaya devam eder. Play Connect sağlayıcı
+şeridi yalnız küçük logolarla gösterilir, eşleştirme alanı ve profil görünümü
+yenilenir. Güvenlikteki silme açıklaması merkezi SW Identity hesabının
+korunduğunu açıkça belirtir. Yedi dil paketi 1.321 etkin metni eksiksiz kapsar.
+
 Site 10.26.0 / Worker 7.9 hesap verileri, ürünler ve profil revizyonu: 90 günlük
 grafikler tamamlanan her gün için eşit genişlikte beyaz sütunlar ve son
 doğrulanmış günlük değerlerle çalışır; 24 saatlik ayrıntı büyütülüp ölçüm/zirve

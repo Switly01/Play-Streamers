@@ -78,10 +78,10 @@ const DONATE_OAUTH_PROVIDERS = Object.freeze({
     clientSecretVariable: "TIPEEESTREAM_CLIENT_SECRET",
   }),
 });
-const CURRENT_RELEASE_VERSION = "7.9";
-const CURRENT_RELEASE_PUBLISHED_AT = "2026-09-01T17:24:00+03:00";
+const CURRENT_RELEASE_VERSION = "8.0";
+const CURRENT_RELEASE_PUBLISHED_AT = "2026-09-01T21:26:00+03:00";
 const EXCHANGE_CURRENCIES = Object.freeze(["EUR", "TRY", "USD", "RUB", "SAR", "JPY"]);
-const EXCHANGE_CACHE_SECONDS = 60 * 60;
+const EXCHANGE_CACHE_SECONDS = 5 * 60;
 const SW_IDENTITY_ORIGIN = "https://api.swcreate.com";
 const DESKTOP_IDENTITY_REDIRECT = "playstreamers://identity/callback";
 const WEB_IDENTITY_REDIRECTS = new Set([
@@ -150,7 +150,10 @@ const DONATE_BRIDGE_PAIRING_TTL_MS = 10 * 60 * 1000;
 const DONATE_BRIDGE_MAX_ACTIVE_DEVICES = 5;
 const DONATE_BRIDGE_DEVICE_TOUCH_INTERVAL_MS = 5 * 1000;
 const DONATE_BRIDGE_MAX_EVENTS_PER_MINUTE = 120;
-const DONATE_BRIDGE_MAX_EVENT_AGE_MS = 5 * 365 * 24 * 60 * 60 * 1000;
+// A device may reconnect after a short outage, but a history scan must never
+// replay weeks or months of old support records as if they had just arrived.
+const DONATE_BRIDGE_MAX_EVENT_AGE_MS = 24 * 60 * 60 * 1000;
+const DONATE_BRIDGE_HISTORY_EVENT_AGE_MS = 15 * 60 * 1000;
 const DONATE_OAUTH_SYNC_MIN_INTERVAL_MS = 5 * 1000;
 const DONATE_OAUTH_EVENT_LIMIT = 100;
 const DONATE_PROVIDER_CATALOG_VERSION = 9;
@@ -855,18 +858,18 @@ async function runScheduledPlayBotAudit(env) {
   await ensurePlayBotMetadataStorage(env);
   const resources = [
     ["Ana sayfa", "https://pstreamers.com/", "document"],
-    ["Ana uygulama betiği", "https://pstreamers.com/app.js?v=5.8.0", "script"],
-    ["Uygulama betiği", "https://pstreamers.com/app-final.js?v=5.23.0", "script"],
-    ["Site davranış betiği", "https://pstreamers.com/site-v7.js?v=10.20.0", "script"],
-    ["Sabit çeviri betiği", "https://pstreamers.com/live-i18n.js?v=10.4.0", "script"],
-    ["İngilizce dil paketi", "https://pstreamers.com/locales/en.json?v=2026-09-01.2", "json"],
-    ["Almanca dil paketi", "https://pstreamers.com/locales/de.json?v=2026-09-01.2", "json"],
-    ["İspanyolca dil paketi", "https://pstreamers.com/locales/es.json?v=2026-09-01.2", "json"],
-    ["Fransızca dil paketi", "https://pstreamers.com/locales/fr.json?v=2026-09-01.2", "json"],
-    ["Rusça dil paketi", "https://pstreamers.com/locales/ru.json?v=2026-09-01.2", "json"],
-    ["Arapça dil paketi", "https://pstreamers.com/locales/ar.json?v=2026-09-01.2", "json"],
-    ["Japonca dil paketi", "https://pstreamers.com/locales/ja.json?v=2026-09-01.2", "json"],
-    ["Premium stil dosyası", "https://pstreamers.com/site-v7.css?v=10.26.0", "style"],
+    ["Ana uygulama betiği", "https://pstreamers.com/app.js?v=5.9.0", "script"],
+    ["Uygulama betiği", "https://pstreamers.com/app-final.js?v=5.24.0", "script"],
+    ["Site davranış betiği", "https://pstreamers.com/site-v7.js?v=10.21.0", "script"],
+    ["Sabit çeviri betiği", "https://pstreamers.com/live-i18n.js?v=10.5.0", "script"],
+    ["İngilizce dil paketi", "https://pstreamers.com/locales/en.json?v=2026-09-01.3", "json"],
+    ["Almanca dil paketi", "https://pstreamers.com/locales/de.json?v=2026-09-01.3", "json"],
+    ["İspanyolca dil paketi", "https://pstreamers.com/locales/es.json?v=2026-09-01.3", "json"],
+    ["Fransızca dil paketi", "https://pstreamers.com/locales/fr.json?v=2026-09-01.3", "json"],
+    ["Rusça dil paketi", "https://pstreamers.com/locales/ru.json?v=2026-09-01.3", "json"],
+    ["Arapça dil paketi", "https://pstreamers.com/locales/ar.json?v=2026-09-01.3", "json"],
+    ["Japonca dil paketi", "https://pstreamers.com/locales/ja.json?v=2026-09-01.3", "json"],
+    ["Premium stil dosyası", "https://pstreamers.com/site-v7.css?v=10.27.0", "style"],
     ["Oturum başlangıç betiği", "https://pstreamers.com/session-bootstrap.js?v=1.2", "script"],
     ["Site yönlendiricisi", "https://pstreamers.com/site-router.js?v=1.1", "script"],
     ["Sunucu analiz betiği", "https://pstreamers.com/server-analytics.js?v=6.1", "script"],
@@ -880,7 +883,7 @@ async function runScheduledPlayBotAudit(env) {
     ["SW Create amblemi", "https://pstreamers.com/swcreate-sw-logo-transparent.png", "image"],
     ["Windows kurucusu", "https://pstreamers.com/downloads/Play-Streamers-Setup.exe", "binary"],
     ["Windows güncelleme bildirimi", "https://pstreamers.com/downloads/latest.json", "json"],
-    ["Play Connect paketi", "https://pstreamers.com/play-connect-v1.15.1.zip", "binary"],
+    ["Play Connect paketi", "https://pstreamers.com/play-connect-v1.15.2.zip", "binary"],
     ["Türkçe bayrağı", "https://pstreamers.com/assets/flags/tr.svg", "image"],
     ["İngilizce bayrağı", "https://pstreamers.com/assets/flags/gb.svg", "image"],
     ["Almanca bayrağı", "https://pstreamers.com/assets/flags/de.svg", "image"],
@@ -943,7 +946,7 @@ async function runScheduledPlayBotAudit(env) {
       const validPayload = result.label === "Windows güncelleme bildirimi"
         ? Boolean(payload?.version && hasUpdaterPlatforms)
         : localeCatalog
-        ? Boolean(payload?.version === "2026-09-01.2" && payload?.sourceLanguage === "tr" && payload?.language && Object.keys(payload?.translations || {}).length >= 1220)
+        ? Boolean(payload?.version === "2026-09-01.3" && payload?.sourceLanguage === "tr" && payload?.language && Object.keys(payload?.translations || {}).length >= 1220)
           : Boolean(payload?.ok);
       if (!validPayload) issues.push(`${result.label} geçerli bir JSON yanıtı döndürmüyor.`);
     }
@@ -951,12 +954,12 @@ async function runScheduledPlayBotAudit(env) {
   const homeDocument = results.find(result => result.type === "document");
   if (homeDocument?.ok) {
     const documentContracts = [
-      ["site-v7.css?v=10.26.0", "Güncel premium stil dosyası"],
-      ["app.js?v=5.8.0", "Güncel ana uygulama betiği"],
-      ["app-final.js?v=5.23.0", "Güncel onarım betiği"],
-      ["site-v7.js?v=10.20.0", "Güncel site davranış betiği"],
-      ["live-i18n.js?v=10.4.0", "Güncel sabit paket çeviri betiği"],
-      ["play-streamers-build\" content=\"2026-09-01-site-10.26.0", "Site 10.26.0 sürüm işareti"],
+      ["site-v7.css?v=10.27.0", "Güncel premium stil dosyası"],
+      ["app.js?v=5.9.0", "Güncel ana uygulama betiği"],
+      ["app-final.js?v=5.24.0", "Güncel onarım betiği"],
+      ["site-v7.js?v=10.21.0", "Güncel site davranış betiği"],
+      ["live-i18n.js?v=10.5.0", "Güncel sabit paket çeviri betiği"],
+      ["play-streamers-build\" content=\"2026-09-01-site-10.27.0", "Site 10.27.0 sürüm işareti"],
     ];
     for (const [token, label] of documentContracts) {
       if (!homeDocument.body.includes(token)) issues.push(`${label} canlı ana sayfaya bağlanmamış.`);
@@ -3615,7 +3618,8 @@ async function syncOneDonateOAuthConnection(connection, env, options = {}) {
   }
   const connectedAt = Number(cursor.connectedAt || connection.created_at || now);
   const freshEvents = events.filter(event => !seenIds.has(String(event.providerEventId))
-    && Number(event.eventAt || now) >= connectedAt - 2 * 60 * 1000);
+    && Number(event.eventAt || now) >= connectedAt - 2 * 60 * 1000
+    && Number(event.eventAt || now) >= now - DONATE_BRIDGE_HISTORY_EVENT_AGE_MS);
   const statements = freshEvents.map(event => {
     const id = crypto.randomUUID();
     return env.DB.prepare(`INSERT OR IGNORE INTO donate_bridge_events
@@ -4207,6 +4211,12 @@ function validateDonateBridgeEvent(input, now) {
   }
   if (eventAt !== null && (eventAt > now + 5 * 60 * 1000 || eventAt < now - DONATE_BRIDGE_MAX_EVENT_AGE_MS)) {
     return { error: "Destek zamanı geçersiz." };
+  }
+  if (["local-history", "browser-session", "provider-api"].includes(source)) {
+    if (eventAt === null) return { error: "Geçmiş taramasında destek zamanı zorunludur." };
+    if (eventAt < now - DONATE_BRIDGE_HISTORY_EVENT_AGE_MS) {
+      return { error: "Eski destek olayı yeniden gönderilemez.", code: "STALE_DONATE_EVENT" };
+    }
   }
   if (integrityHash && !/^[a-f0-9]{64}$/.test(integrityHash)) return { error: "Olay bütünlük özeti geçersiz." };
   return {
@@ -8426,22 +8436,31 @@ function isExtensionTranslationRequest(request, origin) {
 }
 
 async function readPublicExchangeRates(request) {
-  const cacheKey = new Request(`${API_ORIGIN}/__edge-cache/exchange-rates-v1`, { method: "GET" });
-  try {
-    const cached = await caches.default.match(cacheKey);
-    if (cached) {
-      const body = await cached.json();
-      return apiResponse(request, { ...body, cache: "edge" });
+  const cacheKey = new Request(`${API_ORIGIN}/__edge-cache/exchange-rates-v2`, { method: "GET" });
+  const forceRefresh = new URL(request.url).searchParams.has("refresh");
+  if (!forceRefresh) {
+    try {
+      const cached = await caches.default.match(cacheKey);
+      if (cached) {
+        const body = await cached.json();
+        return apiResponse(request, { ...body, cache: "edge" });
+      }
+    } catch {
+      // Edge cache is an optimisation. A provider request can still complete safely.
     }
-  } catch {
-    // Edge cache is an optimisation. A provider request can still complete safely.
   }
 
   const quotes = EXCHANGE_CURRENCIES.filter(currency => currency !== "EUR").join(",");
-  const providerResponse = await fetch(`https://api.frankfurter.dev/v2/rates?base=EUR&quotes=${quotes}`, {
-    headers: { accept: "application/json" },
-    cf: { cacheEverything: true, cacheTtl: EXCHANGE_CACHE_SECONDS },
-  });
+  const [providerResponse, tcmbResponse] = await Promise.all([
+    fetch(`https://api.frankfurter.dev/v2/rates?base=EUR&quotes=${quotes}`, {
+      headers: { accept: "application/json" },
+      cf: { cacheEverything: true, cacheTtl: EXCHANGE_CACHE_SECONDS },
+    }),
+    fetch("https://www.tcmb.gov.tr/kurlar/today.xml", {
+      headers: { accept: "application/xml,text/xml;q=0.9,*/*;q=0.5" },
+      cf: { cacheEverything: true, cacheTtl: EXCHANGE_CACHE_SECONDS },
+    }).catch(() => null),
+  ]);
   const providerRows = await providerResponse.json().catch(() => []);
   if (!providerResponse.ok || !Array.isArray(providerRows)) {
     return apiResponse(request, { error: "Güncel kur verisi şu anda alınamadı.", code: "EXCHANGE_PROVIDER_UNAVAILABLE" }, 503);
@@ -8454,6 +8473,16 @@ async function readPublicExchangeRates(request) {
     if (EXCHANGE_CURRENCIES.includes(quote) && Number.isFinite(rate) && rate > 0) rates[quote] = rate;
     if (!rateDate && /^\d{4}-\d{2}-\d{2}$/.test(String(row?.date || ""))) rateDate = String(row.date);
   });
+  let tryRateSource = "ECB";
+  if (tcmbResponse?.ok) {
+    const tcmbXml = await tcmbResponse.text().catch(() => "");
+    const eurBlock = tcmbXml.match(/<Currency\b[^>]*(?:Kod|CurrencyCode)="EUR"[^>]*>([\s\S]*?)<\/Currency>/i)?.[1] || "";
+    const tcmbSelling = Number(eurBlock.match(/<ForexSelling>([^<]+)<\/ForexSelling>/i)?.[1]);
+    if (Number.isFinite(tcmbSelling) && tcmbSelling > 0) {
+      rates.TRY = tcmbSelling;
+      tryRateSource = "TCMB döviz satış";
+    }
+  }
   if (!EXCHANGE_CURRENCIES.every(currency => Number.isFinite(rates[currency]))) {
     return apiResponse(request, { error: "Kur tablosu eksik geldi.", code: "EXCHANGE_RATES_INCOMPLETE" }, 503);
   }
@@ -8463,7 +8492,8 @@ async function readPublicExchangeRates(request) {
     rates,
     rateDate,
     refreshedAt: new Date().toISOString(),
-    provider: "Frankfurter · central bank reference rates",
+    provider: `${tryRateSource} · ECB/Frankfurter referansları`,
+    updateIntervalSeconds: EXCHANGE_CACHE_SECONDS,
   };
   try {
     await caches.default.put(cacheKey, new Response(JSON.stringify(body), {

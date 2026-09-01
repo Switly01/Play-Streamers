@@ -956,12 +956,12 @@
     const plotted = completedPoints.map((point, index) => ({ ...point, index, numeric: Number(point.value), valid: point.value !== null && point.value !== undefined && Number.isFinite(Number(point.value)) }));
     const valid = plotted.filter(point => point.valid);
     if (!valid.length) return '<p class="ps59-chart-empty">Grafik oluşturmak için henüz yeterli Kick verisi bulunmuyor.</p>';
-    const width = Math.max(1440, completedPoints.length * 16), height = 500, left = 62, right = 24, top = 34, bottom = 82;
+    const width = 1120, height = 500, left = 62, right = 24, top = 34, bottom = 82;
     const chartWidth = width - left - right, chartHeight = height - top - bottom;
     const rawMax = Math.max(...valid.map(point => point.numeric));
     const max = Math.max(1, Math.ceil(rawMax));
     const step = chartWidth / Math.max(1, completedPoints.length);
-    const barWidth = Math.max(9, Math.min(12, step * .72));
+    const barWidth = Math.max(6, Math.min(9, step * .68));
     const x = index => left + index * step + (step - barWidth) / 2;
     const y = value => top + chartHeight - (Math.max(0, value) / max) * chartHeight;
     const grid = [0, .25, .5, .75, 1].map(ratio => {
@@ -1095,7 +1095,7 @@
   const PLAY_CONNECT_STORES = Object.freeze({
     chromium: 'https://chromewebstore.google.com/detail/play-connect/mpebmfjcdkflgiloecjonopfknojdaip',
     firefox: 'https://addons.mozilla.org/en-US/firefox/addon/play-connect/',
-    fallback: './play-connect-v1.15.1.zip?v=1.15.1'
+    fallback: './play-connect-v1.15.2.zip?v=1.15.2'
   });
   function playConnectStore() {
     const agent = navigator.userAgent || '';
@@ -4325,6 +4325,60 @@
 })();
 (() => {
   'use strict';
+  const DONATE_VISIBLE_AGE_MS = 24 * 60 * 60 * 1000;
+
+  function guardStaleDonations() {
+    const bridge = window.PlayStreamers;
+    if (!bridge?.addEvent || bridge.addEvent.ps127FreshDonationGuard) return;
+    const original = bridge.addEvent;
+    const guarded = function freshDonationGuard(event) {
+      const at = Number(event?.at || Date.now());
+      if (event?.type === 'donation' && (at > Date.now() + 5 * 60 * 1000 || at < Date.now() - DONATE_VISIBLE_AGE_MS)) return false;
+      return original.apply(this, arguments);
+    };
+    guarded.ps127FreshDonationGuard = true;
+    bridge.addEvent = guarded;
+  }
+
+  function installMemberDownload() {
+    const nav = document.querySelector('#psSecondHome .ps20-nav');
+    if (!nav || nav.querySelector('.ps127-member-download')) return;
+    const link = document.createElement('a');
+    link.className = 'ps127-member-download';
+    link.href = 'https://apps.microsoft.com/detail/9NWZ0TF5K999';
+    link.target = '_blank';
+    link.rel = 'noopener noreferrer';
+    link.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12m0 0 4-4m-4 4-4-4M5 20h14"/></svg><span>Windows için indir</span>';
+    nav.append(link);
+  }
+
+  function normalizeDynamicSurfaces() {
+    guardStaleDonations();
+    installMemberDownload();
+    document.querySelectorAll('#panelGrid .card').forEach(card => {
+      const empty = card.querySelector('.empty');
+      const hasRows = Boolean(card.querySelector('.entries li'));
+      if (empty) {
+        empty.hidden = hasRows;
+        empty.classList.toggle('show', !hasRows);
+      }
+    });
+    document.querySelectorAll('#ps51AccountCenter .ps126-danger-zone b').forEach(node => {
+      if (node.textContent.trim() === 'Play Streamers hesabını sil') node.textContent = 'Play Streamers verilerini sil';
+    });
+    document.querySelectorAll('#ps51AccountCenter .ps126-danger-zone small').forEach(node => {
+      if (/Profil, oturum, bağlantı/.test(node.textContent)) node.textContent = 'Yalnız Play Streamers profilin, oturumların, bağlantıların, kanal olayların ve destek kayıtların kaldırılır. Merkezi SW Identity hesabın korunur.';
+    });
+  }
+
+  const observer = new MutationObserver(() => requestAnimationFrame(normalizeDynamicSurfaces));
+  observer.observe(document.documentElement, { childList: true, subtree: true });
+  window.addEventListener('ps:i18n-ready', normalizeDynamicSurfaces);
+  window.addEventListener('ps:locale-change', () => setTimeout(normalizeDynamicSurfaces, 60));
+  normalizeDynamicSurfaces();
+})();
+(() => {
+  'use strict';
   const $ = (selector, root = document) => root.querySelector(selector);
   const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
   const esc = value => { const node = document.createElement('span'); node.textContent = String(value ?? ''); return node.innerHTML; };
@@ -4370,8 +4424,18 @@
     if (!Number.isFinite(Number(rates[source])) || !Number.isFinite(Number(rates[target]))) return { target, source, copy: ui('Kurlar hazırlanıyor'), refreshed: '—' };
     const rate = Number(rates[target]) / Number(rates[source]);
     const formatted = new Intl.NumberFormat(document.documentElement.lang || 'tr', { maximumFractionDigits: target === 'JPY' ? 2 : 4 }).format(rate);
-    const refreshed = snapshot.rateDate || (snapshot.refreshedAt ? new Intl.DateTimeFormat(document.documentElement.lang || 'tr', { hour:'2-digit', minute:'2-digit' }).format(new Date(snapshot.refreshedAt)) : '—');
+    const refreshed = snapshot.refreshedAt ? new Intl.DateTimeFormat(document.documentElement.lang || 'tr', { year:'numeric', month:'2-digit', day:'2-digit', hour:'2-digit', minute:'2-digit', second:'2-digit' }).format(new Date(snapshot.refreshedAt)) : '—';
     return { target, source, copy: `1 ${source} = ${formatted} ${target}`, refreshed };
+  }
+  function rateConversionRows(snapshot, source) {
+    const rates = snapshot?.rates || {};
+    const order = ['TRY','EUR','USD','RUB','SAR','JPY'];
+    if (!Number.isFinite(Number(rates[source]))) return '';
+    return order.filter(currency => currency !== source && Number.isFinite(Number(rates[currency]))).map(currency => {
+      const value = Number(rates[currency]) / Number(rates[source]);
+      const formatted = new Intl.NumberFormat(document.documentElement.lang || 'tr', { maximumFractionDigits: currency === 'JPY' ? 2 : 4 }).format(value);
+      return `<div><dt>1 ${esc(source)}</dt><dd>${esc(formatted)} ${esc(currency)}</dd></div>`;
+    }).join('');
   }
   function closeRatePanel() {
     const panel = $('#ps119ExchangePanel');
@@ -4399,8 +4463,15 @@
       document.body.append(panel);
     }
     const details = rateDetails(snapshot);
-    panel.innerHTML = `<header><span>${ui('GÜNCEL KUR')}</span><button type="button" aria-label="${ui('Kapat')}">×</button></header><strong>${details.copy}</strong><dl><div><dt>${ui('Para birimi')}</dt><dd>${details.target}</dd></div><div><dt>${ui('Son yenileme')}</dt><dd>${details.refreshed}</dd></div><div><dt>${ui('Referans kur')}</dt><dd>${esc(snapshot?.provider || 'Frankfurter')}</dd></div></dl><p>${ui('Bağışlar güncel merkez bankası referans kurlarıyla hesaplanır.')}</p>`;
+    panel.innerHTML = `<header><span>${ui('GÜNCEL KUR')}</span><button type="button" aria-label="${ui('Kapat')}">×</button></header><strong>${details.copy}</strong><dl class="ps127-rate-meta"><div><dt>${ui('Para birimi')}</dt><dd>${details.target}</dd></div><div><dt>${ui('Kur tarihi')}</dt><dd>${esc(snapshot?.rateDate || '—')}</dd></div><div><dt>${ui('Son yenileme')}</dt><dd>${details.refreshed}</dd></div><div><dt>${ui('Referans kur')}</dt><dd>${esc(snapshot?.provider || 'Merkez bankası referansı')}</dd></div></dl><section class="ps127-rate-table"><span>${ui('Kayıtlı para birimlerindeki karşılığı')}</span><dl>${rateConversionRows(snapshot, details.source)}</dl></section><button class="ps127-rate-refresh" type="button">${ui('Kurları yenile')}</button><p>${ui('Bağışlar güncel merkez bankası referans kurlarıyla hesaplanır.')}</p>`;
     $('header button', panel).onclick = closeRatePanel;
+    $('.ps127-rate-refresh', panel).onclick = async event => {
+      const control = event.currentTarget;
+      control.disabled = true;
+      control.textContent = ui('Kurlar yenileniyor');
+      try { await window.psReloadExchangeRates?.(); }
+      finally { renderRatePanel(window.psExchangeRates, button); }
+    };
     positionRatePanel(button, panel);
   }
   function toggleRatePanel(button = activeRateButton || $('[data-ps119-exchange]')) {

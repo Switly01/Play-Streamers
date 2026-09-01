@@ -13,7 +13,8 @@
     "Anlık görüntü kaydet": "Save snapshot",
     "Henüz anlık görüntü yok.": "No snapshots yet.",
     "Hey, geleceğin yayıncısı burada mısın?": "Hey, future streamer, are you there?",
-    "Buradaysan ben gidiyorum.": "If you're there, I'm heading out."
+    "Buradaysan ben gidiyorum.": "If you're there, I'm heading out.",
+    "Yalnız Play Streamers profilin, oturumların, bağlantıların, kanal olayların ve destek kayıtların kaldırılır. Merkezi SW Identity hesabın korunur.": "Only your Play Streamers profile, sessions, connections, channel events, and support records are removed. Your central SW Identity account is kept."
   },
   "de": {
     "Sinyal": "Signal",
@@ -30,6 +31,7 @@
     "Henüz anlık görüntü yok.": "Noch keine Momentaufnahme vorhanden.",
     "Hey, geleceğin yayıncısı burada mısın?": "Hey, zukünftiger Streamer, bist du da?",
     "Buradaysan ben gidiyorum.": "Wenn du da bist, mache ich mich auf den Weg.",
+    "Yalnız Play Streamers profilin, oturumların, bağlantıların, kanal olayların ve destek kayıtların kaldırılır. Merkezi SW Identity hesabın korunur.": "Nur dein Play-Streamers-Profil, deine Sitzungen, Verbindungen, Kanalereignisse und Supportdaten werden entfernt. Dein zentrales SW-Identity-Konto bleibt erhalten.",
     "Menü": "Menü",
     "MENÜ": "MENÜ"
   },
@@ -47,7 +49,8 @@
     "Anlık görüntü kaydet": "Guardar instantánea",
     "Henüz anlık görüntü yok.": "Aún no hay instantáneas.",
     "Hey, geleceğin yayıncısı burada mısın?": "Oye, streamer del futuro, ¿estás ahí?",
-    "Buradaysan ben gidiyorum.": "Si estás ahí, me voy."
+    "Buradaysan ben gidiyorum.": "Si estás ahí, me voy.",
+    "Yalnız Play Streamers profilin, oturumların, bağlantıların, kanal olayların ve destek kayıtların kaldırılır. Merkezi SW Identity hesabın korunur.": "Solo se eliminan tu perfil de Play Streamers, sesiones, conexiones, eventos del canal y registros de soporte. Tu cuenta central de SW Identity se conserva."
   },
   "fr": {
     "Sinyal": "Signal",
@@ -63,7 +66,8 @@
     "Anlık görüntü kaydet": "Enregistrer un instantané",
     "Henüz anlık görüntü yok.": "Aucun instantané pour le moment.",
     "Hey, geleceğin yayıncısı burada mısın?": "Hé, futur streamer, tu es là ?",
-    "Buradaysan ben gidiyorum.": "Si tu es là, je m’en vais."
+    "Buradaysan ben gidiyorum.": "Si tu es là, je m’en vais.",
+    "Yalnız Play Streamers profilin, oturumların, bağlantıların, kanal olayların ve destek kayıtların kaldırılır. Merkezi SW Identity hesabın korunur.": "Seuls ton profil Play Streamers, tes sessions, connexions, événements de chaîne et dossiers d’assistance sont supprimés. Ton compte SW Identity central est conservé."
   },
   "ru": {
     "Sinyal": "Сигнал",
@@ -80,6 +84,7 @@
     "Henüz anlık görüntü yok.": "Снимков пока нет.",
     "Hey, geleceğin yayıncısı burada mısın?": "Эй, будущий стример, ты здесь?",
     "Buradaysan ben gidiyorum.": "Если ты здесь, я ухожу.",
+    "Yalnız Play Streamers profilin, oturumların, bağlantıların, kanal olayların ve destek kayıtların kaldırılır. Merkezi SW Identity hesabın korunur.": "Удаляются только профиль Play Streamers, сеансы, подключения, события канала и обращения в поддержку. Центральная учётная запись SW Identity сохраняется.",
     "AKTİF ABONE*": "АКТИВНЫЕ ПОДПИСЧИКИ*",
     "Canlı Dashboard": "Панель в реальном времени",
     "CREATOR OPERATING SYSTEM": "ОПЕРАЦИОННАЯ СИСТЕМА АВТОРА",
@@ -110,6 +115,7 @@
     "Henüz anlık görüntü yok.": "لا توجد لقطات بعد.",
     "Hey, geleceğin yayıncısı burada mısın?": "مرحبًا يا صانع البث المستقبلي، هل أنت هنا؟",
     "Buradaysan ben gidiyorum.": "إن كنت هنا، فسأغادر.",
+    "Yalnız Play Streamers profilin, oturumların, bağlantıların, kanal olayların ve destek kayıtların kaldırılır. Merkezi SW Identity hesabın korunur.": "تُحذف فقط بيانات ملف Play Streamers والجلسات والاتصالات وأحداث القناة وسجلات الدعم، بينما يبقى حساب SW Identity المركزي محفوظًا.",
     "© 2026 SW Create · Play Streamers": "© 2026 SW Create · Play Streamers",
     "AKTİF ABONE*": "المشتركون النشطون*",
     "Bağlantı bilgisi alınamadı.": "تعذّر الحصول على معلومات الاتصال.",
@@ -190,6 +196,7 @@
     "Anlık görüntü kaydet": "スナップショットを保存",
     "Henüz anlık görüntü yok.": "スナップショットはまだありません。",
     "Hey, geleceğin yayıncısı burada mısın?": "やあ、未来のストリーマー、そこにいる？",
-    "Buradaysan ben gidiyorum.": "そこにいるなら、もう行くね。"
+    "Buradaysan ben gidiyorum.": "そこにいるなら、もう行くね。",
+    "Yalnız Play Streamers profilin, oturumların, bağlantıların, kanal olayların ve destek kayıtların kaldırılır. Merkezi SW Identity hesabın korunur.": "Play Streamers のプロフィール、セッション、接続、チャンネルイベント、サポート記録だけが削除されます。中央の SW Identity アカウントは保持されます。"
   }
 }

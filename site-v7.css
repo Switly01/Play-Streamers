@@ -5369,3 +5369,59 @@ body.ps-v9 #ps51AccountCenter .ps55-ticket-message.support { border-color:rgba(2
   body.ps-v9 #ps49InfoPage.ps53-products-copy .ps53-products-main { width:calc(100% - 24px)!important;padding:44px 0 72px!important; }
   body.ps-v9 #ps49InfoPage.ps53-products-copy :is(.ps54-subscription-card,.ps-product-command,.ps-plan-preview,.ps54-sites-grid) { grid-template-columns:1fr!important; }
 }
+
+/* Site 10.27 — fresh donate events, compact brand marks, exact-fit analytics
+   and a richer exchange-rate surface. */
+body.ps-v9 #panelGrid .empty[hidden],
+body.ps-v9 #panelGrid .card:has(.entries li) > .card-body > .empty { display:none!important; }
+body.ps-v9 :is(#panelGrid,#modal) .source-badge,
+body.ps-v9 :is(#panelGrid,#modal) .source-badge.has-image {
+  display:grid!important;width:28px!important;height:28px!important;min-width:28px!important;place-items:center!important;overflow:hidden!important;border-radius:8px!important;
+}
+body.ps-v9 :is(#panelGrid,#modal) .source-badge img { width:21px!important;height:21px!important;max-width:21px!important;max-height:21px!important;object-fit:contain!important; }
+body.ps-v9 #modal .event-source-brand img { width:38px!important;height:38px!important;max-width:38px!important;max-height:38px!important;object-fit:contain!important; }
+body.ps-v9 #statsGrid .empty.show { display:grid!important;min-height:128px!important;place-items:center!important;border:1px dashed rgba(255,255,255,.16)!important;border-radius:16px!important;padding:24px!important;color:rgba(255,255,255,.58)!important;font-size:13px!important;line-height:1.5!important;text-align:center!important; }
+body.ps-v9 #statsGrid .card { min-height:310px!important; }
+body.ps-v9 #statsGrid :is(.rank,.period-list) { width:100%!important; }
+
+body.ps-v9 #ps59AccountDataDialog .ps59-chart { overflow:hidden!important; }
+body.ps-v9 #ps59AccountDataDialog .ps59-chart>svg { width:100%!important;min-width:0!important;max-width:100%!important;height:auto!important;min-height:410px!important;overflow:hidden!important; }
+body.ps-v9 #ps59AccountDataDialog .ps59-axis text { font-size:10px!important; }
+
+body.ps-v9 #psSecondHome .ps20-nav { position:sticky!important; }
+body.ps-v9 #psSecondHome .ps127-member-download {
+  position:absolute!important;left:50%!important;top:50%!important;display:inline-flex!important;height:42px!important;align-items:center!important;gap:9px!important;border:1px solid rgba(255,255,255,.2)!important;border-radius:12px!important;padding:0 16px!important;color:#f7f7f4!important;background:linear-gradient(145deg,rgba(255,255,255,.13),rgba(255,255,255,.045))!important;box-shadow:inset 0 1px rgba(255,255,255,.18)!important;font-size:11px!important;font-weight:800!important;text-decoration:none!important;transform:translate(-50%,-50%)!important;
+}
+body.ps-v9 #psSecondHome .ps127-member-download:hover { border-color:rgba(255,255,255,.38)!important;background:rgba(255,255,255,.14)!important; }
+body.ps-v9 #psSecondHome .ps127-member-download svg { width:17px!important;height:17px!important;fill:none!important;stroke:currentColor!important;stroke-width:1.8!important;stroke-linecap:round!important;stroke-linejoin:round!important; }
+
+#ps119ExchangePanel { width:min(430px,calc(100vw - 24px))!important;max-height:min(720px,calc(100dvh - 24px))!important;overflow:auto!important; }
+#ps119ExchangePanel .ps127-rate-meta { grid-template-columns:repeat(2,minmax(0,1fr))!important; }
+#ps119ExchangePanel .ps127-rate-table { display:grid!important;gap:10px!important;margin-top:14px!important;border:1px solid rgba(255,255,255,.1)!important;border-radius:15px!important;padding:14px!important;background:rgba(255,255,255,.025)!important; }
+#ps119ExchangePanel .ps127-rate-table>span { color:rgba(255,255,255,.48)!important;font-size:9px!important;font-weight:800!important;letter-spacing:.08em!important;text-transform:uppercase!important; }
+#ps119ExchangePanel .ps127-rate-table dl { display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:7px!important;margin:0!important; }
+#ps119ExchangePanel .ps127-rate-table dl>div { display:flex!important;align-items:center!important;justify-content:space-between!important;gap:8px!important;border-radius:10px!important;padding:9px 10px!important;background:rgba(255,255,255,.045)!important; }
+#ps119ExchangePanel .ps127-rate-table :is(dt,dd) { margin:0!important;font-size:10px!important; }
+#ps119ExchangePanel .ps127-rate-table dd { color:#fff!important;font-weight:800!important; }
+#ps119ExchangePanel .ps127-rate-refresh { width:100%!important;min-height:40px!important;margin-top:12px!important;border:1px solid rgba(255,255,255,.18)!important;border-radius:11px!important;color:#fff!important;background:rgba(255,255,255,.07)!important;font-size:10px!important;font-weight:800!important; }
+
+body.ps-v9 #ps51AccountCenter .ps62-bridge-card { margin-top:18px!important; }
+body.ps-v9 #ps51AccountCenter .ps63-provider-strip { display:flex!important;flex-wrap:wrap!important;gap:9px!important; }
+body.ps-v9 #ps51AccountCenter .ps63-provider-chip { display:grid!important;width:46px!important;height:46px!important;min-width:46px!important;place-items:center!important;border-radius:12px!important;padding:0!important; }
+body.ps-v9 #ps51AccountCenter .ps63-provider-chip .ps63-provider-name { display:none!important; }
+body.ps-v9 #ps51AccountCenter .ps63-provider-chip :is(img,.ps63-provider-fallback) { width:25px!important;height:25px!important;max-width:25px!important;max-height:25px!important; }
+body.ps-v9 #ps51AccountCenter .ps62-pairing { border-radius:18px!important;padding:20px!important;background:radial-gradient(circle at 100% 0,rgba(255,255,255,.1),transparent 38%),rgba(255,255,255,.035)!important; }
+body.ps-v9 #ps51AccountCenter .ps62-pairing code { letter-spacing:.18em!important; }
+body.ps-v9 #ps51AccountCenter .ps121-avatar-grid { grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:12px!important; }
+body.ps-v9 #ps51AccountCenter .ps121-avatar-choice { min-height:104px!important;border-radius:16px!important;padding:14px!important; }
+body.ps-v9 #ps51AccountCenter .ps126-custom-logo { border-radius:16px!important;padding:18px!important;background:rgba(255,255,255,.035)!important; }
+
+@media(max-width:900px) {
+  body.ps-v9 #psSecondHome .ps127-member-download { position:static!important;height:40px!important;margin-left:auto!important;padding:0 11px!important;transform:none!important; }
+  body.ps-v9 #psSecondHome .ps127-member-download span { display:none!important; }
+  body.ps-v9 #psSecondHome .ps20-actions { margin-left:0!important; }
+  body.ps-v9 #ps51AccountCenter .ps121-avatar-grid { grid-template-columns:repeat(2,minmax(0,1fr))!important; }
+}
+@media(max-width:520px) {
+  #ps119ExchangePanel .ps127-rate-meta,#ps119ExchangePanel .ps127-rate-table dl { grid-template-columns:1fr!important; }
+}

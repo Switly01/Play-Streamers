@@ -325,7 +325,9 @@ test("algılanan donate yalnızca açık sunucu onayından sonra kuyruktan düş
   assert.equal(kofiNew.result.accepted, 1);
   assert.equal(deliveredEvents.at(-1).providerId, "kofi");
   assert.equal(deliveredEvents.at(-1).amountMinor, 900);
-  assert.equal(stored.playStreamersDonate.connection.lastServerEventCount, 7);
+  // One-hour-old history rows are deliberately ignored; only the five fresh
+  // events may reach the server counter.
+  assert.equal(stored.playStreamersDonate.connection.lastServerEventCount, 5);
 
   const pindirimSender = {
     url: "https://www.pindirim.com/panel/donations",
@@ -351,7 +353,7 @@ test("algılanan donate yalnızca açık sunucu onayından sonra kuyruktan düş
   assert.equal(firstRealDonation.result.accepted, 1);
   assert.equal(deliveredEvents.at(-1).providerId, "pindirim");
   assert.match(deliveredEvents.at(-1).eventId, /^pindirim-new:/);
-  assert.equal(stored.playStreamersDonate.connection.lastServerEventCount, 8);
+  assert.equal(stored.playStreamersDonate.connection.lastServerEventCount, 6);
 
   const livepixSender = {
     url: "https://app.livepix.gg/dashboard",
@@ -367,7 +369,7 @@ test("algılanan donate yalnızca açık sunucu onayından sonra kuyruktan düş
   assert.equal(freshFirstBatch.result.accepted, 1);
   assert.equal(deliveredEvents.at(-1).providerId, "livepix");
   assert.match(deliveredEvents.at(-1).eventId, /^livepix-first-new:/);
-  assert.equal(stored.playStreamersDonate.connection.lastServerEventCount, 9);
+  assert.equal(stored.playStreamersDonate.connection.lastServerEventCount, 7);
 
   const alertUrl = "https://streamlabs.com/widgets/alert-box/v1/play-connect-test";
   const savedAlert = await send({
@@ -415,7 +417,7 @@ test("algılanan donate yalnızca açık sunucu onayından sonra kuyruktan düş
   assert.equal(initialAlertHistory.result.accepted, 0);
   assert.equal(stored.playStreamersDonate.providers.pindirim.lastBaselineCount, 1);
   assert.equal(stored.playStreamersDonate.queue.length, 0);
-  assert.equal(stored.playStreamersDonate.connection.lastServerEventCount, 9);
+  assert.equal(stored.playStreamersDonate.connection.lastServerEventCount, 7);
 
   const liveAlertDonation = await send({
     type: "NETWORK_CANDIDATES",
@@ -428,7 +430,7 @@ test("algılanan donate yalnızca açık sunucu onayından sonra kuyruktan düş
   assert.equal(liveAlertDonation.result.accepted, 1);
   assert.equal(stored.playStreamersDonate.queue.length, 0);
   assert.match(deliveredEvents.at(-1).eventId, /^pindirim-alert-new:/);
-  assert.equal(stored.playStreamersDonate.connection.lastServerEventCount, 10);
+  assert.equal(stored.playStreamersDonate.connection.lastServerEventCount, 8);
 
   globalThis.fetch = originalFetch;
   globalThis.setInterval = originalSetInterval;

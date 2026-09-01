@@ -11,14 +11,14 @@ test('site 10 assets are cache-busted and use fluid monochrome glass', async () 
     read('site-v7.css'),
     read('play-streamers-ps-logo.svg'),
   ]);
-  assert.match(html, /play-streamers-build" content="2026-09-01-site-10\.26\.0"/);
-  assert.match(html, /site-v7\.css\?v=10\.26\.0/);
-  assert.match(html, /app\.js\?v=5\.8\.0/);
-  assert.match(html, /site-v7\.js\?v=10\.20\.0/);
-  assert.match(html, /app-final\.js\?v=5\.23\.0/);
+  assert.match(html, /play-streamers-build" content="2026-09-01-site-10\.27\.0"/);
+  assert.match(html, /site-v7\.css\?v=10\.27\.0/);
+  assert.match(html, /app\.js\?v=5\.9\.0/);
+  assert.match(html, /site-v7\.js\?v=10\.21\.0/);
+  assert.match(html, /app-final\.js\?v=5\.24\.0/);
   assert.match(html, /window\.ps125ReleaseFirstPaint = releaseFirstPaint/);
   assert.match(html, /window\.setTimeout\(releaseFirstPaint, 4800\)/);
-  assert.match(html, /live-i18n\.js\?v=10\.4\.0/);
+  assert.match(html, /live-i18n\.js\?v=10\.5\.0/);
   assert.match(css, /html\[data-ps-site-version="8"\]/);
   assert.match(css, /--signal: #f5f5f2/);
   assert.match(css, /@keyframes ps82-meteor/);
@@ -152,8 +152,8 @@ test('SW Bot audits deterministically and translation generation is release-only
   assert.match(worker, /swBotDeterministicReport/);
   assert.match(worker, /resolveSwBotReports/);
   assert.match(worker, /sw_bot_issue_reports/);
-  assert.match(worker, /site-v7\.css\?v=10\.26\.0/);
-  assert.match(worker, /site-v7\.js\?v=10\.20\.0/);
+  assert.match(worker, /site-v7\.css\?v=10\.27\.0/);
+  assert.match(worker, /site-v7\.js\?v=10\.21\.0/);
   assert.match(worker, /\/api\/i18n\/translate/);
   assert.match(worker, /i18n:v9/);
   assert.match(worker, /translationProvider: "local-static-build"/);
@@ -165,7 +165,7 @@ test('SW Bot audits deterministically and translation generation is release-only
   assert.match(worker, /EXCHANGE_CACHE_SECONDS/);
   assert.doesNotMatch(worker, /EXCHANGE.*KV/);
   assert.match(worker, /Fransızca dil paketi/);
-  assert.match(worker, /locales\/fr\.json\?v=2026-09-01\.2/);
+  assert.match(worker, /locales\/fr\.json\?v=2026-09-01\.3/);
   assert.match(worker, /content-security-policy/);
   assert.match(worker, /frame-ancestors 'none'/);
   assert.match(worker, /strict-transport-security/);
@@ -259,7 +259,7 @@ test('versioned locale catalogs cover public, account, support and legal surface
   ];
   for (const language of ['en', 'de', 'es', 'fr', 'ru', 'ar', 'ja']) {
     const catalog = JSON.parse(await read(`locales/${language}.json`));
-    assert.equal(catalog.version, '2026-09-01.2');
+    assert.equal(catalog.version, '2026-09-01.3');
     assert.equal(catalog.sourceLanguage, 'tr');
     assert.equal(catalog.language, language);
     assert.ok(Object.keys(catalog.translations).length >= 1000);
@@ -290,4 +290,20 @@ test('desktop installer referenced by the public home exists', async () => {
   const installer = await stat(new URL('downloads/Play-Streamers-Setup.exe', root));
   assert.ok(installer.isFile());
   assert.ok(installer.size > 1_000_000);
+});
+
+test('fresh donate, exchange and fixed-width analytics contracts stay active', async () => {
+  const [app, finalApp, worker, css, connect] = await Promise.all([
+    read('app.js'), read('app-final.js'), read('cloudflare-worker.js'), read('site-v7.css'), read('play-connect/src/background.js'),
+  ]);
+  assert.match(connect, /MAX_PENDING_EVENT_AGE_MS = 15 \* 60 \* 1000/);
+  assert.match(worker, /DONATE_BRIDGE_HISTORY_EVENT_AGE_MS = 15 \* 60 \* 1000/);
+  assert.match(worker, /STALE_DONATE_EVENT/);
+  assert.match(worker, /www\.tcmb\.gov\.tr\/kurlar\/today\.xml/);
+  assert.match(worker, /EXCHANGE_CACHE_SECONDS = 5 \* 60/);
+  assert.match(app, /window\.psReloadExchangeRates/);
+  assert.match(finalApp, /ps127-rate-refresh/);
+  assert.match(finalApp, /ps127-member-download/);
+  assert.match(css, /#ps59AccountDataDialog \.ps59-chart>svg \{ width:100%!important;min-width:0!important/);
+  assert.match(css, /\.ps63-provider-name \{ display:none!important/);
 });

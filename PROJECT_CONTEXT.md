@@ -2,6 +2,16 @@
 
 ## Güncel geliştirme durumu · 1 Eylül 2026
 
+Site 10.25.0 / Worker 7.8 mobil açılış ve telefon görünümü revizyonu: İlk dil ve
+oturum çözümleme örtüsü, yavaş telefonlarda uygulama betikleri gecikse bile 4,8
+saniyelik bağımsız ilk çizim bekçisiyle kesin olarak kaldırılır; bfcache dönüşü
+de aynı güvenli serbest bırakmayı kullanır. İlk yükleme kartı sabit PS amblemi ve
+okunaklı marka yüzeyiyle sadeleştirildi. Mobil ana sayfa navigasyonu, canlı site
+verileri, iki satırlı kahraman başlığı, indirme eylemi, uygulama önizlemesi,
+ürün/kabiliyet kartları ve alt bilgi daha dengeli ölçülere geçirildi. Telefon
+GPU bütçesi için ekran dışı ve dekoratif hareketler azaltıldı, büyük cam
+yüzeylerde pahalı bulanıklık yerine opak sıvı cam gradyanları kullanıldı.
+
 Site 10.24.0 / Worker 7.7 hesap verileri ve bağlantı arayüzü revizyonu: Üye ana sayfası ve
 Dashboard'daki ortak kur düğmesi tek tıklama sahibine geçirildi; sabit kur
 ayrıntı penceresi artık fare, dokunma ve klavye tıklamalarında güvenilir biçimde

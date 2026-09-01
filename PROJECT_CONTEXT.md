@@ -2,6 +2,17 @@
 
 ## Güncel geliştirme durumu · 1 Eylül 2026
 
+Site 10.26.0 / Worker 7.9 hesap verileri, ürünler ve profil revizyonu: 90 günlük
+grafikler tamamlanan her gün için eşit genişlikte beyaz sütunlar ve son
+doğrulanmış günlük değerlerle çalışır; 24 saatlik ayrıntı büyütülüp ölçüm/zirve
+özeti eklenmiştir. Kick ölçümleri tarayıcı açık olmasa da zamanlanmış Worker
+göreviyle alınır ve günlük değerler gün içi maksimum yerine son örnekten
+üretilir. SW Profil yaratıcı SW işaretlerine ve hesapla eşitlenen özel logo
+yüklemeye, SW Güvenlik mevcut kod doğrulamalı hesap silmeye kavuşmuştur. Cihaz
+türü, yenileme düğmesi, bağlantılar, destek cevapları ve tarayıcıya göre Play
+Connect mağaza yönlendirmesi yenilenmiştir. Ürünler sayfası tam ekran, okunaklı
+bir ürün vitrini olarak düzenlenmiştir.
+
 Site 10.25.0 / Worker 7.8 mobil açılış ve telefon görünümü revizyonu: İlk dil ve
 oturum çözümleme örtüsü, yavaş telefonlarda uygulama betikleri gecikse bile 4,8
 saniyelik bağımsız ilk çizim bekçisiyle kesin olarak kaldırılır; bfcache dönüşü

@@ -78,7 +78,7 @@ const DONATE_OAUTH_PROVIDERS = Object.freeze({
     clientSecretVariable: "TIPEEESTREAM_CLIENT_SECRET",
   }),
 });
-const CURRENT_RELEASE_VERSION = "7.8";
+const CURRENT_RELEASE_VERSION = "7.9";
 const CURRENT_RELEASE_PUBLISHED_AT = "2026-09-01T17:24:00+03:00";
 const EXCHANGE_CURRENCIES = Object.freeze(["EUR", "TRY", "USD", "RUB", "SAR", "JPY"]);
 const EXCHANGE_CACHE_SECONDS = 60 * 60;
@@ -856,17 +856,17 @@ async function runScheduledPlayBotAudit(env) {
   const resources = [
     ["Ana sayfa", "https://pstreamers.com/", "document"],
     ["Ana uygulama betiği", "https://pstreamers.com/app.js?v=5.8.0", "script"],
-    ["Uygulama betiği", "https://pstreamers.com/app-final.js?v=5.22.0", "script"],
-    ["Site davranış betiği", "https://pstreamers.com/site-v7.js?v=10.19.0", "script"],
-    ["Sabit çeviri betiği", "https://pstreamers.com/live-i18n.js?v=10.3.0", "script"],
-    ["İngilizce dil paketi", "https://pstreamers.com/locales/en.json?v=2026-08-31.1", "json"],
-    ["Almanca dil paketi", "https://pstreamers.com/locales/de.json?v=2026-08-31.1", "json"],
-    ["İspanyolca dil paketi", "https://pstreamers.com/locales/es.json?v=2026-08-31.1", "json"],
-    ["Fransızca dil paketi", "https://pstreamers.com/locales/fr.json?v=2026-08-31.1", "json"],
-    ["Rusça dil paketi", "https://pstreamers.com/locales/ru.json?v=2026-08-31.1", "json"],
-    ["Arapça dil paketi", "https://pstreamers.com/locales/ar.json?v=2026-08-31.1", "json"],
-    ["Japonca dil paketi", "https://pstreamers.com/locales/ja.json?v=2026-08-31.1", "json"],
-    ["Premium stil dosyası", "https://pstreamers.com/site-v7.css?v=10.25.0", "style"],
+    ["Uygulama betiği", "https://pstreamers.com/app-final.js?v=5.23.0", "script"],
+    ["Site davranış betiği", "https://pstreamers.com/site-v7.js?v=10.20.0", "script"],
+    ["Sabit çeviri betiği", "https://pstreamers.com/live-i18n.js?v=10.4.0", "script"],
+    ["İngilizce dil paketi", "https://pstreamers.com/locales/en.json?v=2026-09-01.2", "json"],
+    ["Almanca dil paketi", "https://pstreamers.com/locales/de.json?v=2026-09-01.2", "json"],
+    ["İspanyolca dil paketi", "https://pstreamers.com/locales/es.json?v=2026-09-01.2", "json"],
+    ["Fransızca dil paketi", "https://pstreamers.com/locales/fr.json?v=2026-09-01.2", "json"],
+    ["Rusça dil paketi", "https://pstreamers.com/locales/ru.json?v=2026-09-01.2", "json"],
+    ["Arapça dil paketi", "https://pstreamers.com/locales/ar.json?v=2026-09-01.2", "json"],
+    ["Japonca dil paketi", "https://pstreamers.com/locales/ja.json?v=2026-09-01.2", "json"],
+    ["Premium stil dosyası", "https://pstreamers.com/site-v7.css?v=10.26.0", "style"],
     ["Oturum başlangıç betiği", "https://pstreamers.com/session-bootstrap.js?v=1.2", "script"],
     ["Site yönlendiricisi", "https://pstreamers.com/site-router.js?v=1.1", "script"],
     ["Sunucu analiz betiği", "https://pstreamers.com/server-analytics.js?v=6.1", "script"],
@@ -943,7 +943,7 @@ async function runScheduledPlayBotAudit(env) {
       const validPayload = result.label === "Windows güncelleme bildirimi"
         ? Boolean(payload?.version && hasUpdaterPlatforms)
         : localeCatalog
-          ? Boolean(payload?.version === "2026-08-31.1" && payload?.sourceLanguage === "tr" && payload?.language && Object.keys(payload?.translations || {}).length >= 1220)
+        ? Boolean(payload?.version === "2026-09-01.2" && payload?.sourceLanguage === "tr" && payload?.language && Object.keys(payload?.translations || {}).length >= 1220)
           : Boolean(payload?.ok);
       if (!validPayload) issues.push(`${result.label} geçerli bir JSON yanıtı döndürmüyor.`);
     }
@@ -951,12 +951,12 @@ async function runScheduledPlayBotAudit(env) {
   const homeDocument = results.find(result => result.type === "document");
   if (homeDocument?.ok) {
     const documentContracts = [
-      ["site-v7.css?v=10.25.0", "Güncel premium stil dosyası"],
+      ["site-v7.css?v=10.26.0", "Güncel premium stil dosyası"],
       ["app.js?v=5.8.0", "Güncel ana uygulama betiği"],
-      ["app-final.js?v=5.22.0", "Güncel onarım betiği"],
-      ["site-v7.js?v=10.19.0", "Güncel site davranış betiği"],
-      ["live-i18n.js?v=10.3.0", "Güncel sabit paket çeviri betiği"],
-      ["play-streamers-build\" content=\"2026-09-01-site-10.25.0", "Site 10.25.0 sürüm işareti"],
+      ["app-final.js?v=5.23.0", "Güncel onarım betiği"],
+      ["site-v7.js?v=10.20.0", "Güncel site davranış betiği"],
+      ["live-i18n.js?v=10.4.0", "Güncel sabit paket çeviri betiği"],
+      ["play-streamers-build\" content=\"2026-09-01-site-10.26.0", "Site 10.26.0 sürüm işareti"],
     ];
     for (const [token, label] of documentContracts) {
       if (!homeDocument.body.includes(token)) issues.push(`${label} canlı ana sayfaya bağlanmamış.`);
@@ -4930,13 +4930,14 @@ async function storeKickMetricSnapshot(env, {
     env.DB.prepare(`SELECT followers_count, subscribers_count, updated_at
       FROM kick_metric_snapshots WHERE user_id = ?1 AND metric_date = ?2 LIMIT 1`)
       .bind(String(userId), metricDate).first(),
-    env.DB.prepare(`SELECT updated_at FROM kick_metric_hourly
+    env.DB.prepare(`SELECT month_followers_count, updated_at FROM kick_metric_hourly
       WHERE user_id = ?1 AND metric_hour = ?2 LIMIT 1`)
       .bind(String(userId), metricHour).first(),
   ]);
   const followerUnchanged = safeFollowers === null || Number(existing?.followers_count) === safeFollowers;
   const subscriberUnchanged = safeSubscribers === null || Number(existing?.subscribers_count) === safeSubscribers;
-  if (existing && hourlyExisting && followerUnchanged && subscriberUnchanged
+  const monthFollowersUnchanged = Number(hourlyExisting?.month_followers_count || 0) === safeMonthFollowers;
+  if (existing && hourlyExisting && followerUnchanged && subscriberUnchanged && monthFollowersUnchanged
       && now - Number(hourlyExisting.updated_at || 0) < 5 * 60_000) {
     return false;
   }
@@ -4971,17 +4972,9 @@ async function storeKickMetricSnapshot(env, {
     ON CONFLICT(user_id, metric_hour) DO UPDATE SET
       broadcaster_user_id = excluded.broadcaster_user_id,
       kick_slug = COALESCE(excluded.kick_slug, kick_metric_hourly.kick_slug),
-      followers_count = CASE
-        WHEN excluded.followers_count IS NULL THEN kick_metric_hourly.followers_count
-        WHEN kick_metric_hourly.followers_count IS NULL THEN excluded.followers_count
-        ELSE MAX(kick_metric_hourly.followers_count, excluded.followers_count)
-      END,
-      subscribers_count = CASE
-        WHEN excluded.subscribers_count IS NULL THEN kick_metric_hourly.subscribers_count
-        WHEN kick_metric_hourly.subscribers_count IS NULL THEN excluded.subscribers_count
-        ELSE MAX(kick_metric_hourly.subscribers_count, excluded.subscribers_count)
-      END,
-      month_followers_count = MAX(kick_metric_hourly.month_followers_count, excluded.month_followers_count),
+      followers_count = COALESCE(excluded.followers_count, kick_metric_hourly.followers_count),
+      subscribers_count = COALESCE(excluded.subscribers_count, kick_metric_hourly.subscribers_count),
+      month_followers_count = excluded.month_followers_count,
       source = excluded.source,
       observed_at = MAX(kick_metric_hourly.observed_at, excluded.observed_at),
       updated_at = excluded.updated_at`)
@@ -7275,7 +7268,8 @@ async function updateAvatar(request, env) {
   if (!current) return apiResponse(request, { error: "Oturum bulunamadı." }, 401);
   const input = await requestJson(request);
   const avatar = String(input.avatar || "").trim();
-  if (!/^avatar:[a-z0-9-]{2,32}$/.test(avatar) && !/^https:\/\/[^\s]{1,2000}$/.test(avatar)) {
+  const customImage = /^data:image\/(?:png|jpeg|webp);base64,[A-Za-z0-9+/=]{100,22000}$/.test(avatar);
+  if (!/^avatar:[a-z0-9-]{2,32}$/.test(avatar) && !/^https:\/\/[^\s]{1,2000}$/.test(avatar) && !customImage) {
     return apiResponse(request, { error: "Geçerli bir profil fotoğrafı seçmen gerekiyor." }, 400);
   }
   const now = new Date().toISOString();
@@ -7850,14 +7844,13 @@ async function getKickChannelInsights(session, env, { hourlyDate = "" } = {}) {
       source: directFollowerCount !== null ? "kick-api" : "kick-api+play-connect",
       observedAt: Date.now(),
     });
-    const history = await env.DB.prepare(`SELECT metric_date,
-        MAX(followers_count) AS followers_count,
-        MAX(subscribers_count) AS subscribers_count,
-        MAX(month_followers_count) AS month_followers_count,
-        MAX(source) AS source,
-        MAX(observed_at) AS observed_at
-      FROM kick_metric_hourly WHERE user_id = ?1 AND metric_date >= ?2
-      GROUP BY metric_date ORDER BY metric_date ASC`)
+    const history = await env.DB.prepare(`SELECT metric_date, followers_count, subscribers_count,
+        month_followers_count, source, observed_at
+      FROM (
+        SELECT metric_date, followers_count, subscribers_count, month_followers_count, source, observed_at,
+          ROW_NUMBER() OVER (PARTITION BY metric_date ORDER BY observed_at DESC, metric_hour DESC) AS row_number
+        FROM kick_metric_hourly WHERE user_id = ?1 AND metric_date >= ?2
+      ) WHERE row_number = 1 ORDER BY metric_date ASC`)
       .bind(String(session.userId), historyStartDate).all();
     dailyMetrics = (history?.results || []).map(row => ({
       date: String(row.metric_date),
@@ -7882,6 +7875,7 @@ async function getKickChannelInsights(session, env, { hourlyDate = "" } = {}) {
     }
     const dailyFollowerCounts = new Map((dailyFollowerRows?.results || []).map(row => [String(row.event_date || ''), Math.max(0, Number(row.total || 0))]));
     const dailyMetricMap = new Map(dailyMetrics.map(row => [row.date, row]));
+    for (const row of dailyMetricMap.values()) row.monthFollowersCount = dailyFollowerCounts.get(row.date) || 0;
     for (const [date, count] of dailyFollowerCounts) {
       const existing = dailyMetricMap.get(date);
       if (existing) existing.monthFollowersCount = count;
@@ -7912,6 +7906,7 @@ async function getKickChannelInsights(session, env, { hourlyDate = "" } = {}) {
       }));
       const hourlyFollowerCounts = new Map((hourlyFollowerRows?.results || []).map(row => [String(row.event_hour || '').padStart(2, '0'), Math.max(0, Number(row.total || 0))]));
       const hourlyMetricMap = new Map(hourlyMetrics.map(row => [String(row.hour).padStart(2, '0'), row]));
+      for (const [hour, row] of hourlyMetricMap) row.monthFollowersCount = hourlyFollowerCounts.get(hour) || 0;
       for (const [hour, count] of hourlyFollowerCounts) {
         const existing = hourlyMetricMap.get(hour);
         if (existing) existing.monthFollowersCount = count;

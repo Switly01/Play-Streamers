@@ -362,6 +362,9 @@
       const drift = (-24 + (index * 17) % 49).toFixed(0);
       return `<i style="--ps10-x:${x}%;--ps10-y:${y}%;--ps10-delay:${delay}s;--ps10-duration:${duration}s;--ps10-size:${size}px;--ps10-drift:${drift}px"></i>`;
     }).join('');
+    const playConnectStoreUrl = /Firefox\//i.test(navigator.userAgent || '')
+      ? 'https://addons.mozilla.org/en-US/firefox/addon/play-connect/'
+      : 'https://chromewebstore.google.com/detail/play-connect/mpebmfjcdkflgiloecjonopfknojdaip';
     const home = document.createElement('section');
     home.className = 'landing-main ps8-home';
     home.innerHTML = `
@@ -374,7 +377,7 @@
         <div class="ps82-motion-field" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><span></span><span></span></div>
         <div class="ps82-orbits" aria-hidden="true"><i></i><i></i></div>
         <div class="ps8-hero-copy">
-          <span class="ps8-version"><i></i> PLAY STREAMERS WEB · v10.25.0</span>
+          <span class="ps8-version"><i></i> PLAY STREAMERS WEB · v10.26.0</span>
           <h1 id="ps8-title" aria-label="PLAY STREAMERS"><span>PLAY</span><span>STREAMERS</span></h1>
           <h2>Profesyonel Yayıncı Kontrol Platformu</h2>
           <p>Canlı analiz · İçerik planlama · Topluluk · Marka · Play Connect</p>
@@ -451,7 +454,7 @@
         </div>
         <nav class="ps92-brand-directory" aria-label="Play Streamers ürün bağlantıları">
           <a class="ps92-swcreate-link" href="https://swcreate.com" target="_blank" rel="noopener noreferrer"><span>GELİŞTİREN EKOSİSTEM</span><b>SW CREATE</b><i>↗</i></a>
-          <div><a href="https://pstreamers.com">Play Streamers Web <i>↗</i></a><a href="./play-connect-v1.15.1.zip" download>Play Connect <i>↓</i></a><a href="./downloads/Play-Streamers-Setup.exe" download>Play Streamers App <i>↓</i></a></div>
+          <div><a href="https://pstreamers.com">Play Streamers Web <i>↗</i></a><a href="${playConnectStoreUrl}" target="_blank" rel="noopener noreferrer">Play Connect <i>↗</i></a><a href="./downloads/Play-Streamers-Setup.exe" download>Play Streamers App <i>↓</i></a></div>
         </nav>
       </section>
 

@@ -11,14 +11,14 @@ test('site 10 assets are cache-busted and use fluid monochrome glass', async () 
     read('site-v7.css'),
     read('play-streamers-ps-logo.svg'),
   ]);
-  assert.match(html, /play-streamers-build" content="2026-09-01-site-10\.25\.0"/);
-  assert.match(html, /site-v7\.css\?v=10\.25\.0/);
+  assert.match(html, /play-streamers-build" content="2026-09-01-site-10\.26\.0"/);
+  assert.match(html, /site-v7\.css\?v=10\.26\.0/);
   assert.match(html, /app\.js\?v=5\.8\.0/);
-  assert.match(html, /site-v7\.js\?v=10\.19\.0/);
-  assert.match(html, /app-final\.js\?v=5\.22\.0/);
+  assert.match(html, /site-v7\.js\?v=10\.20\.0/);
+  assert.match(html, /app-final\.js\?v=5\.23\.0/);
   assert.match(html, /window\.ps125ReleaseFirstPaint = releaseFirstPaint/);
   assert.match(html, /window\.setTimeout\(releaseFirstPaint, 4800\)/);
-  assert.match(html, /live-i18n\.js\?v=10\.3\.0/);
+  assert.match(html, /live-i18n\.js\?v=10\.4\.0/);
   assert.match(css, /html\[data-ps-site-version="8"\]/);
   assert.match(css, /--signal: #f5f5f2/);
   assert.match(css, /@keyframes ps82-meteor/);
@@ -152,8 +152,8 @@ test('SW Bot audits deterministically and translation generation is release-only
   assert.match(worker, /swBotDeterministicReport/);
   assert.match(worker, /resolveSwBotReports/);
   assert.match(worker, /sw_bot_issue_reports/);
-  assert.match(worker, /site-v7\.css\?v=10\.25\.0/);
-  assert.match(worker, /site-v7\.js\?v=10\.19\.0/);
+  assert.match(worker, /site-v7\.css\?v=10\.26\.0/);
+  assert.match(worker, /site-v7\.js\?v=10\.20\.0/);
   assert.match(worker, /\/api\/i18n\/translate/);
   assert.match(worker, /i18n:v9/);
   assert.match(worker, /translationProvider: "local-static-build"/);
@@ -165,7 +165,7 @@ test('SW Bot audits deterministically and translation generation is release-only
   assert.match(worker, /EXCHANGE_CACHE_SECONDS/);
   assert.doesNotMatch(worker, /EXCHANGE.*KV/);
   assert.match(worker, /Fransızca dil paketi/);
-  assert.match(worker, /locales\/fr\.json\?v=2026-08-31\.1/);
+  assert.match(worker, /locales\/fr\.json\?v=2026-09-01\.2/);
   assert.match(worker, /content-security-policy/);
   assert.match(worker, /frame-ancestors 'none'/);
   assert.match(worker, /strict-transport-security/);
@@ -254,12 +254,12 @@ test('versioned locale catalogs cover public, account, support and legal surface
     'Hedef panosu', 'Hedef adı', 'İlerleme', 'Dashboard verisini indir',
     'Taslak oluştur', 'Anlık görüntü kaydet', 'Henüz anlık görüntü yok.',
     'E-posta adresini değiştir', 'Şifreyi güncelle', 'Kodu gönder',
-    'Profil görünümü', 'Profili kaydet', 'E-posta', 'Doğrulanmış',
+    'SW profil görünümü', 'Profili kaydet', 'E-posta', 'Doğrulanmış',
     'Play Bot, SW Bot oldu; canlı dosyalar, arayüz kontrolleri, bağlantılar ve katman çakışmaları daha geniş kapsamda denetleniyor.',
   ];
   for (const language of ['en', 'de', 'es', 'fr', 'ru', 'ar', 'ja']) {
     const catalog = JSON.parse(await read(`locales/${language}.json`));
-    assert.equal(catalog.version, '2026-08-31.1');
+    assert.equal(catalog.version, '2026-09-01.2');
     assert.equal(catalog.sourceLanguage, 'tr');
     assert.equal(catalog.language, language);
     assert.ok(Object.keys(catalog.translations).length >= 1000);
@@ -269,6 +269,21 @@ test('versioned locale catalogs cover public, account, support and legal surface
     assert.ok(catalog.translations['Hey, geleceğin yayıncısı burada mısın?'], `${language}: astronot selamlaması`);
     assert.ok(catalog.translations['Buradaysan ben gidiyorum.'], `${language}: astronot vedası`);
   }
+});
+
+test('account analytics and profile controls keep server-backed contracts', async () => {
+  const [app, worker, site] = await Promise.all([read('app-final.js'), read('cloudflare-worker.js'), read('site-v7.js')]);
+  assert.match(app, /class="ps69-day-bar\$\{point\.valid \? '' : ' is-missing'\}"/);
+  assert.match(app, /GÜNÜN ZİRVESİ/);
+  assert.match(app, /prepareAccountLogo/);
+  assert.match(app, /id="ps55DeleteAccount"/);
+  assert.match(app, /chromewebstore\.google\.com\/detail\/play-connect\/mpebmfjcdkflgiloecjonopfknojdaip/);
+  assert.match(app, /addons\.mozilla\.org\/en-US\/firefox\/addon\/play-connect/);
+  assert.match(worker, /ROW_NUMBER\(\) OVER \(PARTITION BY metric_date ORDER BY observed_at DESC, metric_hour DESC\)/);
+  assert.match(worker, /month_followers_count = excluded\.month_followers_count/);
+  assert.match(worker, /data:image\\\/\(\?:png\|jpeg\|webp\)/);
+  assert.match(site, /chromewebstore\.google\.com\/detail\/play-connect\/mpebmfjcdkflgiloecjonopfknojdaip/);
+  assert.match(site, /addons\.mozilla\.org\/en-US\/firefox\/addon\/play-connect/);
 });
 
 test('desktop installer referenced by the public home exists', async () => {

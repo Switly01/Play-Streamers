@@ -85,7 +85,10 @@
     "CREATOR OPERATING SYSTEM": "ОПЕРАЦИОННАЯ СИСТЕМА АВТОРА",
     "ESKİ TALEPLER": "ПРЕДЫДУЩИЕ ЗАПРОСЫ",
     "hesap": "аккаунт",
-    "YAYINCI PANELİNİ SIFIRLA": "СБРОСИТЬ ПАНЕЛЬ СТРИМЕРА"
+    "YAYINCI PANELİNİ SIFIRLA": "СБРОСИТЬ ПАНЕЛЬ СТРИМЕРА",
+    "SW Çekirdek": "SW Ядро",
+    "SW Düğüm": "SW Узел",
+    "SW Yörünge": "SW Орбита"
   },
   "ar": {
     "Profil görünümü": "مظهر الملف الشخصي",
@@ -162,7 +165,16 @@
     "YANIT BEKLİYOR": "بانتظار الرد",
     "Yayıncı bağışı olmayan satış, üyelik, hediye ve genel bağış toplama servisleriyle GameSatış ve ItemSultan katalogdan çıkarıldı.": "تمت إزالة خدمات البيع والعضوية والهدايا وجمع التبرعات العامة التي لا تقدم تبرعات مباشرة لصانع المحتوى، إلى جانب GameSatış وItemSultan، من القائمة.",
     "YAYINCI PANELİNİ SIFIRLA": "إعادة ضبط لوحة صانع المحتوى",
-    "YEDEK KODLARI YENİLE": "تجديد الرموز الاحتياطية"
+    "YEDEK KODLARI YENİLE": "تجديد الرموز الاحتياطية",
+    "E-posta adresin merkezi SW hesabında güncellendi.": "تم تحديث عنوان بريدك الإلكتروني في حساب SW المركزي.",
+    "Logo güvenli boyuta küçültülüp Play Streamers hesabındaki tüm cihazlarda kullanılacak.": "سيتم تصغير الشعار إلى حجم آمن واستخدامه على جميع الأجهزة في حساب Play Streamers.",
+    "Logo seç": "اختيار شعار",
+    "SW Çekirdek": "نواة SW",
+    "SW Düğüm": "عقدة SW",
+    "SW Identity hesabı": "حساب SW Identity",
+    "SW profil görünümü": "مظهر ملف SW الشخصي",
+    "SW profilin bütün bağlı ürünler için güncellendi.": "تم تحديث ملف SW الشخصي لجميع المنتجات المرتبطة.",
+    "SW Yörünge": "مدار SW"
   },
   "ja": {
     "Sinyal": "シグナル",

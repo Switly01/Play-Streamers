@@ -4850,3 +4850,23 @@ body.ps-v9:not(.auth-locked) #ps9Ambient :is(i,span,b) {
   body.ps-v9 .ps92-warp-field i:nth-child(n+13),
   body.ps-v9 .ps82-motion-field > :nth-child(n+5) { display:none!important; }
 }
+
+/* Site 10.23 — keep the mobile support action away from the navigation.
+   A legacy auth-locked rule moved it into the top-right action cluster, where
+   it could cover the language, status or account buttons on narrow screens. */
+@media(max-width:760px) {
+  body.ps-v9.auth-locked #ps46Support,
+  body.ps-v8.auth-locked #ps46Support {
+    top:auto!important;
+    right:max(12px,env(safe-area-inset-right))!important;
+    bottom:max(12px,env(safe-area-inset-bottom))!important;
+    width:48px!important;
+    height:48px!important;
+    opacity:.92!important;
+  }
+  body.ps-v9.auth-locked #ps46Support .ps46-support-link,
+  body.ps-v8.auth-locked #ps46Support .ps46-support-link {
+    width:48px!important;
+    height:48px!important;
+  }
+}

@@ -11,10 +11,10 @@ test('site 10 assets are cache-busted and use fluid monochrome glass', async () 
     read('site-v7.css'),
     read('play-streamers-ps-logo.svg'),
   ]);
-  assert.match(html, /play-streamers-build" content="2026-08-31-site-10\.22\.0"/);
-  assert.match(html, /site-v7\.css\?v=10\.22\.0/);
+  assert.match(html, /play-streamers-build" content="2026-09-01-site-10\.23\.0"/);
+  assert.match(html, /site-v7\.css\?v=10\.23\.0/);
   assert.match(html, /app\.js\?v=5\.8\.0/);
-  assert.match(html, /site-v7\.js\?v=10\.16\.0/);
+  assert.match(html, /site-v7\.js\?v=10\.17\.0/);
   assert.match(html, /app-final\.js\?v=5\.20\.0/);
   assert.match(html, /live-i18n\.js\?v=10\.3\.0/);
   assert.match(css, /html\[data-ps-site-version="8"\]/);
@@ -55,6 +55,7 @@ test('site 10 assets are cache-busted and use fluid monochrome glass', async () 
   assert.match(css, /Site 10\.20/);
   assert.match(css, /Site 10\.21/);
   assert.match(css, /Site 10\.22/);
+  assert.match(css, /Site 10\.23/);
   assert.match(css, /content-visibility:auto/);
   assert.match(css, /ps-perf-offscreen/);
   assert.match(css, /\.ps63-provider-chip>img\[hidden\]/);
@@ -147,8 +148,8 @@ test('SW Bot audits deterministically and translation generation is release-only
   assert.match(worker, /swBotDeterministicReport/);
   assert.match(worker, /resolveSwBotReports/);
   assert.match(worker, /sw_bot_issue_reports/);
-  assert.match(worker, /site-v7\.css\?v=10\.22\.0/);
-  assert.match(worker, /site-v7\.js\?v=10\.16\.0/);
+  assert.match(worker, /site-v7\.css\?v=10\.23\.0/);
+  assert.match(worker, /site-v7\.js\?v=10\.17\.0/);
   assert.match(worker, /\/api\/i18n\/translate/);
   assert.match(worker, /i18n:v9/);
   assert.match(worker, /translationProvider: "local-static-build"/);

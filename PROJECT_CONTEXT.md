@@ -1,6 +1,14 @@
 # Play Streamers — Kalıcı Proje Bağlamı
 
-## Güncel geliştirme durumu · 31 Ağustos 2026
+## Güncel geliştirme durumu · 1 Eylül 2026
+
+Site 10.23.0 / Worker 7.6 görsel ve yayın denetimi: Mobil ana sayfada eski
+oturum kilidi kuralının destek düğmesini üst sağdaki dil, sistem durumu ve hesap
+düğmelerinin üzerine taşıması giderildi; destek düğmesi güvenli ekran boşlukları
+korunarak yeniden sağ alta sabitlendi. Ana sayfadaki görünür Web sürüm etiketi
+gerçek sürümle eşitlendi. Microsoft Partner Center'da 0.14.4.0 paketinin
+sertifikasyonu tamamlanmış, Submission 2'nin mağazada olduğu ve doğrudan Windows
+kurucusu ile güncelleme bildiriminin erişilebilir olduğu doğrulandı.
 
 Site 10.22.0 / Worker 7.5 genel performans revizyonu: Çeviri gözlemcisi artık
 menü, tooltip ve kartların yalnız görünürlüğü değiştiğinde tüm belgeyi yeniden

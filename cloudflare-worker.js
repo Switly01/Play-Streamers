@@ -78,8 +78,8 @@ const DONATE_OAUTH_PROVIDERS = Object.freeze({
     clientSecretVariable: "TIPEEESTREAM_CLIENT_SECRET",
   }),
 });
-const CURRENT_RELEASE_VERSION = "7.5";
-const CURRENT_RELEASE_PUBLISHED_AT = "2026-08-31T19:58:00+03:00";
+const CURRENT_RELEASE_VERSION = "7.6";
+const CURRENT_RELEASE_PUBLISHED_AT = "2026-09-01T16:10:00+03:00";
 const EXCHANGE_CURRENCIES = Object.freeze(["EUR", "TRY", "USD", "RUB", "SAR", "JPY"]);
 const EXCHANGE_CACHE_SECONDS = 60 * 60;
 const SW_IDENTITY_ORIGIN = "https://api.swcreate.com";
@@ -857,7 +857,7 @@ async function runScheduledPlayBotAudit(env) {
     ["Ana sayfa", "https://pstreamers.com/", "document"],
     ["Ana uygulama betiği", "https://pstreamers.com/app.js?v=5.8.0", "script"],
     ["Uygulama betiği", "https://pstreamers.com/app-final.js?v=5.20.0", "script"],
-    ["Site davranış betiği", "https://pstreamers.com/site-v7.js?v=10.16.0", "script"],
+    ["Site davranış betiği", "https://pstreamers.com/site-v7.js?v=10.17.0", "script"],
     ["Sabit çeviri betiği", "https://pstreamers.com/live-i18n.js?v=10.3.0", "script"],
     ["İngilizce dil paketi", "https://pstreamers.com/locales/en.json?v=2026-08-31.1", "json"],
     ["Almanca dil paketi", "https://pstreamers.com/locales/de.json?v=2026-08-31.1", "json"],
@@ -866,7 +866,7 @@ async function runScheduledPlayBotAudit(env) {
     ["Rusça dil paketi", "https://pstreamers.com/locales/ru.json?v=2026-08-31.1", "json"],
     ["Arapça dil paketi", "https://pstreamers.com/locales/ar.json?v=2026-08-31.1", "json"],
     ["Japonca dil paketi", "https://pstreamers.com/locales/ja.json?v=2026-08-31.1", "json"],
-    ["Premium stil dosyası", "https://pstreamers.com/site-v7.css?v=10.22.0", "style"],
+    ["Premium stil dosyası", "https://pstreamers.com/site-v7.css?v=10.23.0", "style"],
     ["Oturum başlangıç betiği", "https://pstreamers.com/session-bootstrap.js?v=1.2", "script"],
     ["Site yönlendiricisi", "https://pstreamers.com/site-router.js?v=1.1", "script"],
     ["Sunucu analiz betiği", "https://pstreamers.com/server-analytics.js?v=6.1", "script"],
@@ -951,12 +951,12 @@ async function runScheduledPlayBotAudit(env) {
   const homeDocument = results.find(result => result.type === "document");
   if (homeDocument?.ok) {
     const documentContracts = [
-      ["site-v7.css?v=10.22.0", "Güncel premium stil dosyası"],
+      ["site-v7.css?v=10.23.0", "Güncel premium stil dosyası"],
       ["app.js?v=5.8.0", "Güncel ana uygulama betiği"],
       ["app-final.js?v=5.20.0", "Güncel onarım betiği"],
-      ["site-v7.js?v=10.16.0", "Güncel site davranış betiği"],
+      ["site-v7.js?v=10.17.0", "Güncel site davranış betiği"],
       ["live-i18n.js?v=10.3.0", "Güncel sabit paket çeviri betiği"],
-      ["play-streamers-build\" content=\"2026-08-31-site-10.22.0", "Site 10.22.0 sürüm işareti"],
+      ["play-streamers-build\" content=\"2026-09-01-site-10.23.0", "Site 10.23.0 sürüm işareti"],
     ];
     for (const [token, label] of documentContracts) {
       if (!homeDocument.body.includes(token)) issues.push(`${label} canlı ana sayfaya bağlanmamış.`);

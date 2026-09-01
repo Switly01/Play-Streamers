@@ -78,8 +78,8 @@ const DONATE_OAUTH_PROVIDERS = Object.freeze({
     clientSecretVariable: "TIPEEESTREAM_CLIENT_SECRET",
   }),
 });
-const CURRENT_RELEASE_VERSION = "8.1";
-const CURRENT_RELEASE_PUBLISHED_AT = "2026-09-01T21:26:00+03:00";
+const CURRENT_RELEASE_VERSION = "8.2";
+const CURRENT_RELEASE_PUBLISHED_AT = "2026-09-01T23:32:54+03:00";
 const EXCHANGE_CURRENCIES = Object.freeze(["EUR", "TRY", "USD", "RUB", "SAR", "JPY"]);
 const EXCHANGE_CACHE_SECONDS = 5 * 60;
 const SW_IDENTITY_ORIGIN = "https://api.swcreate.com";
@@ -862,13 +862,13 @@ async function runScheduledPlayBotAudit(env) {
     ["Uygulama betiği", "https://pstreamers.com/app-final.js?v=5.25.0", "script"],
     ["Site davranış betiği", "https://pstreamers.com/site-v7.js?v=10.22.0", "script"],
     ["Sabit çeviri betiği", "https://pstreamers.com/live-i18n.js?v=10.5.0", "script"],
-    ["İngilizce dil paketi", "https://pstreamers.com/locales/en.json?v=2026-09-01.3", "json"],
-    ["Almanca dil paketi", "https://pstreamers.com/locales/de.json?v=2026-09-01.3", "json"],
-    ["İspanyolca dil paketi", "https://pstreamers.com/locales/es.json?v=2026-09-01.3", "json"],
-    ["Fransızca dil paketi", "https://pstreamers.com/locales/fr.json?v=2026-09-01.3", "json"],
-    ["Rusça dil paketi", "https://pstreamers.com/locales/ru.json?v=2026-09-01.3", "json"],
-    ["Arapça dil paketi", "https://pstreamers.com/locales/ar.json?v=2026-09-01.3", "json"],
-    ["Japonca dil paketi", "https://pstreamers.com/locales/ja.json?v=2026-09-01.3", "json"],
+    ["İngilizce dil paketi", "https://pstreamers.com/locales/en.json?v=2026-09-01.4", "json"],
+    ["Almanca dil paketi", "https://pstreamers.com/locales/de.json?v=2026-09-01.4", "json"],
+    ["İspanyolca dil paketi", "https://pstreamers.com/locales/es.json?v=2026-09-01.4", "json"],
+    ["Fransızca dil paketi", "https://pstreamers.com/locales/fr.json?v=2026-09-01.4", "json"],
+    ["Rusça dil paketi", "https://pstreamers.com/locales/ru.json?v=2026-09-01.4", "json"],
+    ["Arapça dil paketi", "https://pstreamers.com/locales/ar.json?v=2026-09-01.4", "json"],
+    ["Japonca dil paketi", "https://pstreamers.com/locales/ja.json?v=2026-09-01.4", "json"],
     ["Premium stil dosyası", "https://pstreamers.com/site-v7.css?v=10.27.0", "style"],
     ["Oturum başlangıç betiği", "https://pstreamers.com/session-bootstrap.js?v=1.2", "script"],
     ["Site yönlendiricisi", "https://pstreamers.com/site-router.js?v=1.1", "script"],
@@ -946,7 +946,7 @@ async function runScheduledPlayBotAudit(env) {
       const validPayload = result.label === "Windows güncelleme bildirimi"
         ? Boolean(payload?.version && hasUpdaterPlatforms)
         : localeCatalog
-        ? Boolean(payload?.version === "2026-09-01.3" && payload?.sourceLanguage === "tr" && payload?.language && Object.keys(payload?.translations || {}).length >= 1220)
+        ? Boolean(payload?.version === "2026-09-01.4" && payload?.sourceLanguage === "tr" && payload?.language && Object.keys(payload?.translations || {}).length >= 1220)
           : Boolean(payload?.ok);
       if (!validPayload) issues.push(`${result.label} geçerli bir JSON yanıtı döndürmüyor.`);
     }
@@ -8436,7 +8436,7 @@ function isExtensionTranslationRequest(request, origin) {
 }
 
 async function readPublicExchangeRates(request) {
-  const cacheKey = new Request(`${API_ORIGIN}/__edge-cache/exchange-rates-v2`, { method: "GET" });
+  const cacheKey = new Request(`${API_ORIGIN}/__edge-cache/exchange-rates-v3`, { method: "GET" });
   const forceRefresh = new URL(request.url).searchParams.has("refresh");
   if (!forceRefresh) {
     try {
@@ -8455,32 +8455,53 @@ async function readPublicExchangeRates(request) {
     fetch(`https://api.frankfurter.dev/v2/rates?base=EUR&quotes=${quotes}`, {
       headers: { accept: "application/json" },
       cf: { cacheEverything: true, cacheTtl: EXCHANGE_CACHE_SECONDS },
-    }),
+    }).catch(() => null),
     fetch("https://www.tcmb.gov.tr/kurlar/today.xml", {
       headers: { accept: "application/xml,text/xml;q=0.9,*/*;q=0.5" },
       cf: { cacheEverything: true, cacheTtl: EXCHANGE_CACHE_SECONDS },
     }).catch(() => null),
   ]);
-  const providerRows = await providerResponse.json().catch(() => []);
-  if (!providerResponse.ok || !Array.isArray(providerRows)) {
-    return apiResponse(request, { error: "Güncel kur verisi şu anda alınamadı.", code: "EXCHANGE_PROVIDER_UNAVAILABLE" }, 503);
-  }
-  const rates = { EUR: 1 };
+  const providerRows = providerResponse?.ok ? await providerResponse.json().catch(() => []) : [];
+  const eurRates = { EUR: 1 };
   let rateDate = "";
-  providerRows.forEach(row => {
+  (Array.isArray(providerRows) ? providerRows : []).forEach(row => {
     const quote = String(row?.quote || "").toUpperCase();
     const rate = Number(row?.rate);
-    if (EXCHANGE_CURRENCIES.includes(quote) && Number.isFinite(rate) && rate > 0) rates[quote] = rate;
+    if (EXCHANGE_CURRENCIES.includes(quote) && Number.isFinite(rate) && rate > 0) eurRates[quote] = rate;
     if (!rateDate && /^\d{4}-\d{2}-\d{2}$/.test(String(row?.date || ""))) rateDate = String(row.date);
   });
-  let tryRateSource = "ECB";
+  const tryPerCurrency = { TRY: 1 };
+  let tcmbReady = false;
   if (tcmbResponse?.ok) {
     const tcmbXml = await tcmbResponse.text().catch(() => "");
-    const eurBlock = tcmbXml.match(/<Currency\b[^>]*(?:Kod|CurrencyCode)="EUR"[^>]*>([\s\S]*?)<\/Currency>/i)?.[1] || "";
-    const tcmbSelling = Number(eurBlock.match(/<ForexSelling>([^<]+)<\/ForexSelling>/i)?.[1]);
-    if (Number.isFinite(tcmbSelling) && tcmbSelling > 0) {
-      rates.TRY = tcmbSelling;
-      tryRateSource = "TCMB döviz satış";
+    const tcmbDate = tcmbXml.match(/<Tarih_Date\b[^>]*\bDate="(\d{2})\/(\d{2})\/(\d{4})"/i);
+    if (tcmbDate) rateDate = `${tcmbDate[3]}-${tcmbDate[1]}-${tcmbDate[2]}`;
+    for (const currency of EXCHANGE_CURRENCIES.filter(item => item !== "TRY")) {
+      const block = tcmbXml.match(new RegExp(`<Currency\\b[^>]*(?:Kod|CurrencyCode)="${currency}"[^>]*>([\\s\\S]*?)<\\/Currency>`, "i"))?.[1] || "";
+      const unit = Number(block.match(/<Unit>([^<]+)<\/Unit>/i)?.[1] || 1);
+      const selling = Number(block.match(/<ForexSelling>([^<]+)<\/ForexSelling>/i)?.[1]);
+      if (Number.isFinite(unit) && unit > 0 && Number.isFinite(selling) && selling > 0) {
+        tryPerCurrency[currency] = selling / unit;
+      }
+    }
+    tcmbReady = Number.isFinite(tryPerCurrency.EUR) && tryPerCurrency.EUR > 0;
+  }
+  // TCMB publishes TRY required for one unit of each currency (JPY can have
+  // Unit=100). The public contract uses "target units per one base unit", so
+  // expose a true TRY base and pivot provider fallbacks through TCMB EUR/TRY.
+  const rates = { TRY: 1 };
+  if (tcmbReady) {
+    for (const currency of EXCHANGE_CURRENCIES.filter(item => item !== "TRY")) {
+      if (Number.isFinite(tryPerCurrency[currency]) && tryPerCurrency[currency] > 0) {
+        rates[currency] = 1 / tryPerCurrency[currency];
+      } else if (Number.isFinite(eurRates[currency]) && eurRates[currency] > 0) {
+        rates[currency] = eurRates[currency] / tryPerCurrency.EUR;
+      }
+    }
+  } else if (Number.isFinite(eurRates.TRY) && eurRates.TRY > 0) {
+    for (const currency of EXCHANGE_CURRENCIES) {
+      if (currency === "TRY") continue;
+      if (Number.isFinite(eurRates[currency]) && eurRates[currency] > 0) rates[currency] = eurRates[currency] / eurRates.TRY;
     }
   }
   if (!EXCHANGE_CURRENCIES.every(currency => Number.isFinite(rates[currency]))) {
@@ -8488,11 +8509,11 @@ async function readPublicExchangeRates(request) {
   }
   const body = {
     ok: true,
-    base: "EUR",
+    base: "TRY",
     rates,
     rateDate,
     refreshedAt: new Date().toISOString(),
-    provider: `${tryRateSource} · ECB/Frankfurter referansları`,
+    provider: tcmbReady ? "TCMB döviz satış · ECB/Frankfurter yedek" : "ECB/Frankfurter referansı",
     updateIntervalSeconds: EXCHANGE_CACHE_SECONDS,
   };
   try {

@@ -2,6 +2,26 @@
 
 ## Güncel geliştirme durumu · 1 Eylül 2026
 
+Site 10.29.0 / Worker 8.2 / Desktop 0.14.5 kur, hesap ve mağaza görseli
+revizyonu: kur paneli artık seçili bölgenin para birimini kaynak kabul eder;
+örneğin Türkiye'de 1 TRY'nin EUR, USD, RUB, SAR ve JPY karşılıkları gösterilir.
+TCMB döviz satış verileri, para birimi birimleri (JPY/100 dahil) doğru
+hesaplanarak kullanılır; ECB/Frankfurter yalnız yedektir. Panel başlığı
+sadeleştirildi, kapatma ve yenileme kontrolleri sağlamlaştırıldı. Son 90 günlük
+grafikte verisi olmayan günler beyaz veri sütunu üretmez. Profil seçimi hem SW
+Identity ile hem Play Streamers ürün profiliyle eşitlenir ve Hesabım başlığındaki
+fotoğrafı anında günceller. Hesap silme metni merkezi SW Identity hesabının
+korunduğunu açıkça belirtir. Play Connect, SSB, DAB, bağış olayı, olay ayrıntısı
+ve büyütülmüş Dashboard kartlarının aralıkları, logo ölçüleri ve etkileşimleri
+yenilendi; bütün yeni olay türleri kısa bir vurgu animasyonu alır.
+
+Masaüstü uygulaması ve Microsoft Store paketi güncel dengeli PS amblemiyle
+yeniden üretildi. Paket içindeki Windows görselleri ile 300×300, 150×150 ve
+71×71 mağaza görsellerinin tamamı koyu, opak zemin kullanır. 0.14.5.0 x64 MSIX
+Windows App Certification Kit 10.0.26100.7705 denetimini
+`OVERALL_RESULT="PASS"` ile tamamladı; SHA-256 değeri
+`4D5C576E942A8FEC17CD9A69CE9217352847015C71FB2FE58E1939E8F9FC4758`.
+
 Site 10.28.0 / Worker 8.1 Store Web Installer revizyonu: ana sayfa, ürünler,
 ürün ailesi, son çağrı ve üye üst çubuğundaki bütün Windows kurulum eylemleri
 Microsoft'un Play Streamers ürün kimliğine özel Direct Web Installer adresine

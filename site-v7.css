@@ -5425,3 +5425,73 @@ body.ps-v9 #ps51AccountCenter .ps126-custom-logo { border-radius:16px!important;
 @media(max-width:520px) {
   #ps119ExchangePanel .ps127-rate-meta,#ps119ExchangePanel .ps127-rate-table dl { grid-template-columns:1fr!important; }
 }
+
+/* Site 10.29 — currency base correctness, synchronized identity artwork,
+   stable event cards and repaired connection/detail surfaces. */
+#ps119ExchangePanel header button { position:relative!important;z-index:3!important;display:grid!important;width:34px!important;height:34px!important;min-width:34px!important;place-items:center!important;cursor:pointer!important;pointer-events:auto!important; }
+#ps119ExchangePanel>strong { display:block!important;margin:14px 0 16px!important;font-size:17px!important;line-height:1.35!important; }
+body.ps-v9 #ps59AccountDataDialog .ps69-day-bar.is-missing { fill:transparent!important;stroke:rgba(255,255,255,.18)!important;stroke-width:1!important;stroke-dasharray:4 4!important;opacity:.55!important; }
+
+body.ps-v9 #ps51AccountCenter .ps119-account-user>.ps129-account-avatar { display:grid!important;overflow:hidden!important;place-items:center!important;color:#fff!important; }
+body.ps-v9 #ps51AccountCenter .ps129-account-avatar :is(img,svg) { display:block!important;width:100%!important;height:100%!important;max-width:100%!important;max-height:100%!important;object-fit:cover!important; }
+body.ps-v9 #ps51AccountCenter .ps129-account-avatar svg { padding:7px!important;fill:none!important;stroke:currentColor!important;stroke-width:2.15!important; }
+
+body.ps-v9 #ps51AccountCenter .ps62-bridge-card { display:grid!important;gap:18px!important; }
+body.ps-v9 #ps51AccountCenter .ps62-bridge-head { display:grid!important;grid-template-columns:58px minmax(0,1fr) auto!important;align-items:center!important;gap:16px!important; }
+body.ps-v9 #ps51AccountCenter .ps62-bridge-mark { display:grid!important;width:58px!important;height:58px!important;place-items:center!important;overflow:hidden!important;border-radius:15px!important;background:rgba(255,255,255,.045)!important; }
+body.ps-v9 #ps51AccountCenter .ps62-bridge-mark img { width:38px!important;height:38px!important;max-width:38px!important;max-height:38px!important;object-fit:contain!important; }
+body.ps-v9 #ps51AccountCenter :is(.ps66-webhooks,.ps67-oauth) { display:grid!important;gap:15px!important;margin-top:4px!important;border:1px solid rgba(255,255,255,.1)!important;border-radius:18px!important;padding:18px!important;background:linear-gradient(145deg,rgba(255,255,255,.045),rgba(255,255,255,.018))!important; }
+body.ps-v9 #ps51AccountCenter :is(.ps66-title,.ps67-oauth-title)>span { display:grid!important;grid-template-columns:48px minmax(0,1fr)!important;align-items:start!important;gap:14px!important; }
+body.ps-v9 #ps51AccountCenter :is(.ps66-title,.ps67-oauth-title) b { display:grid!important;min-height:34px!important;place-items:center!important;border:1px solid rgba(255,255,255,.16)!important;border-radius:10px!important;background:rgba(255,255,255,.06)!important;letter-spacing:.12em!important; }
+body.ps-v9 #ps51AccountCenter :is(.ps66-title,.ps67-oauth-title) small { margin:0!important;padding-top:2px!important; }
+body.ps-v9 #ps51AccountCenter .ps66-create { display:grid!important;grid-template-columns:minmax(0,1fr) auto!important;align-items:end!important;gap:12px!important; }
+body.ps-v9 #ps51AccountCenter .ps66-provider-control { width:100%!important;min-height:64px!important; }
+body.ps-v9 #ps51AccountCenter .ps67-oauth-grid { display:grid!important;gap:10px!important; }
+body.ps-v9 #ps51AccountCenter .ps67-oauth-card { display:grid!important;grid-template-columns:48px minmax(0,1fr) auto!important;align-items:center!important;gap:13px!important;min-height:78px!important; }
+body.ps-v9 #ps51AccountCenter .ps67-oauth-icon { display:grid!important;width:48px!important;height:48px!important;place-items:center!important;overflow:hidden!important;border-radius:12px!important; }
+body.ps-v9 #ps51AccountCenter .ps67-oauth-icon img { width:34px!important;height:34px!important;max-width:34px!important;max-height:34px!important;object-fit:contain!important; }
+body.ps-v9 #ps51AccountCenter .ps62-pairing { display:grid!important;grid-template-columns:minmax(0,1fr) auto!important;align-items:center!important;gap:18px!important;border:1px solid rgba(255,255,255,.13)!important; }
+body.ps-v9 #ps51AccountCenter .ps62-pairing>span { display:grid!important;gap:7px!important; }
+body.ps-v9 #ps51AccountCenter .ps62-pairing code { width:max-content!important;border-radius:10px!important;padding:10px 14px!important;background:#050506!important;font-size:22px!important; }
+
+body.ps-v9 #panelGrid .entries li.ps129-event-arrived { animation:ps129EventArrived 2.4s cubic-bezier(.2,.75,.2,1) both!important; }
+@keyframes ps129EventArrived { 0% { border-color:rgba(255,255,255,.7);background:rgba(255,255,255,.22);box-shadow:0 0 0 0 rgba(255,255,255,.35),0 0 34px rgba(255,255,255,.24);transform:translateY(-3px); } 28% { box-shadow:0 0 0 7px rgba(255,255,255,0),0 0 28px rgba(255,255,255,.18); } 100% { transform:none; } }
+body.ps-v9 :is(#panelGrid,#modal) .source-badge.has-image img,body.ps-v9 #modal .event-source-brand img { object-position:center!important;transform:none!important; }
+body.ps-v9 #modal .event-detail-dialog { width:min(720px,calc(100vw - 28px))!important;max-height:calc(100dvh - 28px)!important;overflow:auto!important;border:1px solid rgba(255,255,255,.16)!important;border-radius:24px!important;padding:30px!important;background:radial-gradient(circle at 100% 0,rgba(255,255,255,.1),transparent 36%),rgba(9,10,12,.97)!important; }
+body.ps-v9 #modal .event-source-brand { display:flex!important;align-items:center!important;gap:12px!important;margin:14px 0!important; }
+body.ps-v9 #modal .event-source-brand img { display:block!important;width:34px!important;height:34px!important;max-width:34px!important;max-height:34px!important;border-radius:9px!important;object-fit:contain!important; }
+body.ps-v9 #modal .event-detail-grid { display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:10px!important;margin:20px 0!important; }
+body.ps-v9 #modal .event-detail-grid>div { min-width:0!important;border:1px solid rgba(255,255,255,.09)!important;border-radius:14px!important;padding:14px!important;background:rgba(255,255,255,.035)!important; }
+body.ps-v9 #modal .event-detail-grid :is(dt,dd) { margin:0!important;overflow-wrap:anywhere!important; }
+body.ps-v9 #modal .event-detail-grid dt { color:rgba(255,255,255,.45)!important;font-size:9px!important; }
+body.ps-v9 #modal .event-detail-grid dd { margin-top:7px!important;color:#fff!important;font-size:15px!important;font-weight:800!important; }
+body.ps-v9 #modal .event-detail-message { border-radius:16px!important;padding:18px!important;background:rgba(255,255,255,.045)!important; }
+
+#ps13CardCopy { align-content:center!important;justify-content:center!important; }
+#ps13CardCopy>.ps13-card-copy { display:flex!important;flex-direction:column!important;width:min(980px,calc(100vw - 32px))!important;height:min(720px,calc(100dvh - 32px))!important;min-height:0!important;overflow:hidden!important;border:1px solid rgba(255,255,255,.18)!important;border-radius:24px!important;background:rgba(9,10,12,.98)!important;box-shadow:0 30px 90px rgba(0,0,0,.62)!important; }
+#ps13CardCopy>.ps13-card-copy>.card-body { display:flex!important;flex:1 1 auto!important;min-height:0!important;flex-direction:column!important;padding:26px!important; }
+#ps13CardCopy>.ps13-card-copy .card-head { display:flex!important;min-height:58px!important;align-items:center!important;gap:14px!important;padding-right:52px!important; }
+#ps13CardCopy>.ps13-card-copy .card-head>.title { display:flex!important;min-width:0!important;align-items:center!important;gap:12px!important; }
+#ps13CardCopy>.ps13-card-copy .card-head h2 { margin:0!important;color:#f7f7f4!important;font-size:24px!important;line-height:1.1!important; }
+#ps13CardCopy>.ps13-card-copy .card-head .count { color:#f7f7f4!important;font-size:25px!important;font-weight:800!important; }
+#ps13CardCopy>.ps13-card-copy .ps52-stats-expand { border:1px solid rgba(255,255,255,.18)!important;border-radius:10px!important;color:#fff!important;background:rgba(255,255,255,.08)!important; }
+#ps13CardCopy>.ps13-card-copy .entries,#ps13CardCopy>.ps13-card-copy :is(.rank,.period-list) { flex:1 1 auto!important;min-height:0!important;overflow:auto!important; }
+#ps13CardCopy>.ps13-card-copy .entries { display:grid!important;align-content:start!important;gap:10px!important;margin:18px 0 0!important;padding:0!important;list-style:none!important; }
+#ps13CardCopy>.ps13-card-copy .entries li { display:grid!important;grid-template-columns:minmax(0,1fr) auto!important;align-items:center!important;gap:12px!important;min-height:76px!important;border:1px solid rgba(255,255,255,.1)!important;border-radius:15px!important;padding:13px 15px!important;background:rgba(255,255,255,.035)!important; }
+#ps13CardCopy>.ps13-card-copy .event-main { min-width:0!important; }
+#ps13CardCopy>.ps13-card-copy .event-top { display:flex!important;min-width:0!important;align-items:center!important;gap:10px!important; }
+#ps13CardCopy>.ps13-card-copy .event-top :is(.name,.meta) { min-width:0!important;overflow:hidden!important;text-overflow:ellipsis!important;white-space:nowrap!important; }
+#ps13CardCopy>.ps13-card-copy .event-top .meta { margin-left:auto!important;color:rgba(255,255,255,.52)!important; }
+#ps13CardCopy>.ps13-card-copy .message { margin-top:7px!important;color:rgba(255,255,255,.68)!important;line-height:1.5!important; }
+#ps13CardCopy>.ps13-card-copy .source-badge { display:grid!important;width:34px!important;height:34px!important;min-width:34px!important;place-items:center!important;overflow:hidden!important;border-radius:9px!important; }
+#ps13CardCopy>.ps13-card-copy .source-badge img { display:block!important;width:25px!important;height:25px!important;max-width:25px!important;max-height:25px!important;object-fit:contain!important;transform:none!important; }
+#ps13CardCopy>.ps13-card-copy .count { position:static!important;margin-left:auto!important;transform:none!important; }
+#ps13CardCopy>.ps13-card-copy .ps52-stats-expand { position:absolute!important;z-index:4!important;top:18px!important;right:18px!important; }
+
+@media(max-width:720px) {
+  body.ps-v9 #ps51AccountCenter .ps62-bridge-head,body.ps-v9 #ps51AccountCenter .ps67-oauth-card { grid-template-columns:46px minmax(0,1fr)!important; }
+  body.ps-v9 #ps51AccountCenter :is(.ps62-downloads,.ps67-oauth-actions) { grid-column:1/-1!important; }
+  body.ps-v9 #ps51AccountCenter .ps66-create,body.ps-v9 #ps51AccountCenter .ps62-pairing { grid-template-columns:1fr!important; }
+  body.ps-v9 #modal .event-detail-grid { grid-template-columns:1fr!important; }
+  #ps13CardCopy>.ps13-card-copy>.card-body { padding:18px!important; }
+}

@@ -15,7 +15,9 @@ function New-StoreListingIcon {
     [Parameter(Mandatory = $true)][string]$Destination
   )
 
-  $canvas = [System.Drawing.Bitmap]::new($Size, $Size, [System.Drawing.Imaging.PixelFormat]::Format32bppArgb)
+  # Store logos must remain legible on every theme. A 24-bit RGB canvas
+  # guarantees that antialiased rounded corners cannot reintroduce alpha.
+  $canvas = [System.Drawing.Bitmap]::new($Size, $Size, [System.Drawing.Imaging.PixelFormat]::Format24bppRgb)
   $graphics = [System.Drawing.Graphics]::FromImage($canvas)
   $source = [System.Drawing.Image]::FromFile($sourceFile)
   try {
@@ -23,26 +25,12 @@ function New-StoreListingIcon {
     $graphics.InterpolationMode = [System.Drawing.Drawing2D.InterpolationMode]::HighQualityBicubic
     $graphics.PixelOffsetMode = [System.Drawing.Drawing2D.PixelOffsetMode]::HighQuality
     $graphics.CompositingQuality = [System.Drawing.Drawing2D.CompositingQuality]::HighQuality
+    $graphics.Clear([System.Drawing.Color]::FromArgb(7, 9, 13))
 
-    $bounds = [System.Drawing.Rectangle]::new(0, 0, $Size, $Size)
-    $background = [System.Drawing.Drawing2D.LinearGradientBrush]::new(
-      $bounds,
-      [System.Drawing.Color]::FromArgb(255, 22, 24, 29),
-      [System.Drawing.Color]::FromArgb(255, 5, 6, 8),
-      135.0
-    )
-    $graphics.FillRectangle($background, $bounds)
-    $background.Dispose()
-
-    $inset = [Math]::Max(1, [int][Math]::Round($Size * 0.025))
-    $borderWidth = [Math]::Max(1, [single]($Size / 150.0))
-    $border = [System.Drawing.Pen]::new([System.Drawing.Color]::FromArgb(255, 58, 62, 70), $borderWidth)
-    $graphics.DrawRectangle($border, $inset, $inset, $Size - (2 * $inset) - 1, $Size - (2 * $inset) - 1)
-    $border.Dispose()
-
-    $markSize = [int][Math]::Round($Size * 0.74)
-    $markOffset = [int][Math]::Round(($Size - $markSize) / 2)
-    $destinationRect = [System.Drawing.Rectangle]::new($markOffset, $markOffset, $markSize, $markSize)
+    # The Tauri tile is already a fully opaque, Store-safe composition. Resize
+    # it edge-to-edge so the listing and installed application use one mark,
+    # without the older nested tile/border treatment.
+    $destinationRect = [System.Drawing.Rectangle]::new(0, 0, $Size, $Size)
     $graphics.DrawImage($source, $destinationRect)
 
     $canvas.Save($Destination, [System.Drawing.Imaging.ImageFormat]::Png)

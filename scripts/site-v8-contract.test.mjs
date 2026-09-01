@@ -11,11 +11,11 @@ test('site 10 assets are cache-busted and use fluid monochrome glass', async () 
     read('site-v7.css'),
     read('play-streamers-ps-logo.svg'),
   ]);
-  assert.match(html, /play-streamers-build" content="2026-09-01-site-10\.28\.0"/);
-  assert.match(html, /site-v7\.css\?v=10\.27\.0/);
-  assert.match(html, /app\.js\?v=5\.9\.0/);
-  assert.match(html, /site-v7\.js\?v=10\.22\.0/);
-  assert.match(html, /app-final\.js\?v=5\.25\.0/);
+  assert.match(html, /play-streamers-build" content="2026-09-01-site-10\.29\.0"/);
+  assert.match(html, /site-v7\.css\?v=10\.29\.1/);
+  assert.match(html, /app\.js\?v=5\.10\.0/);
+  assert.match(html, /site-v7\.js\?v=10\.23\.0/);
+  assert.match(html, /app-final\.js\?v=5\.26\.1/);
   assert.match(html, /window\.ps125ReleaseFirstPaint = releaseFirstPaint/);
   assert.match(html, /window\.setTimeout\(releaseFirstPaint, 4800\)/);
   assert.match(html, /live-i18n\.js\?v=10\.5\.0/);
@@ -77,7 +77,7 @@ test('public home promotes the desktop app without restoring legacy hero', async
   assert.match(source, /className = 'landing-main ps8-home'/);
   assert.match(source, /Windows için indir/);
   assert.match(source, /Windows 10\/11 · 64 bit/);
-  assert.match(source, /APP v0\.14\.4/);
+  assert.match(source, /APP v0\.14\.5/);
   assert.match(source, /data-ps8-action="register"/);
   assert.match(source, /data-ps8-action="products"/);
   assert.match(source, /id="ps8-about"/);
@@ -169,7 +169,7 @@ test('SW Bot audits deterministically and translation generation is release-only
   assert.match(worker, /EXCHANGE_CACHE_SECONDS/);
   assert.doesNotMatch(worker, /EXCHANGE.*KV/);
   assert.match(worker, /Fransızca dil paketi/);
-  assert.match(worker, /locales\/fr\.json\?v=2026-09-01\.3/);
+  assert.match(worker, /locales\/fr\.json\?v=2026-09-01\.4/);
   assert.match(worker, /content-security-policy/);
   assert.match(worker, /frame-ancestors 'none'/);
   assert.match(worker, /strict-transport-security/);
@@ -263,7 +263,7 @@ test('versioned locale catalogs cover public, account, support and legal surface
   ];
   for (const language of ['en', 'de', 'es', 'fr', 'ru', 'ar', 'ja']) {
     const catalog = JSON.parse(await read(`locales/${language}.json`));
-    assert.equal(catalog.version, '2026-09-01.3');
+    assert.equal(catalog.version, '2026-09-01.4');
     assert.equal(catalog.sourceLanguage, 'tr');
     assert.equal(catalog.language, language);
     assert.ok(Object.keys(catalog.translations).length >= 1000);

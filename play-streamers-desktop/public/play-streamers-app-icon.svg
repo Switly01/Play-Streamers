@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" role="img" aria-labelledby="title desc">
+  <title id="title">Play Streamers uygulama simgesi</title>
+  <desc id="desc">Koyu opak zemin üzerinde güncel Play Streamers PS monogramı</desc>
+  <defs>
+    <linearGradient id="background" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#1a1c21"/>
+      <stop offset=".55" stop-color="#0c0d10"/>
+      <stop offset="1" stop-color="#050608"/>
+    </linearGradient>
+  </defs>
+  <rect width="1024" height="1024" fill="url(#background)"/>
+  <rect x="24" y="24" width="976" height="976" rx="116" fill="none" stroke="#3c4048" stroke-width="8"/>
+  <g transform="translate(168 168) scale(4.3)">
+    <path d="M80 8 147 56 122 145H38L13 56 80 8Z" fill="none" stroke="#fff" stroke-width="5.5" stroke-linejoin="round"/>
+    <g transform="translate(13.6 13.6) scale(.83)">
+      <path fill="none" stroke="#fff" stroke-width="13.5" stroke-linecap="round" stroke-linejoin="round" d="M35 120V42h18c13 0 20 8 20 21.5S66 85 53 85H35"/>
+      <path fill="none" stroke="#fff" stroke-width="13.5" stroke-linecap="round" stroke-linejoin="round" d="M126 50c-7-5-14-8-21-8-10 0-15 7-15 17 0 10 7 15 19 19 12 4 18 11 18 22 0 12-8 20-20 20-9 0-17-4-23-11"/>
+    </g>
+  </g>
+</svg>

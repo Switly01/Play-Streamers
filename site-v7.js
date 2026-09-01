@@ -378,14 +378,14 @@
         <div class="ps82-motion-field" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><span></span><span></span></div>
         <div class="ps82-orbits" aria-hidden="true"><i></i><i></i></div>
         <div class="ps8-hero-copy">
-          <span class="ps8-version"><i></i> PLAY STREAMERS WEB · v10.28.0</span>
+          <span class="ps8-version"><i></i> PLAY STREAMERS WEB · v10.29.0</span>
           <h1 id="ps8-title" aria-label="PLAY STREAMERS"><span>PLAY</span><span>STREAMERS</span></h1>
           <h2>Profesyonel Yayıncı Kontrol Platformu</h2>
           <p>Canlı analiz · İçerik planlama · Topluluk · Marka · Play Connect</p>
           <div class="ps8-hero-actions">
             <a class="ps8-download" href="${WINDOWS_STORE_INSTALLER_URL}" data-ps-store-installer="hero">
               <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4.5 10.5 3v8.2H3V4.5Zm8.5-1.7L21 1v10.2h-9.5V2.8ZM3 12.2h7.5V21L3 19.5v-7.3Zm8.5 0H21V23l-9.5-1.8v-9Z"/></svg>
-              <span><b>Windows için indir</b><small>APP v0.14.4 · Windows 10/11 · 64 bit</small></span>
+              <span><b>Windows için indir</b><small>APP v0.14.5 · Windows 10/11 · 64 bit</small></span>
               <i>↓</i>
             </a>
           </div>
@@ -478,7 +478,7 @@
 
       <section class="ps8-final-cta" aria-labelledby="ps8-final-title">
         <img src="./play-streamers-ps-logo.svg?v=10.14" alt="Play Streamers PS logosu">
-        <span>WINDOWS 10/11 · SÜRÜM 0.14.4</span>
+        <span>WINDOWS 10/11 · SÜRÜM 0.14.5</span>
         <h2 id="ps8-final-title">Yayınını değil,<br>sistemini büyüt.</h2>
         <p>Hesabını ücretsiz oluştur. Play Streamers Desktop'ı indir ve üretim araçlarını tek sade merkezde kullanmaya başla.</p>
         <div><a href="${WINDOWS_STORE_INSTALLER_URL}" data-ps-store-installer="final">Uygulamayı ücretsiz indir <i>↓</i></a><button type="button" data-ps8-action="register">Hesap oluştur</button></div>

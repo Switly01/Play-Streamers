@@ -2,6 +2,14 @@
 
 ## Güncel geliştirme durumu · 1 Eylül 2026
 
+Site 10.28.0 / Worker 8.1 Store Web Installer revizyonu: ana sayfa, ürünler,
+ürün ailesi, son çağrı ve üye üst çubuğundaki bütün Windows kurulum eylemleri
+Microsoft'un Play Streamers ürün kimliğine özel Direct Web Installer adresine
+taşındı. Kullanıcı küçük Microsoft kurucusunu doğrudan siteden indirir; gerçek
+uygulama Store altyapısından doğrulanmış olarak kurulur ve güncellenir. Eski
+imzasız EXE dosyası arşiv/fallback olarak korunur fakat birincil arayüzde
+sunulmaz.
+
 Site 10.27.0 / Worker 8.0 / Play Connect 1.15.2 bağış, kur ve analiz
 revizyonu: tarih tarayan eklenti kaynakları yalnız son 15 dakikadaki yeni
 olayları API'ye gönderebilir; 24 saatten eski kuyruk ve Dashboard bağışları

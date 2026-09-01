@@ -78,7 +78,7 @@ const DONATE_OAUTH_PROVIDERS = Object.freeze({
     clientSecretVariable: "TIPEEESTREAM_CLIENT_SECRET",
   }),
 });
-const CURRENT_RELEASE_VERSION = "8.0";
+const CURRENT_RELEASE_VERSION = "8.1";
 const CURRENT_RELEASE_PUBLISHED_AT = "2026-09-01T21:26:00+03:00";
 const EXCHANGE_CURRENCIES = Object.freeze(["EUR", "TRY", "USD", "RUB", "SAR", "JPY"]);
 const EXCHANGE_CACHE_SECONDS = 5 * 60;
@@ -859,8 +859,8 @@ async function runScheduledPlayBotAudit(env) {
   const resources = [
     ["Ana sayfa", "https://pstreamers.com/", "document"],
     ["Ana uygulama betiği", "https://pstreamers.com/app.js?v=5.9.0", "script"],
-    ["Uygulama betiği", "https://pstreamers.com/app-final.js?v=5.24.0", "script"],
-    ["Site davranış betiği", "https://pstreamers.com/site-v7.js?v=10.21.0", "script"],
+    ["Uygulama betiği", "https://pstreamers.com/app-final.js?v=5.25.0", "script"],
+    ["Site davranış betiği", "https://pstreamers.com/site-v7.js?v=10.22.0", "script"],
     ["Sabit çeviri betiği", "https://pstreamers.com/live-i18n.js?v=10.5.0", "script"],
     ["İngilizce dil paketi", "https://pstreamers.com/locales/en.json?v=2026-09-01.3", "json"],
     ["Almanca dil paketi", "https://pstreamers.com/locales/de.json?v=2026-09-01.3", "json"],
@@ -956,8 +956,8 @@ async function runScheduledPlayBotAudit(env) {
     const documentContracts = [
       ["site-v7.css?v=10.27.0", "Güncel premium stil dosyası"],
       ["app.js?v=5.9.0", "Güncel ana uygulama betiği"],
-      ["app-final.js?v=5.24.0", "Güncel onarım betiği"],
-      ["site-v7.js?v=10.21.0", "Güncel site davranış betiği"],
+      ["app-final.js?v=5.25.0", "Güncel onarım betiği"],
+      ["site-v7.js?v=10.22.0", "Güncel site davranış betiği"],
       ["live-i18n.js?v=10.5.0", "Güncel sabit paket çeviri betiği"],
       ["play-streamers-build\" content=\"2026-09-01-site-10.27.0", "Site 10.27.0 sürüm işareti"],
     ];

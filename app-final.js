@@ -4,6 +4,7 @@
   document.documentElement.dataset.ps53DashboardOwner = '1';
   window.psSwBotOwnsStatus = true;
   const STORE = 'play-streamers-v17-site';
+  const WINDOWS_STORE_INSTALLER_URL = 'https://get.microsoft.com/installer/download/9NWZ0TF5K999?referrer=appbadge&cid=pstreamers_web';
   const $ = (selector, root = document) => root.querySelector(selector);
   const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
   const esc = value => { const node = document.createElement('span'); node.textContent = String(value ?? ''); return node.innerHTML; };
@@ -555,11 +556,11 @@
       content.innerHTML = `<span class="ps49-info-kicker">PLAY STREAMERS · CREATOR OPERATING SYSTEM</span><h1>${esc(data.title)}</h1><p class="ps49-info-lead">${esc(data.lead)}</p>
         <article class="ps54-subscription-card ps-desktop-product">
           <div class="ps54-subscription-copy"><span>WINDOWS MASAÜSTÜ UYGULAMASI</span><h2>Sade. Sessiz. Yayıncı odaklı.</h2><p>Play Streamers Desktop; doğrulanmış canlı olayları, yayın analizini, içerik planlamasını, topluluk sistemlerini, marka araçlarını, gelir görünümlerini ve yerel kasayı tek sade çalışma alanında birleştirir. Studio ve yerel kayıt/yayın motoru bu sürümde rafa kaldırılmıştır.</p><div class="ps-desktop-boundary"><b>Sitede</b><small>SW Identity · plan · güvenlik · Kick/Play Connect bağlantıları · indirme</small><b>Uygulamada</b><small>Canlı merkez · analiz · içerik · topluluk · marka · gelir · kasa · ayarlar</small></div></div>
-          <div class="ps-desktop-download"><span>WINDOWS · 0.14.4</span><a href="./downloads/Play-Streamers-Setup.exe" download>Windows için indir</a><small>Windows 10/11 · 64 bit · CMD penceresi açmadan çalışır<br>Güncellemeler kriptografik olarak doğrulanır. Doğrudan kurulum dosyası henüz Windows yayınevi imzası taşımadığı için SmartScreen uyarısı gösterebilir.</small></div>
+          <div class="ps-desktop-download"><span>WINDOWS · 0.14.4</span><a href="${WINDOWS_STORE_INSTALLER_URL}" data-ps-store-installer="product">Windows için indir</a><small>Microsoft Store Web Installer<br>Windows 10/11 · 64 bit · CMD penceresi açmadan çalışır</small></div>
         </article>
         <section class="ps-product-command" aria-label="Play Streamers ana yetenekleri"><article><span>01 · CANLI MERKEZ</span><b>Doğrulanmış kanal olayları</b><small>Kick ve Play Connect üzerinden ulaşan doğrulanmış olayları tek okunabilir akışta takip et.</small></article><article><span>02 · CANLI ZEKA</span><b>Kanıtlı metrik, anlaşılır karar</b><small>Yayın oturumlarını, etkileşimi ve değişimleri doğrulanmış veriler üzerinden karşılaştır.</small></article><article><span>03 · CREATOR OS</span><b>45 hazır çalışma alanı</b><small>Free, Pro ve Product Pro içinde içerik, topluluk, marka, gelir, analiz ve yerel kasa araçları.</small></article></section>
         <section class="ps-product-proof" aria-label="Masaüstü uygulaması özellikleri"><span>45 HAZIR ARAÇ</span><span>İÇERİK PLANLAMA</span><span>YAYIN SONRASI ANALİZ</span><span>DOĞRULANMIŞ KICK OLAYLARI</span><span>PLAY CONNECT DESTEKLERİ</span><span>TOPLULUK SİSTEMLERİ</span><span>MARKA ARAÇLARI</span><span>GELİR GÖRÜNÜMLERİ</span><span>YEREL DOSYA KASASI</span><span>TELEPROMPTER</span><span>AKILLI BİLDİRİMLER</span><span>SW IDENTITY</span><span>WINDOWS 10/11</span><span>CMD PENCERESİ YOK</span></section>
-        <section class="ps-desktop-release-note" aria-label="Masaüstü sürüm durumu"><b>0.14.4 birleşik tasarım</b><span>Masaüstü uygulaması sitenin keskin siyah/beyaz tasarım diliyle yenilendi; Studio ve yerel kayıt/yayın motoru rafa kaldırılmış durumda kalır.</span><b>Kurulum durumu</b><span>Güncelleme paketi kriptografik olarak doğrulanır; mağaza yayını tamamlanana kadar doğrudan EXE kurulumunda Windows uyarısı görülebilir.</span></section>
+        <section class="ps-desktop-release-note" aria-label="Masaüstü sürüm durumu"><b>0.14.4 birleşik tasarım</b><span>Masaüstü uygulaması sitenin keskin siyah/beyaz tasarım diliyle yenilendi; Studio ve yerel kayıt/yayın motoru rafa kaldırılmış durumda kalır.</span><b>Kurulum durumu</b><span>Microsoft Store Web Installer · Windows 10/11</span></section>
         <section class="ps-plan-preview" aria-label="Play Streamers planları"><article><span>FREE</span><b>Yayınını düzenle</b><small>Canlı olaylar, sayaç, notlar, hedefler ve fikir kasası.</small><ul><li>Hızlı notlar</li><li>Hedef panosu</li><li>Canlı olay merkezi</li></ul></article><article><span>PRO</span><b>Üretim sistemini kur</b><small>İçerik akışı, teleprompter, marka ve yerel kasa araçları.</small><ul><li>Yayın raporu ve gelişmiş grafikler</li><li>Teleprompter ve veri dışa aktarma</li><li>Marka ve topluluk araçları</li></ul></article><article><span>PRODUCT PRO</span><b>Veriyi avantaja çevir</b><small>Kanıtlı karşılaştırmalar, AI açıklaması, topluluk sistemleri, medya kiti ve doğrulanmış gelir görünümleri.</small><ul><li>Yayın zekâsı ve izleyici nabzı</li><li>İçerik dönüştürme ve akıllı uyarılar</li><li>Gelir kokpiti ve anlık görüntüler</li></ul></article></section><section class="ps54-sites"><span>ÜRÜN AİLESİ</span><div class="ps54-sites-grid"><a class="ps54-site-card" href="https://pstreamers.com" aria-label="Play Streamers ana sayfası"><i>PS</i><span><b>Play Streamers</b><small>Site hesap ve ürün merkezi</small></span></a><a class="ps54-site-card" href="${esc(playConnect.href)}"${playConnect.external ? ' target="_blank" rel="noopener noreferrer"' : ' download'}><i class="ps126-connect-mark"><img src="./play-connect-pc-logo.svg?v=1.15.2" alt=""></i><span><b>Play Connect</b><small>${esc(playConnect.label)}</small></span></a><a class="ps54-site-card" href="https://swcreate.com" target="_blank" rel="noopener noreferrer"><i class="ps61-sw-site-logo"><img src="swcreate-sw-logo-transparent.png" alt=""></i><span><b>SW Identity</b><small>Ortak hesap, güvenlik ve plan yönetimi</small></span></a></div></section>`;
     } else {
       content.innerHTML = `<span class="ps49-info-kicker">PLAY STREAMERS · ${esc(data.title).toUpperCase()}</span><h1>${esc(data.title)}</h1><p class="ps49-info-lead">${esc(data.lead)}</p><div class="ps49-info-grid">${data.cards.map((card, index) => `<article class="ps49-info-card${data.security ? ' ps54-security-card' : ''}"><span>0${index + 1}</span><h2>${esc(card[0])}</h2><p>${esc(card[1])}</p></article>`).join('')}</div>`;
@@ -4326,6 +4327,7 @@
 (() => {
   'use strict';
   const DONATE_VISIBLE_AGE_MS = 24 * 60 * 60 * 1000;
+  const WINDOWS_STORE_INSTALLER_URL = 'https://get.microsoft.com/installer/download/9NWZ0TF5K999?referrer=appbadge&cid=pstreamers_web';
 
   function guardStaleDonations() {
     const bridge = window.PlayStreamers;
@@ -4345,9 +4347,8 @@
     if (!nav || nav.querySelector('.ps127-member-download')) return;
     const link = document.createElement('a');
     link.className = 'ps127-member-download';
-    link.href = 'https://apps.microsoft.com/detail/9NWZ0TF5K999';
-    link.target = '_blank';
-    link.rel = 'noopener noreferrer';
+    link.href = WINDOWS_STORE_INSTALLER_URL;
+    link.dataset.psStoreInstaller = 'member';
     link.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12m0 0 4-4m-4 4-4-4M5 20h14"/></svg><span>Windows için indir</span>';
     nav.append(link);
   }

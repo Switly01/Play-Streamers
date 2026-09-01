@@ -11,11 +11,11 @@ test('site 10 assets are cache-busted and use fluid monochrome glass', async () 
     read('site-v7.css'),
     read('play-streamers-ps-logo.svg'),
   ]);
-  assert.match(html, /play-streamers-build" content="2026-09-01-site-10\.27\.0"/);
+  assert.match(html, /play-streamers-build" content="2026-09-01-site-10\.28\.0"/);
   assert.match(html, /site-v7\.css\?v=10\.27\.0/);
   assert.match(html, /app\.js\?v=5\.9\.0/);
-  assert.match(html, /site-v7\.js\?v=10\.21\.0/);
-  assert.match(html, /app-final\.js\?v=5\.24\.0/);
+  assert.match(html, /site-v7\.js\?v=10\.22\.0/);
+  assert.match(html, /app-final\.js\?v=5\.25\.0/);
   assert.match(html, /window\.ps125ReleaseFirstPaint = releaseFirstPaint/);
   assert.match(html, /window\.setTimeout\(releaseFirstPaint, 4800\)/);
   assert.match(html, /live-i18n\.js\?v=10\.5\.0/);
@@ -88,6 +88,10 @@ test('public home promotes the desktop app without restoring legacy hero', async
   assert.match(source, /aria-label="PLAY STREAMERS"><span>PLAY<\/span><span>STREAMERS<\/span>/);
   assert.match(source, /class="ps81-showcase"/);
   assert.match(source, /className = 'ps81-nav-download'/);
+  assert.match(source, /get\.microsoft\.com\/installer\/download\/9NWZ0TF5K999/);
+  assert.equal((source.match(/data-ps-store-installer/g) || []).length, 3);
+  assert.match(source, /navDownload\.dataset\.psStoreInstaller = 'nav'/);
+  assert.doesNotMatch(source, /href="\.\/downloads\/Play-Streamers-Setup\.exe"/);
   assert.match(source, /class="ps82-motion-field"/);
   assert.match(source, /IntersectionObserver/);
   assert.match(source, /installPerformanceGovernor/);
@@ -153,7 +157,7 @@ test('SW Bot audits deterministically and translation generation is release-only
   assert.match(worker, /resolveSwBotReports/);
   assert.match(worker, /sw_bot_issue_reports/);
   assert.match(worker, /site-v7\.css\?v=10\.27\.0/);
-  assert.match(worker, /site-v7\.js\?v=10\.21\.0/);
+  assert.match(worker, /site-v7\.js\?v=10\.22\.0/);
   assert.match(worker, /\/api\/i18n\/translate/);
   assert.match(worker, /i18n:v9/);
   assert.match(worker, /translationProvider: "local-static-build"/);
@@ -304,6 +308,8 @@ test('fresh donate, exchange and fixed-width analytics contracts stay active', a
   assert.match(app, /window\.psReloadExchangeRates/);
   assert.match(finalApp, /ps127-rate-refresh/);
   assert.match(finalApp, /ps127-member-download/);
+  assert.match(finalApp, /get\.microsoft\.com\/installer\/download\/9NWZ0TF5K999/);
+  assert.match(finalApp, /data-ps-store-installer="product"/);
   assert.match(css, /#ps59AccountDataDialog \.ps59-chart>svg \{ width:100%!important;min-width:0!important/);
   assert.match(css, /\.ps63-provider-name \{ display:none!important/);
 });

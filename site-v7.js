@@ -1,5 +1,6 @@
 (() => {
   'use strict';
+  const WINDOWS_STORE_INSTALLER_URL = 'https://get.microsoft.com/installer/download/9NWZ0TF5K999?referrer=appbadge&cid=pstreamers_web';
 
   function visible(selector) {
     return [...document.querySelectorAll(selector)].some((node) => !node.hidden && node.getAttribute('aria-hidden') !== 'true');
@@ -341,8 +342,8 @@
     if (navActions && !navActions.querySelector('.ps81-nav-download')) {
       const navDownload = document.createElement('a');
       navDownload.className = 'ps81-nav-download';
-      navDownload.href = './downloads/Play-Streamers-Setup.exe';
-      navDownload.setAttribute('download', '');
+      navDownload.href = WINDOWS_STORE_INSTALLER_URL;
+      navDownload.dataset.psStoreInstaller = 'nav';
       navDownload.innerHTML = '<span>Windows için indir</span><i>↓</i>';
       navActions.prepend(navDownload);
     }
@@ -377,18 +378,18 @@
         <div class="ps82-motion-field" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><span></span><span></span></div>
         <div class="ps82-orbits" aria-hidden="true"><i></i><i></i></div>
         <div class="ps8-hero-copy">
-          <span class="ps8-version"><i></i> PLAY STREAMERS WEB · v10.27.0</span>
+          <span class="ps8-version"><i></i> PLAY STREAMERS WEB · v10.28.0</span>
           <h1 id="ps8-title" aria-label="PLAY STREAMERS"><span>PLAY</span><span>STREAMERS</span></h1>
           <h2>Profesyonel Yayıncı Kontrol Platformu</h2>
           <p>Canlı analiz · İçerik planlama · Topluluk · Marka · Play Connect</p>
           <div class="ps8-hero-actions">
-            <a class="ps8-download" href="./downloads/Play-Streamers-Setup.exe" download>
+            <a class="ps8-download" href="${WINDOWS_STORE_INSTALLER_URL}" data-ps-store-installer="hero">
               <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4.5 10.5 3v8.2H3V4.5Zm8.5-1.7L21 1v10.2h-9.5V2.8ZM3 12.2h7.5V21L3 19.5v-7.3Zm8.5 0H21V23l-9.5-1.8v-9Z"/></svg>
               <span><b>Windows için indir</b><small>APP v0.14.4 · Windows 10/11 · 64 bit</small></span>
               <i>↓</i>
             </a>
           </div>
-          <div class="ps8-proof" aria-label="Ürün bilgileri"><span>Ücretsiz</span><i>•</i><span>3.1 MB</span><i>•</i><span>Windows 10/11</span></div>
+          <div class="ps8-proof" aria-label="Ürün bilgileri"><span>Ücretsiz</span><i>•</i><span>Microsoft Store</span><i>•</i><span>Windows 10/11</span></div>
           <button class="ps81-hero-account" type="button" data-ps8-action="register">Ücretsiz hesap oluştur <span>↗</span></button>
         </div>
         <button class="ps10-astronaut-visitor" type="button" aria-hidden="true" aria-label="Astronotu yukarı gönder" tabindex="-1">
@@ -454,7 +455,7 @@
         </div>
         <nav class="ps92-brand-directory" aria-label="Play Streamers ürün bağlantıları">
           <a class="ps92-swcreate-link" href="https://swcreate.com" target="_blank" rel="noopener noreferrer"><span>GELİŞTİREN EKOSİSTEM</span><b>SW CREATE</b><i>↗</i></a>
-          <div><a href="https://pstreamers.com">Play Streamers Web <i>↗</i></a><a href="${playConnectStoreUrl}" target="_blank" rel="noopener noreferrer">Play Connect <i>↗</i></a><a href="./downloads/Play-Streamers-Setup.exe" download>Play Streamers App <i>↓</i></a></div>
+          <div><a href="https://pstreamers.com">Play Streamers Web <i>↗</i></a><a href="${playConnectStoreUrl}" target="_blank" rel="noopener noreferrer">Play Connect <i>↗</i></a><a href="${WINDOWS_STORE_INSTALLER_URL}" data-ps-store-installer="directory">Play Streamers App <i>↓</i></a></div>
         </nav>
       </section>
 
@@ -480,8 +481,8 @@
         <span>WINDOWS 10/11 · SÜRÜM 0.14.4</span>
         <h2 id="ps8-final-title">Yayınını değil,<br>sistemini büyüt.</h2>
         <p>Hesabını ücretsiz oluştur. Play Streamers Desktop'ı indir ve üretim araçlarını tek sade merkezde kullanmaya başla.</p>
-        <div><a href="./downloads/Play-Streamers-Setup.exe" download>Uygulamayı ücretsiz indir <i>↓</i></a><button type="button" data-ps8-action="register">Hesap oluştur</button></div>
-        <small>Doğrudan kurulum dosyası Windows yayınevi imzası tamamlanana kadar SmartScreen uyarısı gösterebilir.</small>
+        <div><a href="${WINDOWS_STORE_INSTALLER_URL}" data-ps-store-installer="final">Uygulamayı ücretsiz indir <i>↓</i></a><button type="button" data-ps8-action="register">Hesap oluştur</button></div>
+        <small>Microsoft Store Web Installer · Windows 10/11</small>
       </section>`;
     current.replaceWith(home);
     activatePublicMotion(home);

@@ -15,6 +15,16 @@ The final `0.14.4.0` x64 MSIX was tested with Windows App Certification Kit
 package SHA-256 is
 `7601C331C4489E13382065C0C4DB3F8B9755EB3C631D78E7A10ECF67400463D5`.
 
+## Store listing icon clarification
+
+The binary package contains a monochrome white PS mark with transparency for
+Windows shell surfaces. Submission 3 overrides that package image in both the
+English and Turkish Store listings with dedicated 300×300, 150×150 and 71×71
+PNG tile images. Each listing image uses the same PS mark on a fully opaque dark
+background so the icon remains clearly visible on light and dark Store themes.
+The files are stored under `store/listing-assets` and can be regenerated with
+`scripts/create-store-listing-icons.ps1`.
+
 ## runFullTrust justification
 
 Play Streamers is a packaged Win32 desktop application built with Tauri. `runFullTrust` is required only to launch the declared `Windows.FullTrustApplication` executable and provide the native desktop window, Windows Credential Manager-backed session storage and deep-link activation. The Microsoft Store build disables the direct-download updater interface and receives updates only through Microsoft Store. The app does not request elevation, install drivers or services, capture camera or microphone input, record media, or execute arbitrary downloaded code. Network access is limited to Play Streamers and SW Identity services for the user's authenticated account, plan, verified channel events and server-generated analytics.

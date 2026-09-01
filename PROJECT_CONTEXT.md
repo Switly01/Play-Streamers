@@ -2,6 +2,14 @@
 
 ## Güncel geliştirme durumu · 1 Eylül 2026
 
+Microsoft Store görsel düzeltmesi: Sertifikasyon geri bildiriminde, paketteki
+beyaz PS işaretinin şeffaf zemin nedeniyle mağaza kartında yeterince net
+görünmediği bildirildi. Koyu ve tamamen opak arka planlı 300×300 App tile,
+150×150 ve 71×71 Store görselleri üretildi. Submission 3 yalnız mağaza
+listelerindeki bu görselleri değiştirmek üzere açıldı; uygulama paketi ve
+özellikleri değişmedi. Aynı görsellerin yeniden üretilebilmesi için kaynak logo
+tabanlı PowerShell üretim betiği depoya eklendi.
+
 Site 10.23.0 / Worker 7.6 görsel ve yayın denetimi: Mobil ana sayfada eski
 oturum kilidi kuralının destek düğmesini üst sağdaki dil, sistem durumu ve hesap
 düğmelerinin üzerine taşıması giderildi; destek düğmesi güvenli ekran boşlukları

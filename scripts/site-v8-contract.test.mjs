@@ -11,10 +11,10 @@ test('site 10 assets are cache-busted and use fluid monochrome glass', async () 
     read('site-v7.css'),
     read('play-streamers-ps-logo.svg'),
   ]);
-  assert.match(html, /play-streamers-build" content="2026-09-02-site-10\.31\.0"/);
+  assert.match(html, /play-streamers-build" content="2026-09-02-site-10\.31\.1"/);
   assert.match(html, /site-v7\.css\?v=10\.31\.0/);
   assert.match(html, /app\.js\?v=5\.10\.0/);
-  assert.match(html, /site-v7\.js\?v=10\.23\.0/);
+  assert.match(html, /site-v7\.js\?v=10\.31\.1/);
   assert.match(html, /app-final\.js\?v=5\.28\.0/);
   assert.match(html, /window\.ps125ReleaseFirstPaint = releaseFirstPaint/);
   assert.match(html, /window\.setTimeout\(releaseFirstPaint, 4800\)/);

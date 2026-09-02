@@ -2,7 +2,7 @@
 
 ## Güncel geliştirme durumu · 2 Eylül 2026
 
-Site 10.31.0 / Worker 8.4 ürün, analiz ve bağlantı revizyonu: Ürünlerimiz
+Site 10.31.1 / Worker 8.4 ürün, analiz ve bağlantı revizyonu: Ürünlerimiz
 sayfası Abonelikler, Masaüstü uygulaması ve Ürünler olarak üç erişilebilir
 sekmeye ayrıldı; ürün ailesi iki site, bir tarayıcı eklentisi ve bir masaüstü
 uygulamasını ayrı kartlarda gösterir. Kur penceresi kendi düğmesinin altından

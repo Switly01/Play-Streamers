@@ -78,8 +78,8 @@ const DONATE_OAUTH_PROVIDERS = Object.freeze({
     clientSecretVariable: "TIPEEESTREAM_CLIENT_SECRET",
   }),
 });
-const CURRENT_RELEASE_VERSION = "8.2";
-const CURRENT_RELEASE_PUBLISHED_AT = "2026-09-01T23:32:54+03:00";
+const CURRENT_RELEASE_VERSION = "8.3";
+const CURRENT_RELEASE_PUBLISHED_AT = "2026-09-02T12:00:00+03:00";
 const EXCHANGE_CURRENCIES = Object.freeze(["EUR", "TRY", "USD", "RUB", "SAR", "JPY"]);
 const EXCHANGE_CACHE_SECONDS = 5 * 60;
 const SW_IDENTITY_ORIGIN = "https://api.swcreate.com";
@@ -479,6 +479,7 @@ export default {
         ["/api/sw-identity/account/security/challenge", "security/challenge"],
         ["/api/sw-identity/account/email", "email"],
         ["/api/sw-identity/account/password", "password"],
+        ["/api/sw-identity/account/delete", "delete"],
       ]);
       if (request.method === "POST" && swIdentityAccountRoutes.has(url.pathname)) {
         return proxySwIdentityAccountRequest(request, env, swIdentityAccountRoutes.get(url.pathname), "POST");
@@ -858,18 +859,18 @@ async function runScheduledPlayBotAudit(env) {
   await ensurePlayBotMetadataStorage(env);
   const resources = [
     ["Ana sayfa", "https://pstreamers.com/", "document"],
-    ["Ana uygulama betiği", "https://pstreamers.com/app.js?v=5.9.0", "script"],
-    ["Uygulama betiği", "https://pstreamers.com/app-final.js?v=5.25.0", "script"],
-    ["Site davranış betiği", "https://pstreamers.com/site-v7.js?v=10.22.0", "script"],
-    ["Sabit çeviri betiği", "https://pstreamers.com/live-i18n.js?v=10.5.0", "script"],
-    ["İngilizce dil paketi", "https://pstreamers.com/locales/en.json?v=2026-09-01.4", "json"],
-    ["Almanca dil paketi", "https://pstreamers.com/locales/de.json?v=2026-09-01.4", "json"],
-    ["İspanyolca dil paketi", "https://pstreamers.com/locales/es.json?v=2026-09-01.4", "json"],
-    ["Fransızca dil paketi", "https://pstreamers.com/locales/fr.json?v=2026-09-01.4", "json"],
-    ["Rusça dil paketi", "https://pstreamers.com/locales/ru.json?v=2026-09-01.4", "json"],
-    ["Arapça dil paketi", "https://pstreamers.com/locales/ar.json?v=2026-09-01.4", "json"],
-    ["Japonca dil paketi", "https://pstreamers.com/locales/ja.json?v=2026-09-01.4", "json"],
-    ["Premium stil dosyası", "https://pstreamers.com/site-v7.css?v=10.27.0", "style"],
+    ["Ana uygulama betiği", "https://pstreamers.com/app.js?v=5.10.0", "script"],
+    ["Uygulama betiği", "https://pstreamers.com/app-final.js?v=5.27.0", "script"],
+    ["Site davranış betiği", "https://pstreamers.com/site-v7.js?v=10.23.0", "script"],
+    ["Sabit çeviri betiği", "https://pstreamers.com/live-i18n.js?v=10.6.0", "script"],
+    ["İngilizce dil paketi", "https://pstreamers.com/locales/en.json?v=2026-09-02.1", "json"],
+    ["Almanca dil paketi", "https://pstreamers.com/locales/de.json?v=2026-09-02.1", "json"],
+    ["İspanyolca dil paketi", "https://pstreamers.com/locales/es.json?v=2026-09-02.1", "json"],
+    ["Fransızca dil paketi", "https://pstreamers.com/locales/fr.json?v=2026-09-02.1", "json"],
+    ["Rusça dil paketi", "https://pstreamers.com/locales/ru.json?v=2026-09-02.1", "json"],
+    ["Arapça dil paketi", "https://pstreamers.com/locales/ar.json?v=2026-09-02.1", "json"],
+    ["Japonca dil paketi", "https://pstreamers.com/locales/ja.json?v=2026-09-02.1", "json"],
+    ["Premium stil dosyası", "https://pstreamers.com/site-v7.css?v=10.30.0", "style"],
     ["Oturum başlangıç betiği", "https://pstreamers.com/session-bootstrap.js?v=1.2", "script"],
     ["Site yönlendiricisi", "https://pstreamers.com/site-router.js?v=1.1", "script"],
     ["Sunucu analiz betiği", "https://pstreamers.com/server-analytics.js?v=6.1", "script"],
@@ -946,7 +947,7 @@ async function runScheduledPlayBotAudit(env) {
       const validPayload = result.label === "Windows güncelleme bildirimi"
         ? Boolean(payload?.version && hasUpdaterPlatforms)
         : localeCatalog
-        ? Boolean(payload?.version === "2026-09-01.4" && payload?.sourceLanguage === "tr" && payload?.language && Object.keys(payload?.translations || {}).length >= 1220)
+        ? Boolean(payload?.version === "2026-09-02.1" && payload?.sourceLanguage === "tr" && payload?.language && Object.keys(payload?.translations || {}).length >= 1220)
           : Boolean(payload?.ok);
       if (!validPayload) issues.push(`${result.label} geçerli bir JSON yanıtı döndürmüyor.`);
     }
@@ -954,12 +955,12 @@ async function runScheduledPlayBotAudit(env) {
   const homeDocument = results.find(result => result.type === "document");
   if (homeDocument?.ok) {
     const documentContracts = [
-      ["site-v7.css?v=10.27.0", "Güncel premium stil dosyası"],
-      ["app.js?v=5.9.0", "Güncel ana uygulama betiği"],
-      ["app-final.js?v=5.25.0", "Güncel onarım betiği"],
-      ["site-v7.js?v=10.22.0", "Güncel site davranış betiği"],
-      ["live-i18n.js?v=10.5.0", "Güncel sabit paket çeviri betiği"],
-      ["play-streamers-build\" content=\"2026-09-01-site-10.27.0", "Site 10.27.0 sürüm işareti"],
+      ["site-v7.css?v=10.30.0", "Güncel premium stil dosyası"],
+      ["app.js?v=5.10.0", "Güncel ana uygulama betiği"],
+      ["app-final.js?v=5.27.0", "Güncel onarım betiği"],
+      ["site-v7.js?v=10.23.0", "Güncel site davranış betiği"],
+      ["live-i18n.js?v=10.6.0", "Güncel sabit paket çeviri betiği"],
+      ["play-streamers-build\" content=\"2026-09-02-site-10.30.0", "Site 10.30.0 sürüm işareti"],
     ];
     for (const [token, label] of documentContracts) {
       if (!homeDocument.body.includes(token)) issues.push(`${label} canlı ana sayfaya bağlanmamış.`);
@@ -2236,7 +2237,7 @@ async function proxySwIdentityAccountRequest(request, env, route = "", method = 
   await ensureUsersSchema(env);
   const current = await readUserSession(request, env);
   if (!current?.session?.user?.id) return apiResponse(request, { error: "Oturum bulunamadı." }, 401);
-  const localUser = await env.DB.prepare("SELECT sw_identity_user_id AS swIdentityUserId FROM users WHERE id = ?1 LIMIT 1")
+  const localUser = await env.DB.prepare("SELECT sw_identity_user_id AS swIdentityUserId, kick_user_id AS kickUserId FROM users WHERE id = ?1 LIMIT 1")
     .bind(current.session.user.id).first();
   const identityUserId = String(localUser?.swIdentityUserId || "").trim();
   if (!/^[A-Za-z0-9_-]{8,128}$/.test(identityUserId)) {
@@ -2257,9 +2258,15 @@ async function proxySwIdentityAccountRequest(request, env, route = "", method = 
     const status = [400, 401, 403, 404, 409, 413, 415, 429, 503].includes(identityResponse.status) ? identityResponse.status : 502;
     return apiResponse(request, { error: result?.error || "SW Identity hesap işlemi tamamlanamadı." }, status);
   }
-  if (route === "profile" && result?.user?.displayName) {
-    await env.DB.prepare("UPDATE users SET display_name = ?1, updated_at = ?2 WHERE id = ?3")
-      .bind(String(result.user.displayName).slice(0, 120), new Date().toISOString(), current.session.user.id).run();
+  if (route === "profile" && result?.user) {
+    const preset = String(result.user.avatar?.value || "").trim();
+    const avatar = /^[a-z0-9-]{2,32}$/.test(preset) ? `avatar:${preset}` : null;
+    await env.DB.prepare("UPDATE users SET display_name = ?1, avatar_url = COALESCE(?2, avatar_url), updated_at = ?3 WHERE id = ?4")
+      .bind(String(result.user.displayName || result.user.username || "").slice(0, 120), avatar, new Date().toISOString(), current.session.user.id).run();
+  }
+  if (route === "delete" && result?.deleted) {
+    await purgePlayStreamersAccount({ id: current.session.user.id, kick_user_id: localUser?.kickUserId || null }, env);
+    return withSessionCookies(apiResponse(request, result), null, { clear: true });
   }
   return apiResponse(request, result || { ok: true });
 }
@@ -7288,27 +7295,7 @@ async function updateAvatar(request, env) {
   return accountUpdateResponse(request, current, env);
 }
 
-async function deleteAccount(request, env) {
-  requireAccountConfiguration(env);
-  requireEmailConfiguration(env);
-  await ensureUsersSchema(env);
-  const current = await readUserSession(request, env);
-  if (!current) return apiResponse(request, { error: "Oturum bulunamadı." }, 401);
-  const input = await requestJson(request);
-  const user = await getPrivateUserById(current.session.user.id, env);
-  if (!user) return apiResponse(request, { error: "Hesap bulunamadı." }, 404);
-  if (!isPublicEmail(user.email)) return apiResponse(request, { error: "Hesabını silmek için doğrulanmış e-posta adresi gerekiyor." }, 400);
-  const code = String(input.code || "").replace(/\s/g, "");
-  if (!/^\d{6}$/.test(code)) return apiResponse(request, { error: "E-postana gelen 6 haneli silme kodunu gir." }, 400);
-  const verification = await consumeEmailCode({ email: user.email, code, purpose: "account_delete" }, env);
-  if (!verification.ok || verification.userId !== user.id) {
-    return apiResponse(request, { error: verification.error || "Kod bu hesap için geçerli değil." }, verification.status || 400);
-  }
-  // Send this before removing the address from the database.  A failed
-  // notification must never stop the user from deleting their account.
-  await sendAccountDeletedEmail(user.email, env).catch(error => logSecurityEvent("account_deleted_email_failed", {
-    reason: error?.code || error?.name || "unknown",
-  }));
+async function purgePlayStreamersAccount(user, env) {
   const supportRateKeyHash = await sha256Base64Url(`user:${user.id}`);
   const deleteStatements = [
     env.DB.prepare("DELETE FROM support_messages WHERE ticket_id IN (SELECT id FROM support_tickets WHERE user_id = ?1)").bind(user.id),
@@ -7338,6 +7325,30 @@ async function deleteAccount(request, env) {
   }
   deleteStatements.push(env.DB.prepare("DELETE FROM users WHERE id = ?1").bind(user.id));
   await env.DB.batch(deleteStatements);
+}
+
+async function deleteAccount(request, env) {
+  requireAccountConfiguration(env);
+  requireEmailConfiguration(env);
+  await ensureUsersSchema(env);
+  const current = await readUserSession(request, env);
+  if (!current) return apiResponse(request, { error: "Oturum bulunamadı." }, 401);
+  const input = await requestJson(request);
+  const user = await getPrivateUserById(current.session.user.id, env);
+  if (!user) return apiResponse(request, { error: "Hesap bulunamadı." }, 404);
+  if (!isPublicEmail(user.email)) return apiResponse(request, { error: "Hesabını silmek için doğrulanmış e-posta adresi gerekiyor." }, 400);
+  const code = String(input.code || "").replace(/\s/g, "");
+  if (!/^\d{6}$/.test(code)) return apiResponse(request, { error: "E-postana gelen 6 haneli silme kodunu gir." }, 400);
+  const verification = await consumeEmailCode({ email: user.email, code, purpose: "account_delete" }, env);
+  if (!verification.ok || verification.userId !== user.id) {
+    return apiResponse(request, { error: verification.error || "Kod bu hesap için geçerli değil." }, verification.status || 400);
+  }
+  // Send this before removing the address from the database.  A failed
+  // notification must never stop the user from deleting their account.
+  await sendAccountDeletedEmail(user.email, env).catch(error => logSecurityEvent("account_deleted_email_failed", {
+    reason: error?.code || error?.name || "unknown",
+  }));
+  await purgePlayStreamersAccount(user, env);
   return withSessionCookies(apiResponse(request, { ok: true, deleted: true }), null, { clear: true });
 }
 

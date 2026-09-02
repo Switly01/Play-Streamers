@@ -181,7 +181,19 @@
     "SW profil görünümü": "مظهر ملف SW الشخصي",
     "SW profilin bütün bağlı ürünler için güncellendi.": "تم تحديث ملف SW الشخصي لجميع المنتجات المرتبطة.",
     "SW Yörünge": "مدار SW",
-    "WINDOWS 10/11 · SÜRÜM 0.14.5": "WINDOWS 10/11 · الإصدار 0.14.5"
+    "WINDOWS 10/11 · SÜRÜM 0.14.5": "WINDOWS 10/11 · الإصدار 0.14.5",
+    "Doğru güvenlik kodu girildiğinde merkezi SW Identity hesabın ve bağlı ürün verilerin kalıcı olarak silinir.": "عند إدخال رمز الأمان الصحيح، سيتم حذف حساب SW Identity المركزي وبيانات المنتجات المرتبطة به نهائيًا.",
+    "Kanıtlı karşılaştırmalar, SW AI açıklaması ve doğrulanmış gelir görünümleri.": "مقارنات موثوقة وتوضيحات SW AI وعروض إيرادات تم التحقق منها.",
+    "Merkezi SW Identity hesabın ve ona bağlı tüm SW ürünlerindeki profil, plan, oturum, bağlantı ve ürün verileri geri alınamayacak şekilde silinir.": "سيتم حذف حساب SW Identity المركزي وبيانات الملف الشخصي والخطة والجلسات والاتصالات والمنتجات في جميع منتجات SW المرتبطة به نهائيًا.",
+    "Oturumları, etkileşimi ve değişimleri kanıtlı verilerle karşılaştır.": "قارن الجلسات والتفاعل والتغييرات باستخدام بيانات موثوقة.",
+    "SİTEDE": "على الموقع",
+    "SW AI sistem açıklaması": "توضيح نظام SW AI",
+    "SW Bot arayüzde düzeltilmesi gereken bir durum buldu.": "عثر SW Bot على مشكلة في الواجهة تحتاج إلى إصلاح.",
+    "SW Bot bir görsel kaynağında düzeltilmesi gereken bir durum buldu.": "عثر SW Bot على مشكلة في أحد الموارد المرئية تحتاج إلى إصلاح.",
+    "SW Bot ekran yerleşiminde düzeltilmesi gereken bir durum buldu.": "عثر SW Bot على مشكلة في تخطيط الشاشة تحتاج إلى إصلاح.",
+    "SW Bot hesap erişiminde düzeltilmesi gereken bir durum buldu.": "عثر SW Bot على مشكلة في الوصول إلى الحساب تحتاج إلى إصلاح.",
+    "SW Bot veri bağlantısında düzeltilmesi gereken bir durum buldu.": "عثر SW Bot على مشكلة في اتصال البيانات تحتاج إلى إصلاح.",
+    "Tek SW Identity hesabı": "حساب SW Identity واحد"
   },
   "ja": {
     "Sinyal": "シグナル",

@@ -554,15 +554,11 @@
     if (!content) return;
     if (data.productLayout) {
       const playConnect = playConnectStore();
-      content.innerHTML = `<span class="ps49-info-kicker">PLAY STREAMERS · CREATOR OPERATING SYSTEM</span><h1>${esc(data.title)}</h1><p class="ps49-info-lead">${esc(data.lead)}</p>
-        <article class="ps54-subscription-card ps-desktop-product">
-          <div class="ps54-subscription-copy"><span>WINDOWS MASAÜSTÜ UYGULAMASI</span><h2>Sade. Sessiz. Yayıncı odaklı.</h2><p>Play Streamers Desktop; doğrulanmış canlı olayları, yayın analizini, içerik planlamasını, topluluk sistemlerini, marka araçlarını, gelir görünümlerini ve yerel kasayı tek sade çalışma alanında birleştirir. Studio ve yerel kayıt/yayın motoru bu sürümde rafa kaldırılmıştır.</p><div class="ps-desktop-boundary"><b>Sitede</b><small>SW Identity · plan · güvenlik · Kick/Play Connect bağlantıları · indirme</small><b>Uygulamada</b><small>Canlı merkez · analiz · içerik · topluluk · marka · gelir · kasa · ayarlar</small></div></div>
-          <div class="ps-desktop-download"><span>WINDOWS · 0.14.5</span><a href="${WINDOWS_STORE_INSTALLER_URL}" data-ps-store-installer="product">Windows için indir</a><small>Microsoft Store Web Installer<br>Windows 10/11 · 64 bit · CMD penceresi açmadan çalışır</small></div>
-        </article>
-        <section class="ps-product-command" aria-label="Play Streamers ana yetenekleri"><article><span>01 · CANLI MERKEZ</span><b>Doğrulanmış kanal olayları</b><small>Kick ve Play Connect üzerinden ulaşan doğrulanmış olayları tek okunabilir akışta takip et.</small></article><article><span>02 · CANLI ZEKA</span><b>Kanıtlı metrik, anlaşılır karar</b><small>Yayın oturumlarını, etkileşimi ve değişimleri doğrulanmış veriler üzerinden karşılaştır.</small></article><article><span>03 · CREATOR OS</span><b>45 hazır çalışma alanı</b><small>Free, Pro ve Product Pro içinde içerik, topluluk, marka, gelir, analiz ve yerel kasa araçları.</small></article></section>
-        <section class="ps-product-proof" aria-label="Masaüstü uygulaması özellikleri"><span>45 HAZIR ARAÇ</span><span>İÇERİK PLANLAMA</span><span>YAYIN SONRASI ANALİZ</span><span>DOĞRULANMIŞ KICK OLAYLARI</span><span>PLAY CONNECT DESTEKLERİ</span><span>TOPLULUK SİSTEMLERİ</span><span>MARKA ARAÇLARI</span><span>GELİR GÖRÜNÜMLERİ</span><span>YEREL DOSYA KASASI</span><span>TELEPROMPTER</span><span>AKILLI BİLDİRİMLER</span><span>SW IDENTITY</span><span>WINDOWS 10/11</span><span>CMD PENCERESİ YOK</span></section>
-        <section class="ps-desktop-release-note" aria-label="Masaüstü sürüm durumu"><b>0.14.5 güncel kimlik</b><span>Masaüstü uygulaması ve Microsoft Store karoları güncel, dengeli PS logosunu kullanır; Studio ve yerel kayıt/yayın motoru rafa kaldırılmış durumda kalır.</span><b>Kurulum durumu</b><span>Microsoft Store Web Installer · Windows 10/11</span></section>
-        <section class="ps-plan-preview" aria-label="Play Streamers planları"><article><span>FREE</span><b>Yayınını düzenle</b><small>Canlı olaylar, sayaç, notlar, hedefler ve fikir kasası.</small><ul><li>Hızlı notlar</li><li>Hedef panosu</li><li>Canlı olay merkezi</li></ul></article><article><span>PRO</span><b>Üretim sistemini kur</b><small>İçerik akışı, teleprompter, marka ve yerel kasa araçları.</small><ul><li>Yayın raporu ve gelişmiş grafikler</li><li>Teleprompter ve veri dışa aktarma</li><li>Marka ve topluluk araçları</li></ul></article><article><span>PRODUCT PRO</span><b>Veriyi avantaja çevir</b><small>Kanıtlı karşılaştırmalar, AI açıklaması, topluluk sistemleri, medya kiti ve doğrulanmış gelir görünümleri.</small><ul><li>Yayın zekâsı ve izleyici nabzı</li><li>İçerik dönüştürme ve akıllı uyarılar</li><li>Gelir kokpiti ve anlık görüntüler</li></ul></article></section><section class="ps54-sites"><span>ÜRÜN AİLESİ</span><div class="ps54-sites-grid"><a class="ps54-site-card" href="https://pstreamers.com" aria-label="Play Streamers ana sayfası"><i>PS</i><span><b>Play Streamers</b><small>Site hesap ve ürün merkezi</small></span></a><a class="ps54-site-card" href="${esc(playConnect.href)}"${playConnect.external ? ' target="_blank" rel="noopener noreferrer"' : ' download'}><i class="ps126-connect-mark"><img src="./play-connect-pc-logo.svg?v=1.15.2" alt=""></i><span><b>Play Connect</b><small>${esc(playConnect.label)}</small></span></a><a class="ps54-site-card" href="https://swcreate.com" target="_blank" rel="noopener noreferrer"><i class="ps61-sw-site-logo"><img src="swcreate-sw-logo-transparent.png" alt=""></i><span><b>SW Identity</b><small>Ortak hesap, güvenlik ve plan yönetimi</small></span></a></div></section>`;
+      content.innerHTML = `<section class="ps130-products-hero"><div><span class="ps49-info-kicker">PLAY STREAMERS · CREATOR OPERATING SYSTEM</span><h1>${esc(data.title)}</h1><p class="ps49-info-lead">${esc(data.lead)}</p><div class="ps130-hero-facts"><span>45 hazır araç</span><span>Tek SW Identity hesabı</span><span>Windows 10/11</span></div></div><aside><span>MASAÜSTÜ UYGULAMASI · 0.14.5</span><b>Yayın işlerinin tamamı tek çalışma alanında.</b><a href="${WINDOWS_STORE_INSTALLER_URL}" data-ps-store-installer="product">Windows için indir</a><small>Microsoft Store Web Installer · 64 bit</small></aside></section>
+        <section class="ps130-capabilities" aria-label="Play Streamers ana yetenekleri"><article><i>01</i><span><b>Canlı merkez</b><small>Kick ve Play Connect üzerinden gelen doğrulanmış olayları tek, okunabilir akışta izle.</small></span></article><article><i>02</i><span><b>Yayın zekâsı</b><small>Oturumları, etkileşimi ve değişimleri kanıtlı verilerle karşılaştır.</small></span></article><article><i>03</i><span><b>Creator OS</b><small>İçerik, topluluk, marka, gelir, analiz ve yerel kasa araçlarını birlikte yönet.</small></span></article></section>
+        <section class="ps130-product-split"><article><span>SİTEDE</span><h2>Hesap ve bağlantı merkezi</h2><p>SW Identity, güvenlik, plan, Kick ve Play Connect bağlantıları ile indirme yönetimi.</p></article><article><span>UYGULAMADA</span><h2>Yayın çalışma merkezi</h2><p>Canlı merkez, analiz, içerik, topluluk, marka, gelir, kasa ve ayarlar.</p></article></section>
+        <section class="ps-plan-preview ps130-plans" aria-label="Play Streamers planları"><article><span>FREE</span><b>Yayınını düzenle</b><small>Canlı olaylar, sayaç, notlar, hedefler ve fikir kasası.</small><ul><li>Hızlı notlar</li><li>Hedef panosu</li><li>Canlı olay merkezi</li></ul></article><article><span>PRO</span><b>Üretim sistemini kur</b><small>İçerik akışı, teleprompter, marka ve yerel kasa araçları.</small><ul><li>Yayın raporu ve gelişmiş grafikler</li><li>Teleprompter ve veri dışa aktarma</li><li>Marka ve topluluk araçları</li></ul></article><article><span>PRODUCT PRO</span><b>Veriyi avantaja çevir</b><small>Kanıtlı karşılaştırmalar, SW AI açıklaması ve doğrulanmış gelir görünümleri.</small><ul><li>Yayın zekâsı ve izleyici nabzı</li><li>İçerik dönüştürme ve akıllı uyarılar</li><li>Gelir kokpiti ve anlık görüntüler</li></ul></article></section>
+        <section class="ps54-sites ps130-ecosystem"><span>ÜRÜN AİLESİ</span><div class="ps54-sites-grid"><a class="ps54-site-card" href="https://pstreamers.com" aria-label="Play Streamers ana sayfası"><i>PS</i><span><b>Play Streamers</b><small>Hesap ve ürün merkezi</small></span></a><a class="ps54-site-card" href="${esc(playConnect.href)}"${playConnect.external ? ' target="_blank" rel="noopener noreferrer"' : ' download'}><i class="ps126-connect-mark"><img src="./play-connect-pc-logo.svg?v=1.15.2" alt=""></i><span><b>Play Connect</b><small>${esc(playConnect.label)}</small></span></a><a class="ps54-site-card" href="https://swcreate.com" target="_blank" rel="noopener noreferrer"><i class="ps61-sw-site-logo"><img src="swcreate-sw-logo-transparent.png" alt=""></i><span><b>SW Identity</b><small>Ortak hesap, güvenlik ve plan yönetimi</small></span></a></div></section>`;
     } else {
       content.innerHTML = `<span class="ps49-info-kicker">PLAY STREAMERS · ${esc(data.title).toUpperCase()}</span><h1>${esc(data.title)}</h1><p class="ps49-info-lead">${esc(data.lead)}</p><div class="ps49-info-grid">${data.cards.map((card, index) => `<article class="ps49-info-card${data.security ? ' ps54-security-card' : ''}"><span>0${index + 1}</span><h2>${esc(card[0])}</h2><p>${esc(card[1])}</p></article>`).join('')}</div>`;
     }
@@ -760,12 +756,12 @@
     ['avatar:female-1','👩🏻','Kadın profil 1'],['avatar:female-2','👩🏽','Kadın profil 2'],['avatar:female-3','👩🏾','Kadın profil 3']
   ];
   const swProfileAvatars = [
-    ['orbit-cyan', 'SW Yörünge', '<svg viewBox="0 0 48 48"><path d="M11 13h11l-5 22H7l4-22Zm16 0h10l4 7-8 4 7 11H29l-7-12 5-10Z"/><circle cx="24" cy="24" r="20"/></svg>'],
-    ['signal-acid', 'SW Sinyal', '<svg viewBox="0 0 48 48"><path d="M10 34 17 12h8l-4 13 10-13h8l-7 22h-8l4-13-10 13h-8Z"/><path d="M5 24h6m26 0h6"/></svg>'],
-    ['core-cobalt', 'SW Çekirdek', '<svg viewBox="0 0 48 48"><path d="M9 10h30v28H9z"/><path d="M15 16h9l-3 16h-9l3-16Zm12 0h7l3 5-6 3 5 8h-9l-5-9 5-7Z"/></svg>'],
-    ['flare-coral', 'SW Parlama', '<svg viewBox="0 0 48 48"><path d="m24 5 5 13 14 6-14 6-5 13-5-13-14-6 14-6 5-13Z"/><path d="M18 18h12v12H18z"/></svg>'],
-    ['node-violet', 'SW Düğüm', '<svg viewBox="0 0 48 48"><circle cx="12" cy="12" r="6"/><circle cx="36" cy="12" r="6"/><circle cx="24" cy="36" r="6"/><path d="m16 16 6 15m10-15-6 15M18 12h12"/></svg>'],
-    ['identity-paper', 'SW Kimlik', '<svg viewBox="0 0 48 48"><path d="M8 10h32v28H8z"/><circle cx="18" cy="22" r="6"/><path d="M12 33c1-5 3-7 6-7s5 2 6 7m5-14h7m-7 6h7m-7 6h5"/></svg>']
+    ['orbit-cyan', 'SW Yörünge', '<svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="23"/><path d="M18 21h12l-6 24H12l6-24Zm17 0h11l6 8-9 5 8 11H38L29 33l6-12Z"/><path d="M9 36c8 11 28 16 43 4"/></svg>'],
+    ['signal-acid', 'SW Sinyal', '<svg viewBox="0 0 64 64"><path d="M13 45 22 17h11l-5 14 14-14h10l-9 28H32l6-15-15 15H13Z"/><path d="M7 32h8m34 0h8M32 7v7m0 36v7"/></svg>'],
+    ['core-cobalt', 'SW Çekirdek', '<svg viewBox="0 0 64 64"><rect x="10" y="10" width="44" height="44" rx="14"/><path d="M20 21h13l-6 22H15l5-22Zm18 0h8l6 8-8 4 7 10H39l-9-12 8-10Z"/></svg>'],
+    ['flare-coral', 'SW Parlama', '<svg viewBox="0 0 64 64"><path d="m32 5 7 19 20 8-20 8-7 19-7-19-20-8 20-8 7-19Z"/><circle cx="32" cy="32" r="9"/><path d="M32 23v18M23 32h18"/></svg>'],
+    ['node-violet', 'SW Düğüm', '<svg viewBox="0 0 64 64"><circle cx="16" cy="17" r="8"/><circle cx="48" cy="17" r="8"/><circle cx="32" cy="48" r="8"/><path d="m21 23 8 18m14-18-8 18M24 17h16"/><circle cx="32" cy="30" r="5"/></svg>'],
+    ['identity-paper', 'SW Kimlik', '<svg viewBox="0 0 64 64"><rect x="8" y="11" width="48" height="42" rx="10"/><circle cx="24" cy="29" r="8"/><path d="M13 45c2-8 5-11 11-11s9 3 11 11m6-21h9m-9 8h9m-9 8h7"/></svg>']
   ];
   const accountNavIcons = {
     data: '<svg viewBox="0 0 24 24"><path d="M4 19V9M10 19V5M16 19v-7M22 19H2"/></svg>',
@@ -790,7 +786,8 @@
     if (local) return `<img src="${esc(local)}" alt="Profil fotoğrafı">`;
     const choice = accountAvatars.find(item => item[0] === user.picture);
     if (choice) return choice[1];
-    const swChoice = swProfileAvatars.find(item => `avatar:${item[0]}` === user.picture);
+    const identityPreset = String(swIdentityAccount?.user?.avatar?.value || user.swAvatarPreset || '');
+    const swChoice = swProfileAvatars.find(item => `avatar:${item[0]}` === user.picture || item[0] === identityPreset);
     if (swChoice) return swChoice[2];
     if (/^(?:https:\/\/|data:image\/(?:png|jpeg|webp);base64,)/i.test(String(user.picture || ''))) return `<img src="${esc(user.picture)}" alt="Profil fotoğrafı">`;
     return '👤';
@@ -989,11 +986,12 @@
     const labelIndexes = new Set([0, 15, 30, 45, 60, 75, completedPoints.length - 1].filter(index => index >= 0 && index < completedPoints.length));
     const labels = completedPoints.map((point, index) => labelIndexes.has(index) ? `<text x="${(x(index) + barWidth / 2).toFixed(1)}" y="${height - 22}" text-anchor="middle">${esc(point.label || '')}</text>` : '').join('');
     const bars = plotted.map(point => {
-      const barY = point.valid ? y(point.numeric) : top + chartHeight;
-      const barHeight = point.valid ? Math.max(2, top + chartHeight - barY) : 2;
+      const zero = point.valid && point.numeric <= 0;
+      const barY = point.valid && !zero ? y(point.numeric) : top + chartHeight;
+      const barHeight = point.valid && !zero ? Math.max(2, top + chartHeight - barY) : 2;
       const dateLabel = point.date.toLocaleDateString('tr-TR', { day: '2-digit', month: 'long', year: 'numeric' });
-      const interaction = point.valid ? ` data-ps69-day="${esc(point.key)}" data-ps69-value="${esc(point.numeric)}" tabindex="0" role="button" aria-label="${esc(dateLabel)} ayrıntısını aç"` : ' aria-hidden="true"';
-      return `<rect class="ps69-day-bar${point.valid ? '' : ' is-missing'}" data-ps69-metric="${esc(metric)}" data-ps69-label="${esc(dateLabel)}"${interaction} x="${x(point.index).toFixed(1)}" y="${(top + chartHeight - barHeight).toFixed(1)}" width="${barWidth.toFixed(1)}" height="${barHeight.toFixed(1)}" rx="2"></rect>`;
+      const interaction = point.valid && !zero ? ` data-ps69-day="${esc(point.key)}" data-ps69-value="${esc(point.numeric)}" tabindex="0" role="button" aria-label="${esc(dateLabel)} ayrıntısını aç"` : ' aria-hidden="true"';
+      return `<rect class="ps69-day-bar${point.valid ? (zero ? ' is-zero' : '') : ' is-missing'}" data-ps69-metric="${esc(metric)}" data-ps69-label="${esc(dateLabel)}"${interaction} x="${x(point.index).toFixed(1)}" y="${(top + chartHeight - barHeight).toFixed(1)}" width="${barWidth.toFixed(1)}" height="${barHeight.toFixed(1)}" rx="2"></rect>`;
     }).join('');
     return `<svg viewBox="0 0 ${width} ${height}" role="img" aria-label="${esc(title)} son 90 gün günlük sütun grafiği"><g class="ps59-grid">${grid}</g><g class="ps59-bars">${bars}</g><g class="ps59-axis">${labels}</g></svg>`;
   }
@@ -1685,25 +1683,36 @@
     return supportTickets.reduce((latest, ticket) => Math.max(latest, Date.parse(ticket.lastReplyAt || '') || 0), 0);
   }
   function beginAccountDeletion() {
-    const warning = showDialog('ps55DeleteWarning', '<span class="ps44-panel-title">SW IDENTITY · VERİ SİLME</span><h2>Bu üründeki verilerini kalıcı olarak silmek istiyor musun?</h2><p>SW Identity ile bağlı Play Streamers profilin, açık oturumların, bağlantı kayıtların, kanal olayların ve destek taleplerin geri alınamayacak şekilde silinecek. Diğer SW ürünlerindeki merkezi kimliğin korunacak.</p><div class="ps44-dialog-actions"><button class="ps44-cancel" type="button">İptal</button><button class="ps44-confirm danger" type="button">Tamam</button></div>');
+    const warning = showDialog('ps55DeleteWarning', '<span class="ps44-panel-title">SW IDENTITY · HESAP SİLME</span><h2>SW Identity hesabını kalıcı olarak silmek istiyor musun?</h2><p>Merkezi SW Identity hesabın ve ona bağlı tüm SW ürünlerindeki profil, plan, oturum, bağlantı ve ürün verileri geri alınamayacak şekilde silinir.</p><form class="ps47-mail-form ps130-delete-start"><label>Mevcut şifre<input name="currentPassword" type="password" autocomplete="current-password" required></label><p class="ps51-account-status" aria-live="polite"></p><div class="ps44-dialog-actions"><button class="ps44-cancel" type="button">İptal</button><button class="ps44-confirm danger" type="submit">Hesabı silmeye devam et</button></div></form>');
     $('.ps44-cancel', warning).onclick = () => closeDialog(warning);
-    $('.ps44-confirm', warning).onclick = async event => {
-      const button = event.currentTarget; button.disabled = true; button.textContent = 'Kod gönderiliyor…';
-      try { await accountPost('/api/account/request-delete', {}); closeDialog(warning); showDeleteCodeDialog(); }
-      catch (error) { button.disabled = false; button.textContent = 'Tamam'; const copy = $('p', warning); copy.textContent = error.message; }
+    const form = $('.ps130-delete-start', warning);
+    form.onsubmit = async event => {
+      event.preventDefault();
+      const button = $('.ps44-confirm', form), status = $('.ps51-account-status', form);
+      button.disabled = true; button.textContent = 'Güvenlik kontrolü hazırlanıyor…';
+      try {
+        const currentPassword = String(form.elements.currentPassword.value || '');
+        const challenge = await accountPost('/api/sw-identity/account/security/challenge', { action: 'account_delete', currentPassword });
+        closeDialog(warning);
+        showDeleteCodeDialog(currentPassword, challenge?.method || 'email');
+      } catch (error) {
+        button.disabled = false; button.textContent = 'Hesabı silmeye devam et';
+        status.className = 'ps51-account-status error'; status.textContent = error.message;
+      }
     };
   }
-  function showDeleteCodeDialog() {
-    const layer = showDialog('ps55DeleteCode', '<button class="ps47-dialog-close" type="button" aria-label="Kapat">×</button><span class="ps44-panel-title">SON DOĞRULAMA</span><h2>E-postana gelen kodu gir</h2><p>Play Streamers ürün verilerin yalnızca doğru 6 haneli kod girildikten sonra silinir.</p><form class="ps47-mail-form"><label>Silme kodu<input name="code" inputmode="numeric" autocomplete="one-time-code" minlength="6" maxlength="6" pattern="[0-9]{6}" required placeholder="000000"></label><p class="ps51-account-status" aria-live="polite"></p><div class="ps44-dialog-actions"><button class="ps44-cancel" type="button">İptal</button><button class="ps44-confirm danger" type="submit">Verilerimi sil</button></div></form>');
+  function showDeleteCodeDialog(currentPassword, method = 'email') {
+    const totp = method === 'totp';
+    const layer = showDialog('ps55DeleteCode', `<button class="ps47-dialog-close" type="button" aria-label="Kapat">×</button><span class="ps44-panel-title">SON DOĞRULAMA</span><h2>${totp ? 'Authenticator kodunu gir' : 'E-postana gelen kodu gir'}</h2><p>Doğru güvenlik kodu girildiğinde merkezi SW Identity hesabın ve bağlı ürün verilerin kalıcı olarak silinir.</p><form class="ps47-mail-form"><label>Güvenlik kodu<input name="code" inputmode="numeric" autocomplete="one-time-code" minlength="6" maxlength="8" required placeholder="000000"></label><p class="ps51-account-status" aria-live="polite"></p><div class="ps44-dialog-actions"><button class="ps44-cancel" type="button">İptal</button><button class="ps44-confirm danger" type="submit">SW Identity hesabımı sil</button></div></form>`);
     $$('.ps47-dialog-close,.ps44-cancel', layer).forEach(button => button.onclick = () => closeDialog(layer));
     const form = $('form', layer); form.onsubmit = async event => {
       event.preventDefault(); const submit = $('.ps44-confirm', form), status = $('.ps51-account-status', form); submit.disabled = true; status.textContent = 'Kod doğrulanıyor ve hesap siliniyor…';
       try {
-        await accountPost('/api/account/delete', { code: String(form.elements.code.value || '').trim() });
+        await accountPost('/api/sw-identity/account/delete', { currentPassword, code: String(form.elements.code.value || '').trim() });
         closeAccountCenter(); closeDialog(layer);
         Object.keys(localStorage).filter(key => key === STORE || key.startsWith('play-streamers-') || key.startsWith('ps-second') || key.startsWith('ps-signed') || key.startsWith('ps55-notifications:')).forEach(key => localStorage.removeItem(key));
         Object.keys(sessionStorage).filter(key => key.startsWith('ps') || key.startsWith('play-streamers')).forEach(key => sessionStorage.removeItem(key));
-        const finish = () => location.replace(location.pathname + location.search);
+        const finish = () => location.replace('/');
         if (typeof window.psUnifiedLoad === 'function') window.psUnifiedLoad(finish); else if (typeof window.ps28Load === 'function') window.ps28Load(finish); else finish();
       } catch (error) { status.className = 'ps51-account-status error'; status.textContent = error.message; submit.disabled = false; }
     };
@@ -1925,7 +1934,6 @@
             username: String(swProfileForm.elements.username?.value || '').trim(),
             avatarPreset
           });
-          await accountPost('/api/account/update-avatar', { avatar: `avatar:${avatarPreset}` });
           swIdentityAccountLoaded = true;
           const next = state(); next.settings ||= {}; next.settings.user ||= {};
           next.settings.user.picture = `avatar:${avatarPreset}`;
@@ -2503,7 +2511,7 @@
     const security = swIdentityAccount?.security || {};
     const email = String(identity.email || user.email || '');
     const twoFactor = Boolean(security.twoFactorEnabled);
-    return `<span class="ps51-account-kicker">SW IDENTITY · GÜVENLİK</span><h2>E-posta, şifre ve güvenlik</h2><p class="ps51-account-lead">Güvenlik değişikliklerini Play Streamers içinden yap. İşlemler merkezi SW Identity hesabına uygulanır ve diğer SW ürünleriyle eşitlenir.</p><section class="ps121-security-summary"><article><span>E-posta</span><b>${esc(email || 'Doğrulanmış adres yok')}</b></article><article><span>İki adımlı doğrulama</span><b class="${twoFactor ? 'active' : ''}">${twoFactor ? 'Açık' : 'Kapalı'}</b></article><article><span>Veri akışı</span><b>Doğrulanmış</b></article></section><div class="ps121-security-grid"><form id="ps121SwEmailForm" class="ps121-identity-form"><h3>E-posta adresini değiştir</h3><p>Yeni adrese gönderilen kodla değişikliği doğrula.</p><label>Yeni e-posta<input name="newEmail" type="email" autocomplete="email" required></label><label>Mevcut şifre<input name="currentPassword" type="password" autocomplete="current-password" required></label><div class="ps121-code-row"><label>Doğrulama kodu<input name="code" inputmode="numeric" autocomplete="one-time-code" maxlength="8" required></label><button type="button" class="ps51-secondary" data-ps121-challenge="email_change">Kodu gönder</button></div><button class="ps51-primary" type="submit">E-postayı güncelle</button><p class="ps51-account-status" aria-live="polite"></p></form><form id="ps121SwPasswordForm" class="ps121-identity-form"><h3>Şifreni değiştir</h3><p>${twoFactor ? 'İşlemi Authenticator kodunla doğrula.' : 'E-postana gönderilen kodla işlemi doğrula.'}</p><label>Mevcut şifre<input name="currentPassword" type="password" autocomplete="current-password" required></label><label>Yeni şifre<input name="newPassword" type="password" minlength="10" maxlength="200" autocomplete="new-password" required></label><label>Yeni şifre tekrar<input name="newPasswordRepeat" type="password" minlength="10" maxlength="200" autocomplete="new-password" required></label><div class="ps121-code-row"><label>Doğrulama kodu<input name="code" inputmode="numeric" autocomplete="one-time-code" maxlength="8" required></label><button type="button" class="ps51-secondary" data-ps121-challenge="password_change">Kodu gönder</button></div><button class="ps51-primary" type="submit">Şifreyi güncelle</button><p class="ps51-account-status" aria-live="polite"></p></form></div><section class="ps126-danger-zone"><span><b>SW Identity bağlantısını ve ürün verilerini sil</b><small>Bu işlem Play Streamers profilini, oturumlarını, bağlantılarını, kanal olaylarını ve destek kayıtlarını kaldırır. Merkezi kimliğin diğer SW ürünlerinde korunur.</small></span><button id="ps55DeleteAccount" class="ps51-danger" type="button">Verilerimi sil</button></section><p class="ps121-security-note">İki adımlı doğrulama ayarın SW Identity’den okunur. Açık olduğunda e-posta kodu yerine Authenticator kodun kullanılır.</p>`;
+    return `<span class="ps51-account-kicker">SW IDENTITY · GÜVENLİK</span><h2>E-posta, şifre ve güvenlik</h2><p class="ps51-account-lead">Güvenlik değişikliklerini Play Streamers içinden yap. İşlemler merkezi SW Identity hesabına uygulanır ve diğer SW ürünleriyle eşitlenir.</p><section class="ps121-security-summary"><article><span>E-posta</span><b>${esc(email || 'Doğrulanmış adres yok')}</b></article><article><span>İki adımlı doğrulama</span><b class="${twoFactor ? 'active' : ''}">${twoFactor ? 'Açık' : 'Kapalı'}</b></article><article><span>Veri akışı</span><b>Doğrulanmış</b></article></section><div class="ps121-security-grid"><form id="ps121SwEmailForm" class="ps121-identity-form"><h3>E-posta adresini değiştir</h3><p>Yeni adrese gönderilen kodla değişikliği doğrula.</p><label>Yeni e-posta<input name="newEmail" type="email" autocomplete="email" required></label><label>Mevcut şifre<input name="currentPassword" type="password" autocomplete="current-password" required></label><div class="ps121-code-row"><label>Doğrulama kodu<input name="code" inputmode="numeric" autocomplete="one-time-code" maxlength="8" required></label><button type="button" class="ps51-secondary" data-ps121-challenge="email_change">Kodu gönder</button></div><button class="ps51-primary" type="submit">E-postayı güncelle</button><p class="ps51-account-status" aria-live="polite"></p></form><form id="ps121SwPasswordForm" class="ps121-identity-form"><h3>Şifreni değiştir</h3><p>${twoFactor ? 'İşlemi Authenticator kodunla doğrula.' : 'E-postana gönderilen kodla işlemi doğrula.'}</p><label>Mevcut şifre<input name="currentPassword" type="password" autocomplete="current-password" required></label><label>Yeni şifre<input name="newPassword" type="password" minlength="10" maxlength="200" autocomplete="new-password" required></label><label>Yeni şifre tekrar<input name="newPasswordRepeat" type="password" minlength="10" maxlength="200" autocomplete="new-password" required></label><div class="ps121-code-row"><label>Doğrulama kodu<input name="code" inputmode="numeric" autocomplete="one-time-code" maxlength="8" required></label><button type="button" class="ps51-secondary" data-ps121-challenge="password_change">Kodu gönder</button></div><button class="ps51-primary" type="submit">Şifreyi güncelle</button><p class="ps51-account-status" aria-live="polite"></p></form></div><section class="ps126-danger-zone"><span><b>SW Identity hesabını sil</b><small>Bu işlem merkezi kimliğini ve bağlı tüm SW ürünlerindeki hesap, oturum, plan, bağlantı ve ürün verilerini kalıcı olarak kaldırır.</small></span><button id="ps55DeleteAccount" class="ps51-danger" type="button">SW Identity hesabımı sil</button></section><p class="ps121-security-note">İki adımlı doğrulama ayarın SW Identity’den okunur. Açık olduğunda e-posta kodu yerine Authenticator kodun kullanılır.</p>`;
   }
   function showAccountCenter(tab = 'data', refresh = true, flash = '', quiet = false) {
     const current = state(), settings = current.settings || {}, user = settings.user || {}; if (!settings.userSession || !settings.user) return;
@@ -2908,6 +2916,17 @@
     else if (/erişilebilirlik|adı yok/i.test(text)) title = 'Kullanılabilirlik';
     return { title, summary: text, action };
   }
+  function localizeSwAiReport(issue, report) {
+    const language = String(document.documentElement.lang || 'tr').split('-')[0].toLowerCase();
+    const title = ui(String(report?.title || explainSwBotIssue(issue).title || 'SW AI sistem açıklaması'));
+    if (language === 'tr') return { title, summary: String(report?.summary || issue), action: ui(String(report?.action || 'Ekibimiz sorun üzerinde çalışıyor.')) };
+    let summary = 'SW Bot arayüzde düzeltilmesi gereken bir durum buldu.';
+    if (/API|sunucu|bağlantı|çevrimdışı/i.test(issue)) summary = 'SW Bot veri bağlantısında düzeltilmesi gereken bir durum buldu.';
+    else if (/taşıyor|yerleşim|ekranın dışında|çakışma|stil/i.test(issue)) summary = 'SW Bot ekran yerleşiminde düzeltilmesi gereken bir durum buldu.';
+    else if (/giriş|kayıt|doğrulama|Google|hesap/i.test(issue)) summary = 'SW Bot hesap erişiminde düzeltilmesi gereken bir durum buldu.';
+    else if (/görsel|logo|bayrak/i.test(issue)) summary = 'SW Bot bir görsel kaynağında düzeltilmesi gereken bir durum buldu.';
+    return { title, summary: ui(summary), action: ui(String(report?.action || 'Ekibimiz sorun üzerinde çalışıyor.')) };
+  }
   function renderPlayBot(popover, issues) {
     const body = $('.ps69-play-bot-body', popover);
     if (!body) return;
@@ -2919,7 +2938,7 @@
     body.closest('.ps69-play-bot')?.classList.remove('is-refreshing');
     const serverByIssue = new Map(playBotGlobalReports.map(report => [String(report.issue || ''), report]));
     body.innerHTML = issues.length
-      ? `<ul>${issues.map(issue => { const clean = String(issue).replace(/^Site geneli:\s*/i, '').replace(/\s+/g, ' ').trim(); const report = serverByIssue.get(clean) || explainSwBotIssue(clean); const description = String(report.summary || clean).replace(/^(Sayfayı yenile|Tarayıcı yakınlaştırmasını|İşlemi tekrar dene)[^.]*\.?\s*/i, '').trim() || clean; return `<li class="error"><i aria-hidden="true"></i><span><b>${esc(report.title || 'SW AI sistem açıklaması')}</b><em class="ps9-sw-ai-summary"><b>SW AI</b><span>${esc(`${description.replace(/[.!?]+$/, '')}.`)}</span><small>${esc(ui('Ekibimiz sorun üzerinde çalışıyor.'))}</small></em></span></li>`; }).join('')}</ul><time><span>${esc(ui('Son kontrol:'))}</span> <b data-no-translate>${esc(new Date().toLocaleTimeString(document.documentElement.lang || 'tr-TR'))}</b></time>`
+      ? `<ul>${issues.map(issue => { const clean = String(issue).replace(/^Site geneli:\s*/i, '').replace(/\s+/g, ' ').trim(); const source = serverByIssue.get(clean) || explainSwBotIssue(clean); const report = localizeSwAiReport(clean, source); const description = String(report.summary || clean).replace(/^(Sayfayı yenile|Tarayıcı yakınlaştırmasını|İşlemi tekrar dene)[^.]*\.?\s*/i, '').trim() || clean; return `<li class="error"><i aria-hidden="true"></i><span><b>${esc(report.title || ui('SW AI sistem açıklaması'))}</b><em class="ps9-sw-ai-summary"><b>SW AI</b><span>${esc(`${description.replace(/[.!?]+$/, '')}.`)}</span><small>${esc(report.action)}</small></em></span></li>`; }).join('')}</ul><time><span>${esc(ui('Son kontrol:'))}</span> <b data-no-translate>${esc(new Date().toLocaleTimeString(document.documentElement.lang || 'tr-TR'))}</b></time>`
       : `<p class="ps69-play-bot-clear">${esc(ui('SW Bot tüm denetimleri tamamladı. Sorun tespit edilmedi.'))}</p><time><span>${esc(ui('Son kontrol:'))}</span> <b data-no-translate>${esc(new Date().toLocaleTimeString(document.documentElement.lang || 'tr-TR'))}</b></time>`;
     window.dispatchEvent(new Event('ps:i18n-refresh'));
   }
@@ -4446,18 +4465,18 @@
   function rateDetails(snapshot) {
     const { target: source } = localeCurrency();
     const rates = snapshot?.rates || {};
-    if (!Number.isFinite(Number(rates[source]))) return { target: source, source, copy: ui('Kurlar hazırlanıyor'), refreshed: '—' };
+    if (!Number.isFinite(Number(rates[source]))) return { target: source, source, refreshed: '—' };
     const refreshed = snapshot.refreshedAt ? new Intl.DateTimeFormat(document.documentElement.lang || 'tr', { year:'numeric', month:'2-digit', day:'2-digit', hour:'2-digit', minute:'2-digit', second:'2-digit' }).format(new Date(snapshot.refreshedAt)) : '—';
-    return { target: source, source, copy: `1 ${source} · ${ui('diğer para birimlerindeki karşılığı')}`, refreshed };
+    return { target: source, source, refreshed };
   }
   function rateConversionRows(snapshot, source) {
     const rates = snapshot?.rates || {};
     const order = ['TRY','EUR','USD','RUB','SAR','JPY'];
     if (!Number.isFinite(Number(rates[source]))) return '';
     return order.filter(currency => currency !== source && Number.isFinite(Number(rates[currency]))).map(currency => {
-      const value = Number(rates[currency]) / Number(rates[source]);
-      const formatted = new Intl.NumberFormat(document.documentElement.lang || 'tr', { maximumFractionDigits: currency === 'JPY' ? 2 : 4 }).format(value);
-      return `<div><dt>1 ${esc(source)}</dt><dd>${esc(formatted)} ${esc(currency)}</dd></div>`;
+      const value = Number(rates[source]) / Number(rates[currency]);
+      const formatted = new Intl.NumberFormat(document.documentElement.lang || 'tr', { minimumFractionDigits: 2, maximumFractionDigits: source === 'JPY' ? 2 : 4 }).format(value);
+      return `<div><dt>1 ${esc(currency)}</dt><dd>${esc(formatted)} ${esc(source)}</dd></div>`;
     }).join('');
   }
   function closeRatePanel() {
@@ -4469,10 +4488,12 @@
   function positionRatePanel(button, panel) {
     if (!button || !panel || panel.hidden) return;
     const rect = button.getBoundingClientRect();
-    const width = Math.min(320, innerWidth - 24);
+    const width = Math.min(390, innerWidth - 24);
     panel.style.width = `${width}px`;
     panel.style.left = `${Math.max(12, Math.min(innerWidth - width - 12, rect.right - width))}px`;
-    panel.style.top = `${Math.max(12, Math.min(innerHeight - panel.offsetHeight - 12, rect.bottom + 10))}px`;
+    const top = Math.max(12, rect.bottom + 8);
+    panel.style.top = `${top}px`;
+    panel.style.maxHeight = `${Math.max(180, innerHeight - top - 12)}px`;
   }
   let activeRateButton = null;
   function renderRatePanel(snapshot = window.psExchangeRates, button = activeRateButton || $('[data-ps119-exchange]')) {
@@ -4487,7 +4508,7 @@
       document.body.append(panel);
     }
     const details = rateDetails(snapshot);
-    panel.innerHTML = `<header><span>${esc(details.source)} · ${ui('Canlı oranlar')}</span><button type="button" aria-label="${ui('Kapat')}">×</button></header><strong>${details.copy}</strong><dl class="ps127-rate-meta"><div><dt>${ui('Baz para birimi')}</dt><dd>${details.target}</dd></div><div><dt>${ui('Kur tarihi')}</dt><dd>${esc(snapshot?.rateDate || '—')}</dd></div><div><dt>${ui('Son yenileme')}</dt><dd>${details.refreshed}</dd></div><div><dt>${ui('Veri kaynağı')}</dt><dd>${esc(snapshot?.provider || 'Merkez bankası referansı')}</dd></div></dl><section class="ps127-rate-table"><span>${ui('1 birimin diğer para birimlerindeki karşılığı')}</span><dl>${rateConversionRows(snapshot, details.source)}</dl></section><button class="ps127-rate-refresh" type="button">${ui('Kurları yenile')}</button><p>${ui('Bağışlar güncel merkez bankası referans kurlarıyla hesaplanır.')}</p>`;
+    panel.innerHTML = `<header><span>${esc(details.source)} · ${ui('Canlı oranlar')}</span><button type="button" aria-label="${ui('Kapat')}">×</button></header><dl class="ps127-rate-meta"><div><dt>${ui('Seçili para birimi')}</dt><dd>${details.target}</dd></div><div><dt>${ui('Kur tarihi')}</dt><dd>${esc(snapshot?.rateDate || '—')}</dd></div><div><dt>${ui('Son yenileme')}</dt><dd>${details.refreshed}</dd></div><div><dt>${ui('Veri kaynağı')}</dt><dd>${esc(snapshot?.provider || 'Merkez bankası referansı')}</dd></div></dl><section class="ps127-rate-table"><span>${ui('Seçili para birimindeki karşılığı')}</span><dl>${rateConversionRows(snapshot, details.source)}</dl></section><button class="ps127-rate-refresh" type="button">${ui('Kurları yenile')}</button><p>${ui('Bağışlar güncel merkez bankası referans kurlarıyla hesaplanır.')}</p>`;
     const closeButton = $('header button', panel);
     const close = event => { event?.preventDefault(); event?.stopImmediatePropagation(); closeRatePanel(); };
     closeButton.onpointerdown = close;
@@ -4569,7 +4590,10 @@
   }, true);
   document.addEventListener('keydown', event => { if (event.key === 'Escape') closeRatePanel(); });
   window.addEventListener('resize', () => positionRatePanel(activeRateButton, $('#ps119ExchangePanel')));
-  window.addEventListener('scroll', () => positionRatePanel(activeRateButton, $('#ps119ExchangePanel')), true);
+  window.addEventListener('scroll', event => {
+    if (event.target instanceof Element && event.target.closest('#ps119ExchangePanel')) return;
+    positionRatePanel(activeRateButton, $('#ps119ExchangePanel'));
+  }, { passive: true });
   window.addEventListener('pageshow', () => { dismissStaleLoaders(true); refreshDynamicLanguage(); });
   window.setInterval(() => dismissStaleLoaders(false), 3_000);
   window.setTimeout(() => { dismissStaleLoaders(true); refreshDynamicLanguage(); }, 5600);

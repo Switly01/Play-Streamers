@@ -14,7 +14,11 @@
     "Henüz anlık görüntü yok.": "No snapshots yet.",
     "Hey, geleceğin yayıncısı burada mısın?": "Hey, future streamer, are you there?",
     "Buradaysan ben gidiyorum.": "If you're there, I'm heading out.",
-    "Yalnız Play Streamers profilin, oturumların, bağlantıların, kanal olayların ve destek kayıtların kaldırılır. Merkezi SW Identity hesabın korunur.": "Only your Play Streamers profile, sessions, connections, channel events, and support records are removed. Your central SW Identity account is kept."
+    "Yalnız Play Streamers profilin, oturumların, bağlantıların, kanal olayların ve destek kayıtların kaldırılır. Merkezi SW Identity hesabın korunur.": "Only your Play Streamers profile, sessions, connections, channel events, and support records are removed. Your central SW Identity account is kept.",
+    "Authenticator koruması": "Authenticator protection",
+    "İki aşamalı doğrulamayı etkinleştir": "Enable two-factor authentication",
+    "İki aşamalı doğrulamayı kapat": "Disable two-factor authentication",
+    "Kurtarma kodlarını yenile": "Regenerate recovery codes"
   },
   "de": {
     "Sinyal": "Signal",
@@ -33,7 +37,11 @@
     "Buradaysan ben gidiyorum.": "Wenn du da bist, mache ich mich auf den Weg.",
     "Yalnız Play Streamers profilin, oturumların, bağlantıların, kanal olayların ve destek kayıtların kaldırılır. Merkezi SW Identity hesabın korunur.": "Nur dein Play-Streamers-Profil, deine Sitzungen, Verbindungen, Kanalereignisse und Supportdaten werden entfernt. Dein zentrales SW-Identity-Konto bleibt erhalten.",
     "Menü": "Menü",
-    "MENÜ": "MENÜ"
+    "MENÜ": "MENÜ",
+    "Authenticator koruması": "Authenticator-Schutz",
+    "İki aşamalı doğrulamayı etkinleştir": "Zwei-Faktor-Authentifizierung aktivieren",
+    "İki aşamalı doğrulamayı kapat": "Zwei-Faktor-Authentifizierung deaktivieren",
+    "Kurtarma kodlarını yenile": "Wiederherstellungscodes erneuern"
   },
   "es": {
     "Sinyal": "Señal",
@@ -50,7 +58,11 @@
     "Henüz anlık görüntü yok.": "Aún no hay instantáneas.",
     "Hey, geleceğin yayıncısı burada mısın?": "Oye, streamer del futuro, ¿estás ahí?",
     "Buradaysan ben gidiyorum.": "Si estás ahí, me voy.",
-    "Yalnız Play Streamers profilin, oturumların, bağlantıların, kanal olayların ve destek kayıtların kaldırılır. Merkezi SW Identity hesabın korunur.": "Solo se eliminan tu perfil de Play Streamers, sesiones, conexiones, eventos del canal y registros de soporte. Tu cuenta central de SW Identity se conserva."
+    "Yalnız Play Streamers profilin, oturumların, bağlantıların, kanal olayların ve destek kayıtların kaldırılır. Merkezi SW Identity hesabın korunur.": "Solo se eliminan tu perfil de Play Streamers, sesiones, conexiones, eventos del canal y registros de soporte. Tu cuenta central de SW Identity se conserva.",
+    "Authenticator koruması": "Protección con autenticador",
+    "İki aşamalı doğrulamayı etkinleştir": "Activar la autenticación en dos pasos",
+    "İki aşamalı doğrulamayı kapat": "Desactivar la autenticación en dos pasos",
+    "Kurtarma kodlarını yenile": "Regenerar los códigos de recuperación"
   },
   "fr": {
     "Sinyal": "Signal",
@@ -67,7 +79,11 @@
     "Henüz anlık görüntü yok.": "Aucun instantané pour le moment.",
     "Hey, geleceğin yayıncısı burada mısın?": "Hé, futur streamer, tu es là ?",
     "Buradaysan ben gidiyorum.": "Si tu es là, je m’en vais.",
-    "Yalnız Play Streamers profilin, oturumların, bağlantıların, kanal olayların ve destek kayıtların kaldırılır. Merkezi SW Identity hesabın korunur.": "Seuls ton profil Play Streamers, tes sessions, connexions, événements de chaîne et dossiers d’assistance sont supprimés. Ton compte SW Identity central est conservé."
+    "Yalnız Play Streamers profilin, oturumların, bağlantıların, kanal olayların ve destek kayıtların kaldırılır. Merkezi SW Identity hesabın korunur.": "Seuls ton profil Play Streamers, tes sessions, connexions, événements de chaîne et dossiers d’assistance sont supprimés. Ton compte SW Identity central est conservé.",
+    "Authenticator koruması": "Protection par authentificateur",
+    "İki aşamalı doğrulamayı etkinleştir": "Activer l’authentification à deux facteurs",
+    "İki aşamalı doğrulamayı kapat": "Désactiver l’authentification à deux facteurs",
+    "Kurtarma kodlarını yenile": "Régénérer les codes de récupération"
   },
   "ru": {
     "Sinyal": "Сигнал",
@@ -93,7 +109,11 @@
     "YAYINCI PANELİNİ SIFIRLA": "СБРОСИТЬ ПАНЕЛЬ СТРИМЕРА",
     "SW Çekirdek": "SW Ядро",
     "SW Düğüm": "SW Узел",
-    "SW Yörünge": "SW Орбита"
+    "SW Yörünge": "SW Орбита",
+    "Authenticator koruması": "Защита с помощью приложения-аутентификатора",
+    "İki aşamalı doğrulamayı etkinleştir": "Включить двухфакторную аутентификацию",
+    "İki aşamalı doğrulamayı kapat": "Отключить двухфакторную аутентификацию",
+    "Kurtarma kodlarını yenile": "Обновить коды восстановления"
   },
   "ar": {
     "Profil görünümü": "مظهر الملف الشخصي",
@@ -196,7 +216,11 @@
     "Tek SW Identity hesabı": "حساب SW Identity واحد",
     "Canlı merkez, analiz, içerik, topluluk, marka, gelir, yerel kasa ve yayın ayarlarını Windows 10 ve 11 üzerinde birlikte yönet.": "أدِر المركز المباشر والتحليلات والمحتوى والمجتمع والعلامة التجارية والإيرادات والخزنة المحلية وإعدادات البث معًا على Windows 10 و11.",
     "EKLENTİ": "إضافة المتصفح",
-    "Oturum ve etkileşim değişimlerini karşılaştır.": "قارن التغيّرات في الجلسات والتفاعل."
+    "Oturum ve etkileşim değişimlerini karşılaştır.": "قارن التغيّرات في الجلسات والتفاعل.",
+    "Authenticator koruması": "حماية تطبيق المصادقة",
+    "İki aşamalı doğrulamayı etkinleştir": "تفعيل المصادقة الثنائية",
+    "İki aşamalı doğrulamayı kapat": "تعطيل المصادقة الثنائية",
+    "Kurtarma kodlarını yenile": "تجديد رموز الاسترداد"
   },
   "ja": {
     "Sinyal": "シグナル",
@@ -213,6 +237,10 @@
     "Henüz anlık görüntü yok.": "スナップショットはまだありません。",
     "Hey, geleceğin yayıncısı burada mısın?": "やあ、未来のストリーマー、そこにいる？",
     "Buradaysan ben gidiyorum.": "そこにいるなら、もう行くね。",
-    "Yalnız Play Streamers profilin, oturumların, bağlantıların, kanal olayların ve destek kayıtların kaldırılır. Merkezi SW Identity hesabın korunur.": "Play Streamers のプロフィール、セッション、接続、チャンネルイベント、サポート記録だけが削除されます。中央の SW Identity アカウントは保持されます。"
+    "Yalnız Play Streamers profilin, oturumların, bağlantıların, kanal olayların ve destek kayıtların kaldırılır. Merkezi SW Identity hesabın korunur.": "Play Streamers のプロフィール、セッション、接続、チャンネルイベント、サポート記録だけが削除されます。中央の SW Identity アカウントは保持されます。",
+    "Authenticator koruması": "認証アプリによる保護",
+    "İki aşamalı doğrulamayı etkinleştir": "2段階認証を有効にする",
+    "İki aşamalı doğrulamayı kapat": "2段階認証を無効にする",
+    "Kurtarma kodlarını yenile": "復旧コードを再生成する"
   }
 }

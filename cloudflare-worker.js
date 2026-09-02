@@ -78,8 +78,8 @@ const DONATE_OAUTH_PROVIDERS = Object.freeze({
     clientSecretVariable: "TIPEEESTREAM_CLIENT_SECRET",
   }),
 });
-const CURRENT_RELEASE_VERSION = "8.5";
-const CURRENT_RELEASE_PUBLISHED_AT = "2026-09-02T18:00:00+03:00";
+const CURRENT_RELEASE_VERSION = "8.6";
+const CURRENT_RELEASE_PUBLISHED_AT = "2026-09-02T22:30:00+03:00";
 const EXCHANGE_CURRENCIES = Object.freeze(["EUR", "TRY", "USD", "RUB", "SAR", "JPY"]);
 const EXCHANGE_CACHE_SECONDS = 5 * 60;
 const SW_IDENTITY_ORIGIN = "https://api.swcreate.com";
@@ -473,12 +473,19 @@ export default {
       if (url.pathname === "/api/sw-identity/account" && request.method === "GET") {
         return proxySwIdentityAccountRequest(request, env, "", "GET");
       }
+      if (url.pathname === "/api/sw-identity/account/avatar" && request.method === "GET") {
+        return proxySwIdentityAccountAvatar(request, env);
+      }
 
       const swIdentityAccountRoutes = new Map([
         ["/api/sw-identity/account/profile", "profile"],
         ["/api/sw-identity/account/security/challenge", "security/challenge"],
         ["/api/sw-identity/account/email", "email"],
         ["/api/sw-identity/account/password", "password"],
+        ["/api/sw-identity/account/totp/setup", "totp/setup"],
+        ["/api/sw-identity/account/totp/confirm", "totp/confirm"],
+        ["/api/sw-identity/account/totp/recovery/regenerate", "totp/recovery/regenerate"],
+        ["/api/sw-identity/account/totp/disable", "totp/disable"],
         ["/api/sw-identity/account/delete", "delete"],
       ]);
       if (request.method === "POST" && swIdentityAccountRoutes.has(url.pathname)) {
@@ -860,17 +867,17 @@ async function runScheduledPlayBotAudit(env) {
   const resources = [
     ["Ana sayfa", "https://pstreamers.com/", "document"],
     ["Ana uygulama betiği", "https://pstreamers.com/app.js?v=5.10.0", "script"],
-    ["Uygulama betiği", "https://pstreamers.com/app-final.js?v=5.28.0", "script"],
-    ["Site davranış betiği", "https://pstreamers.com/site-v7.js?v=10.31.1", "script"],
-    ["Sabit çeviri betiği", "https://pstreamers.com/live-i18n.js?v=10.7.0", "script"],
-    ["İngilizce dil paketi", "https://pstreamers.com/locales/en.json?v=2026-09-02.2", "json"],
-    ["Almanca dil paketi", "https://pstreamers.com/locales/de.json?v=2026-09-02.2", "json"],
-    ["İspanyolca dil paketi", "https://pstreamers.com/locales/es.json?v=2026-09-02.2", "json"],
-    ["Fransızca dil paketi", "https://pstreamers.com/locales/fr.json?v=2026-09-02.2", "json"],
-    ["Rusça dil paketi", "https://pstreamers.com/locales/ru.json?v=2026-09-02.2", "json"],
-    ["Arapça dil paketi", "https://pstreamers.com/locales/ar.json?v=2026-09-02.2", "json"],
-    ["Japonca dil paketi", "https://pstreamers.com/locales/ja.json?v=2026-09-02.2", "json"],
-    ["Premium stil dosyası", "https://pstreamers.com/site-v7.css?v=10.31.0", "style"],
+    ["Uygulama betiği", "https://pstreamers.com/app-final.js?v=5.29.0", "script"],
+    ["Site davranış betiği", "https://pstreamers.com/site-v7.js?v=10.32.0", "script"],
+    ["Sabit çeviri betiği", "https://pstreamers.com/live-i18n.js?v=10.8.0", "script"],
+    ["İngilizce dil paketi", "https://pstreamers.com/locales/en.json?v=2026-09-02.3", "json"],
+    ["Almanca dil paketi", "https://pstreamers.com/locales/de.json?v=2026-09-02.3", "json"],
+    ["İspanyolca dil paketi", "https://pstreamers.com/locales/es.json?v=2026-09-02.3", "json"],
+    ["Fransızca dil paketi", "https://pstreamers.com/locales/fr.json?v=2026-09-02.3", "json"],
+    ["Rusça dil paketi", "https://pstreamers.com/locales/ru.json?v=2026-09-02.3", "json"],
+    ["Arapça dil paketi", "https://pstreamers.com/locales/ar.json?v=2026-09-02.3", "json"],
+    ["Japonca dil paketi", "https://pstreamers.com/locales/ja.json?v=2026-09-02.3", "json"],
+    ["Premium stil dosyası", "https://pstreamers.com/site-v7.css?v=10.32.0", "style"],
     ["Oturum başlangıç betiği", "https://pstreamers.com/session-bootstrap.js?v=1.2", "script"],
     ["Site yönlendiricisi", "https://pstreamers.com/site-router.js?v=1.1", "script"],
     ["Sunucu analiz betiği", "https://pstreamers.com/server-analytics.js?v=6.1", "script"],
@@ -947,7 +954,7 @@ async function runScheduledPlayBotAudit(env) {
       const validPayload = result.label === "Windows güncelleme bildirimi"
         ? Boolean(payload?.version && hasUpdaterPlatforms)
         : localeCatalog
-        ? Boolean(payload?.version === "2026-09-02.2" && payload?.sourceLanguage === "tr" && payload?.language && Object.keys(payload?.translations || {}).length >= 1220)
+        ? Boolean(payload?.version === "2026-09-02.3" && payload?.sourceLanguage === "tr" && payload?.language && Object.keys(payload?.translations || {}).length >= 1220)
           : Boolean(payload?.ok);
       if (!validPayload) issues.push(`${result.label} geçerli bir JSON yanıtı döndürmüyor.`);
     }
@@ -955,12 +962,12 @@ async function runScheduledPlayBotAudit(env) {
   const homeDocument = results.find(result => result.type === "document");
   if (homeDocument?.ok) {
     const documentContracts = [
-      ["site-v7.css?v=10.31.0", "Güncel premium stil dosyası"],
+      ["site-v7.css?v=10.32.0", "Güncel premium stil dosyası"],
       ["app.js?v=5.10.0", "Güncel ana uygulama betiği"],
-      ["app-final.js?v=5.28.0", "Güncel onarım betiği"],
-      ["site-v7.js?v=10.31.1", "Güncel site davranış betiği"],
-      ["live-i18n.js?v=10.7.0", "Güncel sabit paket çeviri betiği"],
-      ["play-streamers-build\" content=\"2026-09-02-site-10.31.1", "Site 10.31.1 sürüm işareti"],
+      ["app-final.js?v=5.29.0", "Güncel onarım betiği"],
+      ["site-v7.js?v=10.32.0", "Güncel site davranış betiği"],
+      ["live-i18n.js?v=10.8.0", "Güncel sabit paket çeviri betiği"],
+      ["play-streamers-build\" content=\"2026-09-02-site-10.32.0", "Site 10.32.0 sürüm işareti"],
     ];
     for (const [token, label] of documentContracts) {
       if (!homeDocument.body.includes(token)) issues.push(`${label} canlı ana sayfaya bağlanmamış.`);
@@ -2269,6 +2276,42 @@ async function proxySwIdentityAccountRequest(request, env, route = "", method = 
     return withSessionCookies(apiResponse(request, result), null, { clear: true });
   }
   return apiResponse(request, result || { ok: true });
+}
+
+async function proxySwIdentityAccountAvatar(request, env) {
+  if (!env.SW_PRODUCT_SSO_SECRET) return apiResponse(request, { error: "SW Identity ürün köprüsü yapılandırılmamış." }, 503);
+  await ensureUsersSchema(env);
+  const current = await readUserSession(request, env);
+  if (!current?.session?.user?.id) return apiResponse(request, { error: "Oturum bulunamadı." }, 401);
+  const localUser = await env.DB.prepare("SELECT sw_identity_user_id AS swIdentityUserId FROM users WHERE id = ?1 LIMIT 1")
+    .bind(current.session.user.id).first();
+  const identityUserId = String(localUser?.swIdentityUserId || "").trim();
+  if (!/^[A-Za-z0-9_-]{8,128}$/.test(identityUserId)) return apiResponse(request, { error: "Bu hesap henüz merkezi SW Identity profiline bağlı değil." }, 409);
+  const identityResponse = await fetchExternal(`${SW_IDENTITY_ORIGIN}/api/internal/account/avatar`, {
+    method: "GET",
+    headers: {
+      authorization: `Bearer ${env.SW_PRODUCT_SSO_SECRET}`,
+      "x-sw-identity-user-id": identityUserId,
+    },
+  }, { operation: "sw-identity-avatar", retries: 1 });
+  if (!identityResponse.ok) {
+    const result = await safeJson(identityResponse);
+    const status = [401, 404, 409, 429, 503].includes(identityResponse.status) ? identityResponse.status : 502;
+    return apiResponse(request, { error: result?.error || "SW Identity profil görseli alınamadı." }, status);
+  }
+  const contentType = String(identityResponse.headers.get("content-type") || "").toLowerCase();
+  if (!/^image\/(?:png|jpeg|webp)(?:;|$)/.test(contentType)) return apiResponse(request, { error: "Profil görseli biçimi güvenli değil." }, 502);
+  const headers = new Headers({
+    "content-type": contentType,
+    "cache-control": "private, max-age=300",
+    "x-content-type-options": "nosniff",
+    "cross-origin-resource-policy": "same-site",
+    "content-security-policy": "default-src 'none'; frame-ancestors 'none'; base-uri 'none'",
+    "referrer-policy": "no-referrer",
+  });
+  const size = identityResponse.headers.get("content-length");
+  if (size) headers.set("content-length", size);
+  return new Response(identityResponse.body, { status: 200, headers });
 }
 
 async function desktopPlatformBootstrap(request, env) {

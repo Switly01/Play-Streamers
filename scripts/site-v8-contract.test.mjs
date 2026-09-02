@@ -11,14 +11,14 @@ test('site 10 assets are cache-busted and use fluid monochrome glass', async () 
     read('site-v7.css'),
     read('play-streamers-ps-logo.svg'),
   ]);
-  assert.match(html, /play-streamers-build" content="2026-09-02-site-10\.31\.1"/);
-  assert.match(html, /site-v7\.css\?v=10\.31\.0/);
+  assert.match(html, /play-streamers-build" content="2026-09-02-site-10\.32\.0"/);
+  assert.match(html, /site-v7\.css\?v=10\.32\.0/);
   assert.match(html, /app\.js\?v=5\.10\.0/);
-  assert.match(html, /site-v7\.js\?v=10\.31\.1/);
-  assert.match(html, /app-final\.js\?v=5\.28\.0/);
+  assert.match(html, /site-v7\.js\?v=10\.32\.0/);
+  assert.match(html, /app-final\.js\?v=5\.29\.0/);
   assert.match(html, /window\.ps125ReleaseFirstPaint = releaseFirstPaint/);
   assert.match(html, /window\.setTimeout\(releaseFirstPaint, 4800\)/);
-  assert.match(html, /live-i18n\.js\?v=10\.7\.0/);
+  assert.match(html, /live-i18n\.js\?v=10\.8\.0/);
   assert.match(css, /html\[data-ps-site-version="8"\]/);
   assert.match(css, /--signal: #f5f5f2/);
   assert.match(css, /@keyframes ps82-meteor/);
@@ -156,8 +156,8 @@ test('SW Bot audits deterministically and translation generation is release-only
   assert.match(worker, /swBotDeterministicReport/);
   assert.match(worker, /resolveSwBotReports/);
   assert.match(worker, /sw_bot_issue_reports/);
-  assert.match(worker, /site-v7\.css\?v=10\.31\.0/);
-  assert.match(worker, /site-v7\.js\?v=10\.31\.1/);
+  assert.match(worker, /site-v7\.css\?v=10\.32\.0/);
+  assert.match(worker, /site-v7\.js\?v=10\.32\.0/);
   assert.match(worker, /\/api\/i18n\/translate/);
   assert.match(worker, /i18n:v9/);
   assert.match(worker, /translationProvider: "local-static-build"/);
@@ -169,7 +169,7 @@ test('SW Bot audits deterministically and translation generation is release-only
   assert.match(worker, /EXCHANGE_CACHE_SECONDS/);
   assert.doesNotMatch(worker, /EXCHANGE.*KV/);
   assert.match(worker, /Fransızca dil paketi/);
-  assert.match(worker, /locales\/fr\.json\?v=2026-09-02\.2/);
+  assert.match(worker, /locales\/fr\.json\?v=2026-09-02\.3/);
   assert.match(worker, /content-security-policy/);
   assert.match(worker, /frame-ancestors 'none'/);
   assert.match(worker, /strict-transport-security/);
@@ -210,11 +210,14 @@ test('SW Identity owns direct login and registration without legacy account leak
   assert.match(identityWorker, /hostname === \"pstreamers\.com\"/);
   assert.match(app, /installIdentityCalendar/);
   assert.match(app, /productRedirectUrl/);
-  assert.match(identityWorker, /SW_IDENTITY_VERSION = "1\.8\.2"/);
+  assert.match(identityWorker, /SW_IDENTITY_VERSION = "1\.9\.0"/);
   assert.match(identityWorker, /createProductHandoffTarget/);
   assert.match(identityWorker, /handleInternalProductAccount/);
   assert.match(identityWorker, /\/api\/internal\/account\/profile/);
   assert.match(identityWorker, /\/api\/internal\/account\/security\/challenge/);
+  assert.match(identityWorker, /\/api\/internal\/account\/avatar/);
+  assert.match(identityWorker, /\/api\/internal\/account\/totp\/setup/);
+  assert.match(identityWorker, /\/api\/internal\/account\/totp\/recovery\/regenerate/);
   assert.match(i18n, /ps-live-i18n-v16/);
   assert.match(i18n, /criticalVerificationSources/);
   assert.match(i18n, /\/locales\/\$\{language\}\.json/);
@@ -234,6 +237,8 @@ test('SW Identity owns direct login and registration without legacy account leak
   assert.match(worker, /proxySwIdentityAccountRequest/);
   assert.match(worker, /\/api\/sw-identity\/login/);
   assert.match(worker, /\/api\/sw-identity\/account\/profile/);
+  assert.match(worker, /proxySwIdentityAccountAvatar/);
+  assert.match(worker, /\/api\/sw-identity\/account\/totp\/confirm/);
 });
 
 test('privacy and terms share the premium legal design', async () => {
@@ -260,11 +265,12 @@ test('versioned locale catalogs cover public, account, support and legal surface
     'E-posta adresini değiştir', 'Şifreyi güncelle', 'Kodu gönder',
     'SW profil görünümü', 'Profili kaydet', 'E-posta', 'Doğrulanmış',
     'Abonelikler', 'Masaüstü uygulaması', 'Ürünler', 'Kopyalandı',
+    'Authenticator koruması', 'İki aşamalı doğrulamayı etkinleştir', 'Kurtarma kodlarını yenile',
     'Play Bot, SW Bot oldu; canlı dosyalar, arayüz kontrolleri, bağlantılar ve katman çakışmaları daha geniş kapsamda denetleniyor.',
   ];
   for (const language of ['en', 'de', 'es', 'fr', 'ru', 'ar', 'ja']) {
     const catalog = JSON.parse(await read(`locales/${language}.json`));
-    assert.equal(catalog.version, '2026-09-02.2');
+    assert.equal(catalog.version, '2026-09-02.3');
     assert.equal(catalog.sourceLanguage, 'tr');
     assert.equal(catalog.language, language);
     assert.ok(Object.keys(catalog.translations).length >= 1000);
@@ -278,7 +284,7 @@ test('versioned locale catalogs cover public, account, support and legal surface
 
 test('account analytics and profile controls keep server-backed contracts', async () => {
   const [app, worker, site] = await Promise.all([read('app-final.js'), read('cloudflare-worker.js'), read('site-v7.js')]);
-  assert.match(app, /zero \? ' is-zero' : ''/);
+  assert.match(app, /if \(!point\.valid \|\| point\.numeric <= 0\) return ''/);
   assert.match(app, /GÜNÜN ZİRVESİ/);
   assert.match(app, /prepareAccountLogo/);
   assert.match(app, /id="ps55DeleteAccount"/);
@@ -290,6 +296,9 @@ test('account analytics and profile controls keep server-backed contracts', asyn
   assert.match(app, /value: Number\.isFinite\(exact\) \? Math\.max\(0, exact\) : null/);
   assert.match(app, /panel\.style\.left = `\$\{Math\.max\(12, Math\.min\(innerWidth - width - 12, rect\.left\)\)\}px`/);
   assert.match(app, /option\.onpointerdown = event => selectWebhookProvider/);
+  assert.match(app, /option\.onclick = event => selectWebhookProvider/);
+  assert.match(app, /\/api\/sw-identity\/account\/totp\/setup/);
+  assert.match(app, /\/api\/sw-identity\/account\/avatar/);
   assert.match(app, /current\.settings\.user\.picture = `avatar:\$\{preset\}`/);
   assert.match(app, /chromewebstore\.google\.com\/detail\/play-connect\/mpebmfjcdkflgiloecjonopfknojdaip/);
   assert.match(app, /addons\.mozilla\.org\/en-US\/firefox\/addon\/play-connect/);
@@ -321,5 +330,5 @@ test('fresh donate, exchange and fixed-width analytics contracts stay active', a
   assert.match(finalApp, /get\.microsoft\.com\/installer\/download\/9NWZ0TF5K999/);
   assert.match(finalApp, /data-ps-store-installer="product"/);
   assert.match(css, /#ps59AccountDataDialog \.ps59-chart>svg \{ width:100%!important;min-width:0!important/);
-  assert.match(css, /\.ps63-provider-name \{ display:none!important/);
+  assert.doesNotMatch(finalApp, /<span class="ps63-provider-name">/);
 });

@@ -5620,3 +5620,46 @@ body.ps-v9 #ps51AccountCenter .ps62-copy-button{display:inline-grid!important;gr
 @keyframes ps131CopyPulse{0%{transform:scale(1)}45%{transform:scale(1.045);box-shadow:0 0 0 7px rgba(255,255,255,.1)}100%{transform:scale(1)}}@keyframes ps131CodeCopied{0%,100%{color:#fff;text-shadow:none}45%{color:#fff;text-shadow:0 0 18px rgba(127,231,255,.85)}}
 #ps44UpdatesDialog .ps48-update-version>header{display:grid!important;grid-template-columns:minmax(0,1fr) auto!important;align-items:center!important}#ps44UpdatesDialog .ps51-update-meta{display:flex!important;align-items:center!important;justify-content:flex-end!important;gap:9px!important}#ps44UpdatesDialog .ps51-update-meta time{font-size:9px!important;line-height:1.2!important;white-space:nowrap!important;text-align:right!important;letter-spacing:.02em!important}
 @media(max-width:760px){body.ps-v9 .ps131-product-tabs{position:static;grid-template-columns:1fr}body.ps-v9 .ps131-desktop-showcase{grid-template-columns:1fr}body.ps-v9 .ps131-desktop-mark{width:112px;height:112px;border-radius:26px}body.ps-v9 .ps131-desktop-mark img{width:76px;height:76px}body.ps-v9 .ps131-ecosystem-grid{grid-template-columns:1fr}body.ps-v9 .ps131-ecosystem-grid>a{grid-template-columns:64px minmax(0,1fr);min-height:112px;padding:15px}body.ps-v9 .ps131-ecosystem-grid>a>i{width:64px;height:64px}body.ps-v9 #ps51AccountCenter .ps62-device{grid-template-columns:1fr!important}body.ps-v9 #ps51AccountCenter .ps62-device button{width:100%!important}}
+
+/* Site 10.32 — ürün, grafik ve SW Identity güvenlik son katmanı */
+body.ps-v9 .ps131-product-panel .ps130-plans{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:14px!important;overflow:visible!important;border:0!important;border-radius:0!important;padding:0!important;background:transparent!important;box-shadow:none!important}
+body.ps-v9 .ps131-product-panel .ps130-plans>article{min-width:0!important;border:1px solid rgba(255,255,255,.12)!important;border-radius:22px!important;background:linear-gradient(145deg,rgba(255,255,255,.062),rgba(255,255,255,.018))!important;box-shadow:none!important;transform:none!important}
+body.ps-v9 .ps53-products-shell>.landing-footer.ps73-footer-order{display:grid!important;width:min(1260px,calc(100% - 40px))!important;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr)!important;align-items:center!important;gap:20px!important;margin:auto auto 0!important;border-top:1px solid rgba(255,255,255,.12)!important;padding:24px 0 32px!important}
+body.ps-v9 .ps53-products-shell>.landing-footer.ps73-footer-order .ps73-privacy-slot{display:flex!important;align-items:center!important;justify-content:flex-start!important;gap:16px!important}
+body.ps-v9 .ps53-products-shell>.landing-footer.ps73-footer-order .ps73-feature-slot{text-align:center!important;white-space:nowrap!important}
+body.ps-v9 .ps53-products-shell>.landing-footer.ps73-footer-order .ps73-developer-slot{text-align:right!important;white-space:nowrap!important}
+
+body.ps-v9 #ps51AccountCenter .ps132-two-factor-card{display:grid!important;grid-template-columns:minmax(0,1fr) auto!important;align-items:center!important;gap:16px!important;margin:18px 0!important;border:1px solid rgba(141,233,255,.24)!important;border-radius:19px!important;padding:18px!important;background:linear-gradient(135deg,rgba(141,233,255,.075),rgba(255,255,255,.025))!important}
+body.ps-v9 #ps51AccountCenter .ps132-two-factor-card>span{display:grid!important;min-width:0!important;gap:6px!important}
+body.ps-v9 #ps51AccountCenter .ps132-two-factor-card>span>b{color:#fff!important;font:850 15px var(--display)!important}
+body.ps-v9 #ps51AccountCenter .ps132-two-factor-card>span>small{max-width:680px!important;color:rgba(255,255,255,.58)!important;font-size:10px!important;line-height:1.55!important}
+body.ps-v9 #ps51AccountCenter .ps132-two-factor-actions{display:flex!important;align-items:center!important;justify-content:flex-end!important;gap:8px!important;flex-wrap:wrap!important}
+body.ps-v9 #ps51AccountCenter .ps132-two-factor-actions button{min-height:40px!important;border-radius:11px!important;padding:0 14px!important;white-space:nowrap!important}
+body.ps-v9 #ps51AccountCenter .ps132-two-factor-card>#ps56TwoFactorStatus{grid-column:1/-1!important;margin:0!important}
+
+body.ps-v9 #ps51AccountCenter .ps121-identity-form label.ps28-password-host{position:relative!important;display:grid!important;overflow:visible!important}
+body.ps-v9 #ps51AccountCenter .ps121-identity-form label.ps28-password-host>input{padding-right:48px!important}
+body.ps-v9 #ps51AccountCenter .ps121-identity-form label.ps28-password-host>.ps28-eye[data-ps48-eye="1"]{position:absolute!important;z-index:5!important;right:8px!important;bottom:7px!important;top:auto!important;display:grid!important;width:34px!important;height:34px!important;min-width:34px!important;min-height:34px!important;place-items:center!important;overflow:hidden!important;border:1px solid rgba(255,255,255,.14)!important;border-radius:9px!important;padding:0!important;color:rgba(255,255,255,.72)!important;background:#111318!important;box-shadow:none!important;transform:none!important;animation:none!important}
+body.ps-v9 #ps51AccountCenter .ps121-identity-form label.ps28-password-host>.ps28-eye[data-ps48-eye="1"]::before,body.ps-v9 #ps51AccountCenter .ps121-identity-form label.ps28-password-host>.ps28-eye[data-ps48-eye="1"]::after{display:none!important;content:none!important}
+body.ps-v9 #ps51AccountCenter .ps121-identity-form label.ps28-password-host>.ps28-eye[data-ps48-eye="1"]>svg{position:static!important;display:block!important;width:18px!important;height:18px!important;overflow:visible!important;fill:none!important;stroke:currentColor!important;stroke-width:1.8!important;stroke-linecap:round!important;stroke-linejoin:round!important;transform:none!important;animation:none!important}
+
+body.ps-v9 #ps51AccountCenter .ps66-provider-control,body.ps-v9 #ps51AccountCenter .ps66-provider-menu>button{touch-action:manipulation!important;cursor:pointer!important}
+body.ps-v9 #ps51AccountCenter .ps66-provider-menu{position:absolute!important;top:calc(100% + 8px)!important;right:0!important;left:0!important;z-index:120!important;pointer-events:auto!important}
+body.ps-v9 #ps51AccountCenter .ps66-provider-menu>button{pointer-events:auto!important;user-select:none!important}
+
+body.ps-v9 #ps51AccountCenter .ps67-oauth-title{display:block!important;padding-bottom:16px!important}
+body.ps-v9 #ps51AccountCenter .ps67-oauth-title>span{display:grid!important;grid-template-columns:64px minmax(0,1fr)!important;align-items:center!important;gap:15px!important}
+body.ps-v9 #ps51AccountCenter .ps67-oauth-title b{width:64px!important;min-width:64px!important;min-height:36px!important;margin:0!important;justify-self:start!important}
+body.ps-v9 #ps51AccountCenter .ps67-oauth-title small{display:block!important;margin:0!important;padding:0!important;text-align:left!important;line-height:1.55!important}
+body.ps-v9 #ps51AccountCenter .ps67-oauth-grid{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:11px!important;margin-top:14px!important}
+body.ps-v9 #ps51AccountCenter .ps67-oauth-card{display:grid!important;grid-template-columns:46px minmax(0,1fr)!important;grid-template-areas:"icon copy" "actions actions"!important;align-content:start!important;align-items:center!important;gap:11px!important;min-width:0!important;padding:14px!important}
+body.ps-v9 #ps51AccountCenter .ps67-oauth-icon{width:46px!important;height:46px!important}
+body.ps-v9 #ps51AccountCenter .ps67-oauth-icon img{width:30px!important;height:30px!important}
+
+body.ps-v9 #ps51AccountCenter .ps62-pairing-actions{display:flex!important;width:max-content!important;align-items:center!important;justify-content:flex-end!important;gap:7px!important}
+body.ps-v9 #ps51AccountCenter .ps62-pairing-actions button{width:auto!important;min-height:36px!important;height:36px!important;border-radius:10px!important;padding:0 11px!important;font-size:9px!important}
+body.ps-v9 #ps51AccountCenter .ps62-pairing-actions .ps62-copy-button{display:inline-grid!important;grid-template-columns:1fr!important;min-width:104px!important}
+body.ps-v9 #ps51AccountCenter .ps62-pairing-actions .ps64-code-renew{width:36px!important;min-width:36px!important;padding:0!important}
+
+@media(max-width:900px){body.ps-v9 #ps51AccountCenter .ps67-oauth-grid{grid-template-columns:1fr!important}body.ps-v9 .ps131-product-panel .ps130-plans{grid-template-columns:1fr!important}}
+@media(max-width:760px){body.ps-v9 .ps53-products-shell>.landing-footer.ps73-footer-order{grid-template-columns:1fr!important;text-align:center!important}body.ps-v9 .ps53-products-shell>.landing-footer.ps73-footer-order :is(.ps73-privacy-slot,.ps73-feature-slot,.ps73-developer-slot){justify-content:center!important;text-align:center!important;white-space:normal!important}body.ps-v9 #ps51AccountCenter .ps132-two-factor-card{grid-template-columns:1fr!important}body.ps-v9 #ps51AccountCenter .ps132-two-factor-actions{justify-content:flex-start!important}body.ps-v9 #ps51AccountCenter .ps62-pairing-actions{width:100%!important;justify-content:flex-start!important}}

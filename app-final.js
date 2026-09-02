@@ -813,6 +813,10 @@
     if (local) return `<img src="${esc(local)}" alt="Profil fotoğrafı">`;
     const choice = accountAvatars.find(item => item[0] === user.picture);
     if (choice) return choice[1];
+    const identityAvatar = swIdentityAccount?.user?.avatar || {};
+    if (identityAvatar.type === 'custom' && identityAvatar.value) {
+      return `<img src="https://api.pstreamers.com/api/sw-identity/account/avatar?v=${encodeURIComponent(String(identityAvatar.value))}" alt="SW Identity profil fotoğrafı" referrerpolicy="no-referrer">`;
+    }
     const identityPreset = String(swIdentityAccount?.user?.avatar?.value || user.swAvatarPreset || '');
     const picturePreset = String(user.picture || '').replace(/^avatar:/, '');
     const swChoice = swProfileAvatars.find(item => item[0] === picturePreset || item[0] === identityPreset);
@@ -1013,12 +1017,14 @@
     const labelIndexes = new Set([0, 15, 30, 45, 60, 75, completedPoints.length - 1, ...measuredIndexes].filter(index => index >= 0 && index < completedPoints.length));
     const labels = completedPoints.map((point, index) => labelIndexes.has(index) ? `<text x="${(x(index) + barWidth / 2).toFixed(1)}" y="${height - 22}" text-anchor="middle">${esc(point.label || '')}</text>` : '').join('');
     const bars = plotted.map(point => {
-      const zero = point.valid && point.numeric <= 0;
-      const barY = point.valid && !zero ? y(point.numeric) : top + chartHeight;
-      const barHeight = point.valid && !zero ? Math.max(2, top + chartHeight - barY) : 2;
+      // Ölçülmeyen veya gerçek değeri sıfır olan gün için hiçbir sütun çizme.
+      // X konumu 90 günlük takvimde korunduğu için eksik gün komşu günün
+      // sütununu genişletemez ve beyaz bir "doldurma" izi bırakamaz.
+      if (!point.valid || point.numeric <= 0) return '';
+      const barY = y(point.numeric);
+      const barHeight = Math.max(2, top + chartHeight - barY);
       const dateLabel = point.date.toLocaleDateString('tr-TR', { day: '2-digit', month: 'long', year: 'numeric' });
-      const interaction = point.valid && !zero ? ` data-ps69-day="${esc(point.key)}" data-ps69-value="${esc(point.numeric)}" tabindex="0" role="button" aria-label="${esc(dateLabel)} ayrıntısını aç"` : ' aria-hidden="true"';
-      return `<rect class="ps69-day-bar${point.valid ? (zero ? ' is-zero' : '') : ' is-missing'}" data-ps69-metric="${esc(metric)}" data-ps69-label="${esc(dateLabel)}"${interaction} x="${x(point.index).toFixed(1)}" y="${(top + chartHeight - barHeight).toFixed(1)}" width="${barWidth.toFixed(1)}" height="${barHeight.toFixed(1)}" rx="2"></rect>`;
+      return `<rect class="ps69-day-bar" data-ps69-metric="${esc(metric)}" data-ps69-label="${esc(dateLabel)}" data-ps69-day="${esc(point.key)}" data-ps69-value="${esc(point.numeric)}" tabindex="0" role="button" aria-label="${esc(dateLabel)} ayrıntısını aç" x="${x(point.index).toFixed(1)}" y="${(top + chartHeight - barHeight).toFixed(1)}" width="${barWidth.toFixed(1)}" height="${barHeight.toFixed(1)}" rx="2"></rect>`;
     }).join('');
     return `<svg viewBox="0 0 ${width} ${height}" role="img" aria-label="${esc(title)} son 90 gün günlük sütun grafiği"><g class="ps59-grid">${grid}</g><g class="ps59-bars">${bars}</g><g class="ps59-axis">${labels}</g></svg>`;
   }
@@ -1284,8 +1290,8 @@
           current.settings.user.swAvatarPreset = preset;
           current.settings.user.picture = `avatar:${preset}`;
           saveAccountState(current);
-          syncAccountSidebarAvatar();
         }
+        syncAccountSidebarAvatar();
         return result;
       })
       .finally(() => { swIdentityAccountRequest = null; });
@@ -1418,7 +1424,7 @@
           const mark = icon
             ? `<img src="${icon}" alt="" aria-hidden="true" onerror="this.hidden=true;var fallback=this.nextElementSibling;if(fallback)fallback.hidden=false"><i class="ps63-provider-fallback" aria-hidden="true" hidden>${fallbackLetters}</i>`
             : `<i class="ps63-provider-fallback" aria-hidden="true">${fallbackLetters}</i>`;
-          return `<span class="ps63-provider-chip${connected ? ' connected' : ''}">${mark}<span class="ps63-provider-name">${esc(provider.name)}</span></span>`;
+          return `<span class="ps63-provider-chip${connected ? ' connected' : ''}" aria-label="${esc(provider.name)}" title="${esc(provider.name)}">${mark}</span>`;
         }).join('')}</div>`
       : '';
     const deviceHtml = visibleDevices.length
@@ -1795,7 +1801,11 @@
     layer.onclick = () => {};
     const status = $('.ps51-account-status', layer);
     $('.ps56-copy-recovery', layer).onclick = () => copySecurityText(codes.join('\n'), status);
-    $('.ps44-confirm', layer).onclick = async () => { closeDialog(layer); await refreshAccountUser(); showAccountCenter('account', false, finishMessage); };
+    $('.ps44-confirm', layer).onclick = async () => {
+      closeDialog(layer);
+      await Promise.allSettled([refreshAccountUser(), refreshSwIdentityAccount(true)]);
+      showAccountCenter('account', false, finishMessage);
+    };
   }
   function totpQrMarkup(uri) {
     try {
@@ -1845,7 +1855,7 @@
       const submit = $('.ps44-confirm', form);
       submit.disabled = true; status.className = 'ps51-account-status'; status.textContent = 'Kod doğrulanıyor…';
       try {
-        const result = await accountPost('/api/account/totp/confirm', {
+        const result = await accountPost('/api/sw-identity/account/totp/confirm', {
           setupId: setup.setupId,
           code: String(form.elements.code.value || '').trim()
         });
@@ -1867,9 +1877,9 @@
       const status = $('.ps51-account-status', form), submit = $('.ps44-confirm', form);
       submit.disabled = true; status.textContent = 'Kod doğrulanıyor…';
       try {
-        await accountPost('/api/account/totp/disable', { code: String(form.elements.code.value || '').trim() });
+        await accountPost('/api/sw-identity/account/totp/disable', { code: String(form.elements.code.value || '').trim() });
         closeDialog(layer);
-        await refreshAccountUser();
+        await Promise.allSettled([refreshAccountUser(), refreshSwIdentityAccount(true)]);
         showAccountCenter('account', false, 'İki adımlı doğrulama kapatıldı.');
       } catch (error) {
         submit.disabled = false;
@@ -1893,7 +1903,7 @@
       }
       submit.disabled = true; status.className = 'ps51-account-status'; status.textContent = 'Eski kodlar iptal edilip yenileri hazırlanıyor…';
       try {
-        const result = await accountPost('/api/account/totp/recovery-codes', { code });
+        const result = await accountPost('/api/sw-identity/account/totp/recovery/regenerate', { code });
         const recoveryCodes = Array.isArray(result.recoveryCodes) ? result.recoveryCodes : [];
         if (recoveryCodes.length !== 8) throw new Error('Yeni yedek kodlar eksik alındı. Yeni Authenticator kodu oluşunca tekrar dene.');
         closeDialog(layer);
@@ -2135,7 +2145,7 @@
       try {
         if (enabled) showTotpDisableDialog();
         else {
-          const setup = await accountPost('/api/account/totp/setup', {});
+          const setup = await accountPost('/api/sw-identity/account/totp/setup', {});
           showTotpMethodDialog(setup);
         }
         twoFactorButton.disabled = false;
@@ -2322,7 +2332,10 @@
       };
       $$('[data-ps66-provider-option]', webhookProviderMenu).forEach(option => {
         option.onpointerdown = event => selectWebhookProvider(option, event);
-        option.onclick = event => { event.preventDefault(); event.stopImmediatePropagation(); };
+        option.onclick = event => selectWebhookProvider(option, event);
+        option.onkeydown = event => {
+          if (event.key === 'Enter' || event.key === ' ') selectWebhookProvider(option, event);
+        };
       });
     }
     const createWebhook = $('#ps66CreateWebhook', layer);
@@ -2558,7 +2571,11 @@
     const security = swIdentityAccount?.security || {};
     const email = String(identity.email || user.email || '');
     const twoFactor = Boolean(security.twoFactorEnabled);
-    return `<span class="ps51-account-kicker">SW IDENTITY · GÜVENLİK</span><h2>E-posta, şifre ve güvenlik</h2><p class="ps51-account-lead">Güvenlik değişikliklerini Play Streamers içinden yap. İşlemler merkezi SW Identity hesabına uygulanır ve diğer SW ürünleriyle eşitlenir.</p><section class="ps121-security-summary"><article><span>E-posta</span><b>${esc(email || 'Doğrulanmış adres yok')}</b></article><article><span>İki adımlı doğrulama</span><b class="${twoFactor ? 'active' : ''}">${twoFactor ? 'Açık' : 'Kapalı'}</b></article><article><span>Veri akışı</span><b>Doğrulanmış</b></article></section><div class="ps121-security-grid"><form id="ps121SwEmailForm" class="ps121-identity-form"><h3>E-posta adresini değiştir</h3><p>Yeni adrese gönderilen kodla değişikliği doğrula.</p><label>Yeni e-posta<input name="newEmail" type="email" autocomplete="email" required></label><label>Mevcut şifre<input name="currentPassword" type="password" autocomplete="current-password" required></label><div class="ps121-code-row"><label>Doğrulama kodu<input name="code" inputmode="numeric" autocomplete="one-time-code" maxlength="8" required></label><button type="button" class="ps51-secondary" data-ps121-challenge="email_change">Kodu gönder</button></div><button class="ps51-primary" type="submit">E-postayı güncelle</button><p class="ps51-account-status" aria-live="polite"></p></form><form id="ps121SwPasswordForm" class="ps121-identity-form"><h3>Şifreni değiştir</h3><p>${twoFactor ? 'İşlemi Authenticator kodunla doğrula.' : 'E-postana gönderilen kodla işlemi doğrula.'}</p><label>Mevcut şifre<input name="currentPassword" type="password" autocomplete="current-password" required></label><label>Yeni şifre<input name="newPassword" type="password" minlength="10" maxlength="200" autocomplete="new-password" required></label><label>Yeni şifre tekrar<input name="newPasswordRepeat" type="password" minlength="10" maxlength="200" autocomplete="new-password" required></label><div class="ps121-code-row"><label>Doğrulama kodu<input name="code" inputmode="numeric" autocomplete="one-time-code" maxlength="8" required></label><button type="button" class="ps51-secondary" data-ps121-challenge="password_change">Kodu gönder</button></div><button class="ps51-primary" type="submit">Şifreyi güncelle</button><p class="ps51-account-status" aria-live="polite"></p></form></div><section class="ps126-danger-zone"><span><b>SW Identity hesabını sil</b><small>Bu işlem merkezi kimliğini ve bağlı tüm SW ürünlerindeki hesap, oturum, plan, bağlantı ve ürün verilerini kalıcı olarak kaldırır.</small></span><button id="ps55DeleteAccount" class="ps51-danger" type="button">SW Identity hesabımı sil</button></section><p class="ps121-security-note">İki adımlı doğrulama ayarın SW Identity’den okunur. Açık olduğunda e-posta kodu yerine Authenticator kodun kullanılır.</p>`;
+    const enableTwoFactorLabel = ui('İki aşamalı doğrulamayı etkinleştir');
+    const disableTwoFactorLabel = ui('İki aşamalı doğrulamayı kapat');
+    const renewRecoveryLabel = ui('Kurtarma kodlarını yenile');
+    const twoFactorActions = `<button id="ps56TwoFactorToggle" class="${twoFactor ? 'ps51-danger' : 'ps51-primary'}" type="button" data-enabled="${twoFactor}">${esc(twoFactor ? disableTwoFactorLabel : enableTwoFactorLabel)}</button>${twoFactor ? `<button id="ps60RecoveryCodes" class="ps51-secondary" type="button">${esc(renewRecoveryLabel)}</button>` : ''}`;
+    return `<span class="ps51-account-kicker">SW IDENTITY · GÜVENLİK</span><h2>E-posta, şifre ve güvenlik</h2><p class="ps51-account-lead">Güvenlik değişikliklerini Play Streamers içinden yap. İşlemler merkezi SW Identity hesabına uygulanır ve diğer SW ürünleriyle eşitlenir.</p><section class="ps121-security-summary"><article><span>E-posta</span><b>${esc(email || 'Doğrulanmış adres yok')}</b></article><article><span>İki aşamalı doğrulama</span><b class="${twoFactor ? 'active' : ''}">${twoFactor ? 'Açık' : 'Kapalı'}</b></article><article><span>Veri akışı</span><b>Doğrulanmış</b></article></section><section class="ps132-two-factor-card"><span><b>Authenticator koruması</b><small>${twoFactor ? 'Yeni girişlerde Authenticator veya kurtarma kodun istenir. Kodlarını buradan güvenle yenileyebilir ya da korumayı kapatabilirsin.' : 'Google Authenticator, Microsoft Authenticator veya iPhone Parolalar ile hesabına ikinci bir güvenlik adımı ekle.'}</small></span><div class="ps132-two-factor-actions">${twoFactorActions}</div><p id="ps56TwoFactorStatus" class="ps51-account-status" aria-live="polite"></p></section><div class="ps121-security-grid"><form id="ps121SwEmailForm" class="ps121-identity-form"><h3>E-posta adresini değiştir</h3><p>Yeni adrese gönderilen kodla değişikliği doğrula.</p><label>Yeni e-posta<input name="newEmail" type="email" autocomplete="email" required></label><label>Mevcut şifre<input name="currentPassword" type="password" autocomplete="current-password" required></label><div class="ps121-code-row"><label>Doğrulama kodu<input name="code" inputmode="numeric" autocomplete="one-time-code" maxlength="9" required></label><button type="button" class="ps51-secondary" data-ps121-challenge="email_change">Kodu gönder</button></div><button class="ps51-primary" type="submit">E-postayı güncelle</button><p class="ps51-account-status" aria-live="polite"></p></form><form id="ps121SwPasswordForm" class="ps121-identity-form"><h3>Şifreni değiştir</h3><p>${twoFactor ? 'İşlemi Authenticator kodunla doğrula.' : 'E-postana gönderilen kodla işlemi doğrula.'}</p><label>Mevcut şifre<input name="currentPassword" type="password" autocomplete="current-password" required></label><label>Yeni şifre<input name="newPassword" type="password" minlength="10" maxlength="200" autocomplete="new-password" required></label><label>Yeni şifre tekrar<input name="newPasswordRepeat" type="password" minlength="10" maxlength="200" autocomplete="new-password" required></label><div class="ps121-code-row"><label>Doğrulama kodu<input name="code" inputmode="numeric" autocomplete="one-time-code" maxlength="9" required></label><button type="button" class="ps51-secondary" data-ps121-challenge="password_change">Kodu gönder</button></div><button class="ps51-primary" type="submit">Şifreyi güncelle</button><p class="ps51-account-status" aria-live="polite"></p></form></div><section class="ps126-danger-zone"><span><b>SW Identity hesabını sil</b><small>Bu işlem merkezi kimliğini ve bağlı tüm SW ürünlerindeki hesap, oturum, plan, bağlantı ve ürün verilerini kalıcı olarak kaldırır.</small></span><button id="ps55DeleteAccount" class="ps51-danger" type="button">SW Identity hesabımı sil</button></section><p class="ps121-security-note">İki aşamalı doğrulama ayarın SW Identity’den okunur. Açık olduğunda e-posta kodu yerine Authenticator kodun kullanılır.</p>`;
   }
   function showAccountCenter(tab = 'data', refresh = true, flash = '', quiet = false) {
     const current = state(), settings = current.settings || {}, user = settings.user || {}; if (!settings.userSession || !settings.user) return;

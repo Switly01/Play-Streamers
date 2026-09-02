@@ -8,7 +8,7 @@ import { critical } from '../live-i18n.js';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const outputDirectory = join(root, 'locales');
-const version = '2026-09-02.2';
+const version = '2026-09-02.3';
 const languages = ['en', 'de', 'es', 'fr', 'ru', 'ar', 'ja'];
 const sourceFiles = ['index.html', 'privacy.html', 'terms.html', 'app.js', 'app-final.js', 'site-v7.js', 'server-analytics.js'];
 const extractionFiles = new Set(['index.html', 'privacy.html', 'terms.html', 'app-final.js', 'site-v7.js', 'server-analytics.js']);
@@ -41,7 +41,7 @@ const translatable = value => {
   if (/^(?:GET|POST|PUT|PATCH|DELETE|OPTIONS|SELECT|INSERT|UPDATE|CREATE|DROP)\b/i.test(text)) return false;
   return true;
 };
-const turkishInterfaceTerms = new Set('ana geri dön giriş kayıt hesap şifre kullanıcı eposta doğum tarih güvenlik doğrulama destek mesaj konu gönder gizlilik kullanım koşulları sistem durum güncelleme bildirim bağlantı yayın yayıncı içerik topluluk marka araç veri ziyaretçi aktif ücretsiz indir oluştur keşfet hemen başla kapat tamam iptal hata başarısız bekleniyor hazır yükleniyor görünür ayar menü ürün ürünler abonelik abonelikler masaüstü uygulama uygulaması plan canlı analiz ekler talepler eski yeni son önce sonraki beni hatırla'.split(' '));
+const turkishInterfaceTerms = new Set('ana geri dön giriş kayıt hesap şifre kullanıcı eposta doğum tarih güvenlik doğrulama doğrulamayı aşamalı etkinleştir kurtarma kod kodları kodlarını yenile destek mesaj konu gönder gizlilik kullanım koşulları sistem durum güncelleme bildirim bağlantı yayın yayıncı içerik topluluk marka araç veri ziyaretçi aktif ücretsiz indir oluştur keşfet hemen başla kapat tamam iptal hata başarısız bekleniyor hazır yükleniyor görünür ayar menü ürün ürünler abonelik abonelikler masaüstü uygulama uygulaması plan canlı analiz ekler talepler eski yeni son önce sonraki beni hatırla'.split(' '));
 function looksLikeTurkishInterface(value) {
   const text = clean(value);
   if (!translatable(text) || /^[.#/[{(]/.test(text) || /[{}=;]|=>|\b(?:const|function|return|querySelector|classList|dataset)\b/.test(text)) return false;

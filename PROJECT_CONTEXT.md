@@ -1,6 +1,16 @@
 # Play Streamers — Kalıcı Proje Bağlamı
 
-## Güncel geliştirme durumu · 1 Eylül 2026
+## Güncel geliştirme durumu · 2 Eylül 2026
+
+Site 10.31.0 / Worker 8.4 ürün, analiz ve bağlantı revizyonu: Ürünlerimiz
+sayfası Abonelikler, Masaüstü uygulaması ve Ürünler olarak üç erişilebilir
+sekmeye ayrıldı; ürün ailesi iki site, bir tarayıcı eklentisi ve bir masaüstü
+uygulamasını ayrı kartlarda gösterir. Kur penceresi kendi düğmesinin altından
+sağa açılır ve başka bir yüzey seçildiğinde kapanır. Son 90 günlük grafikte
+ölçülmeyen günlere önceki değer taşınmaz; gerçek tarih boşlukları korunur.
+Hesap başlığındaki SW Identity avatarı bütün sekmelerde eşitlenir. Play Connect
+platformları, SSB seçicisi, DAB kartları, eşleştirme kopyalama geri bildirimi,
+bağlı cihaz görünümü ve güncelleme tarihleri yeniden hizalandı.
 
 Site 10.29.0 / Worker 8.2 / Desktop 0.14.5 kur, hesap ve mağaza görseli
 revizyonu: kur paneli artık seçili bölgenin para birimini kaynak kabul eder;

@@ -548,17 +548,44 @@
       if (typeof afterClose === 'function') afterClose();
     }, 300);
   }
+  function bindProductTabs(content) {
+    if (!content) return;
+    const tabs = $$('[data-ps131-product-tab]', content);
+    const panels = $$('[data-ps131-product-panel]', content);
+    const activate = key => {
+      const safeKey = panels.some(panel => panel.dataset.ps131ProductPanel === key) ? key : 'subscriptions';
+      tabs.forEach(tab => {
+        const active = tab.dataset.ps131ProductTab === safeKey;
+        tab.classList.toggle('active', active);
+        tab.setAttribute('aria-selected', String(active));
+        tab.tabIndex = active ? 0 : -1;
+      });
+      panels.forEach(panel => { panel.hidden = panel.dataset.ps131ProductPanel !== safeKey; });
+    };
+    tabs.forEach((tab, index) => {
+      tab.onclick = event => { event.preventDefault(); activate(tab.dataset.ps131ProductTab); };
+      tab.onkeydown = event => {
+        if (!['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) return;
+        event.preventDefault();
+        const nextIndex = event.key === 'Home' ? 0 : event.key === 'End' ? tabs.length - 1 : (index + (event.key === 'ArrowRight' ? 1 : -1) + tabs.length) % tabs.length;
+        tabs[nextIndex]?.focus();
+        activate(tabs[nextIndex]?.dataset.ps131ProductTab);
+      };
+    });
+    activate('subscriptions');
+  }
   function renderInfoContent(layer, key, animate = false) {
     const data = infoContent[key] || infoContent.about;
     const content = $('.ps49-info-content', layer);
     if (!content) return;
     if (data.productLayout) {
       const playConnect = playConnectStore();
-      content.innerHTML = `<section class="ps130-products-hero"><div><span class="ps49-info-kicker">PLAY STREAMERS · CREATOR OPERATING SYSTEM</span><h1>${esc(data.title)}</h1><p class="ps49-info-lead">${esc(data.lead)}</p><div class="ps130-hero-facts"><span>45 hazır araç</span><span>Tek SW Identity hesabı</span><span>Windows 10/11</span></div></div><aside><span>MASAÜSTÜ UYGULAMASI · 0.14.5</span><b>Yayın işlerinin tamamı tek çalışma alanında.</b><a href="${WINDOWS_STORE_INSTALLER_URL}" data-ps-store-installer="product">Windows için indir</a><small>Microsoft Store Web Installer · 64 bit</small></aside></section>
-        <section class="ps130-capabilities" aria-label="Play Streamers ana yetenekleri"><article><i>01</i><span><b>Canlı merkez</b><small>Kick ve Play Connect üzerinden gelen doğrulanmış olayları tek, okunabilir akışta izle.</small></span></article><article><i>02</i><span><b>Yayın zekâsı</b><small>Oturumları, etkileşimi ve değişimleri kanıtlı verilerle karşılaştır.</small></span></article><article><i>03</i><span><b>Creator OS</b><small>İçerik, topluluk, marka, gelir, analiz ve yerel kasa araçlarını birlikte yönet.</small></span></article></section>
-        <section class="ps130-product-split"><article><span>SİTEDE</span><h2>Hesap ve bağlantı merkezi</h2><p>SW Identity, güvenlik, plan, Kick ve Play Connect bağlantıları ile indirme yönetimi.</p></article><article><span>UYGULAMADA</span><h2>Yayın çalışma merkezi</h2><p>Canlı merkez, analiz, içerik, topluluk, marka, gelir, kasa ve ayarlar.</p></article></section>
-        <section class="ps-plan-preview ps130-plans" aria-label="Play Streamers planları"><article><span>FREE</span><b>Yayınını düzenle</b><small>Canlı olaylar, sayaç, notlar, hedefler ve fikir kasası.</small><ul><li>Hızlı notlar</li><li>Hedef panosu</li><li>Canlı olay merkezi</li></ul></article><article><span>PRO</span><b>Üretim sistemini kur</b><small>İçerik akışı, teleprompter, marka ve yerel kasa araçları.</small><ul><li>Yayın raporu ve gelişmiş grafikler</li><li>Teleprompter ve veri dışa aktarma</li><li>Marka ve topluluk araçları</li></ul></article><article><span>PRODUCT PRO</span><b>Veriyi avantaja çevir</b><small>Kanıtlı karşılaştırmalar, SW AI açıklaması ve doğrulanmış gelir görünümleri.</small><ul><li>Yayın zekâsı ve izleyici nabzı</li><li>İçerik dönüştürme ve akıllı uyarılar</li><li>Gelir kokpiti ve anlık görüntüler</li></ul></article></section>
-        <section class="ps54-sites ps130-ecosystem"><span>ÜRÜN AİLESİ</span><div class="ps54-sites-grid"><a class="ps54-site-card" href="https://pstreamers.com" aria-label="Play Streamers ana sayfası"><i>PS</i><span><b>Play Streamers</b><small>Hesap ve ürün merkezi</small></span></a><a class="ps54-site-card" href="${esc(playConnect.href)}"${playConnect.external ? ' target="_blank" rel="noopener noreferrer"' : ' download'}><i class="ps126-connect-mark"><img src="./play-connect-pc-logo.svg?v=1.15.2" alt=""></i><span><b>Play Connect</b><small>${esc(playConnect.label)}</small></span></a><a class="ps54-site-card" href="https://swcreate.com" target="_blank" rel="noopener noreferrer"><i class="ps61-sw-site-logo"><img src="swcreate-sw-logo-transparent.png" alt=""></i><span><b>SW Identity</b><small>Ortak hesap, güvenlik ve plan yönetimi</small></span></a></div></section>`;
+      content.innerHTML = `<section class="ps130-products-hero"><div><span class="ps49-info-kicker">PLAY STREAMERS · CREATOR OPERATING SYSTEM</span><h1>${esc(data.title)}</h1><p class="ps49-info-lead">${esc(data.lead)}</p><div class="ps130-hero-facts"><span>45 hazır araç</span><span>Tek SW Identity hesabı</span><span>Windows 10/11</span></div></div></section>
+        <div class="ps131-product-tabs" role="tablist" aria-label="Ürünlerimiz bölümleri"><button type="button" role="tab" data-ps131-product-tab="subscriptions">Abonelikler</button><button type="button" role="tab" data-ps131-product-tab="desktop">Masaüstü uygulaması</button><button type="button" role="tab" data-ps131-product-tab="ecosystem">Ürünler</button></div>
+        <section class="ps131-product-panel" role="tabpanel" data-ps131-product-panel="subscriptions"><div class="ps-plan-preview ps130-plans" aria-label="Play Streamers planları"><article><span>FREE</span><b>Yayınını düzenle</b><small>Canlı olaylar, sayaç, notlar, hedefler ve fikir kasası.</small><ul><li>Hızlı notlar</li><li>Hedef panosu</li><li>Canlı olay merkezi</li></ul></article><article><span>PRO</span><b>Üretim sistemini kur</b><small>İçerik akışı, teleprompter, marka ve yerel kasa araçları.</small><ul><li>Yayın raporu ve gelişmiş grafikler</li><li>Teleprompter ve veri dışa aktarma</li><li>Marka ve topluluk araçları</li></ul></article><article><span>PRODUCT PRO</span><b>Veriyi avantaja çevir</b><small>Kanıtlı karşılaştırmalar, SW AI açıklaması ve doğrulanmış gelir görünümleri.</small><ul><li>Yayın zekâsı ve izleyici nabzı</li><li>İçerik dönüştürme ve akıllı uyarılar</li><li>Gelir kokpiti ve anlık görüntüler</li></ul></article></div></section>
+        <section class="ps131-product-panel" role="tabpanel" data-ps131-product-panel="desktop" hidden><div class="ps131-desktop-showcase"><span class="ps131-desktop-mark"><img src="./play-streamers-ps-logo.svg?v=10.29" alt=""></span><div><span>MASAÜSTÜ UYGULAMASI · 0.14.5</span><h2>Yayın işlerinin tamamı tek çalışma alanında.</h2><p>Canlı merkez, analiz, içerik, topluluk, marka, gelir, yerel kasa ve yayın ayarlarını Windows 10 ve 11 üzerinde birlikte yönet.</p><div class="ps130-capabilities" aria-label="Masaüstü uygulaması yetenekleri"><article><i>01</i><span><b>Canlı merkez</b><small>Kick ve Play Connect olaylarını tek akışta izle.</small></span></article><article><i>02</i><span><b>Yayın zekâsı</b><small>Oturum ve etkileşim değişimlerini karşılaştır.</small></span></article><article><i>03</i><span><b>Yerel çalışma</b><small>Hassas üretim verilerini bilgisayarında tut.</small></span></article></div><a class="ps131-desktop-download" href="${WINDOWS_STORE_INSTALLER_URL}" data-ps-store-installer="product">Windows için indir</a><small>Microsoft Store Web Installer · 64 bit</small></div></div></section>
+        <section class="ps131-product-panel" role="tabpanel" data-ps131-product-panel="ecosystem" hidden><div class="ps131-ecosystem-grid"><a href="https://pstreamers.com"><i><img src="./play-streamers-ps-logo.svg?v=10.29" alt=""></i><span><em>SİTE</em><b>Play Streamers</b><small>Yayıncı paneli ve ürün merkezi</small></span></a><a href="https://swcreate.com" target="_blank" rel="noopener noreferrer"><i><img src="swcreate-sw-logo-transparent.png" alt=""></i><span><em>SİTE</em><b>SW Identity</b><small>Ortak hesap, güvenlik ve plan yönetimi</small></span></a><a href="${esc(playConnect.href)}"${playConnect.external ? ' target="_blank" rel="noopener noreferrer"' : ' download'}><i><img src="./play-connect-pc-logo.svg?v=1.15.2" alt=""></i><span><em>EKLENTİ</em><b>Play Connect</b><small>${esc(playConnect.label)}</small></span></a><a href="${WINDOWS_STORE_INSTALLER_URL}" data-ps-store-installer="product"><i><img src="./play-streamers-ps-logo.svg?v=10.29" alt=""></i><span><em>MASAÜSTÜ UYGULAMASI</em><b>Play Streamers Desktop</b><small>Microsoft Store üzerinden güvenli kurulum</small></span></a></div></section>`;
+      bindProductTabs(content);
     } else {
       content.innerHTML = `<span class="ps49-info-kicker">PLAY STREAMERS · ${esc(data.title).toUpperCase()}</span><h1>${esc(data.title)}</h1><p class="ps49-info-lead">${esc(data.lead)}</p><div class="ps49-info-grid">${data.cards.map((card, index) => `<article class="ps49-info-card${data.security ? ' ps54-security-card' : ''}"><span>0${index + 1}</span><h2>${esc(card[0])}</h2><p>${esc(card[1])}</p></article>`).join('')}</div>`;
     }
@@ -787,7 +814,8 @@
     const choice = accountAvatars.find(item => item[0] === user.picture);
     if (choice) return choice[1];
     const identityPreset = String(swIdentityAccount?.user?.avatar?.value || user.swAvatarPreset || '');
-    const swChoice = swProfileAvatars.find(item => `avatar:${item[0]}` === user.picture || item[0] === identityPreset);
+    const picturePreset = String(user.picture || '').replace(/^avatar:/, '');
+    const swChoice = swProfileAvatars.find(item => item[0] === picturePreset || item[0] === identityPreset);
     if (swChoice) return swChoice[2];
     if (/^(?:https:\/\/|data:image\/(?:png|jpeg|webp);base64,)/i.test(String(user.picture || ''))) return `<img src="${esc(user.picture)}" alt="Profil fotoğrafı">`;
     return '👤';
@@ -955,11 +983,9 @@
     }
     const field = metric === 'followers' ? 'followersCount' : 'subscribersCount';
     const byDay = new Map(snapshots.map(item => [String(item?.date || ''), Number(item?.[field])]).filter(([, value]) => Number.isFinite(value)));
-    let carried = null;
     return days.map(day => {
       const exact = byDay.get(day.key);
-      if (Number.isFinite(exact)) carried = Math.max(0, exact);
-      return { ...day, value: carried };
+      return { ...day, value: Number.isFinite(exact) ? Math.max(0, exact) : null };
     });
   }
   function accountMetricSvg(points, title, metric) {
@@ -983,7 +1009,8 @@
       const value = Math.round(max - max * ratio);
       return `<line x1="${left}" y1="${lineY}" x2="${width - right}" y2="${lineY}"/><text x="${left - 10}" y="${lineY + 4}" text-anchor="end">${esc(value)}</text>`;
     }).join('');
-    const labelIndexes = new Set([0, 15, 30, 45, 60, 75, completedPoints.length - 1].filter(index => index >= 0 && index < completedPoints.length));
+    const measuredIndexes = valid.length <= 12 ? valid.map(point => point.index) : [];
+    const labelIndexes = new Set([0, 15, 30, 45, 60, 75, completedPoints.length - 1, ...measuredIndexes].filter(index => index >= 0 && index < completedPoints.length));
     const labels = completedPoints.map((point, index) => labelIndexes.has(index) ? `<text x="${(x(index) + barWidth / 2).toFixed(1)}" y="${height - 22}" text-anchor="middle">${esc(point.label || '')}</text>` : '').join('');
     const bars = plotted.map(point => {
       const zero = point.valid && point.numeric <= 0;
@@ -1249,6 +1276,16 @@
       .then(result => {
         swIdentityAccount = result;
         swIdentityAccountLoaded = true;
+        const preset = String(result?.user?.avatar?.value || '');
+        if (swProfileAvatars.some(item => item[0] === preset)) {
+          const current = state();
+          current.settings ||= {};
+          current.settings.user ||= {};
+          current.settings.user.swAvatarPreset = preset;
+          current.settings.user.picture = `avatar:${preset}`;
+          saveAccountState(current);
+          syncAccountSidebarAvatar();
+        }
         return result;
       })
       .finally(() => { swIdentityAccountRequest = null; });
@@ -2211,13 +2248,20 @@
     if (copyPairing) copyPairing.onclick = async () => {
       try {
         await navigator.clipboard.writeText(String(donateBridgePairing?.code || ''));
+        const label = $('span', copyPairing);
+        const code = $('.ps62-pairing code', layer);
         copyPairing.classList.remove('ps62-copy-success');
+        code?.classList.remove('ps62-code-copied');
         void copyPairing.offsetWidth;
         copyPairing.classList.add('ps62-copy-success');
+        code?.classList.add('ps62-code-copied');
+        if (label) label.textContent = ui('Kopyalandı');
         copyPairing.setAttribute('aria-label', 'Kod kopyalandı');
         window.setTimeout(() => {
           if (!copyPairing.isConnected) return;
           copyPairing.classList.remove('ps62-copy-success');
+          code?.classList.remove('ps62-code-copied');
+          if (label) label.textContent = ui('Kodu kopyala');
           copyPairing.removeAttribute('aria-label');
         }, 1400);
       } catch (_) {
@@ -2268,13 +2312,17 @@
         webhookProviderMenu.hidden = !willOpen;
         webhookProviderButton.setAttribute('aria-expanded', willOpen ? 'true' : 'false');
       };
-      $$('[data-ps66-provider-option]', webhookProviderMenu).forEach(option => option.onclick = event => {
+      const selectWebhookProvider = (option, event) => {
         event.preventDefault();
-        event.stopPropagation();
+        event.stopImmediatePropagation();
         donateWebhookProviderSelection = String(option.dataset.ps66ProviderOption || '');
         webhookProviderMenu.hidden = true;
         webhookProviderButton.setAttribute('aria-expanded', 'false');
         showAccountCenter('connections', false, '', true);
+      };
+      $$('[data-ps66-provider-option]', webhookProviderMenu).forEach(option => {
+        option.onpointerdown = event => selectWebhookProvider(option, event);
+        option.onclick = event => { event.preventDefault(); event.stopImmediatePropagation(); };
       });
     }
     const createWebhook = $('#ps66CreateWebhook', layer);
@@ -2442,7 +2490,6 @@
         if (!layer.isConnected || layer.dataset.currentTab !== 'connections' || document.hidden) return;
         const providerMenu = $('#ps66WebhookProviderMenu', layer);
         if (providerMenu && !providerMenu.hidden) {
-          bindAccountPane(layer, 'connections');
           return;
         }
         const before = JSON.stringify([donateBridgeDevices, donateWebhookConnections, donateOAuthConnections]);
@@ -2583,6 +2630,7 @@
     const planName = String(settings.plan?.name || settings.plan?.label || user.planName || user.plan || 'Free').trim();
     layer.innerHTML = `<article class="ps51-account-shell ps119-account-shell"><nav class="ps51-account-nav" aria-label="${esc(ui('Hesap bölümleri'))}"><div class="ps51-account-brand"><i><img src="./play-streamers-ps-logo.svg?v=10.29" alt=""></i><span>PLAY STREAMERS<small>${esc(ui('HESAP MERKEZİ'))}</small></span></div><div class="ps119-account-user"><i class="ps129-account-avatar" aria-hidden="true">${accountMark}</i><span><b>${esc(accountName)}</b><small>${esc(user.email || 'SW Identity')}</small></span><em>${esc(planName)}</em></div><span class="ps119-account-nav-heading">${esc(ui('Hesap bölümleri'))}</span><div class="ps119-account-nav-list">${Object.entries(accountNavLabels).map(item => { const active = safeTab === item[0]; return `<button type="button" data-ps51-tab="${item[0]}" class="${active ? 'active' : ''}"${active ? ' disabled aria-current="page"' : ''}>${accountNavIcons[item[0]]}<span>${esc(ui(item[1]))}</span><i aria-hidden="true">›</i></button>`; }).join('')}</div><div class="ps119-account-trust"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5 19 6v5.5c0 4.4-3 7.9-7 9-4-1.1-7-4.6-7-9V6l7-2.5Z"/><path d="m8.8 11.8 2.1 2.1 4.5-4.5"/></svg><span><b>SW IDENTITY</b><small>${esc(ui('Güvenli hesap altyapısı'))}</small></span></div></nav><main class="ps51-account-main"><header class="ps119-account-topbar"><span><small>${esc(ui('HESAP MERKEZİ'))}</small><b class="ps119-account-section-label">${esc(currentSectionLabel)}</b></span><button class="ps51-account-close" type="button" aria-label="${esc(ui('Hesap merkezini kapat'))}">×</button></header><section class="ps51-account-pane" data-pane="${safeTab}">${panes[safeTab]}</section></main></article>`;
     document.body.classList.add('ps54-account-open'); document.body.append(layer);
+    refreshSwIdentityAccount().then(() => { if (layer.isConnected) syncAccountSidebarAvatar(layer); }).catch(() => {});
     decorateAccountPane($('.ps51-account-pane', layer), safeTab);
     localizeAccountNavigation(layer);
     window.dispatchEvent(new Event('ps:i18n-refresh'));
@@ -4025,6 +4073,7 @@
   }
   document.addEventListener('pointerdown', event => {
     const target = event.target instanceof Element ? event.target : null;
+    if (target?.closest('[data-ps51-tab],[data-ps44-menu],[data-ps131-product-tab],.workspace-tabs button[data-view],#ps17Dashboard,#ps12Dashboard,#psSecondDashboard,#psDashboardShortcut')) window.ps119CloseRatePanel?.();
     const authTrigger = publicAuthTrigger(target);
     if (authTrigger) { event.stopImmediatePropagation(); return; }
     if (target?.closest('#ps17Dashboard,#ps12Dashboard,#psSecondDashboard,#psDashboardShortcut,[data-ps14-dashboard],[data-ps20-dashboard],.app .topbar .brand,.workspace-tabs button')) closeAllFloatingSurfaces();
@@ -4490,7 +4539,7 @@
     const rect = button.getBoundingClientRect();
     const width = Math.min(390, innerWidth - 24);
     panel.style.width = `${width}px`;
-    panel.style.left = `${Math.max(12, Math.min(innerWidth - width - 12, rect.right - width))}px`;
+    panel.style.left = `${Math.max(12, Math.min(innerWidth - width - 12, rect.left))}px`;
     const top = Math.max(12, rect.bottom + 8);
     panel.style.top = `${top}px`;
     panel.style.maxHeight = `${Math.max(180, innerHeight - top - 12)}px`;

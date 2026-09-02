@@ -11,14 +11,14 @@ test('site 10 assets are cache-busted and use fluid monochrome glass', async () 
     read('site-v7.css'),
     read('play-streamers-ps-logo.svg'),
   ]);
-  assert.match(html, /play-streamers-build" content="2026-09-02-site-10\.30\.0"/);
-  assert.match(html, /site-v7\.css\?v=10\.30\.0/);
+  assert.match(html, /play-streamers-build" content="2026-09-02-site-10\.31\.0"/);
+  assert.match(html, /site-v7\.css\?v=10\.31\.0/);
   assert.match(html, /app\.js\?v=5\.10\.0/);
   assert.match(html, /site-v7\.js\?v=10\.23\.0/);
-  assert.match(html, /app-final\.js\?v=5\.27\.0/);
+  assert.match(html, /app-final\.js\?v=5\.28\.0/);
   assert.match(html, /window\.ps125ReleaseFirstPaint = releaseFirstPaint/);
   assert.match(html, /window\.setTimeout\(releaseFirstPaint, 4800\)/);
-  assert.match(html, /live-i18n\.js\?v=10\.6\.0/);
+  assert.match(html, /live-i18n\.js\?v=10\.7\.0/);
   assert.match(css, /html\[data-ps-site-version="8"\]/);
   assert.match(css, /--signal: #f5f5f2/);
   assert.match(css, /@keyframes ps82-meteor/);
@@ -156,7 +156,7 @@ test('SW Bot audits deterministically and translation generation is release-only
   assert.match(worker, /swBotDeterministicReport/);
   assert.match(worker, /resolveSwBotReports/);
   assert.match(worker, /sw_bot_issue_reports/);
-  assert.match(worker, /site-v7\.css\?v=10\.30\.0/);
+  assert.match(worker, /site-v7\.css\?v=10\.31\.0/);
   assert.match(worker, /site-v7\.js\?v=10\.23\.0/);
   assert.match(worker, /\/api\/i18n\/translate/);
   assert.match(worker, /i18n:v9/);
@@ -169,7 +169,7 @@ test('SW Bot audits deterministically and translation generation is release-only
   assert.match(worker, /EXCHANGE_CACHE_SECONDS/);
   assert.doesNotMatch(worker, /EXCHANGE.*KV/);
   assert.match(worker, /Fransızca dil paketi/);
-  assert.match(worker, /locales\/fr\.json\?v=2026-09-02\.1/);
+  assert.match(worker, /locales\/fr\.json\?v=2026-09-02\.2/);
   assert.match(worker, /content-security-policy/);
   assert.match(worker, /frame-ancestors 'none'/);
   assert.match(worker, /strict-transport-security/);
@@ -259,11 +259,12 @@ test('versioned locale catalogs cover public, account, support and legal surface
     'Taslak oluştur', 'Anlık görüntü kaydet', 'Henüz anlık görüntü yok.',
     'E-posta adresini değiştir', 'Şifreyi güncelle', 'Kodu gönder',
     'SW profil görünümü', 'Profili kaydet', 'E-posta', 'Doğrulanmış',
+    'Abonelikler', 'Masaüstü uygulaması', 'Ürünler', 'Kopyalandı',
     'Play Bot, SW Bot oldu; canlı dosyalar, arayüz kontrolleri, bağlantılar ve katman çakışmaları daha geniş kapsamda denetleniyor.',
   ];
   for (const language of ['en', 'de', 'es', 'fr', 'ru', 'ar', 'ja']) {
     const catalog = JSON.parse(await read(`locales/${language}.json`));
-    assert.equal(catalog.version, '2026-09-02.1');
+    assert.equal(catalog.version, '2026-09-02.2');
     assert.equal(catalog.sourceLanguage, 'tr');
     assert.equal(catalog.language, language);
     assert.ok(Object.keys(catalog.translations).length >= 1000);
@@ -281,6 +282,15 @@ test('account analytics and profile controls keep server-backed contracts', asyn
   assert.match(app, /GÜNÜN ZİRVESİ/);
   assert.match(app, /prepareAccountLogo/);
   assert.match(app, /id="ps55DeleteAccount"/);
+  assert.match(app, /data-ps131-product-tab="subscriptions"/);
+  assert.match(app, /data-ps131-product-tab="desktop"/);
+  assert.match(app, /data-ps131-product-tab="ecosystem"/);
+  assert.equal((app.match(/class="ps131-ecosystem-grid"/g) || []).length, 1);
+  assert.doesNotMatch(app, /let carried = null/);
+  assert.match(app, /value: Number\.isFinite\(exact\) \? Math\.max\(0, exact\) : null/);
+  assert.match(app, /panel\.style\.left = `\$\{Math\.max\(12, Math\.min\(innerWidth - width - 12, rect\.left\)\)\}px`/);
+  assert.match(app, /option\.onpointerdown = event => selectWebhookProvider/);
+  assert.match(app, /current\.settings\.user\.picture = `avatar:\$\{preset\}`/);
   assert.match(app, /chromewebstore\.google\.com\/detail\/play-connect\/mpebmfjcdkflgiloecjonopfknojdaip/);
   assert.match(app, /addons\.mozilla\.org\/en-US\/firefox\/addon\/play-connect/);
   assert.match(worker, /ROW_NUMBER\(\) OVER \(PARTITION BY metric_date ORDER BY observed_at DESC, metric_hour DESC\)/);

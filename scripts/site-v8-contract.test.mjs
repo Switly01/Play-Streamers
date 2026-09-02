@@ -157,7 +157,7 @@ test('SW Bot audits deterministically and translation generation is release-only
   assert.match(worker, /resolveSwBotReports/);
   assert.match(worker, /sw_bot_issue_reports/);
   assert.match(worker, /site-v7\.css\?v=10\.31\.0/);
-  assert.match(worker, /site-v7\.js\?v=10\.23\.0/);
+  assert.match(worker, /site-v7\.js\?v=10\.31\.1/);
   assert.match(worker, /\/api\/i18n\/translate/);
   assert.match(worker, /i18n:v9/);
   assert.match(worker, /translationProvider: "local-static-build"/);

@@ -1,6 +1,27 @@
 # Play Streamers — Kalıcı Proje Bağlamı
 
-## Güncel geliştirme durumu · 2 Eylül 2026
+## Güncel geliştirme durumu · 3 Eylül 2026
+
+Site 10.33.0 / Worker 8.7: Panel ve istatistik sıfırlaması birbirinden bağımsızdır.
+Donate istatistiği `stats.donationCurrencies` altında para birimi bazında tutulur;
+okunmuş olay silinmesi veya panel sıfırlaması Top Donate'ı değiştirmez. Eski
+görünür bağışlar bir kez bu kayda aktarılır; daha önce silinmiş olayların para
+birimi bilinmediğinden geçmişe yönelik tutar uydurulmaz. Geç gelen olaylar her
+panelin kendi sıfırlama zamanına göre değerlendirilir.
+
+90 günlük grafik takvimin tüm günlerini gösterir; ölçülmeyen gün null/—, gerçek
+sıfır ise 0 olarak kalır. Günlük ve saatlik ayrıntılar sunucu ölçümlerini kullanır.
+Ürün sekmesi zeminleri, hesap avatarının beyaz üstüne beyaz görünmesi, gizli
+logo yedeklerinin açığa çıkması, SSB/DAB ve iç içe bağış pencereleri düzeltildi.
+İki aşamalı doğrulama yönetimi e-posta değiştirme formunun altındadır.
+SSB test mesajları doğrulanmış dil listesinden sunucuda üretilir.
+
+Dil tarayıcısı regex yerine TypeScript sözdizimi ağacını kullanır (geliştirme
+bağımlılığı `swcreate-site/node_modules/typescript`). Böylece iç içe şablonların
+arkasındaki metinler de hazır paketlere alınır; ziyaret sırasında çeviri API'si
+çağrılmaz. Testler: `scripts/site-regression.test.mjs` ve mevcut sözleşme testleri.
+`scripts/serve-site-qa.mjs` yalnız localhost'ta sahte hesapla görsel QA sunar;
+API çağrılarını taklit eder, gerçek hesap/güvenlik verilerini değiştirmez.
 
 Site 10.32.0 / Worker 8.6 / SW Identity 1.9.0 güvenlik ve arayüz revizyonu: Ürünlerimiz
 sayfası Abonelikler, Masaüstü uygulaması ve Ürünler olarak üç erişilebilir

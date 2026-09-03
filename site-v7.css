@@ -1194,8 +1194,8 @@ body.ps-v9 #ps51AccountCenter :is(.ps51-data-card,.ps51-account-section,.ps51-ki
 /* Public information, products and legal navigation. */
 body.ps-v9 #ps49InfoPage,
 body.ps-v9 .ps53-products-shell { color:var(--ps9-white) !important;background:#050505 !important; }
-body.ps-v9 #ps49InfoPage .ps49-info-content > :is(article,section),
-body.ps-v9 .ps53-products-shell .ps49-info-content > :is(article,section) { border-color:var(--ps9-line) !important;background:linear-gradient(145deg,#151515,#090909) !important; }
+body.ps-v9 #ps49InfoPage .ps49-info-content > :is(article,section):not(.ps131-product-panel),
+body.ps-v9 .ps53-products-shell .ps49-info-content > :is(article,section):not(.ps131-product-panel) { border-color:var(--ps9-line) !important;background:linear-gradient(145deg,#151515,#090909) !important; }
 .ps73-privacy-slot { display:inline-flex;flex-wrap:wrap;align-items:center;gap:12px; }
 .ps72-terms-link { color:inherit;text-decoration:none; }
 .ps72-terms-link:hover { color:#fff; }
@@ -5461,7 +5461,7 @@ body.ps-v9 #statsGrid .empty.show { display:grid!important;min-height:128px!impo
 body.ps-v9 #statsGrid .card { min-height:310px!important; }
 body.ps-v9 #statsGrid :is(.rank,.period-list) { width:100%!important; }
 
-body.ps-v9 #ps59AccountDataDialog .ps59-chart { overflow:hidden!important; }
+body.ps-v9 #ps59AccountDataDialog .ps59-chart { overflow-x:hidden!important;overflow-y:auto!important;scrollbar-width:thin; }
 body.ps-v9 #ps59AccountDataDialog .ps59-chart>svg { width:100%!important;min-width:0!important;max-width:100%!important;height:auto!important;min-height:410px!important;overflow:hidden!important; }
 body.ps-v9 #ps59AccountDataDialog .ps59-axis text { font-size:10px!important; }
 
@@ -5663,3 +5663,59 @@ body.ps-v9 #ps51AccountCenter .ps62-pairing-actions .ps64-code-renew{width:36px!
 
 @media(max-width:900px){body.ps-v9 #ps51AccountCenter .ps67-oauth-grid{grid-template-columns:1fr!important}body.ps-v9 .ps131-product-panel .ps130-plans{grid-template-columns:1fr!important}}
 @media(max-width:760px){body.ps-v9 .ps53-products-shell>.landing-footer.ps73-footer-order{grid-template-columns:1fr!important;text-align:center!important}body.ps-v9 .ps53-products-shell>.landing-footer.ps73-footer-order :is(.ps73-privacy-slot,.ps73-feature-slot,.ps73-developer-slot){justify-content:center!important;text-align:center!important;white-space:normal!important}body.ps-v9 #ps51AccountCenter .ps132-two-factor-card{grid-template-columns:1fr!important}body.ps-v9 #ps51AccountCenter .ps132-two-factor-actions{justify-content:flex-start!important}body.ps-v9 #ps51AccountCenter .ps62-pairing-actions{width:100%!important;justify-content:flex-start!important}}
+
+/* 10.33: tab containers are layout only; only their individual cards have surfaces. */
+body.ps-v9 .ps53-products-shell .ps49-info-content>.ps131-product-panel {
+  min-width:0!important;border:0!important;border-radius:0!important;padding:0!important;
+  background:none!important;box-shadow:none!important;backdrop-filter:none!important;
+}
+body.ps-v9 .ps131-product-panel::before,body.ps-v9 .ps131-product-panel::after,
+body.ps-v9 .ps131-product-panel .ps130-plans::before,body.ps-v9 .ps131-product-panel .ps130-plans::after { content:none!important; }
+body.ps-v9 #ps51AccountCenter .ps119-account-user { grid-template-columns:56px minmax(0,1fr)!important;gap:12px!important; }
+body.ps-v9 #ps51AccountCenter .ps119-account-user>em { grid-column:2!important;justify-self:start!important; }
+body.ps-v9 #ps51AccountCenter .ps119-account-user>.ps129-account-avatar { grid-row:1/3!important;width:56px!important;height:56px!important;background:#15181e!important;color:#fff!important;border:1px solid rgba(255,255,255,.14)!important; }
+body.ps-v9 #ps51AccountCenter .ps133-email-security { display:grid!important;align-content:start!important;gap:16px!important;min-width:0!important; }
+body.ps-v9 #ps51AccountCenter .ps133-email-security>.ps132-two-factor-card { grid-template-columns:1fr!important;margin:0!important; }
+body.ps-v9 #ps51AccountCenter .ps133-email-security .ps132-two-factor-actions { justify-content:flex-start!important;flex-wrap:wrap!important; }
+/* Explicit hidden rules prevent generic icon rules from exposing fallback letters. */
+body.ps-v9 #ps51AccountCenter :is(.ps63-provider-chip,.ps67-oauth-icon,.ps66-provider-mark,.ps66-provider-option-mark)>[hidden] { display:none!important; }
+body.ps-v9 #ps51AccountCenter .ps63-provider-chip { position:relative!important;grid-template-columns:1fr!important; }
+body.ps-v9 #ps51AccountCenter .ps63-provider-chip> :is(img,i) { grid-area:1/1!important;justify-self:center!important;align-self:center!important; }
+body.ps-v9 #ps51AccountCenter .ps133-dab-heading { display:block!important;margin:28px 0 12px!important; }
+body.ps-v9 #ps51AccountCenter .ps133-dab-heading>span { display:grid!important;gap:8px!important; }
+body.ps-v9 #ps51AccountCenter .ps133-dab-heading b { color:#fff!important;font:850 16px var(--display)!important; }
+body.ps-v9 #ps51AccountCenter .ps133-dab-heading small { max-width:850px!important;color:rgba(255,255,255,.62)!important;font-size:12px!important;line-height:1.65!important; }
+body.ps-v9 #ps51AccountCenter .ps133-dab-heading+.ps67-oauth { display:block!important;margin-top:0!important; }
+body.ps-v9 #ps51AccountCenter .ps133-dab-heading+.ps67-oauth>.ps67-oauth-grid { width:100%!important;max-width:none!important; }
+body.ps-v9 #ps51AccountCenter .ps66-create { border:1px solid rgba(255,255,255,.12)!important;border-radius:16px!important;padding:16px!important;background:rgba(255,255,255,.025)!important;gap:16px!important; }
+body.ps-v9 #ps51AccountCenter .ps66-provider-select>span { color:rgba(255,255,255,.7)!important;font-size:12px!important; }
+body.ps-v9 #ps51AccountCenter #ps66CreateWebhook { display:flex!important;align-items:center!important;justify-content:center!important;min-height:52px!important;max-width:260px!important;padding:12px 18px!important;white-space:normal!important;text-align:center!important;line-height:1.4!important; }
+body.ps-v9 #ps51AccountCenter .ps66-webhook-secret { min-width:0!important;border-color:rgba(141,233,255,.24)!important;background:rgba(141,233,255,.045)!important;padding:18px!important;gap:12px!important; }
+body.ps-v9 #ps51AccountCenter .ps66-webhook-secret>div { display:flex!important;flex-wrap:wrap!important;gap:10px!important;min-width:0!important; }
+body.ps-v9 #ps51AccountCenter .ps66-webhook-secret input { flex:1 1 100%!important;font:12px/1.5 monospace!important;padding:13px!important; }
+body.ps-v9 #ps51AccountCenter .ps66-webhook-secret :is(button,a) { min-height:40px!important;width:auto!important;padding:10px 14px!important; }
+body.ps-v9 #ps51AccountCenter .ps66-webhook-secret small { font-size:12px!important;line-height:1.6!important; }
+/* Donation detail is above, and independent of, the expanded dashboard card. */
+body.ps-v9 #modal.ps133-event-overlay:not([hidden]) { position:fixed!important;inset:0!important;z-index:60000!important;display:grid!important;place-items:center!important;padding:14px!important;overflow:auto!important;background:rgba(0,0,0,.78)!important;transform:none!important; }
+body.ps-v9 #modal.ps133-event-overlay[hidden] { display:none!important; }
+body.ps-v9 #modal.ps133-event-overlay .dialog>.close { position:absolute!important;top:16px!important;right:16px!important;display:grid!important;place-items:center!important;width:36px!important;height:36px!important;border:1px solid rgba(255,255,255,.16)!important;border-radius:10px!important;background:#15171b!important;color:#fff!important;font-size:20px!important;cursor:pointer!important; }
+body.ps-v9 #modal.ps133-event-overlay .dialog>.eyebrow { display:block!important;padding-right:44px!important; }
+body.ps-v9 :is(#panelGrid,#ps13CardCopy) li[data-kind="donations"] { display:block!important;box-sizing:border-box!important;min-width:0!important;min-height:76px!important;margin:0!important;padding:16px!important;border:1px solid rgba(122,231,255,.24)!important;border-radius:14px!important;overflow:hidden!important; }
+body.ps-v9 :is(#panelGrid,#ps13CardCopy) li[data-kind="donations"] .event-main { min-width:0!important;width:100%!important; }
+body.ps-v9 :is(#panelGrid,#ps13CardCopy) li[data-kind="donations"] .event-top { display:grid!important;grid-template-columns:30px minmax(0,1fr)!important;align-items:center!important;gap:8px 10px!important; }
+body.ps-v9 :is(#panelGrid,#ps13CardCopy) li[data-kind="donations"] .event-top:not(:has(.source-badge)) { grid-template-columns:minmax(0,1fr)!important; }
+body.ps-v9 :is(#panelGrid,#ps13CardCopy) li[data-kind="donations"] .meta { grid-column:1/-1!important;margin:0!important;white-space:normal!important;overflow-wrap:anywhere!important;font-size:11px!important;line-height:1.5!important; }
+body.ps-v9 :is(#panelGrid,#ps13CardCopy) li[data-kind="donations"] .message { margin:10px 0 0!important;overflow-wrap:anywhere!important;line-height:1.6!important; }
+body.ps-v9 :is(#panelGrid,#ps13CardCopy) .entries:has(li[data-kind="donations"]) { padding:5px!important;gap:12px!important; }
+#ps59AccountDataDialog .ps133-calendar-note { color:rgba(255,255,255,.65);font-size:12px;line-height:1.6; }
+#ps59AccountDataDialog .ps133-day-calendar { display:grid;grid-template-columns:repeat(15,minmax(0,1fr));gap:5px; }
+#ps59AccountDataDialog .ps133-calendar-day { display:grid;gap:6px;min-width:0;border:1px solid rgba(255,255,255,.22);border-radius:8px;padding:9px 2px;background:rgba(255,255,255,.045);color:#fff;cursor:pointer; }
+#ps59AccountDataDialog .ps133-calendar-day time { font-size:9px;white-space:nowrap; }
+#ps59AccountDataDialog .ps133-calendar-day b { font-size:13px; }
+#ps59AccountDataDialog .ps133-calendar-day.is-missing { border-color:rgba(255,255,255,.08);background:transparent;color:rgba(255,255,255,.48); }
+#ps59AccountDataDialog .ps133-calendar-day:hover,#ps59AccountDataDialog .ps133-calendar-day:focus-visible { border-color:#8de9ff;outline:2px solid rgba(141,233,255,.25);outline-offset:1px; }
+@media(max-width:760px){
+  #ps59AccountDataDialog .ps133-day-calendar { grid-template-columns:repeat(7,minmax(0,1fr)); }
+  body.ps-v9 #ps51AccountCenter .ps66-create { grid-template-columns:1fr!important; }
+  body.ps-v9 #ps51AccountCenter #ps66CreateWebhook { max-width:none!important;width:100%!important; }
+}

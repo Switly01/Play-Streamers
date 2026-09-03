@@ -5,13 +5,16 @@ import { tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { critical } from '../live-i18n.js';
+import { createRequire } from 'node:module';
+
+const ts = createRequire(new URL('../swcreate-site/package.json', import.meta.url))('typescript');
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const outputDirectory = join(root, 'locales');
-const version = '2026-09-02.3';
+const version = '2026-09-03.1';
 const languages = ['en', 'de', 'es', 'fr', 'ru', 'ar', 'ja'];
 const sourceFiles = ['index.html', 'privacy.html', 'terms.html', 'app.js', 'app-final.js', 'site-v7.js', 'server-analytics.js'];
-const extractionFiles = new Set(['index.html', 'privacy.html', 'terms.html', 'app-final.js', 'site-v7.js', 'server-analytics.js']);
+const extractionFiles = new Set(sourceFiles);
 const dryRun = process.argv.includes('--dry-run');
 const noGenerate = process.argv.includes('--no-generate');
 const refreshAll = process.argv.includes('--refresh-all');
@@ -69,53 +72,18 @@ function addMarkupStrings(value, target, { requireTurkish = false } = {}) {
 }
 
 function addJavaScriptStrings(value, target) {
-  const source = String(value || '');
-  const addLiteral = literal => {
-    const decoded = String(literal || '').replace(/\\([\\"'`])/g, '$1').replace(/\\n|\\r|\\t/g, ' ');
-    if (decoded.includes('<')) addMarkupStrings(decoded, target, { requireTurkish: true });
-    else if (looksLikeTurkishInterface(decoded)) target.add(clean(decoded));
+  // Parse real JS tokens: quotes in regexes and nested templates must not hide later UI strings.
+  const ast = ts.createSourceFile('interface.js', String(value || ''), ts.ScriptTarget.Latest, true, ts.ScriptKind.JS);
+  const add = text => {
+    if (text.includes('<')) addMarkupStrings(text, target, { requireTurkish: true });
+    else if (!text.includes('__DYNAMIC__') && looksLikeTurkishInterface(text)) target.add(clean(text));
   };
-  const skipQuoted = (start, quote) => {
-    let index = start + 1;
-    for (; index < source.length; index += 1) {
-      if (source[index] === '\\') { index += 1; continue; }
-      if (source[index] === quote) return index + 1;
-    }
-    return index;
+  const visit = node => {
+    if (ts.isStringLiteral(node) || ts.isNoSubstitutionTemplateLiteral(node)) add(node.text);
+    else if (ts.isTemplateExpression(node)) add(node.head.text + node.templateSpans.map(span => '__DYNAMIC__' + span.literal.text).join(''));
+    ts.forEachChild(node, visit);
   };
-  let index = 0;
-  while (index < source.length) {
-    if (source[index] === '/' && source[index + 1] === '/') { index = source.indexOf('\n', index + 2); if (index < 0) break; continue; }
-    if (source[index] === '/' && source[index + 1] === '*') { index = source.indexOf('*/', index + 2); index = index < 0 ? source.length : index + 2; continue; }
-    if (source[index] === '"' || source[index] === "'") {
-      const quote = source[index], end = skipQuoted(index, quote);
-      addLiteral(source.slice(index + 1, Math.max(index + 1, end - 1)));
-      index = end;
-      continue;
-    }
-    if (source[index] === '`') {
-      index += 1;
-      let chunk = '';
-      while (index < source.length) {
-        if (source[index] === '\\') { chunk += source.slice(index, index + 2); index += 2; continue; }
-        if (source[index] === '`') { addLiteral(chunk); index += 1; break; }
-        if (source[index] === '$' && source[index + 1] === '{') {
-          addLiteral(chunk); chunk = ''; index += 2;
-          let depth = 1;
-          while (index < source.length && depth > 0) {
-            if (source[index] === '"' || source[index] === "'" || source[index] === '`') { index = skipQuoted(index, source[index]); continue; }
-            if (source[index] === '{') depth += 1;
-            else if (source[index] === '}') depth -= 1;
-            index += 1;
-          }
-          continue;
-        }
-        chunk += source[index]; index += 1;
-      }
-      continue;
-    }
-    index += 1;
-  }
+  visit(ast);
 }
 
 function addActiveRuntimeStrings(file, source, target) {
@@ -155,6 +123,7 @@ function printStats(extracted, rows) {
   for (const language of languages) {
     const available = new Map(rows.filter(row => row.language === language).map(row => [clean(row.source_text), clean(row.translation)]));
     Object.entries(critical[language] || {}).forEach(([source, translation]) => available.set(clean(source), clean(translation)));
+    Object.entries(localOverrides[language] || {}).forEach(([source, translation]) => available.set(clean(source), clean(translation)));
     const ready = [...extracted].filter(source => translationValid(source, available.get(source), language));
     const missing = [...extracted].filter(source => !translationValid(source, available.get(source), language) && !passthrough(source));
     console.log(`[${language}] hazır ${ready.length}, eksik ${missing.length}`);

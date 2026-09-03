@@ -4,10 +4,12 @@ from __future__ import annotations
 
 import argparse
 import json
+import re
 import sys
 from pathlib import Path
 
 from argostranslate import package, translate
+import ctranslate2
 
 
 TARGETS = {"en", "de", "es", "fr", "ru", "ar", "ja"}
@@ -61,23 +63,38 @@ def run(input_path: Path, output_path: Path) -> None:
     requests = payload.get("requests") or {}
     targets = set(requests) & TARGETS
     ensure_models(targets)
-    models = translation_map()
-    tr_to_en = models.get(("tr", "en"))
-    if tr_to_en is None:
-        raise RuntimeError("Türkçe -> İngilizce yerel modeli yüklenemedi.")
+    packages = {(item.from_code, item.to_code): item for item in package.get_installed_packages()}
+
+    def batch(values: list[str], source: str, target: str) -> list[str]:
+        pkg = packages[(source, target)]
+        model = ctranslate2.Translator(str(pkg.package_path / "model"), device="cpu", compute_type="int8", intra_threads=4)
+        encoded = [pkg.tokenizer.encode(value) for value in values]
+        prefix = [[pkg.target_prefix]] * len(encoded) if pkg.target_prefix else None
+        outputs = model.translate_batch(encoded, target_prefix=prefix, replace_unknowns=True,
+                                        max_batch_size=1024, batch_type="tokens", beam_size=4,
+                                        num_hypotheses=1, length_penalty=0.2)
+        decoded = [pkg.tokenizer.decode(item.hypotheses[0]).removeprefix(pkg.target_prefix).strip() for item in outputs]
+        del model
+        return decoded
+
+    all_sources = list(dict.fromkeys(str(value) for language in sorted(targets) for value in requests.get(language) or []))
+    protected = [re.sub(r"\{(\d+)\}", lambda match: str(918470000 + int(match[1])), source) for source in all_sources]
+    log(f"Ortak İngilizce kaynak: {len(all_sources)} metin toplu hazırlanıyor.")
+    english = dict(zip(all_sources, batch(protected, "tr", "en")))
 
     translations: dict[str, list[str]] = {}
     total = sum(len(requests.get(language) or []) for language in targets)
     completed = 0
     for language in sorted(targets):
         sources = [str(value) for value in requests.get(language) or []]
-        target_model = None if language == "en" else models.get(("en", language))
-        if language != "en" and target_model is None:
-            raise RuntimeError(f"İngilizce -> {language} yerel modeli yüklenemedi.")
+        log(f"{language}: {len(sources)} metin toplu hazırlanıyor.")
+        translated = [english[source] for source in sources]
+        if language != "en":
+            translated = batch(translated, "en", language)
         results: list[str] = []
-        for source in sources:
-            english = tr_to_en.translate(source)
-            result = english if language == "en" else target_model.translate(english)
+        for result in translated:
+            # Numeric sentinels survive both model passes; user values are never translated.
+            result = re.sub(r"918470(\d{3})", lambda match: "{" + str(int(match[1])) + "}", str(result))
             results.append(str(result).strip())
             completed += 1
             if completed % 25 == 0 or completed == total:

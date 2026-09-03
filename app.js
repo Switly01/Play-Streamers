@@ -2177,6 +2177,7 @@
   const sessionCache = new Map();
   const SESSION_PATH = '/api/auth/session';
   const CACHE_MS = 5 * 60 * 1000;
+  let sessionCacheRevision = 0;
 
   const getUrl = input => typeof input === 'string' ? input : (input && input.url) || '';
   const getMethod = (input, init) => String((init && init.method) || (input && input.method) || 'GET').toUpperCase();
@@ -2189,21 +2190,33 @@
 
   window.fetch = function protectedFetch(input, init) {
     const url = getUrl(input);
-    if (!url.includes(SESSION_PATH) || getMethod(input, init) !== 'GET') {
+    const method = getMethod(input, init);
+    const mutatesAccount = method !== 'GET' && /\/api\/(?:account\/|sw-identity\/account(?:\/|$)|auth\/logout)/.test(url);
+    if (mutatesAccount) {
+      sessionCacheRevision += 1; sessionCache.clear();
+      return nativeFetch(input, init).then(response => {
+        sessionCacheRevision += 1; sessionCache.clear();
+        return response;
+      });
+    }
+    if (!url.includes(SESSION_PATH) || method !== 'GET') {
       return nativeFetch(input, init);
     }
 
     const key = `${url}|${getAuthorization(input, init)}`;
     const now = Date.now();
     const saved = sessionCache.get(key);
-    if (saved && saved.response && saved.expiresAt > now) {
+    const fresh = ['no-store','reload','no-cache'].includes(init?.cache || input?.cache);
+    if (!fresh && saved && saved.response && saved.expiresAt > now) {
       return Promise.resolve(saved.response.clone());
     }
-    if (saved && saved.pending) {
+    if (!fresh && saved && saved.pending) {
       return saved.pending.then(response => response.clone());
     }
 
+    const revision = sessionCacheRevision;
     const pending = nativeFetch(input, init).then(response => {
+      if (revision !== sessionCacheRevision) return nativeFetch(input, { ...init, cache: 'no-store' });
       if (response.ok) {
         sessionCache.set(key, { response: response.clone(), expiresAt: Date.now() + CACHE_MS });
       } else {

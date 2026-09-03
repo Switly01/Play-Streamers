@@ -1,6 +1,7 @@
 const SUPPORTED = new Set(["tr", "en", "de", "es", "fr", "ru", "ar", "ja"]);
-const CATALOG_VERSION = "2026-09-03.1";
+const CATALOG_VERSION = "2026-09-03.2";
 const catalogPromises = new Map();
+const renderedCatalogs = new Map();
 const COUNTRY_LOCALES = Object.freeze({
   TR: "tr", JP: "ja", DE: "de", AT: "de", CH: "de", LI: "de",
   FR: "fr", BE: "fr", LU: "fr", MC: "fr",
@@ -17,7 +18,7 @@ const SKIP_TEXT_SELECTOR = [
 ].join(",");
 const SKIP_ATTRIBUTE_SELECTOR = [
   "script", "style", "noscript", "code", "pre", "[contenteditable]",
-  "[data-no-translate]", ".entries", ".event-message", ".event-detail-message",
+  ".entries", ".event-message", ".event-detail-message",
   ".name", ".message", ".support-ticket-message", ".ps59-chart", ".ps69-hourly-chart",
   "[data-language]", "[data-ps15-lang]"
 ].join(",");
@@ -570,7 +571,7 @@ Object.assign(critical.ar, {
 function clean(value) { return String(value || "").replace(/\s+/g, " ").trim(); }
 const TURKISH_TERMS = new Set(["giriş", "kayıt", "hakkımızda", "ürünlerimiz", "nasıl", "çalışır", "içerik", "planlama", "canlı", "analiz", "topluluk", "marka", "araçları", "gelir", "görünümleri", "yayın", "yayıncı", "hesap", "şifre", "doğrula", "indir", "destek", "sistem", "durumu", "ziyaretçi", "şu", "anda", "aktif", "hemen", "başla", "keşfet", "daha", "fazla", "burada", "mısın", "beni", "hatırla"]);
 function containsTurkishCopy(value) {
-  const source = clean(value);
+  const source = clean(value).replace(/GameSatış|İtemSatış|ItemSatış/gu, '');
   // Ö/Ü/Ç are valid in several target languages (especially German and
   // French). Only Turkish-specific letters are a definitive signal; common
   // Latin letters are handled by the word-level check below.
@@ -581,12 +582,13 @@ function containsTurkishCopy(value) {
 }
 function isPassthroughCopy(value) {
   const source = clean(value);
-  return /^(?:PLAY STREAMERS|PLAY CONNECT|PLAY|STREAMERS|SW CREATE|SW IDENTITY|SW BOT|SW AI|PRODUCT PRO|FREE|PRO|PC|PS|APP|WEB|CONNECT|HTTP|HTTPS|API|OBS|KICK|WINDOWS)(?:\s*[·+:/-].*)?$/i.test(source)
+  if (/^(?:SW Bot \+ SW AI|PLAY STREAMERS · SW CREATE|Play Connect · SW Create)$/i.test(source)) return true;
+  return /^(?:PLAY STREAMERS|PLAY CONNECT|PLAY|STREAMERS|SW CREATE|SW IDENTITY|SW BOT|SW AI|PRODUCT PRO|FREE|PRO|DONATE|PC|PS|APP|WEB|CONNECT|HTTP|HTTPS|API|OBS|KICK|WINDOWS)$/i.test(source)
     || /^(?:https?:\/\/|www\.|[\w.+-]+@[\w.-]+\.)/i.test(source)
     || /^[\d\s.,:%+\-/–—()]+$/.test(source);
 }
 function needsTranslation(value) { return !isPassthroughCopy(value); }
-function translationLooksComplete(source, translated, language) {
+export function translationLooksComplete(source, translated, language) {
   const output = clean(translated);
   if (!output) return false;
   if (!needsTranslation(source)) return true;
@@ -603,6 +605,43 @@ function translatable(value) {
   if (text.length < 2 || text.length > 1200 || !/[A-Za-zÇĞİÖŞÜçğıöşü]/.test(text)) return false;
   if (/^(https?:|www\.|[\w.+-]+@[\w.-]+\.|[\d\s.,:%+\-/]+$)/i.test(text)) return false;
   return true;
+}
+export function createCatalogLookup(cache, previousCatalogs = []) {
+  const normalized = new Map(Object.entries(cache).map(([key, value]) => [clean(key).toLocaleLowerCase('tr'), value]));
+  const escapeRegex = value => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const templates = Object.entries(cache).flatMap(([source, translated]) => {
+    const keys = [...source.matchAll(/\{(\d+)\}/g)].map(match => match[1]);
+    if (!keys.length || keys.length > 5 || source.replace(/\{\d+\}/g, '').replace(/[^A-Za-zÇĞİÖŞÜçğıöşü]/g, '').length < 5) return [];
+    if (keys.some(key => !translated.includes('{' + key + '}'))) return [];
+    const pattern = source.split(/\{\d+\}/).map(escapeRegex).join('(.{0,1000}?)');
+    return [{ regex: new RegExp('^' + pattern + '$', 'iu'), keys, translated }];
+  });
+  const memo = new Map();
+  const previous = previousCatalogs.map(catalog => createCatalogLookup(Object.fromEntries(Object.entries(catalog).map(([source, translated]) => [translated, source]))));
+  return value => {
+    const source = clean(value);
+    if (cache[source]) return cache[source];
+    const exact = normalized.get(source.toLocaleLowerCase('tr'));
+    if (exact) return exact;
+    let canonical = source;
+    for (const reverse of previous) {
+      const original = reverse(source);
+      if (original !== source && cache[original]) return cache[original];
+      if (original !== source) { canonical = original; break; }
+    }
+    if (memo.has(source)) return memo.get(source);
+    let result = canonical;
+    for (const template of templates) {
+      const match = canonical.match(template.regex);
+      if (!match) continue;
+      const values = Object.fromEntries(template.keys.map((key, index) => [key, match[index + 1]]));
+      result = template.translated.replace(/\{(\d+)\}/g, (token, key) => values[key] ?? token);
+      break;
+    }
+    if (memo.size >= 500) memo.clear();
+    memo.set(source, result);
+    return result;
+  };
 }
 function cacheRead(key) { try { return JSON.parse(localStorage.getItem(key) || "{}"); } catch { return {}; } }
 function cacheWrite(key, value) {
@@ -691,6 +730,23 @@ export function installLiveI18n({ localeKey = "ps15-locale", getLocale, root = d
   document.documentElement.dir = "ltr";
   document.documentElement.dataset.psLiveLocale = language;
   if (language === "tr" || !root) {
+    const reverse = createCatalogLookup({}, [...renderedCatalogs.values()]);
+    if (root) {
+      const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+      while (walker.nextNode()) {
+        const node = walker.currentNode;
+        if (!node.parentElement?.closest(SKIP_TEXT_SELECTOR)) {
+          const value = clean(node.nodeValue), source = reverse(value);
+          if (source !== value) node.nodeValue = String(node.nodeValue).replace(value, source);
+        }
+      }
+      root.querySelectorAll('[placeholder],[title],[aria-label],[aria-description],[alt]').forEach(element => {
+        if (element.closest(SKIP_ATTRIBUTE_SELECTOR)) return;
+        ['placeholder','title','aria-label','aria-description','alt'].forEach(name => {
+          if (element.hasAttribute(name)) element.setAttribute(name, reverse(element.getAttribute(name)));
+        });
+      });
+    }
     document.documentElement.classList.remove("ps-i18n-booting");
     document.documentElement.dataset.psI18nReady = "1";
     return { language, translate(value) { return String(value ?? ""); }, refresh() {}, dispose() {} };
@@ -700,6 +756,8 @@ export function installLiveI18n({ localeKey = "ps15-locale", getLocale, root = d
   // Kalıcı paket, eski tarayıcı önbelleğini ezer; elle doğrulanmış kritik
   // metinler ise her zaman en son sözü söyler.
   const cache = { ...cacheRead(cacheKey), ...catalog, ...(critical[language] || {}) };
+  const lookup = createCatalogLookup(cache, [...renderedCatalogs.values()]);
+  renderedCatalogs.set(language, cache);
   const textState = new Map();
   const attributeState = new Map();
   let titleState = null;
@@ -787,8 +845,8 @@ export function installLiveI18n({ localeKey = "ps15-locale", getLocale, root = d
   };
 
   const applyCachedTargets = targets => targets.forEach(target => {
-    const translated = cache[target.source];
-    if (!translated) return;
+    const translated = lookup(target.source);
+    if (!translated || translated === target.source) return;
     if (target.type === "text" && target.node.isConnected) applyText(target.node, translated);
     else if (target.type === "attribute" && target.element.isConnected) applyAttribute(target.element, target.name, translated, target.source);
     else if (target.type === "title") applyTitle(translated, target.source);
@@ -836,7 +894,7 @@ export function installLiveI18n({ localeKey = "ps15-locale", getLocale, root = d
   schedule();
   return {
     language,
-    translate(value) { const source = clean(value); return cache[source] || source; },
+    translate(value) { return lookup(value); },
     refresh: schedule,
     dispose({ restore = false } = {}) {
       disposed = true;

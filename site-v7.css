@@ -5664,6 +5664,19 @@ body.ps-v9 #ps51AccountCenter .ps62-pairing-actions .ps64-code-renew{width:36px!
 @media(max-width:900px){body.ps-v9 #ps51AccountCenter .ps67-oauth-grid{grid-template-columns:1fr!important}body.ps-v9 .ps131-product-panel .ps130-plans{grid-template-columns:1fr!important}}
 @media(max-width:760px){body.ps-v9 .ps53-products-shell>.landing-footer.ps73-footer-order{grid-template-columns:1fr!important;text-align:center!important}body.ps-v9 .ps53-products-shell>.landing-footer.ps73-footer-order :is(.ps73-privacy-slot,.ps73-feature-slot,.ps73-developer-slot){justify-content:center!important;text-align:center!important;white-space:normal!important}body.ps-v9 #ps51AccountCenter .ps132-two-factor-card{grid-template-columns:1fr!important}body.ps-v9 #ps51AccountCenter .ps132-two-factor-actions{justify-content:flex-start!important}body.ps-v9 #ps51AccountCenter .ps62-pairing-actions{width:100%!important;justify-content:flex-start!important}}
 
+/* 10.34: calendar-only history, full-width security and readable text spacing. */
+body.ps-v9 #ps51AccountCenter .ps121-security-grid>.ps132-two-factor-card { grid-column:1/-1!important;grid-template-columns:minmax(0,1fr) auto!important;margin:0!important;gap:24px!important; }
+body.ps-v9 #ps51AccountCenter .ps132-two-factor-card small { display:block!important;margin-top:8px!important;line-height:1.65!important; }
+body.ps-v9 #ps51AccountCenter :is(.ps51-account-lead,.ps51-account-status,.ps51-account-note) { line-height:1.75!important;margin-top:12px!important;margin-bottom:16px!important;overflow-wrap:anywhere!important; }
+body.ps-v9 #ps51AccountCenter :is(.ps121-identity-form label,.ps63-device-copy,.ps67-oauth-copy) { gap:8px!important; }
+body.ps-v9 #ps115PlanTools .ps115-plan-grid article { display:flex!important;flex-direction:column!important;align-items:stretch!important;gap:12px!important; }
+body.ps-v9 #ps115PlanTools :is(p,small,label) { line-height:1.65!important; }
+body.ps-v9 #ps115PlanTools textarea { min-height:150px!important;line-height:1.7!important; }
+body.ps-v9 #ps115PlanTools #ps115RepurposeOutput { min-height:290px!important; }
+body.ps-v9 #ps59AccountDataDialog .ps59-chart { height:auto!important;max-height:65vh!important;min-height:0!important; }
+body.ps-v9 #ps59AccountDataDialog .ps133-calendar-day { min-height:65px!important; }
+body.ps-v9 #ps119ExchangePanel :is(header,.ps127-rate-meta>div,.ps127-rate-table dl>div) { gap:14px!important; }
+@media(max-width:760px){body.ps-v9 #ps51AccountCenter .ps121-security-grid>.ps132-two-factor-card{grid-template-columns:1fr!important}}
 /* 10.33: tab containers are layout only; only their individual cards have surfaces. */
 body.ps-v9 .ps53-products-shell .ps49-info-content>.ps131-product-panel {
   min-width:0!important;border:0!important;border-radius:0!important;padding:0!important;
@@ -5708,9 +5721,9 @@ body.ps-v9 :is(#panelGrid,#ps13CardCopy) li[data-kind="donations"] .meta { grid-
 body.ps-v9 :is(#panelGrid,#ps13CardCopy) li[data-kind="donations"] .message { margin:10px 0 0!important;overflow-wrap:anywhere!important;line-height:1.6!important; }
 body.ps-v9 :is(#panelGrid,#ps13CardCopy) .entries:has(li[data-kind="donations"]) { padding:5px!important;gap:12px!important; }
 #ps59AccountDataDialog .ps133-calendar-note { color:rgba(255,255,255,.65);font-size:12px;line-height:1.6; }
-#ps59AccountDataDialog .ps133-day-calendar { display:grid;grid-template-columns:repeat(15,minmax(0,1fr));gap:5px; }
+#ps59AccountDataDialog .ps133-day-calendar { display:grid;grid-template-columns:repeat(10,minmax(0,1fr));gap:9px; }
 #ps59AccountDataDialog .ps133-calendar-day { display:grid;gap:6px;min-width:0;border:1px solid rgba(255,255,255,.22);border-radius:8px;padding:9px 2px;background:rgba(255,255,255,.045);color:#fff;cursor:pointer; }
-#ps59AccountDataDialog .ps133-calendar-day time { font-size:9px;white-space:nowrap; }
+#ps59AccountDataDialog .ps133-calendar-day time { font-size:11px;white-space:nowrap; }
 #ps59AccountDataDialog .ps133-calendar-day b { font-size:13px; }
 #ps59AccountDataDialog .ps133-calendar-day.is-missing { border-color:rgba(255,255,255,.08);background:transparent;color:rgba(255,255,255,.48); }
 #ps59AccountDataDialog .ps133-calendar-day:hover,#ps59AccountDataDialog .ps133-calendar-day:focus-visible { border-color:#8de9ff;outline:2px solid rgba(141,233,255,.25);outline-offset:1px; }

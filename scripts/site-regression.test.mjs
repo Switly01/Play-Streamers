@@ -93,7 +93,7 @@ function analytics() {
   vm.runInContext(['accountMetricDateKey', 'accountMetricDailySeries', 'accountMetricSvg'].map(name => declaration(final, name)).join('\n'), c);
   return c;
 }
-test('all 90 dates exist, missing days stay null, and measured bars never bridge gaps', () => {
+test('all 90 dates exist, missing days stay null, and the daily view has no chart', () => {
   const c = analytics(), current = { settings: { kickInsights: { dailyMetrics: [
     { date: '2026-08-13', followersCount: 28 }, { date: '2026-08-21', followersCount: 27 },
     { date: '2026-08-22', followersCount: 0 }, { date: '2026-08-23', followersCount: null },
@@ -106,10 +106,7 @@ test('all 90 dates exist, missing days stay null, and measured bars never bridge
   assert.equal(series.find(day => day.key === '2026-08-23').value, null);
   const html = c.accountMetricSvg(series, 'Followers', 'followers');
   assert.equal((html.match(/class="ps133-calendar-day/g) || []).length, 90);
-  assert.equal((html.match(/<rect class="ps69-day-bar"/g) || []).length, 2);
-  const bars = [...html.matchAll(/<rect[^>]+x="([\d.]+)"[^>]+width="([\d.]+)"/g)];
-  assert.equal(bars[0][2], bars[1][2]);
-  assert.ok(Number(bars[1][1]) - Number(bars[0][1]) > Number(bars[0][2]) * 8);
+  assert.doesNotMatch(html, /<svg|<rect|<canvas/);
   assert.match(html, /2026-08-22[^>]*data-ps69-value="0"/);
 });
 test('even an entirely unmeasured account gets the full 90-day calendar', () => {
@@ -133,7 +130,7 @@ test('email form precedes two-factor management without nested forms', () => {
   vm.runInContext(declaration(final, 'swIdentitySecurityMarkup'), c);
   const markup = c.swIdentitySecurityMarkup({ email: 'qa@example.test' });
   assert.ok(markup.indexOf('</form>') < markup.indexOf('class="ps132-two-factor-card"'));
-  assert.ok(markup.indexOf('class="ps132-two-factor-card"') < markup.indexOf('id="ps121SwPasswordForm"'));
+  assert.ok(markup.indexOf('class="ps132-two-factor-card"') > markup.indexOf('id="ps121SwPasswordForm"'));
   assert.equal((markup.match(/id="ps56TwoFactorToggle"/g) || []).length, 1);
 });
 test('a saved product photo takes precedence over a central preset', () => {

@@ -78,8 +78,8 @@ const DONATE_OAUTH_PROVIDERS = Object.freeze({
     clientSecretVariable: "TIPEEESTREAM_CLIENT_SECRET",
   }),
 });
-const CURRENT_RELEASE_VERSION = "8.7";
-const CURRENT_RELEASE_PUBLISHED_AT = "2026-09-03T02:41:38Z";
+const CURRENT_RELEASE_VERSION = "8.8";
+const CURRENT_RELEASE_PUBLISHED_AT = "2026-09-03T04:01:53Z";
 const EXCHANGE_CURRENCIES = Object.freeze(["EUR", "TRY", "USD", "RUB", "SAR", "JPY"]);
 const EXCHANGE_CACHE_SECONDS = 5 * 60;
 const SW_IDENTITY_ORIGIN = "https://api.swcreate.com";
@@ -866,18 +866,18 @@ async function runScheduledPlayBotAudit(env) {
   await ensurePlayBotMetadataStorage(env);
   const resources = [
     ["Ana sayfa", "https://pstreamers.com/", "document"],
-    ["Ana uygulama betiği", "https://pstreamers.com/app.js?v=5.11.0", "script"],
-    ["Uygulama betiği", "https://pstreamers.com/app-final.js?v=5.30.0", "script"],
-    ["Site davranış betiği", "https://pstreamers.com/site-v7.js?v=10.33.0", "script"],
-    ["Sabit çeviri betiği", "https://pstreamers.com/live-i18n.js?v=10.9.0", "script"],
-    ["İngilizce dil paketi", "https://pstreamers.com/locales/en.json?v=2026-09-03.1", "json"],
-    ["Almanca dil paketi", "https://pstreamers.com/locales/de.json?v=2026-09-03.1", "json"],
-    ["İspanyolca dil paketi", "https://pstreamers.com/locales/es.json?v=2026-09-03.1", "json"],
-    ["Fransızca dil paketi", "https://pstreamers.com/locales/fr.json?v=2026-09-03.1", "json"],
-    ["Rusça dil paketi", "https://pstreamers.com/locales/ru.json?v=2026-09-03.1", "json"],
-    ["Arapça dil paketi", "https://pstreamers.com/locales/ar.json?v=2026-09-03.1", "json"],
-    ["Japonca dil paketi", "https://pstreamers.com/locales/ja.json?v=2026-09-03.1", "json"],
-    ["Premium stil dosyası", "https://pstreamers.com/site-v7.css?v=10.33.0", "style"],
+    ["Ana uygulama betiği", "https://pstreamers.com/app.js?v=5.12.0", "script"],
+    ["Uygulama betiği", "https://pstreamers.com/app-final.js?v=5.31.0", "script"],
+    ["Site davranış betiği", "https://pstreamers.com/site-v7.js?v=10.34.0", "script"],
+    ["Sabit çeviri betiği", "https://pstreamers.com/live-i18n.js?v=10.10.0", "script"],
+    ["İngilizce dil paketi", "https://pstreamers.com/locales/en.json?v=2026-09-03.2", "json"],
+    ["Almanca dil paketi", "https://pstreamers.com/locales/de.json?v=2026-09-03.2", "json"],
+    ["İspanyolca dil paketi", "https://pstreamers.com/locales/es.json?v=2026-09-03.2", "json"],
+    ["Fransızca dil paketi", "https://pstreamers.com/locales/fr.json?v=2026-09-03.2", "json"],
+    ["Rusça dil paketi", "https://pstreamers.com/locales/ru.json?v=2026-09-03.2", "json"],
+    ["Arapça dil paketi", "https://pstreamers.com/locales/ar.json?v=2026-09-03.2", "json"],
+    ["Japonca dil paketi", "https://pstreamers.com/locales/ja.json?v=2026-09-03.2", "json"],
+    ["Premium stil dosyası", "https://pstreamers.com/site-v7.css?v=10.34.0", "style"],
     ["Oturum başlangıç betiği", "https://pstreamers.com/session-bootstrap.js?v=1.2", "script"],
     ["Site yönlendiricisi", "https://pstreamers.com/site-router.js?v=1.1", "script"],
     ["Sunucu analiz betiği", "https://pstreamers.com/server-analytics.js?v=6.1", "script"],
@@ -954,7 +954,7 @@ async function runScheduledPlayBotAudit(env) {
       const validPayload = result.label === "Windows güncelleme bildirimi"
         ? Boolean(payload?.version && hasUpdaterPlatforms)
         : localeCatalog
-        ? Boolean(payload?.version === "2026-09-03.1" && payload?.sourceLanguage === "tr" && payload?.language && Object.keys(payload?.translations || {}).length >= 1220)
+        ? Boolean(payload?.version === "2026-09-03.2" && payload?.sourceLanguage === "tr" && payload?.language && Object.keys(payload?.translations || {}).length >= 1220)
           : Boolean(payload?.ok);
       if (!validPayload) issues.push(`${result.label} geçerli bir JSON yanıtı döndürmüyor.`);
     }
@@ -962,12 +962,12 @@ async function runScheduledPlayBotAudit(env) {
   const homeDocument = results.find(result => result.type === "document");
   if (homeDocument?.ok) {
     const documentContracts = [
-      ["site-v7.css?v=10.33.0", "Güncel premium stil dosyası"],
-      ["app.js?v=5.11.0", "Güncel ana uygulama betiği"],
-      ["app-final.js?v=5.30.0", "Güncel onarım betiği"],
-      ["site-v7.js?v=10.33.0", "Güncel site davranış betiği"],
-      ["live-i18n.js?v=10.9.0", "Güncel sabit paket çeviri betiği"],
-      ["play-streamers-build\" content=\"2026-09-03-site-10.33.0", "Site 10.33.0 sürüm işareti"],
+      ["site-v7.css?v=10.34.0", "Güncel premium stil dosyası"],
+      ["app.js?v=5.12.0", "Güncel ana uygulama betiği"],
+      ["app-final.js?v=5.31.0", "Güncel onarım betiği"],
+      ["site-v7.js?v=10.34.0", "Güncel site davranış betiği"],
+      ["live-i18n.js?v=10.10.0", "Güncel sabit paket çeviri betiği"],
+      ["play-streamers-build\" content=\"2026-09-03-site-10.34.0", "Site 10.34.0 sürüm işareti"],
     ];
     for (const [token, label] of documentContracts) {
       if (!homeDocument.body.includes(token)) issues.push(`${label} canlı ana sayfaya bağlanmamış.`);
@@ -2250,7 +2250,8 @@ async function proxySwIdentityAccountRequest(request, env, route = "", method = 
   if (!/^[A-Za-z0-9_-]{8,128}$/.test(identityUserId)) {
     return apiResponse(request, { error: "Bu hesap henüz merkezi SW Identity profiline bağlı değil." }, 409);
   }
-  const body = method === "POST" ? JSON.stringify(await requestJson(request)) : undefined;
+  const input = method === "POST" ? await requestJson(request) : null;
+  const body = input ? JSON.stringify(input) : undefined;
   const identityResponse = await fetchExternal(`${SW_IDENTITY_ORIGIN}/api/internal/account${route ? `/${route}` : ""}`, {
     method,
     headers: {
@@ -2267,7 +2268,7 @@ async function proxySwIdentityAccountRequest(request, env, route = "", method = 
   }
   if (route === "profile" && result?.user) {
     const preset = String(result.user.avatar?.value || "").trim();
-    const avatar = /^[a-z0-9-]{2,32}$/.test(preset) ? `avatar:${preset}` : null;
+    const avatar = input?.avatarPreset && /^[a-z0-9-]{2,32}$/.test(preset) ? `avatar:${preset}` : null;
     await env.DB.prepare("UPDATE users SET display_name = ?1, avatar_url = COALESCE(?2, avatar_url), updated_at = ?3 WHERE id = ?4")
       .bind(String(result.user.displayName || result.user.username || "").slice(0, 120), avatar, new Date().toISOString(), current.session.user.id).run();
   }
@@ -3325,43 +3326,43 @@ async function syncScheduledKickMetrics(env) {
   try {
     await ensureUsersSchema(env);
     await ensureKickMetricsSchemaInD1(env);
-    const hourKey = kickMetricHourKey();
-    /* Her hesabın saatlik ölçümünü ayrı denetle. Böylece bir hesabın başarılı
-       olması diğer hesapların cron turunu kilitlemez; başarısız olan hesap bir
-       sonraki turda yeniden denenir. */
+    const now = Date.now();
+    // A browser sample never suppresses this independent server schedule.
     const rows = await env.DB.prepare(`SELECT ks.id, ks.user_id
       FROM kick_sessions ks
-      INNER JOIN (
-        SELECT user_id, MAX(created_at) AS newest
-        FROM kick_sessions WHERE user_id IS NOT NULL GROUP BY user_id
-      ) latest ON latest.user_id = ks.user_id AND latest.newest = ks.created_at
-      WHERE NOT EXISTS (
-        SELECT 1 FROM kick_metric_hourly km
-        WHERE km.user_id = ks.user_id AND km.metric_hour = ?1
-      )
-      ORDER BY ks.created_at DESC LIMIT 40`).bind(hourKey).all();
-    let checked = 0;
-    let failed = 0;
+      LEFT JOIN kick_metric_collection_state ms ON ms.user_id = ks.user_id
+      WHERE ks.user_id IS NOT NULL
+        AND ks.id = (SELECT latest.id FROM kick_sessions latest WHERE latest.user_id = ks.user_id ORDER BY latest.created_at DESC, latest.expires_at DESC LIMIT 1)
+        AND COALESCE(ms.next_attempt_at, 0) <= ?1
+      ORDER BY COALESCE(ms.last_attempt_at, 0) ASC LIMIT 2`).bind(now).all();
+    let checked = 0, failed = 0;
     for (const row of rows?.results || []) {
+      const started = Date.now();
+      await env.DB.prepare(`INSERT INTO kick_metric_collection_state
+        (user_id, last_attempt_at, next_attempt_at, last_success_at, last_error)
+        VALUES (?1, ?2, ?3, 0, NULL)
+        ON CONFLICT(user_id) DO UPDATE SET last_attempt_at = excluded.last_attempt_at, next_attempt_at = excluded.next_attempt_at`)
+        .bind(String(row.user_id), started, started + 5 * 60_000).run();
       try {
         let session = await getKickSession(String(row.id), env);
-        if (!session) continue;
+        if (!session) throw new Error("KICK_SESSION_UNAVAILABLE");
         if (Date.now() >= Number(session.expiresAt || 0) - 60_000) {
-          const refreshed = await refreshKickSessionSafely(String(row.id), env);
-          session = refreshed?.session || null;
+          session = (await refreshKickSessionSafely(String(row.id), env))?.session || null;
         }
-        if (!session) continue;
-        await getKickChannelInsights(session, env);
-        const stored = await env.DB.prepare(`SELECT 1 AS ok FROM kick_metric_hourly
-          WHERE user_id = ?1 AND metric_hour = ?2 LIMIT 1`)
-          .bind(String(row.user_id || session.userId || ""), hourKey).first();
-        if (stored?.ok) checked += 1;
-        else failed += 1;
-      } catch (_) {
+        if (!session) throw new Error("KICK_RECONNECT_REQUIRED");
+        const sample = await getKickChannelInsights(session, env, { collectOnly: true });
+        if (!sample?.sampled) throw new Error("KICK_MEASUREMENT_UNAVAILABLE");
+        await env.DB.prepare("UPDATE kick_metric_collection_state SET last_success_at = ?1, last_error = NULL WHERE user_id = ?2")
+          .bind(Date.now(), String(row.user_id)).run();
+        checked += 1;
+      } catch (error) {
         failed += 1;
+        const reason = /^(KICK_SESSION_UNAVAILABLE|KICK_RECONNECT_REQUIRED|KICK_MEASUREMENT_UNAVAILABLE)$/.test(error?.message) ? error.message : 'KICK_MEASUREMENT_RETRY';
+        await env.DB.prepare("UPDATE kick_metric_collection_state SET last_error = ?1 WHERE user_id = ?2")
+          .bind(reason, String(row.user_id)).run();
       }
     }
-    logSecurityEvent("kick_metrics_scheduled_sync", { checked, failed, hour: hourKey });
+    logSecurityEvent("kick_metrics_scheduled_sync", { checked, failed, hour: kickMetricHourKey() });
   } catch (error) {
     logSecurityEvent("kick_metrics_scheduled_sync_failed", { reason: error?.code || error?.name || "unknown" });
   }
@@ -4934,7 +4935,7 @@ function kickMetricHourKey(value = Date.now()) {
 }
 
 async function ensureKickMetricsSchemaInD1(env) {
-  const schemaMarker = "schema:play-streamers-kick-metrics:v2";
+  const schemaMarker = "schema:play-streamers-kick-metrics:v3";
   const current = await env.DB.prepare("SELECT value FROM play_streamers_metadata WHERE key = ?1 LIMIT 1")
     .bind(schemaMarker).first();
   if (current?.value === "1") return true;
@@ -4969,6 +4970,14 @@ async function ensureKickMetricsSchemaInD1(env) {
       updated_at INTEGER NOT NULL,
       PRIMARY KEY (user_id, metric_hour)
     )`),
+    env.DB.prepare(`CREATE TABLE IF NOT EXISTS kick_metric_collection_state (
+      user_id TEXT PRIMARY KEY NOT NULL,
+      last_attempt_at INTEGER NOT NULL DEFAULT 0,
+      next_attempt_at INTEGER NOT NULL DEFAULT 0,
+      last_success_at INTEGER NOT NULL DEFAULT 0,
+      last_error TEXT
+    )`),
+    env.DB.prepare("CREATE INDEX IF NOT EXISTS idx_kick_metric_collection_due ON kick_metric_collection_state(next_attempt_at, last_attempt_at)"),
     env.DB.prepare("CREATE INDEX IF NOT EXISTS idx_kick_metric_hourly_user_date ON kick_metric_hourly(user_id, metric_date, metric_hour)"),
     env.DB.prepare("CREATE INDEX IF NOT EXISTS idx_kick_metric_hourly_broadcaster_date ON kick_metric_hourly(broadcaster_user_id, metric_date, metric_hour)"),
     env.DB.prepare(`INSERT OR REPLACE INTO play_streamers_metadata (key, value, updated_at)
@@ -7372,6 +7381,7 @@ async function purgePlayStreamersAccount(user, env) {
     env.DB.prepare("DELETE FROM donate_bridge_events WHERE user_id = ?1").bind(user.id),
     env.DB.prepare("DELETE FROM donate_bridge_devices WHERE user_id = ?1").bind(user.id),
     env.DB.prepare("DELETE FROM donate_bridge_pairing_codes WHERE user_id = ?1").bind(user.id),
+    env.DB.prepare("DELETE FROM kick_metric_collection_state WHERE user_id = ?1").bind(user.id),
     env.DB.prepare("DELETE FROM kick_metric_snapshots WHERE user_id = ?1").bind(user.id),
     env.DB.prepare("DELETE FROM kick_metric_hourly WHERE user_id = ?1").bind(user.id),
   ];
@@ -7819,7 +7829,15 @@ async function getKickSubscriberCount(session) {
   return value;
 }
 
-async function getKickChannelInsights(session, env, { hourlyDate = "" } = {}) {
+  function kickRollingMonthStart(now = Date.now()) {
+    const date = new Date(now), day = date.getUTCDate();
+    date.setUTCDate(1); date.setUTCMonth(date.getUTCMonth() - 1);
+    const last = new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth() + 1, 0)).getUTCDate();
+    date.setUTCDate(Math.min(day, last));
+    return date.getTime();
+  }
+
+async function getKickChannelInsights(session, env, { hourlyDate = "", collectOnly = false } = {}) {
   const broadcasterId = session?.account?.id;
   if (!session?.accessToken || !broadcasterId) return null;
   const headers = { Authorization: `Bearer ${session.accessToken}`, Accept: "application/json" };
@@ -7829,7 +7847,7 @@ async function getKickChannelInsights(session, env, { hourlyDate = "" } = {}) {
   kicksUrl.searchParams.set("top", "10");
   const [channelsResponse, kicksResponse, activeFollowers] = await Promise.all([
     fetchExternal(channelsUrl, { headers }, { operation: "kick-channel-insights", retries: EXTERNAL_GET_RETRIES }).catch(() => null),
-    fetchExternal(kicksUrl, { headers }, { operation: "kick-kicks-leaderboard", retries: EXTERNAL_GET_RETRIES }).catch(() => null),
+    collectOnly ? Promise.resolve(null) : fetchExternal(kicksUrl, { headers }, { operation: "kick-kicks-leaderboard", retries: EXTERNAL_GET_RETRIES }).catch(() => null),
     getKickFollowerCount(session).catch(() => null),
   ]);
   const channelsBody = channelsResponse?.ok ? await safeJson(channelsResponse) : null;
@@ -7859,7 +7877,7 @@ async function getKickChannelInsights(session, env, { hourlyDate = "" } = {}) {
   let webhookSubscriberCount = 0;
   if (env?.DB && session.userId) {
     await ensureKickMetricsSchemaInD1(env);
-    const monthPrefix = kickMetricDateKey().slice(0, 7);
+    const monthStart = new Date(kickRollingMonthStart()).toISOString();
     const historyStartDate = kickMetricDateKey(Date.now() - 92 * 24 * 60 * 60 * 1000);
     const [latestFollowers, latestSubscribers, monthFollowersRow, dailyFollowerRows, subscriptionRows] = await Promise.all([
       env.DB.prepare(`SELECT followers_count FROM kick_metric_snapshots
@@ -7870,12 +7888,12 @@ async function getKickChannelInsights(session, env, { hourlyDate = "" } = {}) {
         .bind(String(session.userId)).first(),
       env.DB.prepare(`SELECT COUNT(*) AS total FROM kick_webhook_events
         WHERE broadcaster_user_id = ?1 AND event_type = 'channel.followed'
-          AND substr(COALESCE(event_at, received_at), 1, 7) = ?2`)
-        .bind(String(broadcasterId), monthPrefix).first(),
-      env.DB.prepare(`SELECT substr(COALESCE(event_at, received_at), 1, 10) AS event_date, COUNT(*) AS total
+          AND julianday(COALESCE(event_at, received_at)) >= julianday(?2) AND julianday(COALESCE(event_at, received_at)) <= julianday('now')`)
+        .bind(String(broadcasterId), monthStart).first(),
+      env.DB.prepare(`SELECT date(COALESCE(event_at, received_at), '+3 hours') AS event_date, COUNT(*) AS total
         FROM kick_webhook_events
         WHERE broadcaster_user_id = ?1 AND event_type = 'channel.followed'
-          AND substr(COALESCE(event_at, received_at), 1, 10) >= ?2
+          AND date(COALESCE(event_at, received_at), '+3 hours') >= ?2
         GROUP BY event_date ORDER BY event_date ASC`)
         .bind(String(broadcasterId), historyStartDate).all(),
       env.DB.prepare(`SELECT event_type, payload_json, event_at, received_at
@@ -7912,18 +7930,19 @@ async function getKickChannelInsights(session, env, { hourlyDate = "" } = {}) {
     if (latestSubscribers?.subscribers_count !== null && latestSubscribers?.subscribers_count !== undefined && Number.isFinite(Number(latestSubscribers.subscribers_count))) {
       storedSubscriberCount = Math.max(0, Number(latestSubscribers.subscribers_count));
     }
-    await storeKickMetricSnapshot(env, {
+    const sampleStored = await storeKickMetricSnapshot(env, {
       userId: session.userId,
       broadcasterId,
       slug: session?.account?.username || "",
       followersCount: directFollowerCount,
       subscribersCount: officialSubscriberRaw !== null && officialSubscriberRaw !== undefined && Number.isFinite(officialSubscriberCount)
         ? officialSubscriberCount
-        : Math.max(webhookSubscriberCount, Number(storedSubscriberCount || 0)),
+        : (subscriptionRows?.results?.length ? webhookSubscriberCount : null),
       monthFollowersCount: followedThisMonth,
-      source: directFollowerCount !== null ? "kick-api" : "kick-api+play-connect",
+      source: directFollowerCount !== null ? "kick-api" : "kick-webhook",
       observedAt: Date.now(),
     });
+    if (collectOnly) return { sampled: sampleStored || directFollowerCount !== null || officialSubscriberRaw != null };
     const history = await env.DB.prepare(`SELECT metric_date, followers_count, subscribers_count,
         month_followers_count, source, observed_at
       FROM (
@@ -7969,10 +7988,10 @@ async function getKickChannelInsights(session, env, { hourlyDate = "" } = {}) {
           FROM kick_metric_hourly WHERE user_id = ?1 AND metric_date = ?2
           ORDER BY metric_hour ASC`)
           .bind(String(session.userId), hourlyDate).all(),
-        env.DB.prepare(`SELECT substr(COALESCE(event_at, received_at), 12, 2) AS event_hour, COUNT(*) AS total
+        env.DB.prepare(`SELECT strftime('%H', COALESCE(event_at, received_at), '+3 hours') AS event_hour, COUNT(*) AS total
           FROM kick_webhook_events
           WHERE broadcaster_user_id = ?1 AND event_type = 'channel.followed'
-            AND substr(COALESCE(event_at, received_at), 1, 10) = ?2
+            AND date(COALESCE(event_at, received_at), '+3 hours') = ?2
           GROUP BY event_hour ORDER BY event_hour ASC`)
           .bind(String(broadcasterId), hourlyDate).all(),
       ]);

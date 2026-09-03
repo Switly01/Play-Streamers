@@ -2,6 +2,29 @@
 
 ## Güncel geliştirme durumu · 3 Eylül 2026
 
+Site 10.34.0 / Worker 8.8: 90 günlük hesap görünümündeki yanıltıcı sütun
+grafiği kaldırıldı; tamamlanan 90 gün sabit tarih kutularıyla gösterilir,
+ölçülmeyen gün `—`, ölçülen sıfır `0` kalır. Arka plan Kick ölçümü artık
+tarayıcının aynı saate daha önce örnek yazmış olmasından bağımsızdır; geçerli
+Kick bağlantısı bulunan hesaplar sunucuda beş dakikalık sırayla örneklenir.
+“Son bir ayda takip eden” takvim ayı değil, bugünden geriye kayan bir aylık
+dönemi kullanır. Geçmişte hiç alınmamış ölçümler sonradan uydurulmaz.
+
+Hesap profilinde özel fotoğraf seçimi, daha önce seçilmiş hazır avatarı ezmeden
+saklanır; oturum önbelleği hesap değişikliğinden sonra geçersizleştirilir. İki
+aşamalı doğrulama yönetimi e-posta ve şifre formlarının altında tam genişliğe
+alındı. Plan araçları hesap bazlı yerel kayıt kullanır; anlık görüntünün nerede
+saklandığını açıklar, okunabilir ve seçili dilde HTML raporu üretir, ham JSON'u
+ayrı indirir ve taslak başlıklarını seçili dilde oluşturur. Ürün ailesindeki eski
+SW Identity ürün adı SW Create olarak güncellendi.
+
+Dil taraması şablon içindeki dinamik metinleri de kapsayacak biçimde genişletildi.
+Türkçeden İngilizceye, ardından başka bir dile geçerken önceki dilde boyanmış DOM
+metinleri kaynak anahtara geri eşlenir; böylece oturum açıldıktan sonra kalıcı
+İngilizce/Türkçe parçalar kalmaz. Yedi dil paketinin her biri 2.000'i aşkın arayüz
+metnini kapsar; aktif takipçi, bağlantı durumu ve plan araçları gibi anlamı
+makine çevirisinde bozulan kritik etiketler elle doğrulandı.
+
 Site 10.33.0 / Worker 8.7: Panel ve istatistik sıfırlaması birbirinden bağımsızdır.
 Donate istatistiği `stats.donationCurrencies` altında para birimi bazında tutulur;
 okunmuş olay silinmesi veya panel sıfırlaması Top Donate'ı değiştirmez. Eski
@@ -13,7 +36,7 @@ panelin kendi sıfırlama zamanına göre değerlendirilir.
 sıfır ise 0 olarak kalır. Günlük ve saatlik ayrıntılar sunucu ölçümlerini kullanır.
 Ürün sekmesi zeminleri, hesap avatarının beyaz üstüne beyaz görünmesi, gizli
 logo yedeklerinin açığa çıkması, SSB/DAB ve iç içe bağış pencereleri düzeltildi.
-İki aşamalı doğrulama yönetimi e-posta değiştirme formunun altındadır.
+İki aşamalı doğrulama yönetimi e-posta değiştirme formunun altındaydı.
 SSB test mesajları doğrulanmış dil listesinden sunucuda üretilir.
 
 Dil tarayıcısı regex yerine TypeScript sözdizimi ağacını kullanır (geliştirme

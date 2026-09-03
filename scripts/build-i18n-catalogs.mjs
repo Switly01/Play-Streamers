@@ -4,14 +4,14 @@ import { mkdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { critical } from '../live-i18n.js';
+import { critical, translationLooksComplete } from '../live-i18n.js';
 import { createRequire } from 'node:module';
 
 const ts = createRequire(new URL('../swcreate-site/package.json', import.meta.url))('typescript');
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const outputDirectory = join(root, 'locales');
-const version = '2026-09-03.1';
+const version = '2026-09-03.2';
 const languages = ['en', 'de', 'es', 'fr', 'ru', 'ar', 'ja'];
 const sourceFiles = ['index.html', 'privacy.html', 'terms.html', 'app.js', 'app-final.js', 'site-v7.js', 'server-analytics.js'];
 const extractionFiles = new Set(sourceFiles);
@@ -29,11 +29,11 @@ const decode = value => clean(String(value || '')
   .replace(/&#39;|&apos;/gi, "'")
   .replace(/&lt;/gi, '<')
   .replace(/&gt;/gi, '>'));
-const passthrough = value => /^(?:(?:PLAY STREAMERS|SW CREATE)(?:\s+(?:APP|WEB|PLANS|FREE|PRO|PRODUCT PRO|FREE EDITION|PRO EDITION|PRODUCT PRO EDITION))?|PLAY CONNECT|PLAY|STREAMERS|SW IDENTITY|SW BOT|SW AI|PRODUCT PRO|FREE|PRO|PC|PS|APP|WEB|CONNECT|HTTP|HTTPS|API|OBS|KICK|WINDOWS)(?:\s*[·+:/-].*)?$/i.test(clean(value))
+const passthrough = value => /^(?:(?:PLAY STREAMERS|SW CREATE)(?:\s+(?:APP|WEB|PLANS|FREE|PRO|PRODUCT PRO|FREE EDITION|PRO EDITION|PRODUCT PRO EDITION))?|PLAY CONNECT|PLAY|STREAMERS|SW IDENTITY|SW BOT|SW AI|PRODUCT PRO|FREE|PRO|DONATE|PC|PS|APP|WEB|CONNECT|HTTP|HTTPS|API|OBS|KICK|WINDOWS)$/i.test(clean(value))
   || /^(?:ps\d+[a-z0-9-]*|Developed by)$/i.test(clean(value))
   || /^(?:https?:\/\/|www\.|[\w.+-]+@[\w.-]+\.|(?:api\.)?[a-z0-9-]+(?:\.[a-z0-9-]+){1,}|chrome\.storage\.local$)/i.test(clean(value))
   || /^(?:cookies|notifications|offscreen|storage|webRequest):$/i.test(clean(value))
-  || /^(?:ByNoGame|Dashboard|English|Language|Menü|Windows 10\/11|PRO EDITION|Pro Edition|Product Pro Edition)$/i.test(clean(value))
+  || /^(?:ByNoGame|Dashboard|English|Language|Menü|Windows 10\/11|PRO EDITION|Pro Edition|Product Pro Edition|SW Bot \+ SW AI|PLAY STREAMERS · SW CREATE|Play Connect · SW Create)$/i.test(clean(value))
   || /^(?:©\s*\d{4}\s+SW Create\s*·\s*Play Streamers|APP\s+v[\d.]+\s*·\s*Windows\s+10\/11\s*·\s*64\s*bit)$/i.test(clean(value))
   || /^[\d\s.,:%+\-/–—()]+(?:MB|KB|GB|K)?$/i.test(clean(value));
 const translatable = value => {
@@ -47,10 +47,11 @@ const translatable = value => {
 const turkishInterfaceTerms = new Set('ana geri dön giriş kayıt hesap şifre kullanıcı eposta doğum tarih güvenlik doğrulama doğrulamayı aşamalı etkinleştir kurtarma kod kodları kodlarını yenile destek mesaj konu gönder gizlilik kullanım koşulları sistem durum güncelleme bildirim bağlantı yayın yayıncı içerik topluluk marka araç veri ziyaretçi aktif ücretsiz indir oluştur keşfet hemen başla kapat tamam iptal hata başarısız bekleniyor hazır yükleniyor görünür ayar menü ürün ürünler abonelik abonelikler masaüstü uygulama uygulaması plan canlı analiz ekler talepler eski yeni son önce sonraki beni hatırla'.split(' '));
 function looksLikeTurkishInterface(value) {
   const text = clean(value);
-  if (!translatable(text) || /^[.#/[{(]/.test(text) || /[{}=;]|=>|\b(?:const|function|return|querySelector|classList|dataset)\b/.test(text)) return false;
+  const literal = text.replace(/\{\d+\}/g, '');
+  if (!translatable(text) || /^[.#/[({]/.test(literal.trim()) || /[{}=]|=>|\b(?:const|function|return|querySelector|classList|dataset)\b/.test(literal) || /^ps\d+-/.test(text)) return false;
   if (/[ÇĞİÖŞÜçğıöşü]/u.test(text)) return true;
   const words = text.toLocaleLowerCase('tr-TR').split(/[^a-zçğıöşü]+/u).filter(Boolean);
-  return words.some(word => turkishInterfaceTerms.has(word));
+  return words.some(word => turkishInterfaceTerms.has(word) || ['raporu', 'kaydı', 'kaydet', 'bölüm'].includes(word));
 }
 
 function addMarkupStrings(value, target, { requireTurkish = false } = {}) {
@@ -80,7 +81,7 @@ function addJavaScriptStrings(value, target) {
   };
   const visit = node => {
     if (ts.isStringLiteral(node) || ts.isNoSubstitutionTemplateLiteral(node)) add(node.text);
-    else if (ts.isTemplateExpression(node)) add(node.head.text + node.templateSpans.map(span => '__DYNAMIC__' + span.literal.text).join(''));
+    else if (ts.isTemplateExpression(node)) add(node.head.text + node.templateSpans.map((span, index) => '{' + index + '}' + span.literal.text).join(''));
     ts.forEachChild(node, visit);
   };
   visit(ast);
@@ -133,11 +134,10 @@ function printStats(extracted, rows) {
 
 function translationValid(source, translation, language) {
   const output = clean(translation);
+  const tokens = value => [...value.matchAll(/\{\d+\}/g)].map(match => match[0]).sort().join(',');
+  if (tokens(source) !== tokens(output)) return false;
   if (!output || clean(source).localeCompare(output, undefined, { sensitivity: 'base' }) === 0) return passthrough(source);
-  if (language === 'ar' && !/[\u0600-\u06ff]/u.test(output)) return false;
-  if (language === 'ru' && !/[\u0400-\u04ff]/u.test(output)) return false;
-  if (language === 'ja' && !/[\u3040-\u30ff\u3400-\u9fff]/u.test(output)) return false;
-  return true;
+  return passthrough(source) || translationLooksComplete(source, output, language);
 }
 
 function readLocalCatalogs() {

@@ -69,6 +69,9 @@ Bu doküman; Play Streamers web uygulaması, Cloudflare Worker API'si ve Play Co
   merkezi sunucu bağlantısı açıkken aynı olayın iki kez işlenmesi engellenir.
 - Chrome Web Mağazası ekran görüntüleri ve tanıtım görselleri yeni arayüzle
   yenilendi.
+- Firefox paketi aynı özelliklerle AMO'ya gönderildi; doğrulama hatasız ve
+  uyarısız tamamlandı. Üç Firefox mağaza ekran görüntüsü yenilendi ve 1.15.2
+  sürümü onaylanarak listelendi.
 
 ### Play Connect 1.15.0
 

@@ -1,6 +1,6 @@
 # Play Streamers — Kalıcı Proje Bağlamı
 
-## Play Connect 1.15.2 Chrome yayını · 4 Eylül 2026
+## Play Connect 1.15.2 Chrome ve Firefox yayını · 4 Eylül 2026
 
 Çeviri önbelleği ikinci revizyonu: bütün dil sözlükleri sürümlü yerel önbellekte,
 dinamik metin sonuçları sınırlı bellekte tutulur. Yeni platform DOM'u eklenmeden
@@ -27,6 +27,14 @@ Chrome Web Mağazası için üç adet 1280×800 ekran görüntüsü ile 440×280
 güncel mağaza girişi 4 Eylül 2026'da incelemeye gönderildi; durum
 `İncelenmeyi bekliyor` ve inceleme geçince otomatik yayınlanacak. Worker/site
 kodunda değişiklik gerekmez. Test kapsamı: `play-connect/LOCAL_TEST.md`.
+
+Firefox mağaza paketi aynı 1.15.2 kaynaklarıyla eşitlendi; Firefox'a özgü
+kalıcı arka plan ve görünmeyen OBS / Alert Box iframe davranışı korundu.
+`play-connect-gecko-v1.15.2.zip` paketi 74 dosya ve kök manifest ile üretildi
+(SHA-256: `EC4F7A0C4D476667B0C5738106B1F7850E49B3905476E74F6078EBCD829B0F3D`).
+AMO doğrulaması hatasız ve uyarısız tamamlandı. Yeni arayüzü gösteren üç mağaza
+ekran görüntüsü eski görsellerin yerini aldı. Sürüm 4 Eylül 2026'da gönderildi,
+hemen `Onaylandı` durumuna geçti ve AMO'da listelenen sürüm 1.15.2 oldu.
 
 ## Güncel geliştirme durumu · 4 Eylül 2026
 

@@ -1,0 +1,155 @@
+{
+  "manifest_version": 2,
+  "name": "Play Connect",
+  "short_name": "Play Connect",
+  "version": "1.15.2",
+  "description": "Destek platformlarını güvenli yerel bağlantı ve sunucu teslimatıyla Play Streamers hesabına bağlar.",
+  "author": "SW Create",
+  "homepage_url": "https://pstreamers.com",
+  "permissions": [
+    "alarms",
+    "cookies",
+    "notifications",
+    "storage",
+    "tabs",
+    "webRequest",
+    "https://api.pstreamers.com/*",
+    "https://api.swcreate.com/*",
+    "https://kick.com/*",
+    "https://*.kick.com/*",
+    "https://*.bynogame.com/*",
+    "https://*.pindirim.com/*",
+    "https://*.oyunfor.com/*",
+    "https://*.klasgame.com/*",
+    "https://*.itemsatis.com/*",
+    "https://*.oyuneks.com/*",
+    "https://*.hesap.com.tr/*",
+    "https://*.dijipin.com/*",
+    "https://*.epin.com.tr/*",
+    "https://*.inovapin.com/*",
+    "https://*.streamlabs.com/*",
+    "https://*.streamelements.com/*",
+    "https://*.ko-fi.com/*",
+    "https://*.buymeacoffee.com/*",
+    "https://*.tipeeestream.com/*",
+    "https://api.tipeeestream.com/*",
+    "https://*.donationalerts.com/*",
+    "https://*.pally.gg/*",
+    "https://*.streamloots.com/*",
+    "https://*.destream.net/*",
+    "https://*.livepix.gg/*",
+    "https://*.saweria.co/*",
+    "https://*.trakteer.id/*",
+    "https://*.sociabuzz.com/*",
+    "https://*.tipply.pl/*",
+    "https://*.toon.at/*",
+    "https://*.doneru.jp/*"
+  ],
+  "background": {
+    "page": "firefox/background.html",
+    "persistent": true
+  },
+  "browser_action": {
+    "default_title": "Play Connect",
+    "default_popup": "popup/popup.html"
+  },
+  "options_ui": {
+    "page": "options/options.html",
+    "open_in_tab": true
+  },
+  "content_security_policy": "script-src 'self'; object-src 'self'; frame-src https:",
+  "content_scripts": [
+    {
+      "matches": [
+        "https://*.bynogame.com/*",
+        "https://*.pindirim.com/*",
+        "https://*.oyunfor.com/*",
+        "https://*.klasgame.com/*",
+        "https://*.itemsatis.com/*",
+        "https://*.oyuneks.com/*",
+        "https://*.hesap.com.tr/*",
+        "https://*.dijipin.com/*",
+        "https://*.epin.com.tr/*",
+        "https://*.inovapin.com/*",
+        "https://*.streamlabs.com/*",
+        "https://*.streamelements.com/*",
+        "https://*.ko-fi.com/*",
+        "https://*.buymeacoffee.com/*",
+        "https://*.tipeeestream.com/*",
+        "https://*.donationalerts.com/*",
+        "https://*.pally.gg/*",
+        "https://*.streamloots.com/*",
+        "https://*.destream.net/*",
+        "https://*.livepix.gg/*",
+        "https://*.saweria.co/*",
+        "https://*.trakteer.id/*",
+        "https://*.sociabuzz.com/*",
+        "https://*.tipply.pl/*",
+        "https://*.toon.at/*",
+        "https://*.doneru.jp/*"
+      ],
+      "js": [
+        "src/network-bridge.js"
+      ],
+      "run_at": "document_start",
+      "world": "MAIN",
+      "all_frames": true
+    },
+    {
+      "matches": [
+        "https://*.bynogame.com/*",
+        "https://*.pindirim.com/*",
+        "https://*.oyunfor.com/*",
+        "https://*.klasgame.com/*",
+        "https://*.itemsatis.com/*",
+        "https://*.oyuneks.com/*",
+        "https://*.hesap.com.tr/*",
+        "https://*.dijipin.com/*",
+        "https://*.epin.com.tr/*",
+        "https://*.inovapin.com/*",
+        "https://*.streamlabs.com/*",
+        "https://*.streamelements.com/*",
+        "https://*.ko-fi.com/*",
+        "https://*.buymeacoffee.com/*",
+        "https://*.tipeeestream.com/*",
+        "https://*.donationalerts.com/*",
+        "https://*.pally.gg/*",
+        "https://*.streamloots.com/*",
+        "https://*.destream.net/*",
+        "https://*.livepix.gg/*",
+        "https://*.saweria.co/*",
+        "https://*.trakteer.id/*",
+        "https://*.sociabuzz.com/*",
+        "https://*.tipply.pl/*",
+        "https://*.toon.at/*",
+        "https://*.doneru.jp/*"
+      ],
+      "js": [
+        "src/content-scanner.js"
+      ],
+      "run_at": "document_idle",
+      "all_frames": true
+    }
+  ],
+  "icons": {
+    "16": "assets/icon-16.png",
+    "32": "assets/icon-32.png",
+    "48": "assets/icon-48.png",
+    "128": "assets/icon-128.png"
+  },
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "play-connect@pstreamers.com",
+      "strict_min_version": "142.0",
+      "data_collection_permissions": {
+        "required": [
+          "authenticationInfo",
+          "financialAndPaymentInfo",
+          "personalCommunications",
+          "personallyIdentifyingInfo",
+          "websiteContent"
+        ]
+      }
+    }
+  }
+}

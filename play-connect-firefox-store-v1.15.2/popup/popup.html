@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="tr" class="pc-i18n-loading">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Play Connect</title>
+  <link rel="stylesheet" href="popup.css">
+  <link rel="stylesheet" href="../src/liquid-glass.css">
+  <link rel="stylesheet" href="glass-popup.css">
+</head>
+<body>
+  <section class="narrow-notice" aria-label="Play Connect panel genişliği uyarısı">
+    <img src="../assets/play-connect-pc-logo.svg" alt="">
+    <b>Paneli genişlet</b>
+    <small>Play Connect araçlarını kullanmak için tarayıcı panelinin kenarını sağa doğru sürükle.</small>
+  </section>
+  <main>
+    <header>
+      <a class="header-brand" href="https://pstreamers.com/#member-home" target="_blank" rel="noreferrer">
+        <span class="brand-mark"><img src="../assets/play-connect-pc-logo.svg" alt="Play Connect PC logosu"></span>
+        <span><b>Play Connect</b><small>Play Streamers bağlantısı</small></span>
+      </a>
+      <div class="locale-picker">
+        <button id="localeButton" class="locale-button" type="button" aria-label="Dil seçimi" aria-expanded="false"></button>
+        <div id="localeMenu" class="locale-menu" hidden></div>
+      </div>
+      <i id="connectionDot" aria-hidden="true"></i>
+    </header>
+
+    <section id="pairCard" class="pair-card">
+      <span class="label">HESAP BAĞLANTISI</span>
+      <h1 id="pairTitle">SW Identity hesabını bağla</h1>
+      <p id="pairText">Sitede Hesabım → Bağlantılar bölümünden bir kod oluştur ve buraya gir.</p>
+      <form id="pairForm">
+        <input id="pairCode" name="code" maxlength="19" autocomplete="one-time-code" placeholder="ABCD-EFGH-JKLM-NPQR" aria-label="Eşleştirme kodu">
+        <button id="pairSubmit" class="pair-submit" type="submit"><span>Bağla</span><i aria-hidden="true">✓</i></button>
+      </form>
+      <p id="pairStatus" class="status" aria-live="polite"></p>
+    </section>
+
+    <button id="openSettings" class="panel-button" type="button"><span>Play Connect paneli</span><i>→</i></button>
+
+    <section class="catalog">
+      <div class="section-title">
+        <span><b>Platformlar</b><small>Bağlamak istediğin platformu seç.</small></span>
+        <button id="scanNow" class="scan-button" type="button" aria-label="Yeni donate kontrolü başlat"><i>↻</i><span>Yeni donate kontrol et</span></button>
+      </div>
+      <label class="provider-search">
+        <span class="sr-only">Platform ara</span>
+        <input id="providerSearch" type="search" autocomplete="off" placeholder="Platform ara…">
+      </label>
+      <div id="featuredGrid" class="featured-grid"></div>
+      <button id="othersToggle" class="others-toggle" type="button" aria-expanded="false">
+        <span>Diğerleri</span><b id="othersCount"></b><i>⌄</i>
+      </button>
+      <div id="othersGrid" class="others-grid" hidden></div>
+      <p id="searchEmpty" class="search-empty" hidden>Aramana uygun platform bulunamadı.</p>
+    </section>
+
+    <section class="delivery">
+      <span><i></i><b id="deliveryTitle">Teslimat bekleniyor</b></span>
+      <small id="deliveryText">Bağlantı bilgileri hazırlanıyor.</small>
+    </section>
+
+    <footer>
+      <a href="https://pstreamers.com/#member-home" target="_blank" rel="noreferrer">Play Streamers ↗</a>
+      <small id="extensionVersion"></small>
+    </footer>
+  </main>
+  <script type="module" src="popup.js"></script>
+</body>
+</html>

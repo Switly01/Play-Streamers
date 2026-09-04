@@ -14,6 +14,7 @@ test("API'siz platform OBS alert bağlantısını görünür sekme açmadan çal
   const offscreenMessages = [];
   globalThis.chrome = {
     runtime: {
+      id: "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
       getManifest: () => ({ version: "1.7.0" }),
       getURL: path => `chrome-extension://aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/${path}`,
       getContexts: async () => [],
@@ -106,6 +107,59 @@ test("API'siz platform OBS alert bağlantısını görünür sekme açmadan çal
   assert.equal(domCaptured.ok, true);
   assert.equal(domCaptured.result.accepted, 1);
   assert.equal(stored.playStreamersDonate.queue.length, 2);
+
+  // DAB/API and SSB providers use the same validated, local-only alert transport.
+  for (const providerId of ["streamlabs", "donationalerts", "tipeeestream", "streamelements", "pally", "kofi", "itemsatis", "buymeacoffee", "trakteer", "sociabuzz"]) {
+    const url = `https://streamlabs.com/widgets/alertbox/v1/fixture-${providerId}`;
+    const response = await send({ type: "SAVE_PROVIDER", providerId, config: { alertUrl: url } });
+    assert.equal(response.ok, true, providerId);
+    assert.equal(response.result.providers[providerId].hasAlertUrl, true, providerId);
+    assert.equal(response.result.providers[providerId].alertUrl, undefined);
+    assert.ok(offscreenMessages.at(-1).sources.some(source => source.providerId === providerId && source.url === url));
+    await send({ type: "ALERT_FRAME_STATUS", providerId, status: "settled" });
+    const event = {type:"NETWORK_CANDIDATES",providerId,sourceUrl:"wss://sockets.streamlabs.com/alerts",method:"WS",candidates:[{eventId:`fixture-${providerId}`,name:"Test",amount:"5 USD",message:"Fixture"}]};
+    assert.equal((await send(event,{url})).result.accepted,1,providerId);
+    const rejected = await send({type:"SAVE_PROVIDER",providerId,config:{alertUrl:"https://untrusted.example/alert"}});
+    assert.equal(rejected.ok,false);
+    const locked = await send({type:"SAVE_PROVIDER",providerId,config:{alertUrl:`${url}-other`}});
+    assert.equal(locked.ok,false);
+    stored.playStreamersDonate.connection.serverConnectedProviderIds = [providerId];
+    const standby = await send({type:"TEST_PROVIDER",providerId});
+    assert.equal(standby.result.serverConnection,true);
+    assert.equal((await send(event,{url})).result.reason,"server-connection-active");
+    await send({type:"SAVE_PROVIDER",providerId,config:{alertUrl:url}});
+    assert.ok(!offscreenMessages.at(-1).sources.some(source=>source.providerId===providerId));
+    stored.playStreamersDonate.connection.serverConnectedProviderIds = [];
+    const cleared=await send({type:"SAVE_PROVIDER",providerId,config:{clearAlertUrl:true}});
+    assert.equal(cleared.result.providers[providerId].hasAlertUrl,false);
+    assert.ok(!offscreenMessages.at(-1).sources.some(source=>source.providerId===providerId));
+  }
+
+  const uiSender = {id:chrome.runtime.id,url:chrome.runtime.getURL('options/options.html')};
+  assert.equal((await send({type:'SET_UI_LOCALE',locale:'ja'},{url:'https://untrusted.example'})).ok,false);
+  assert.equal((await send({type:'SET_UI_LOCALE',locale:'invalid'},uiSender)).ok,false);
+  for (const [locale,currency] of Object.entries({tr:'TRY',en:'USD',de:'EUR',es:'EUR',fr:'EUR',ru:'RUB',ar:'SAR',ja:'JPY'})) {
+    const response=await send({type:'SET_UI_LOCALE',locale},uiSender);
+    assert.equal(response.ok,true);
+    for(const config of Object.values(stored.playStreamersDonate.providers)) {
+      if(config.currencyMode!=='manual')assert.equal(config.defaultCurrency,currency);
+    }
+    assert.equal(stored.playStreamersDonate.providers.klasgame.defaultCurrency,'TRY','manual setting retained');
+  }
+  await send({type:'SAVE_PROVIDER',providerId:'streamlabs',config:{alertUrl:'https://streamlabs.com/widgets/alertbox/v1/currency-fixture'}});
+  await send({type:'ALERT_FRAME_STATUS',providerId:'streamlabs',status:'settled'});
+  await send({type:'NETWORK_CANDIDATES',providerId:'streamlabs',sourceUrl:'wss://sockets.streamlabs.com/alerts',method:'WS',candidates:[
+    {eventId:'currency-fallback',name:'Test',amount:'500'},
+    {eventId:'currency-explicit',name:'Test',amount:'5 USD'}
+  ]},{url:'https://streamlabs.com/widgets/alertbox/v1/currency-fixture'});
+  const events=stored.playStreamersDonate.queue.map(item=>item.event);
+  assert.equal(events.find(event=>event.eventId==='currency-fallback').currency,'JPY');
+  assert.equal(events.find(event=>event.eventId==='currency-explicit').currency,'USD');
+  await send({type:'SAVE_PROVIDER',providerId:'streamlabs',config:{currencyMode:'manual',defaultCurrency:'GBP'}});
+  await send({type:'SET_UI_LOCALE',locale:'tr'},uiSender);
+  assert.equal(stored.playStreamersDonate.providers.streamlabs.defaultCurrency,'GBP');
+  await send({type:'SAVE_PROVIDER',providerId:'streamlabs',config:{currencyMode:'locale',defaultCurrency:'GBP'}});
+  assert.equal(stored.playStreamersDonate.providers.streamlabs.defaultCurrency,'TRY');
 
   globalThis.setInterval = originalSetInterval;
   globalThis.clearInterval = originalClearInterval;

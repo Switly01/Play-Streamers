@@ -6,7 +6,7 @@ Bu doküman; Play Streamers web uygulaması, Cloudflare Worker API'si ve Play Co
 
 - Web sitesi: **10.5.5**
 - Web uygulaması / ürün bağlamı: **5.2**
-- Play Connect: **1.15.1**
+- Play Connect: **1.15.2**
 - Desktop: **0.14.4**
 - Worker kaynak sabiti: **5.4**
 
@@ -54,6 +54,21 @@ Bu doküman; Play Streamers web uygulaması, Cloudflare Worker API'si ve Play Co
   özel Tauri updater anahtarı istemeden gerçek MSIX üretir.
 - Dil değişiminde cihaz önbelleği önce uygulanır ve eksik metinler kontrollü
   yeniden denemelerle tamamlanır.
+
+### Play Connect 1.15.2
+
+- Popup ve ayarlar yeni siteyle ortak koyu sıvı cam tasarımına geçirildi;
+  platform kartları dar ekranlarda kutu dışına taşmaz.
+- Sekiz dilin arayüz sözlüğü eklenti içinde sürümlü olarak önbelleğe alınır.
+  Platform değiştirirken bütün sayfa yeniden çevrilmez ve kaynak dil ilk karede
+  görünmez.
+- Sistem dili otomatik seçilir; elle seçilen dil korunur. Otomatik para birimi
+  dil varsayılanını izler, elle seçilen para birimi ve olayın kendi ISO kodu
+  değiştirilmez.
+- DAB/API ve SSB platformlarına güvenli OBS / Alert Box bağlantısı eklenebilir;
+  merkezi sunucu bağlantısı açıkken aynı olayın iki kez işlenmesi engellenir.
+- Chrome Web Mağazası ekran görüntüleri ve tanıtım görselleri yeni arayüzle
+  yenilendi.
 
 ### Play Connect 1.15.0
 

@@ -326,6 +326,14 @@ export const PROVIDERS = [
 
 export const PROVIDER_BY_ID = new Map(PROVIDERS.map(item => [item.id, item]));
 
+export function supportsAlertLink(item) {
+  return Boolean(item?.connectionStrategies?.includes("alert-link"));
+}
+
+export function usesAlertLink(item, config) {
+  return supportsAlertLink(item) && (item.integration === "session" || Boolean(config?.alertUrl || config?.hasAlertUrl));
+}
+
 // OBS Browser Source links are bearer-like secrets.  They may point either to
 // the donate platform itself or to a well-known alert renderer selected by the
 // platform.  The URL is validated locally and is never included in public

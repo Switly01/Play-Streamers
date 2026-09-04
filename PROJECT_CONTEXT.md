@@ -1,5 +1,33 @@
 # Play Streamers — Kalıcı Proje Bağlamı
 
+## Play Connect 1.15.2 Chrome yayını · 4 Eylül 2026
+
+Çeviri önbelleği ikinci revizyonu: bütün dil sözlükleri sürümlü yerel önbellekte,
+dinamik metin sonuçları sınırlı bellekte tutulur. Yeni platform DOM'u eklenmeden
+çevrilir; MutationObserver yalnız değişen düğümleri boyama öncesi işler. Platform
+seçimi gezinme düğümlerini yeniden oluşturmaz. `locale-settings.js` dil→para
+birimi varsayılanlarını paylaşır; güvenilir eklenti sayfalarının `SET_UI_LOCALE`
+mesajı yalnız otomatik moddaki platformları günceller. Elle kaydedilmiş para
+birimi ve olayın kendi ISO kodu korunur. 208 platform/dil görünümü, ilk kare,
+popup tekrar açılışı ve gerçek para birimini koruma testleri eklendi.
+
+`play-connect/` popup ve ayarları ortak `src/liquid-glass.css` yüzeyine geçti;
+platform kartlarında metin sarma ve dar ekran yerleşimi düzeltildi. Bayraksız
+dil seçici, sistem dili/manuel tercih ve Arapça RTL iki ekranda ortaktır.
+`src/ui-catalog.json` sekiz dilin arayüzünü çevrimdışı sunar; kapatılmış canlı
+çeviri servisi artık çağrılmaz. Temel etiketler `src/i18n-reviewed.json` ile
+gözden geçirilir. DAB/API ve SSB sağlayıcılarında katalogdaki alert-link yeteneği
+kullanılabilir; merkezi sunucu bağlantısı aktifse yerel link bekletilir.
+API ayarları korunur, gizli link public state'e veya sunucuya eklenmez.
+Kullanıcı Chrome'da `play-connect-chrome-local-test/` paketiyle doğruladı.
+Üretim paketi `play-connect-chromium-v1.15.2.zip`, site indirme paketleri
+`play-connect-v1.15.2.zip` ve `play-connect.zip` olarak yeniden üretildi.
+Chrome Web Mağazası için üç adet 1280×800 ekran görüntüsü ile 440×280 ve
+1400×560 tanıtım görseli yeni arayüzden yeniden üretildi. 1.15.2 paketi ve
+güncel mağaza girişi 4 Eylül 2026'da incelemeye gönderildi; durum
+`İncelenmeyi bekliyor` ve inceleme geçince otomatik yayınlanacak. Worker/site
+kodunda değişiklik gerekmez. Test kapsamı: `play-connect/LOCAL_TEST.md`.
+
 ## Güncel geliştirme durumu · 4 Eylül 2026
 
 Site 10.36.0 / Worker 8.10: “Ritim sende.” yedi yabancı dilde hazır kataloğa

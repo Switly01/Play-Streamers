@@ -1,10 +1,12 @@
 <!doctype html>
-<html lang="tr">
+<html lang="tr" class="pc-i18n-loading">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Play Connect</title>
   <link rel="stylesheet" href="popup.css">
+  <link rel="stylesheet" href="../src/liquid-glass.css">
+  <link rel="stylesheet" href="glass-popup.css">
 </head>
 <body>
   <section class="narrow-notice" aria-label="Play Connect panel genişliği uyarısı">
@@ -18,6 +20,10 @@
         <span class="brand-mark"><img src="../assets/play-connect-pc-logo.svg" alt="Play Connect PC logosu"></span>
         <span><b>Play Connect</b><small>Play Streamers bağlantısı</small></span>
       </a>
+      <div class="locale-picker">
+        <button id="localeButton" class="locale-button" type="button" aria-label="Dil seçimi" aria-expanded="false"></button>
+        <div id="localeMenu" class="locale-menu" hidden></div>
+      </div>
       <i id="connectionDot" aria-hidden="true"></i>
     </header>
 

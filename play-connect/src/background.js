@@ -7,11 +7,14 @@ import {
   isProviderUrlAllowed,
   alertLinkInfo,
   isProviderAlertUrlAllowed,
+  supportsAlertLink,
+  usesAlertLink,
   comparableAlertUrl,
   scoreProviderMonitorUrl,
   isTrustedProviderMonitorUrl
 } from "./providers.js";
 import { extractJsonCandidates, normalizeCandidate } from "./core.js";
+import { LOCALE_CURRENCIES, localeCurrency } from "./locale-settings.js";
 
 const API_ORIGIN = "https://api.pstreamers.com";
 const PAIR_ENDPOINT = `${API_ORIGIN}/api/donate-bridge/pair/claim`;
@@ -333,6 +336,7 @@ function mutateState(mutator) {
 
 function publicState(state) {
   return {
+    uiLocale: state.uiLocale || "tr",
     connection: {
       ...state.connection,
       deviceToken: undefined,
@@ -566,6 +570,9 @@ async function syncConnectionStatus(force = false) {
         : [];
       return true;
     });
+    const central = serverConnectedProviderIds(mutation.state);
+    if (central.has("streamelements")) closeStreamElementsSocket();
+    if (central.has("pally")) closePallySocket();
     await syncAlertSources(mutation.state).catch(() => {});
     return publicState(mutation.state);
   } catch (error) {
@@ -1006,7 +1013,7 @@ async function ensureOffscreenDocument() {
 function alertSources(state) {
   const serverProviders = serverConnectedProviderIds(state);
   return PROVIDERS
-    .filter(provider => provider.integration === "session")
+    .filter(supportsAlertLink)
     .map(provider => ({ provider, config: state.providers?.[provider.id] }))
     .filter(({ provider, config }) => config?.enabled
       && !serverProviders.has(provider.id)
@@ -1046,7 +1053,7 @@ function alertProviderForSender(state, rawSenderUrl, requestedProviderId = "") {
   const senderComparable = comparableAlertUrl(rawSenderUrl);
   if (!senderComparable) return null;
   const requested = requestedProviderId ? PROVIDER_BY_ID.get(requestedProviderId) : null;
-  if (requested?.integration === "session") {
+  if (supportsAlertLink(requested)) {
     const config = state.providers?.[requested.id];
     if (config?.enabled && config?.alertUrl && isProviderAlertUrlAllowed(requested, rawSenderUrl)) {
       try {
@@ -1058,7 +1065,7 @@ function alertProviderForSender(state, rawSenderUrl, requestedProviderId = "") {
   }
   const exact = PROVIDERS.filter(provider => {
     const config = state.providers?.[provider.id];
-    return provider.integration === "session"
+    return supportsAlertLink(provider)
       && config?.enabled
       && config?.alertUrl
       && comparableAlertUrl(config.alertUrl) === senderComparable;
@@ -1069,7 +1076,7 @@ function alertProviderForSender(state, rawSenderUrl, requestedProviderId = "") {
   })();
   const sameHost = PROVIDERS.filter(provider => {
     const config = state.providers?.[provider.id];
-    if (provider.integration !== "session" || !config?.enabled || !config?.alertUrl) return false;
+    if (!supportsAlertLink(provider) || !config?.enabled || !config?.alertUrl) return false;
     try { return new URL(config.alertUrl).hostname.toLowerCase() === senderHost; } catch { return false; }
   });
   return sameHost.length === 1 ? sameHost[0] : null;
@@ -1077,8 +1084,11 @@ function alertProviderForSender(state, rawSenderUrl, requestedProviderId = "") {
 
 async function testAlertProvider(providerId) {
   const provider = PROVIDER_BY_ID.get(providerId);
-  if (!provider || provider.integration !== "session") throw new Error("OBS bağlantısı bu platform için kullanılamıyor.");
+  if (!supportsAlertLink(provider)) throw new Error("OBS bağlantısı bu platform için kullanılamıyor.");
   let state = await readState();
+  if (serverConnectedProviderIds(state).has(providerId)) {
+    return { ok: true, serverConnection: true, alertFrame: "standby" };
+  }
   const config = state.providers[providerId];
   if (!config?.enabled) throw new Error("Önce arka planda etkin tut seçeneğini aç.");
   if (!alertLinkInfo(provider, config.alertUrl)) throw new Error("Önce geçerli OBS / Alert Box bağlantısını kaydet.");
@@ -1364,7 +1374,7 @@ function scheduleStreamElementsReconnect() {
   streamElementsReconnectTimer = setTimeout(async () => {
     const state = await readState();
     const config = state.providers.streamelements;
-    if (!config?.enabled || !config.apiToken || !config.channelId) return;
+    if (!config?.enabled || !config.apiToken || !config.channelId || config.alertUrl || serverConnectedProviderIds(state).has("streamelements")) return;
     connectStreamElements(config).catch(() => {});
   }, delay);
 }
@@ -1487,7 +1497,7 @@ function schedulePallyReconnect() {
   pallyReconnectTimer = setTimeout(async () => {
     const state = await readState();
     const config = state.providers.pally;
-    if (!config?.enabled || !config.apiToken || serverConnectedProviderIds(state).has("pally")) return;
+    if (!config?.enabled || !config.apiToken || config.alertUrl || serverConnectedProviderIds(state).has("pally")) return;
     connectPally(config).catch(() => {});
   }, delay);
 }
@@ -1591,7 +1601,7 @@ async function acceptCandidates(provider, candidates, sourceLabel = "background"
     let overflow = 0;
     let baselined = 0;
     for (const candidate of sorted) {
-      const event = await normalizeCandidate(provider, candidate);
+      const event = await normalizeCandidate({ ...provider, defaultCurrency: config.defaultCurrency || provider.defaultCurrency }, candidate);
       if (!event) {
         invalid += 1;
         continue;
@@ -1601,7 +1611,7 @@ async function acceptCandidates(provider, candidates, sourceLabel = "background"
         duplicates += 1;
         continue;
       }
-      const predatesConnection = provider.integration === "session"
+      const predatesConnection = supportsAlertLink(provider)
         && Boolean(config.alertUrl)
         && monitoringStartedAt > 0
         && hasAbsoluteCandidateTime(candidate)
@@ -1679,12 +1689,12 @@ async function scanProvider(providerId, manual = false) {
   const state = await readState();
   const config = state.providers[providerId];
   if (!config?.enabled && !manual) return { skipped: true };
-  if (provider.integration === "session" && config?.alertUrl) {
+  if (serverConnectedProviderIds(state).has(providerId)) {
+    return { skipped: true, serverConnection: true, reason: "server-connection-active" };
+  }
+  if (supportsAlertLink(provider) && config?.alertUrl) {
     if (!manual) return { skipped: true, reason: "live-alert-frame" };
     return testAlertProvider(providerId);
-  }
-  if (serverConnectedProviderIds(state).has(providerId) && !manual) {
-    return { skipped: true, reason: "server-connection-active" };
   }
   const hasDirectSessionFeed = provider.id === "bynogame" && Boolean(config.sessionToken);
   if (provider.integration === "session" && !hasDirectSessionFeed) {
@@ -1838,7 +1848,7 @@ async function scanAll() {
     const config = state.providers[provider.id];
     if (!config?.enabled) continue;
     if (serverProviders.has(provider.id)) continue;
-    if (provider.integration === "session" && config.alertUrl) continue;
+    if (supportsAlertLink(provider) && config.alertUrl) continue;
     const ready = provider.integration === "session"
       ? config.loginStatus === "observed"
         && Boolean(provider.id === "bynogame"
@@ -2003,22 +2013,22 @@ async function saveProvider(providerId, nextInput) {
   }
   const submittedAlertUrl = String(nextInput.alertUrl || "").trim();
   const clearAlertUrl = Boolean(nextInput.clearAlertUrl);
-  const alertInfo = provider.integration === "session" && submittedAlertUrl
+  const alertInfo = supportsAlertLink(provider) && submittedAlertUrl
     ? alertLinkInfo(provider, submittedAlertUrl)
     : null;
-  if (provider.integration === "session" && submittedAlertUrl && !alertInfo) {
+  if (submittedAlertUrl && !alertInfo) {
     throw new Error(`${provider.name} için kendi OBS bağlantısını, Streamlabs Alert Box bağlantısını veya StreamElements Overlay bağlantısını kullan.`);
   }
   const mutation = await mutateState(state => {
     const previous = state.providers[providerId] || emptyProviderSettings(provider);
-    if (provider.integration === "session"
+    if (supportsAlertLink(provider)
       && previous.alertUrl
       && submittedAlertUrl
       && comparableAlertUrl(submittedAlertUrl) !== comparableAlertUrl(previous.alertUrl)
       && !clearAlertUrl) {
       throw new Error("OBS bağlantısı etkinken link değiştirilemez. Önce mevcut OBS bağlantısını kaldır.");
     }
-    const nextAlertUrl = provider.integration === "session"
+    const nextAlertUrl = supportsAlertLink(provider)
       ? (clearAlertUrl ? "" : (previous.alertUrl || alertInfo?.url || ""))
       : "";
     const alertUrlChanged = comparableAlertUrl(nextAlertUrl) !== comparableAlertUrl(previous.alertUrl);
@@ -2027,17 +2037,18 @@ async function saveProvider(providerId, nextInput) {
       enabled: true,
       historyUrl: historyUrl === null ? previous.historyUrl : historyUrl,
       apiToken: String(nextInput.apiToken || "").trim() || previous.apiToken || "",
-      channelId: String(nextInput.channelId || "").trim(),
-      defaultCurrency: /^[A-Z]{3}$/.test(String(nextInput.defaultCurrency || "").toUpperCase())
+      channelId: String(nextInput.channelId ?? previous.channelId ?? "").trim(),
+      currencyMode: nextInput.currencyMode === "locale" ? "locale" : (nextInput.defaultCurrency ? "manual" : previous.currencyMode || "locale"),
+      defaultCurrency: nextInput.currencyMode === "locale" ? localeCurrency(state.uiLocale) : /^[A-Z]{3}$/.test(String(nextInput.defaultCurrency || "").toUpperCase())
         ? String(nextInput.defaultCurrency).toUpperCase()
-        : provider.defaultCurrency,
+        : previous.defaultCurrency || localeCurrency(state.uiLocale),
       selectors: provider.integration === "session"
         ? emptyProviderSettings(provider).selectors
         : previous.selectors,
       status: previous.status,
       lastError: previous.lastError
     };
-    if (provider.integration === "session") {
+    if (supportsAlertLink(provider) && (usesAlertLink(provider, previous) || nextAlertUrl || clearAlertUrl)) {
       const current = state.providers[providerId];
       current.alertUrl = nextAlertUrl;
       current.alertRenderer = nextAlertUrl ? (alertLinkInfo(provider, nextAlertUrl)?.renderer || provider.name) : "";
@@ -2057,7 +2068,7 @@ async function saveProvider(providerId, nextInput) {
       }
       if (!nextAlertUrl) {
         current.alertFrameStatus = "idle";
-        current.backgroundStatus = "link-required";
+        current.backgroundStatus = provider.integration === "session" ? "link-required" : "idle";
         current.loginStatus = "unknown";
         current.status = "setup";
         current.lastCaptureError = "";
@@ -2077,7 +2088,7 @@ async function saveProvider(providerId, nextInput) {
   if (providerId === "streamelements") closeStreamElementsSocket();
   if (providerId === "pally") closePallySocket();
   await syncAlertSources(mutation.state).catch(async error => {
-    if (provider.integration !== "session") return;
+    if (!supportsAlertLink(provider)) return;
     await mutateState(state => {
       const config = state.providers[providerId];
       config.alertFrameStatus = "error";
@@ -2209,6 +2220,20 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message?.target === "offscreen") return false;
   (async () => {
     switch (message?.type) {
+      case "SET_UI_LOCALE": {
+        const allowed = ["options/", "popup/"].some(path => String(sender?.url || "").startsWith(chrome.runtime.getURL(path)));
+        if (sender?.id !== chrome.runtime.id || !allowed) throw new Error("İşlem tamamlanamadı.");
+        if (!Object.hasOwn(LOCALE_CURRENCIES, message.locale)) throw new Error("İşlem tamamlanamadı.");
+        const mutation = await mutateState(state => {
+          state.uiLocale = message.locale;
+          for (const config of Object.values(state.providers)) {
+            if (config.currencyMode === "manual") continue;
+            config.currencyMode = "locale";
+            config.defaultCurrency = localeCurrency(message.locale);
+          }
+        });
+        return { locale: message.locale, currency: localeCurrency(message.locale) };
+      }
       case "GET_STATE":
         await refreshManagedBrowserStatus().catch(() => {});
         await syncByNoGameCookieSession(true).catch(() => {});
@@ -2219,7 +2244,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
           throw new Error("OBS bağlantısı yalnız Play Connect ayar ekranında görüntülenebilir.");
         }
         const provider = PROVIDER_BY_ID.get(message.providerId);
-        if (!provider || provider.integration !== "session") return { url: "" };
+        if (!supportsAlertLink(provider)) return { url: "" };
         const state = await readState();
         return { url: String(state.providers?.[provider.id]?.alertUrl || "") };
       }
@@ -2250,7 +2275,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
       }
       case "ALERT_FRAME_STATUS": {
         const provider = PROVIDER_BY_ID.get(message.providerId);
-        if (!provider || provider.integration !== "session") return { ok: false, ignored: true };
+        if (!supportsAlertLink(provider)) return { ok: false, ignored: true };
         const reportedStatus = ["loading", "active", "settled", "error"].includes(message.status) ? message.status : "error";
         const status = reportedStatus === "settled" ? "active" : reportedStatus;
         const mutation = await mutateState(state => {
@@ -2662,5 +2687,5 @@ syncAlertSources().catch(() => {});
 flushQueue().catch(() => {});
 readState().then(state => {
   const config = state.providers.streamelements;
-  if (config?.enabled && config.apiToken && config.channelId) connectStreamElements(config).catch(() => {});
+  if (config?.enabled && config.apiToken && config.channelId && !config.alertUrl && !serverConnectedProviderIds(state).has("streamelements")) connectStreamElements(config).catch(() => {});
 }).catch(() => {});

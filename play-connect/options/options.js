@@ -1,4 +1,6 @@
-import { installLiveI18n } from "../src/live-i18n.js";
+import { installLocaleMenu, currentLocale, translate, translateTree } from "../src/live-i18n.js";
+import { CURRENCIES, localeCurrency } from "../src/locale-settings.js";
+import { supportsAlertLink, usesAlertLink } from "../src/providers.js";
 
 const $ = (selector, root = document) => root.querySelector(selector);
 let state = null;
@@ -8,58 +10,6 @@ let activeAlertUrl = "";
 let sidebarResizeObserver = null;
 let supportAttachments = [];
 const CENTRAL_DAB_PROVIDER_IDS = new Set(["streamlabs", "donationalerts", "tipeeestream"]);
-const LOCALES = [
-  ["tr", "tr", "Türkçe"], ["en", "gb", "English"],
-  ["de", "de", "Deutsch"], ["es", "es", "Español"],
-  ["fr", "fr", "Français"], ["ru", "ru", "Русский"],
-  ["ar", "sa", "العربية"], ["ja", "jp", "日本語"]
-];
-
-function installLocaleMenu() {
-  const button = $("#localeButton");
-  const menu = $("#localeMenu");
-  if (!button || !menu) return;
-  const apply = locale => {
-    const selected = LOCALES.some(item => item[0] === locale) ? locale : "tr";
-    localStorage.setItem("play-connect-locale", selected);
-    document.documentElement.lang = selected;
-    document.documentElement.dir = "ltr";
-    menu.querySelectorAll("button").forEach(item => item.classList.toggle("active", item.dataset.locale === selected));
-    installLiveI18n({ locale: selected });
-  };
-  menu.replaceChildren(...LOCALES.map(([locale, flag, label]) => {
-    const item = document.createElement("button");
-    item.type = "button";
-    item.dataset.locale = locale;
-    item.classList.toggle("locale-en", locale === "en");
-    const icon = document.createElement("span");
-    const image = document.createElement("img");
-    image.src = `../assets/flags/${flag}.svg`;
-    image.alt = "";
-    image.setAttribute("aria-hidden", "true");
-    icon.append(image);
-    const name = document.createElement("b");
-    name.textContent = label;
-    item.append(icon, name);
-    item.addEventListener("click", () => {
-      apply(locale);
-      menu.hidden = true;
-      button.setAttribute("aria-expanded", "false");
-    });
-    return item;
-  }));
-  apply(localStorage.getItem("play-connect-locale") || "tr");
-  button.addEventListener("click", event => {
-    event.stopPropagation();
-    menu.hidden = !menu.hidden;
-    button.setAttribute("aria-expanded", String(!menu.hidden));
-  });
-  document.addEventListener("click", event => {
-    if (menu.hidden || event.target.closest(".locale-picker")) return;
-    menu.hidden = true;
-    button.setAttribute("aria-expanded", "false");
-  });
-}
 
 async function send(message) {
   const response = await chrome.runtime.sendMessage(message);
@@ -70,7 +20,7 @@ async function send(message) {
 async function loadActiveAlertUrl(providerId = activeProviderId) {
   activeAlertUrl = "";
   const provider = state?.providerCatalog?.find(item => item.id === providerId);
-  if (!provider || provider.integration !== "session") return "";
+  if (!supportsAlertLink(provider)) return "";
   const result = await send({ type: "GET_PROVIDER_ALERT_URL", providerId }).catch(() => ({ url: "" }));
   if (providerId === activeProviderId) activeAlertUrl = String(result?.url || "");
   return activeAlertUrl;
@@ -84,7 +34,10 @@ function esc(value) {
 
 function replaceSafeMarkup(element, markup) {
   const parsed = new DOMParser().parseFromString(`<body>${String(markup || "")}</body>`, "text/html");
-  element.replaceChildren(...Array.from(parsed.body.childNodes, node => document.importNode(node, true)));
+  const fragment = document.createDocumentFragment();
+  fragment.append(...Array.from(parsed.body.childNodes, node => document.importNode(node, true)));
+  translateTree(fragment);
+  element.replaceChildren(fragment);
 }
 
 function shortMark(name) {
@@ -97,7 +50,7 @@ function providerIcon(provider) {
 
 function providerConnected(provider, config) {
   if (!config?.enabled || config.status !== "connected") return false;
-  if (provider?.integration === "session") return config.hasAlertUrl && config.alertFrameStatus === "active";
+  if (usesAlertLink(provider, config)) return config.hasAlertUrl && config.alertFrameStatus === "active";
   return true;
 }
 
@@ -109,11 +62,11 @@ function providerStatus(provider, config) {
 }
 
 function providerStatusLabel(provider, config) {
-  if (provider?.integration === "session" && config?.alertFrameStatus === "loading") return "Bağlantı açılıyor";
-  if (provider?.integration === "session" && config?.hasAlertUrl && config?.alertFrameStatus !== "active") return "Kontrol gerekli";
+  if (config?.hasAlertUrl && config?.alertFrameStatus === "loading") return "Bağlantı açılıyor";
+  if (config?.hasAlertUrl && config?.alertFrameStatus !== "active") return "Kontrol gerekli";
   if (config?.loginStatus === "logout-pending") return "Çıkış bekleniyor";
   if (config?.status === "error") return "Kontrol gerekli";
-  if (providerConnected(provider, config)) return provider?.integration === "session" ? "OBS bağlantısı aktif" : "Giriş doğrulandı";
+  if (providerConnected(provider, config)) return usesAlertLink(provider, config) ? "OBS bağlantısı aktif" : "Giriş doğrulandı";
   if (config?.loginStatus === "observed") return "Giriş algılandı";
   if (config?.loginStatus === "required") return "Giriş gerekli";
   if (config?.enabled) return "Hazır değil";
@@ -208,6 +161,7 @@ function renderSupportFiles() {
     const item = document.createElement("span");
     const name = document.createElement("b");
     name.textContent = `${file.name} · ${Math.max(1, Math.round(file.size / 1024))} KB`;
+    name.dataset.noTranslate = "";
     const remove = document.createElement("button");
     remove.type = "button";
     remove.setAttribute("aria-label", `${file.name} dosyasını kaldır`);
@@ -235,7 +189,7 @@ function renderNavigation() {
     button.type = "button";
     button.className = `provider-nav${provider.id === activeProviderId ? " active" : ""}`;
     const connectionLabel = provider.preferredConnection === "server-webhook"
-      ? "Sunucu + yedek oturum"
+      ? "SSB + OBS bağlantısı"
       : provider.preferredConnection === "provider-api" ? "API + OBS bağlantısı" : "OBS alert bağlantısı";
     const icon = document.createElement("i");
     const image = document.createElement("img");
@@ -246,28 +200,46 @@ function renderNavigation() {
     const copy = document.createElement("span");
     const name = document.createElement("b");
     name.textContent = provider.name;
+    name.dataset.noTranslate = "";
     const description = document.createElement("small");
-    description.textContent = `${provider.region} · ${connectionLabel}`;
+    description.append(document.createTextNode(provider.region), document.createTextNode(" · "), document.createTextNode(connectionLabel));
     copy.append(name, description);
     const status = document.createElement("i");
     status.className = serverConnected ? "connected" : providerStatus(provider, config);
     button.append(icon, copy, status);
+    button.setAttribute("aria-current", provider.id === activeProviderId ? "page" : "false");
     image?.addEventListener("error", () => {
       image.replaceWith(Object.assign(document.createElement("span"), { textContent: shortMark(provider.name) }));
     }, { once: true });
     button.addEventListener("click", async () => {
       activeProviderId = provider.id;
       history.replaceState(null, "", `?provider=${encodeURIComponent(provider.id)}`);
-      renderNavigation();
+      nav.querySelectorAll('.provider-nav').forEach(item => {
+        const active = item === button;
+        item.classList.toggle('active', active);
+        item.setAttribute('aria-current', active ? 'page' : 'false');
+      });
       await loadActiveAlertUrl(provider.id);
+      if (activeProviderId !== provider.id) return;
       renderProvider();
     });
-    return button;
+    return translateTree(button);
   }));
   $("#providerSearchEmpty").hidden = providers.length > 0;
 }
 
+function alertFields(provider) {
+  const config = state.providers[provider.id] || {};
+  return `<label class="wide">OBS / Alert Box bağlantısı
+    <input name="alertUrl" type="password" inputmode="url" autocomplete="off" value="${esc(config.hasAlertUrl ? activeAlertUrl : "")}" placeholder="${config.hasAlertUrl ? "OBS bağlantısı kayıtlı" : "https://…"}" ${config.hasAlertUrl ? 'readonly aria-readonly="true"' : ""}>
+    <small>${config.hasAlertUrl ? "Bağlantı kilitli; değiştirmek için önce aşağıdaki OBS bağlantısını kaldır düğmesini kullan." : "Bu bağlantı bir şifre gibi gizlidir; yalnızca bu Chrome profilinde tutulur ve Play Streamers sunucusuna gönderilmez."}</small>
+  </label>`;
+}
+
 function infoFor(provider) {
+  if (CENTRAL_DAB_PROVIDER_IDS.has(provider.id) || usesAlertLink(provider, state.providers[provider.id])) {
+    return { title: "OBS / Alert Box bağlantısı", description: "Yayıncı panelinden OBS Browser Source, Alert Box veya Overlay bağlantısını alıp aşağıya yapıştır.", fields: alertFields(provider) };
+  }
   if (provider.integration === "streamlabs-api") {
     return {
       title: "API bağlantısı",
@@ -305,19 +277,6 @@ function infoFor(provider) {
         </label>`
     };
   }
-  if (provider.integration === "session") {
-    const config = state.providers[provider.id] || {};
-    const alertLocked = Boolean(config.hasAlertUrl);
-    return {
-      title: "OBS / Alert Box bağlantısı",
-      description: `${provider.name} yayıncı panelinden aldığın OBS Browser Source, Alert Box veya bildirim bağlantısını ekle. Bağlantı ${provider.name}, Streamlabs ya da StreamElements üzerinden geliyorsa Play Connect bunu otomatik tanır ve görünür sekme açmadan dinler.`,
-      fields: `
-        <label class="wide">OBS / Alert Box bağlantısı
-          <input name="alertUrl" type="password" inputmode="url" autocomplete="off" value="${esc(alertLocked ? activeAlertUrl : "")}" placeholder="${alertLocked ? "OBS bağlantısı kayıtlı" : "https://…"}" ${alertLocked ? 'readonly aria-readonly="true"' : ""}>
-          <small>${alertLocked ? "Bağlantı kilitli; değiştirmek için önce aşağıdaki OBS bağlantısını kaldır düğmesini kullan." : "Bu bağlantı bir şifre gibi gizlidir; yalnızca bu Chrome profilinde tutulur ve Play Streamers sunucusuna gönderilmez."} ${config.alertHost ? `Kayıtlı kaynak: ${esc(config.alertHost)}` : "Yayıncı panelinde OBS, Alert Box, Browser Source veya Overlay adıyla bulunabilir."}</small>
-        </label>`
-    };
-  }
   return {
     title: "Sekmesiz Play Connect bağlantısı",
     description: `${provider.name} bağlantısını kur.`,
@@ -334,36 +293,22 @@ function renderProvider() {
   const info = infoFor(provider);
   const loginComplete = config.loginStatus === "observed";
   const connected = serverConnected || providerConnected(provider, config);
-  const managedSession = provider.integration === "session";
+  const managedSession = CENTRAL_DAB_PROVIDER_IDS.has(provider.id) || usesAlertLink(provider, config);
   const learningActive = Boolean(config.managedWindowId && config.managedTabId);
   const backgroundActive = managedSession
     ? config.alertFrameStatus === "active" && Boolean(config.hasAlertUrl)
     : config.backgroundStatus === "active";
   const activity = (state.activity || []).filter(item => !item.providerId || item.providerId === provider.id).slice(0, 6);
-  if (CENTRAL_DAB_PROVIDER_IDS.has(provider.id)) {
-    const pane = $("#providerPane");
-    pane.classList.add("is-central-dab");
-    replaceSafeMarkup(pane, `
-      <div class="provider-head">
-        <span class="provider-logo" style="--provider-color:${esc(provider.brandColor)}"><img src="${esc(providerIcon(provider))}" alt="${esc(provider.name)} ikonu"><i>${esc(shortMark(provider.name))}</i></span>
-        <span><h2>${esc(provider.name)}</h2><p>Bu platformun bağlantısı SW Identity hesabındaki Play Streamers bağlantılarından güvenli OAuth ile yönetilir. Eklentiye ayrıca erişim anahtarı yazman gerekmez.</p></span>
-        <span class="status-pill ${serverConnected ? "connected" : "ready"}">${serverConnected ? "Bağlı" : "DAB hazır"}</span>
-      </div>
-      ${serverConnected ? `<section class="managed-health is-active"><i aria-hidden="true">✓</i><span><b>Merkezi DAB bağlantısı aktif</b><small>${esc(provider.name)} olayları doğrudan Play Streamers sunucusuna geliyor; eklenti aynı veriyi ikinci kez okumuyor.</small></span></section>` : ""}
-      <section class="central-dab-card">
-        <span><b>Bağlantıyı Play Streamers'ta tamamla</b><small>Hesabım → Bağlantılar → DAB bölümünde “Hesabımı bağla” düğmesini kullan.</small></span>
-        <button id="openCentralDab" class="primary" type="button">DAB bölümünü aç ↗</button>
-      </section>`);
-    const providerLogo = $(".provider-logo", pane);
-    const providerImage = $("img", providerLogo);
-    providerImage?.addEventListener("error", () => providerLogo?.classList.add("fallback"), { once: true });
-    $("#openCentralDab", pane)?.addEventListener("click", () => window.open("https://pstreamers.com/#account-connections", "_blank", "noopener"));
-    requestAnimationFrame(syncSidebarHeight);
-    return;
+  let centralCard = "";
+  if (CENTRAL_DAB_PROVIDER_IDS.has(provider.id) || provider.preferredConnection === "server-webhook") {
+    centralCard = `<section class="central-dab-card">
+      <span><b>${CENTRAL_DAB_PROVIDER_IDS.has(provider.id) ? "DAB bağlantısı" : "SSB bağlantısı"}</b><small>Merkezi bağlantıyı siteden yönetebilir veya aşağıya alternatif OBS bağlantısı ekleyebilirsin. Merkezi bağlantı aktifken kayıtlı link beklemede kalır; aynı olay iki kez okunmaz.</small></span>
+      <button id="openCentralDab" type="button">Hesap bağlantılarını aç ↗</button>
+    </section>`;
   }
   $("#providerPane").classList.remove("is-central-dab");
   const loginCopy = config.loginStatus === "observed"
-    ? `Chrome oturumu algılandı · donate veri akışı otomatik bağlandı${config.lastPageAt ? ` · ${new Date(config.lastPageAt).toLocaleString("tr-TR")}` : ""}`
+    ? `Chrome oturumu algılandı · donate veri akışı otomatik bağlandı${config.lastPageAt ? ` · ${new Date(config.lastPageAt).toLocaleString(currentLocale())}` : ""}`
     : config.loginStatus === "required"
       ? "Platform yeniden giriş istiyor"
       : config.loginStatus === "logout-pending"
@@ -386,9 +331,10 @@ function renderProvider() {
   replaceSafeMarkup($("#providerPane"), `
     <div class="provider-head">
       <span class="provider-logo" style="--provider-color:${esc(provider.brandColor)}"><img src="${esc(providerIcon(provider))}" alt="${esc(provider.name)} ikonu"><i>${esc(shortMark(provider.name))}</i></span>
-      <span><h2>${esc(provider.name)}</h2><p>${esc(info.description)}</p></span>
-      <span class="status-pill ${providerStatus(provider, config)}">${esc(providerStatusLabel(provider, config))}</span>
+      <span><h2 data-no-translate>${esc(provider.name)}</h2><p>${esc(info.description)}</p></span>
+      <span class="status-pill ${serverConnected ? "connected" : providerStatus(provider, config)}">${esc(serverConnected ? "Sunucu bağlantısı aktif" : providerStatusLabel(provider, config))}</span>
     </div>
+    ${centralCard}
     ${serverHealth || managedHealth}
     <div class="login-flow">
       ${managedSession ? `
@@ -411,29 +357,32 @@ function renderProvider() {
     <form id="providerForm" class="provider-form">
       <div class="field-grid">
         ${info.fields}
+        ${!managedSession && supportsAlertLink(provider) ? `<label class="wide connection-alternative"><b>Alternatif OBS bağlantısı</b><small>Link kaydedildiğinde yerel API yerine OBS bağlantısı kullanılır. API ayarların korunur.</small></label>${alertFields(provider)}` : ""}
         <label>Varsayılan para birimi
           <select name="defaultCurrency">
-            ${["TRY","USD","EUR","GBP"].map(currency => `<option ${currency === (config.defaultCurrency || provider.defaultCurrency) ? "selected" : ""}>${currency}</option>`).join("")}
+            <option value="auto" ${config.currencyMode !== "manual" ? "selected" : ""}>${esc(`Dil varsayılanı: ${localeCurrency(currentLocale())}`)}</option>
+            ${CURRENCIES.map(currency => `<option value="${currency}" ${config.currencyMode === "manual" && currency === config.defaultCurrency ? "selected" : ""}>${currency}</option>`).join("")}
           </select>
         </label>
       </div>
       <p id="providerMessage" class="form-message ${config.lastCaptureError ? "error" : ""}" aria-live="polite">${esc(config.lastCaptureError || config.lastError || "")}</p>
-      <div class="capture-diagnostics"><span><b>Sunucuya işlendi</b>${Number(config.deliveredEventCount || 0)}</span><span><b>Son gerçek olay</b>${config.lastEventAt ? new Date(config.lastEventAt).toLocaleString("tr-TR") : "Henüz yok"}</span><span><b>Kaynak</b>${esc(config.lastCaptureSource || "Bekleniyor")}</span></div>
+      <div class="capture-diagnostics"><span><b>Sunucuya işlendi</b>${Number(config.deliveredEventCount || 0)}</span><span><b>Son gerçek olay</b>${config.lastEventAt ? new Date(config.lastEventAt).toLocaleString(currentLocale()) : "Henüz yok"}</span><span><b>Kaynak</b>${esc(config.lastCaptureSource || "Bekleniyor")}</span></div>
       <div class="form-actions">
         <button class="primary" type="submit">Bağlantıyı kaydet</button>
         <button id="checkDonates" type="button">Yeni donate var mı kontrol et</button>
         ${config.hasApiToken ? '<button id="clearToken" class="danger" type="button">Kayıtlı anahtarı sil</button>' : ""}
-        ${managedSession && config.hasAlertUrl ? '<button id="clearAlertUrl" class="danger" type="button">OBS bağlantısını kaldır</button>' : ""}
+        ${config.hasAlertUrl ? '<button id="clearAlertUrl" class="danger" type="button">OBS bağlantısını kaldır</button>' : ""}
       </div>
     </form>
     <section class="activity-box">
       <h3>Son işlemler</h3>
-      ${activity.length ? activity.map(item => `<div class="activity-row"><span>${esc(item.message)}</span><time>${new Date(item.at).toLocaleString("tr-TR")}</time></div>`).join("") : '<div class="activity-row"><span>Bu platform için henüz işlem yok.</span></div>'}
+      ${activity.length ? activity.map(item => `<div class="activity-row"><span>${esc(item.message)}</span><time>${new Date(item.at).toLocaleString(currentLocale())}</time></div>`).join("") : '<div class="activity-row"><span>Bu platform için henüz işlem yok.</span></div>'}
     </section>`);
   const providerLogo = $(".provider-logo", $("#providerPane"));
   const providerImage = $("img", providerLogo);
   providerImage?.addEventListener("error", () => providerLogo?.classList.add("fallback"), { once: true });
   bindProviderForm(provider);
+  $("#openCentralDab")?.addEventListener("click", () => window.open("https://pstreamers.com/#account-connections", "_blank", "noopener"));
   requestAnimationFrame(syncSidebarHeight);
 }
 
@@ -442,15 +391,17 @@ function formConfig(form, clearApiToken = false, clearAlertUrl = false) {
   return {
     enabled: true,
     apiToken: data.get("apiToken") || "",
-    channelId: data.get("channelId") || "",
+    channelId: data.has("channelId") ? data.get("channelId") : undefined,
     alertUrl: data.get("alertUrl") || "",
-    defaultCurrency: data.get("defaultCurrency") || "",
+    defaultCurrency: data.get("defaultCurrency") === "auto" ? localeCurrency(currentLocale()) : data.get("defaultCurrency"),
+    currencyMode: data.get("defaultCurrency") === "auto" ? "locale" : "manual",
     clearApiToken,
     clearAlertUrl
   };
 }
 
 function providerScanResult(result) {
+  if (result?.serverConnection) return "Merkezi bağlantı aktif; kayıtlı OBS bağlantısı yedek olarak bekliyor.";
   const accepted = Number(result?.accepted || 0);
   const candidates = Number(result?.candidateCount || 0);
   const duplicates = Number(result?.duplicateCount || 0);
@@ -571,7 +522,7 @@ function bindProviderForm(provider) {
     }
   });
   $("#clearToken")?.addEventListener("click", async event => {
-    if (!confirm("Bu platform için bu Chrome profilinde saklanan erişim anahtarı silinsin mi?")) return;
+    if (!confirm(translate("Bu platform için bu Chrome profilinde saklanan erişim anahtarı silinsin mi?"))) return;
     const button = event.currentTarget;
     button.disabled = true;
     try {
@@ -603,7 +554,7 @@ function bindProviderForm(provider) {
 
 async function initialize() {
   try {
-    installLocaleMenu();
+    await installLocaleMenu();
     $("#extensionVersion").textContent = `v${chrome.runtime.getManifest().version}`;
     state = await send({ type: "GET_STATE" });
     const sessionRequest = await chrome.storage.session?.get?.("openProviderId").catch(() => ({}));
@@ -861,3 +812,15 @@ window.addEventListener("focus", () => {
 });
 
 initialize();
+
+window.addEventListener('pc-locale-change', () => {
+  const field = document.querySelector('[name="defaultCurrency"]');
+  if (field) {
+    const option = field.querySelector('[value="auto"]');
+    option.textContent = `Dil varsayılanı: ${localeCurrency(currentLocale())}`;
+    translateTree(option);
+  }
+  if (state) for (const config of Object.values(state.providers || {})) {
+    if (config.currencyMode !== 'manual') config.defaultCurrency = localeCurrency(currentLocale());
+  }
+});

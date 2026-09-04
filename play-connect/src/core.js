@@ -30,6 +30,11 @@ export function compactText(value, maximum = 1000) {
 
 export function detectCurrency(value, fallback = "TRY") {
   const text = compactText(value, 120).toUpperCase();
+  const code = text.match(/\b(TRY|USD|EUR|GBP|RUB|SAR|JPY|BRL|IDR|PLN|KRW)\b/)?.[1];
+  if (code) return code;
+  for (const [symbol,currency] of Object.entries({'R$':'BRL','₽':'RUB','₩':'KRW','¥':'JPY'})) {
+    if(text.includes(symbol))return currency;
+  }
   for (const [marker, currency] of Object.entries(CURRENCY_SYMBOLS)) {
     if (text.includes(marker)) return currency;
   }
@@ -154,7 +159,8 @@ async function sha256Hex(value) {
 
 export async function normalizeCandidate(provider, rawInput, observedAt = Date.now()) {
   const raw = rawInput && typeof rawInput === "object" ? rawInput : {};
-  const currency = detectCurrency(`${raw.currency || ""} ${raw.amount || ""}`, provider.defaultCurrency);
+  const explicitCurrency = compactText(raw.currency, 16).toUpperCase();
+  const currency = /^[A-Z]{3}$/.test(explicitCurrency) ? explicitCurrency : detectCurrency(`${raw.currency || ""} ${raw.amount || ""}`, provider.defaultCurrency);
   const suppliedMinor = Number(raw.amountMinor);
   const amountMinor = Number.isSafeInteger(suppliedMinor) && suppliedMinor > 0
     ? suppliedMinor

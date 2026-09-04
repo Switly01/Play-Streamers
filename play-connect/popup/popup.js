@@ -1,4 +1,5 @@
-import { installLiveI18n } from "../src/live-i18n.js";
+import { installLocaleMenu, currentLocale, translateTree } from "../src/live-i18n.js";
+import { usesAlertLink } from "../src/providers.js";
 
 const $ = selector => document.querySelector(selector);
 let latestState = null;
@@ -11,9 +12,10 @@ async function send(message) {
 }
 
 function providerStatus(provider, config) {
+  if ((latestState?.connection?.serverConnectedProviderIds || []).includes(provider.id)) return "connected";
   if (config?.status === "error") return "error";
   const connected = config?.enabled && config?.status === "connected"
-    && (provider?.integration !== "session" || config?.loginStatus === "observed");
+    && (!usesAlertLink(provider, config) || (config?.hasAlertUrl && config?.alertFrameStatus === "active"));
   if (connected) return "connected";
   if (config?.loginStatus === "required" || config?.loginStatus === "logout-pending") return "disconnected";
   return "";
@@ -49,24 +51,23 @@ function renderProvider(provider, config, compact = false) {
   const copy = document.createElement(compact ? "b" : "span");
   const name = document.createElement("b");
   name.textContent = provider.name;
+  name.dataset.noTranslate = "";
   const description = document.createElement("small");
-  description.textContent = compact
-    ? provider.region
-    : providerStatus(provider, config) === "connected"
-      ? "Bağlı"
-      : config?.status === "error" ? "Kontrol gerekli" : `${provider.region} · Giriş yap`;
-  if (compact) copy.append(document.createTextNode(provider.name), description);
-  else copy.append(name, description);
+  if (compact) description.textContent = provider.region;
+  else if (providerStatus(provider, config) === "connected") description.textContent = "Bağlı";
+  else if (config?.status === "error") description.textContent = "Kontrol gerekli";
+  else description.append(document.createTextNode(provider.region), document.createTextNode(" · "), document.createTextNode("Giriş yap"));
+  copy.append(name, description);
   const status = document.createElement("i");
   status.className = providerStatus(provider, config);
   button.append(image, copy, status);
   button.addEventListener("click", () => openProvider(provider.id));
-  return button;
+  return translateTree(button);
 }
 
 function dateText(value) {
   const time = Number(value || 0);
-  return time ? new Date(time).toLocaleString("tr-TR", { dateStyle: "short", timeStyle: "short" }) : "";
+  return time ? new Date(time).toLocaleString(currentLocale(), { dateStyle: "short", timeStyle: "short" }) : "";
 }
 
 function render(state) {
@@ -133,7 +134,7 @@ function render(state) {
 }
 
 async function load() {
-  installLiveI18n({ locale: localStorage.getItem("play-connect-locale") || "tr" });
+  await installLocaleMenu();
   try {
     $("#extensionVersion").textContent = `v${chrome.runtime.getManifest().version}`;
     render(await send({ type: "GET_STATE" }));

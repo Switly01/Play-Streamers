@@ -1,5 +1,5 @@
 const SUPPORTED = new Set(["tr", "en", "de", "es", "fr", "ru", "ar", "ja"]);
-const CATALOG_VERSION = "2026-09-03.2";
+const CATALOG_VERSION = "2026-09-04.1";
 const catalogPromises = new Map();
 const renderedCatalogs = new Map();
 const COUNTRY_LOCALES = Object.freeze({
@@ -606,6 +606,7 @@ function translatable(value) {
   if (/^(https?:|www\.|[\w.+-]+@[\w.-]+\.|[\d\s.,:%+\-/]+$)/i.test(text)) return false;
   return true;
 }
+const interfaceBrands = new Map(['Play Streamers','Play Connect','SW Create','SW Identity','SW Bot','SW AI','Kick','ByNoGame','Klasgame','Streamlabs','StreamElements','DonationAlerts','TipeeeStream','Ko-fi','İtemSatış','GameSatış','SociaBuzz'].map(name => [name.toLocaleLowerCase('tr'), name]));
 export function createCatalogLookup(cache, previousCatalogs = []) {
   const normalized = new Map(Object.entries(cache).map(([key, value]) => [clean(key).toLocaleLowerCase('tr'), value]));
   const escapeRegex = value => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
@@ -620,12 +621,14 @@ export function createCatalogLookup(cache, previousCatalogs = []) {
   const previous = previousCatalogs.map(catalog => createCatalogLookup(Object.fromEntries(Object.entries(catalog).map(([source, translated]) => [translated, source]))));
   return value => {
     const source = clean(value);
+    if (interfaceBrands.has(source.toLocaleLowerCase('tr'))) return source;
     if (cache[source]) return cache[source];
     const exact = normalized.get(source.toLocaleLowerCase('tr'));
     if (exact) return exact;
     let canonical = source;
     for (const reverse of previous) {
       const original = reverse(source);
+      if (original !== source && interfaceBrands.has(original.toLocaleLowerCase('tr'))) return original;
       if (original !== source && cache[original]) return cache[original];
       if (original !== source) { canonical = original; break; }
     }
@@ -755,7 +758,9 @@ export function installLiveI18n({ localeKey = "ps15-locale", getLocale, root = d
   const cacheKey = `ps-live-i18n-v16:${language}`;
   // Kalıcı paket, eski tarayıcı önbelleğini ezer; elle doğrulanmış kritik
   // metinler ise her zaman en son sözü söyler.
-  const cache = { ...cacheRead(cacheKey), ...catalog, ...(critical[language] || {}) };
+  // Release catalogs include reviewed corrections; old fallback copy must not
+  // overwrite them after loading. Critical strings still cover failed loads.
+  const cache = { ...cacheRead(cacheKey), ...(critical[language] || {}), ...catalog };
   const lookup = createCatalogLookup(cache, [...renderedCatalogs.values()]);
   renderedCatalogs.set(language, cache);
   const textState = new Map();

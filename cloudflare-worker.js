@@ -78,8 +78,8 @@ const DONATE_OAUTH_PROVIDERS = Object.freeze({
     clientSecretVariable: "TIPEEESTREAM_CLIENT_SECRET",
   }),
 });
-const CURRENT_RELEASE_VERSION = "8.8";
-const CURRENT_RELEASE_PUBLISHED_AT = "2026-09-03T04:01:53Z";
+const CURRENT_RELEASE_VERSION = "8.9";
+const CURRENT_RELEASE_PUBLISHED_AT = "2026-09-04T10:48:00Z";
 const EXCHANGE_CURRENCIES = Object.freeze(["EUR", "TRY", "USD", "RUB", "SAR", "JPY"]);
 const EXCHANGE_CACHE_SECONDS = 5 * 60;
 const SW_IDENTITY_ORIGIN = "https://api.swcreate.com";
@@ -818,13 +818,16 @@ export default {
       return apiResponse(request, { error: "Sunucu tarafında bir hata oluştu." }, 500);
     }
   },
-  async scheduled(_controller, env, context) {
-    context.waitUntil(Promise.all([
-      syncScheduledDonateOAuthConnections(env),
-      syncScheduledKickMetrics(env),
-      syncScheduledLiveSessions(env),
-      runScheduledPlayBotAudit(env),
-    ]));
+  async scheduled(controller, env, context) {
+    // Each trigger has its own CPU budget. A source-code audit must never
+    // terminate the account measurement job running in the same invocation.
+    if (controller.cron === '*/15 * * * *') {
+      context.waitUntil(runScheduledPlayBotAudit(env));
+    } else if (controller.cron === '*/2 * * * *') {
+      context.waitUntil(Promise.all([syncScheduledDonateOAuthConnections(env), syncScheduledLiveSessions(env)]));
+    } else {
+      context.waitUntil(syncScheduledKickMetrics(env));
+    }
   },
 };
 
@@ -867,17 +870,17 @@ async function runScheduledPlayBotAudit(env) {
   const resources = [
     ["Ana sayfa", "https://pstreamers.com/", "document"],
     ["Ana uygulama betiği", "https://pstreamers.com/app.js?v=5.12.0", "script"],
-    ["Uygulama betiği", "https://pstreamers.com/app-final.js?v=5.31.0", "script"],
-    ["Site davranış betiği", "https://pstreamers.com/site-v7.js?v=10.34.0", "script"],
-    ["Sabit çeviri betiği", "https://pstreamers.com/live-i18n.js?v=10.10.0", "script"],
-    ["İngilizce dil paketi", "https://pstreamers.com/locales/en.json?v=2026-09-03.2", "json"],
-    ["Almanca dil paketi", "https://pstreamers.com/locales/de.json?v=2026-09-03.2", "json"],
-    ["İspanyolca dil paketi", "https://pstreamers.com/locales/es.json?v=2026-09-03.2", "json"],
-    ["Fransızca dil paketi", "https://pstreamers.com/locales/fr.json?v=2026-09-03.2", "json"],
-    ["Rusça dil paketi", "https://pstreamers.com/locales/ru.json?v=2026-09-03.2", "json"],
-    ["Arapça dil paketi", "https://pstreamers.com/locales/ar.json?v=2026-09-03.2", "json"],
-    ["Japonca dil paketi", "https://pstreamers.com/locales/ja.json?v=2026-09-03.2", "json"],
-    ["Premium stil dosyası", "https://pstreamers.com/site-v7.css?v=10.34.0", "style"],
+    ["Uygulama betiği", "https://pstreamers.com/app-final.js?v=5.32.0", "script"],
+    ["Site davranış betiği", "https://pstreamers.com/site-v7.js?v=10.35.0", "script"],
+    ["Sabit çeviri betiği", "https://pstreamers.com/live-i18n.js?v=10.11.0", "script"],
+    ["İngilizce dil paketi", "https://pstreamers.com/locales/en.json?v=2026-09-04.1", "json"],
+    ["Almanca dil paketi", "https://pstreamers.com/locales/de.json?v=2026-09-04.1", "json"],
+    ["İspanyolca dil paketi", "https://pstreamers.com/locales/es.json?v=2026-09-04.1", "json"],
+    ["Fransızca dil paketi", "https://pstreamers.com/locales/fr.json?v=2026-09-04.1", "json"],
+    ["Rusça dil paketi", "https://pstreamers.com/locales/ru.json?v=2026-09-04.1", "json"],
+    ["Arapça dil paketi", "https://pstreamers.com/locales/ar.json?v=2026-09-04.1", "json"],
+    ["Japonca dil paketi", "https://pstreamers.com/locales/ja.json?v=2026-09-04.1", "json"],
+    ["Premium stil dosyası", "https://pstreamers.com/site-v7.css?v=10.35.0", "style"],
     ["Oturum başlangıç betiği", "https://pstreamers.com/session-bootstrap.js?v=1.2", "script"],
     ["Site yönlendiricisi", "https://pstreamers.com/site-router.js?v=1.1", "script"],
     ["Sunucu analiz betiği", "https://pstreamers.com/server-analytics.js?v=6.1", "script"],
@@ -954,7 +957,7 @@ async function runScheduledPlayBotAudit(env) {
       const validPayload = result.label === "Windows güncelleme bildirimi"
         ? Boolean(payload?.version && hasUpdaterPlatforms)
         : localeCatalog
-        ? Boolean(payload?.version === "2026-09-03.2" && payload?.sourceLanguage === "tr" && payload?.language && Object.keys(payload?.translations || {}).length >= 1220)
+        ? Boolean(payload?.version === "2026-09-04.1" && payload?.sourceLanguage === "tr" && payload?.language && Object.keys(payload?.translations || {}).length >= 1220)
           : Boolean(payload?.ok);
       if (!validPayload) issues.push(`${result.label} geçerli bir JSON yanıtı döndürmüyor.`);
     }
@@ -962,12 +965,12 @@ async function runScheduledPlayBotAudit(env) {
   const homeDocument = results.find(result => result.type === "document");
   if (homeDocument?.ok) {
     const documentContracts = [
-      ["site-v7.css?v=10.34.0", "Güncel premium stil dosyası"],
+      ["site-v7.css?v=10.35.0", "Güncel premium stil dosyası"],
       ["app.js?v=5.12.0", "Güncel ana uygulama betiği"],
-      ["app-final.js?v=5.31.0", "Güncel onarım betiği"],
-      ["site-v7.js?v=10.34.0", "Güncel site davranış betiği"],
-      ["live-i18n.js?v=10.10.0", "Güncel sabit paket çeviri betiği"],
-      ["play-streamers-build\" content=\"2026-09-03-site-10.34.0", "Site 10.34.0 sürüm işareti"],
+      ["app-final.js?v=5.32.0", "Güncel onarım betiği"],
+      ["site-v7.js?v=10.35.0", "Güncel site davranış betiği"],
+      ["live-i18n.js?v=10.11.0", "Güncel sabit paket çeviri betiği"],
+      ["play-streamers-build\" content=\"2026-09-04-site-10.35.0", "Site 10.35.0 sürüm işareti"],
     ];
     for (const [token, label] of documentContracts) {
       if (!homeDocument.body.includes(token)) issues.push(`${label} canlı ana sayfaya bağlanmamış.`);
@@ -3340,14 +3343,20 @@ async function syncScheduledKickMetrics(env) {
       const started = Date.now();
       await env.DB.prepare(`INSERT INTO kick_metric_collection_state
         (user_id, last_attempt_at, next_attempt_at, last_success_at, last_error)
-        VALUES (?1, ?2, ?3, 0, NULL)
-        ON CONFLICT(user_id) DO UPDATE SET last_attempt_at = excluded.last_attempt_at, next_attempt_at = excluded.next_attempt_at`)
+        VALUES (?1, ?2, ?3, 0, 'KICK_MEASUREMENT_PENDING')
+        ON CONFLICT(user_id) DO UPDATE SET last_attempt_at = excluded.last_attempt_at, next_attempt_at = excluded.next_attempt_at, last_error = excluded.last_error`)
         .bind(String(row.user_id), started, started + 5 * 60_000).run();
       try {
         let session = await getKickSession(String(row.id), env);
         if (!session) throw new Error("KICK_SESSION_UNAVAILABLE");
         if (Date.now() >= Number(session.expiresAt || 0) - 60_000) {
-          session = (await refreshKickSessionSafely(String(row.id), env))?.session || null;
+          try {
+            session = (await refreshKickSessionSafely(String(row.id), env))?.session || session;
+          } catch (error) {
+            // The linked channel's public counts do not require an access
+            // token. A temporary OAuth outage must not suppress those reads.
+            logSecurityEvent('kick_metrics_refresh_retry', { reason: error?.code || 'KICK_REFRESH_FAILED' });
+          }
         }
         if (!session) throw new Error("KICK_RECONNECT_REQUIRED");
         const sample = await getKickChannelInsights(session, env, { collectOnly: true });
@@ -7837,7 +7846,67 @@ async function getKickSubscriberCount(session) {
     return date.getTime();
   }
 
+function kickSummaryMetric(body, keys) {
+  const data = Array.isArray(body?.data) ? body.data[0] : body?.data;
+  for (const object of [body, data]) for (const key of keys) {
+    const value = object?.[key];
+    if (value !== null && value !== undefined && value !== '' && typeof value !== 'boolean' && Number.isFinite(Number(value)) && Number(value) >= 0) return Math.floor(Number(value));
+  }
+  return null;
+}
+
+async function collectKickMetricSample(session, env) {
+  const broadcasterId = session?.account?.id;
+  if (!env?.DB || !session?.userId || !session?.accessToken || !broadcasterId) return { sampled: false };
+  const followers = ['followers_count','followersCount','follower_count','followerCount','followers'];
+  const subscribers = ['active_subscribers_count','activeSubscribersCount','subscribers_count','subscriber_count','subscribersCount','subscription_count'];
+  const readSummary = async (url, headers) => {
+    try {
+      const response = await fetchExternal(url, { headers }, { operation: 'kick-scheduled-summary', timeoutMs: 3500 });
+      if (!response.ok) {
+        logSecurityEvent('kick_scheduled_summary_unavailable', { source: String(url).includes('api.kick.com') ? 'official' : 'public', status: response.status });
+        await response.body?.cancel(); return null;
+      }
+      return await safeJson(response);
+    } catch (error) {
+      logSecurityEvent('kick_scheduled_summary_unavailable', { reason: error?.code || 'NETWORK_ERROR' });
+      return null;
+    }
+  };
+  const slug = String(session.account.username || '').trim().toLowerCase();
+  const officialUrl = new URL(`${KICK_API}/public/v1/channels`);
+  officialUrl.searchParams.set('broadcaster_user_id', String(broadcasterId));
+  // One summary supplies both metrics; no leaderboard, 90-day history or
+  // thousands of subscription payloads are loaded by the scheduled sampler.
+  const [official, publicSummary] = await Promise.all([
+    readSummary(officialUrl, { Authorization: `Bearer ${session.accessToken}`, Accept: 'application/json' }),
+    (async () => {
+      if (!/^[a-z0-9_.-]{1,80}$/.test(slug)) return null;
+      for (const version of ['v2','v1']) {
+        const body = await readSummary(`https://kick.com/api/${version}/channels/${encodeURIComponent(slug)}`, { Accept: 'application/json' });
+        if (kickSummaryMetric(body, followers) !== null || kickSummaryMetric(body, subscribers) !== null) return body;
+      }
+      return null;
+    })(),
+  ]);
+  const followersCount = kickSummaryMetric(official, followers) ?? kickSummaryMetric(publicSummary, followers);
+  const subscribersCount = kickSummaryMetric(official, subscribers) ?? kickSummaryMetric(publicSummary, subscribers);
+  if (followersCount === null && subscribersCount === null) return { sampled: false };
+  const month = await env.DB.prepare(`SELECT COUNT(*) AS total FROM kick_webhook_events
+    WHERE broadcaster_user_id = ?1 AND event_type = 'channel.followed'
+      AND julianday(COALESCE(event_at, received_at)) >= julianday(?2)
+      AND julianday(COALESCE(event_at, received_at)) <= julianday('now')`)
+    .bind(String(broadcasterId), new Date(kickRollingMonthStart()).toISOString()).first();
+  await storeKickMetricSnapshot(env, { userId: session.userId, broadcasterId, slug,
+    followersCount, subscribersCount, monthFollowersCount: Number(month?.total || 0),
+    source: 'kick-server', observedAt: Date.now() });
+  logSecurityEvent('kick_metrics_sample', { followersMeasured: followersCount !== null, subscribersMeasured: subscribersCount !== null });
+  // An unchanged sample may be deduplicated; a successful read still counts.
+  return { sampled: true };
+}
+
 async function getKickChannelInsights(session, env, { hourlyDate = "", collectOnly = false } = {}) {
+  if (collectOnly) return collectKickMetricSample(session, env);
   const broadcasterId = session?.account?.id;
   if (!session?.accessToken || !broadcasterId) return null;
   const headers = { Authorization: `Bearer ${session.accessToken}`, Accept: "application/json" };

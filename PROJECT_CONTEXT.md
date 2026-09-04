@@ -1,5 +1,37 @@
 # Play Streamers — Kalıcı Proje Bağlamı
 
+## Güncel geliştirme durumu · 4 Eylül 2026
+
+Site 10.35.0 / Worker 8.9: canlı cron kaydında `exceededCpu` görüldü.
+Kick ölçümü artık ağır SW Bot kaynak taramasıyla aynı çağrıda çalışmaz:
+dakikalık ölçüm, iki dakikalık bağlantı/oturum eşitlemesi ve 15 dakikalık
+denetim ayrı tetikleyicilerdir. Hesap başına ölçüm aralığı beş dakikadır.
+Ölçüm işi 90 günlük geçmişi ve binlerce abonelik olayını okumaz; sınırlı
+süreli kanal özetlerinden iki sayıyı birlikte alır. OAuth yenilemesi geçici
+olarak başarısızsa herkese açık kanal özeti yine denenir. Yeni örneklerin
+kaynağı `kick-server` olur; alınamayan değerler sıfıra dönüştürülmez ve
+geçmiş boş saatler uydurma ölçümle doldurulmaz. Sağlayıcının erişilebilirliği
+ve geçerli bağlantı hâlâ gereklidir. Yarıda kalan girişim `PENDING` bırakır.
+
+Özel fotoğraf yüklemesindeki tekil `$` seçicisinin `.forEach` hatası `$$`
+ile düzeltildi; hazır avatarın ardından özel yükleme ve kenar çubuğu
+yenilemesi davranış testine alındı. SW Güvenlik formları aynı grid satırında
+eşit yüksekliğe uzar. SSB test dili eski yerel tercih yerine etkin arayüzden
+okunur; yedi yabancı dilde tarayıcıdan çıkan istek kontrol edildi.
+
+Plan araçlarından ham JSON indirme düğmesi ve dinleyicisi kaldırıldı;
+okunabilir HTML raporu korunur. Kaydırma yalnız iç araç listesinde yapılır,
+başlık ve alt düğmeler sabit kalır; kartlar içerik yüksekliğinde büyür.
+Masaüstü ve 390×844 telefon görünümü denetlendi. Kilit etiketi artık CSS
+metni değil çevrilebilir DOM öğesidir.
+
+`scripts/i18n-reviewed.json` yedi dil için elle gözden geçirilmiş güvenlik,
+bağlantı, profil ve araç metinlerini içerir. Yayın kataloğu eski kritik
+yedeklerden önceliklidir; Kick/ByNoGame gibi marka adları çevrilmez.
+Gizlilik/koşullar sayfalarının eski çeviri betiği sürümleri de güncellendi.
+Yeni regresyonlar: `scripts/site-10-35.test.mjs`. Gerçek hesapla parola,
+e-posta veya destek kaydı değiştirilmeden yerel örnek hesapta UI testi yapıldı.
+
 ## Güncel geliştirme durumu · 3 Eylül 2026
 
 Site 10.34.0 / Worker 8.8: 90 günlük hesap görünümündeki yanıltıcı sütun

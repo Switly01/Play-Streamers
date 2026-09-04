@@ -7,7 +7,7 @@
   "routes": [
     { "pattern": "api.pstreamers.com", "custom_domain": true }
   ],
-  "triggers": { "crons": ["* * * * *"] },
+  "triggers": { "crons": ["* * * * *", "*/2 * * * *", "*/15 * * * *"] },
   "vars": {
     "DONATIONALERTS_CLIENT_ID": "20377",
     "GOOGLE_CLIENT_ID": "535261504819-5vngrl7njjgbi2eon0k0lrtaoqv93rci.apps.googleusercontent.com",

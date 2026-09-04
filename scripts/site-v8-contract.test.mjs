@@ -11,14 +11,14 @@ test('site 10 assets are cache-busted and use fluid monochrome glass', async () 
     read('site-v7.css'),
     read('play-streamers-ps-logo.svg'),
   ]);
-  assert.match(html, /play-streamers-build" content="2026-09-03-site-10\.34\.0"/);
-  assert.match(html, /site-v7\.css\?v=10\.34\.0/);
+  assert.match(html, /play-streamers-build" content="2026-09-04-site-10\.35\.0"/);
+  assert.match(html, /site-v7\.css\?v=10\.35\.0/);
   assert.match(html, /app\.js\?v=5\.12\.0/);
-  assert.match(html, /site-v7\.js\?v=10\.34\.0/);
-  assert.match(html, /app-final\.js\?v=5\.31\.0/);
+  assert.match(html, /site-v7\.js\?v=10\.35\.0/);
+  assert.match(html, /app-final\.js\?v=5\.32\.0/);
   assert.match(html, /window\.ps125ReleaseFirstPaint = releaseFirstPaint/);
   assert.match(html, /window\.setTimeout\(releaseFirstPaint, 4800\)/);
-  assert.match(html, /live-i18n\.js\?v=10\.10\.0/);
+  assert.match(html, /live-i18n\.js\?v=10\.11\.0/);
   assert.match(css, /html\[data-ps-site-version="8"\]/);
   assert.match(css, /--signal: #f5f5f2/);
   assert.match(css, /@keyframes ps82-meteor/);
@@ -156,8 +156,8 @@ test('SW Bot audits deterministically and translation generation is release-only
   assert.match(worker, /swBotDeterministicReport/);
   assert.match(worker, /resolveSwBotReports/);
   assert.match(worker, /sw_bot_issue_reports/);
-  assert.match(worker, /site-v7\.css\?v=10\.34\.0/);
-  assert.match(worker, /site-v7\.js\?v=10\.34\.0/);
+  assert.match(worker, /site-v7\.css\?v=10\.35\.0/);
+  assert.match(worker, /site-v7\.js\?v=10\.35\.0/);
   assert.match(worker, /\/api\/i18n\/translate/);
   assert.match(worker, /i18n:v9/);
   assert.match(worker, /translationProvider: "local-static-build"/);
@@ -169,7 +169,7 @@ test('SW Bot audits deterministically and translation generation is release-only
   assert.match(worker, /EXCHANGE_CACHE_SECONDS/);
   assert.doesNotMatch(worker, /EXCHANGE.*KV/);
   assert.match(worker, /Fransızca dil paketi/);
-  assert.match(worker, /locales\/fr\.json\?v=2026-09-03\.2/);
+  assert.match(worker, /locales\/fr\.json\?v=2026-09-04\.1/);
   assert.match(worker, /content-security-policy/);
   assert.match(worker, /frame-ancestors 'none'/);
   assert.match(worker, /strict-transport-security/);
@@ -270,7 +270,7 @@ test('versioned locale catalogs cover public, account, support and legal surface
   ];
   for (const language of ['en', 'de', 'es', 'fr', 'ru', 'ar', 'ja']) {
     const catalog = JSON.parse(await read(`locales/${language}.json`));
-    assert.equal(catalog.version, '2026-09-03.2');
+    assert.equal(catalog.version, '2026-09-04.1');
     assert.equal(catalog.sourceLanguage, 'tr');
     assert.equal(catalog.language, language);
     assert.ok(Object.keys(catalog.translations).length >= 1000);

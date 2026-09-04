@@ -11,7 +11,7 @@ const ts = createRequire(new URL('../swcreate-site/package.json', import.meta.ur
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const outputDirectory = join(root, 'locales');
-const version = '2026-09-03.2';
+const version = '2026-09-04.1';
 const languages = ['en', 'de', 'es', 'fr', 'ru', 'ar', 'ja'];
 const sourceFiles = ['index.html', 'privacy.html', 'terms.html', 'app.js', 'app-final.js', 'site-v7.js', 'server-analytics.js'];
 const extractionFiles = new Set(sourceFiles);
@@ -20,6 +20,11 @@ const noGenerate = process.argv.includes('--no-generate');
 const refreshAll = process.argv.includes('--refresh-all');
 const localTranslator = join(root, 'scripts', 'local-i18n-translator.py');
 const localOverrides = JSON.parse(readFileSync(join(root, 'scripts', 'i18n-overrides.json'), 'utf8'));
+const reviewed = JSON.parse(readFileSync(join(root, 'scripts', 'i18n-reviewed.json'), 'utf8'));
+for (const [source, ...values] of reviewed.entries) {
+  if (values.length !== reviewed.languages.length) throw new Error(`Incomplete reviewed translation: ${source}`);
+  reviewed.languages.forEach((language, index) => { localOverrides[language][source] = values[index]; });
+}
 
 const clean = value => String(value || '').replace(/\\n|\\r|\\t/g, ' ').replace(/\s+/g, ' ').trim();
 const decode = value => clean(String(value || '')
@@ -191,6 +196,8 @@ async function main() {
     addActiveRuntimeStrings(file, source, extracted);
   }
   const corpus = corpusParts.join('\n');
+  // Reviewed labels may be assembled dynamically (for example tool counts).
+  for (const [source] of reviewed.entries) extracted.add(clean(source));
   for (const dictionary of Object.values(critical)) {
     for (const source of Object.keys(dictionary)) {
       if (corpus.includes(source)) extracted.add(clean(source));

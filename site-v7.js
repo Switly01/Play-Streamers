@@ -378,7 +378,7 @@
         <div class="ps82-motion-field" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><span></span><span></span></div>
         <div class="ps82-orbits" aria-hidden="true"><i></i><i></i></div>
         <div class="ps8-hero-copy">
-          <span class="ps8-version"><i></i> PLAY STREAMERS WEB · v10.34.0</span>
+          <span class="ps8-version"><i></i> PLAY STREAMERS WEB · v10.35.0</span>
           <h1 id="ps8-title" aria-label="PLAY STREAMERS"><span>PLAY</span><span>STREAMERS</span></h1>
           <h2>Profesyonel Yayıncı Kontrol Platformu</h2>
           <p>Canlı analiz · İçerik planlama · Topluluk · Marka · Play Connect</p>

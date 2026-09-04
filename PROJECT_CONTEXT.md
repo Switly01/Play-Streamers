@@ -2,6 +2,21 @@
 
 ## Güncel geliştirme durumu · 4 Eylül 2026
 
+Site 10.36.0 / Worker 8.10: “Ritim sende.” yedi yabancı dilde hazır kataloğa
+eklendi. İçerik dönüştürmede bağımsız kaynak metin, yayın metnini içeri alma,
+üç paylaşım türü/tümü, 140/280/600 ana metin sınırı ve kopyalama bulunur.
+Emoji kümeleri kesilmez; dil değişince taslak başlıkları ve çağrı cümleleri
+yenilenir. Bu yerel şablon aracı özgün kullanıcı metnini başka bir dile
+çevirmez; arayüz bunu açıkça belirtir. Kaynak ve tercihler hesap bazlı saklanır.
+
+HTML raporu, indirirken seçili dilin tam kataloğunu bekler; yükleme hatasında
+yarım çevrilmiş dosya indirmek yerine hata gösterir. Rapor başlıkları, olay
+türleri ve istatistik bölümleri çevrilir; sayılar/tarihler yerelleştirilir,
+Arapça sağdan sola sunulur. Dahili kullanıcı anahtarları bölüm yoluna eklenmez;
+özgün kullanıcı adları/mesajlar değiştirilmeden ve HTML kaçışıyla korunur.
+Testler: `scripts/site-10-36.test.mjs`; Worker'da yalnız yayın/audit işaretleri
+yenilendi, arka plan ölçüm ve güvenlik davranışı değişmedi.
+
 Site 10.35.0 / Worker 8.9: canlı cron kaydında `exceededCpu` görüldü.
 Kick ölçümü artık ağır SW Bot kaynak taramasıyla aynı çağrıda çalışmaz:
 dakikalık ölçüm, iki dakikalık bağlantı/oturum eşitlemesi ve 15 dakikalık

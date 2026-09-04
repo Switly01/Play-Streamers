@@ -3518,22 +3518,28 @@
     if (/(^|[\s_-])pro($|[\s_-])/.test(raw)) return 1;
     return 0;
   }
-  function createContentDrafts(script, goal, translate = ui) {
+  function createContentDrafts(script, goal, translate = ui, options = {}) {
     const text = String(script || '').replace(/\s+/g, ' ').trim();
     if (!text) return translate('Önce yayın metnine bir içerik ekle.');
-    const short = text.slice(0, 220) + (text.length > 220 ? '…' : '');
-    const teaser = text.split(/[.!?。！？]/u).filter(Boolean)[0]?.slice(0, 120) || short;
+    const limit = [140,280,600].includes(Number(options.length)) ? Number(options.length) : 280;
+    const trim = (value, max) => {
+      const segments = typeof Intl.Segmenter === 'function' ? [...new Intl.Segmenter(options.locale || 'tr', { granularity: 'grapheme' }).segment(value)].map(part => part.segment) : Array.from(value);
+      return segments.length > max ? segments.slice(0, max - 1).join('').trimEnd() + '…' : value;
+    };
+    const short = trim(text, limit);
+    const teaser = trim(text.split(/(?<=[.!?])\s+|[。！？]/u).filter(Boolean)[0] || text, Math.min(limit, 180));
     const suffix = goal ? '\n' + translate('Hedef') + ': ' + goal : '';
-    return [
-      translate('Kısa paylaşım') + '\n' + short + suffix,
-      translate('Yayın duyurusu') + '\n' + translate('Bir sonraki yayında') + ': ' + teaser + suffix,
-      translate('Topluluğa soru') + '\n' + short + '\n' + translate('Bu konuda sen ne düşünüyorsun?')
-    ].join('\n\n──────────\n\n');
+    const drafts = {
+      short: translate('Kısa paylaşım') + '\n' + short + suffix,
+      announcement: translate('Yayın duyurusu') + '\n' + translate('Bir sonraki yayında') + ': ' + teaser + suffix + '\n' + translate('Yayında görüşmek üzere!'),
+      question: translate('Topluluğa soru') + '\n' + short + '\n' + translate('Bu konuda sen ne düşünüyorsun?')
+    };
+    return drafts[options.format] || Object.values(drafts).join('\n\n──────────\n\n');
   }
-  function downloadPlanFile(content, extension, mime) {
+  function downloadPlanFile(content, extension, mime, locale = document.documentElement.lang || 'tr') {
     const url = URL.createObjectURL(new Blob([content], { type: mime + ';charset=utf-8' }));
     const link = document.createElement('a');
-    link.href = url; link.download = 'play-streamers-dashboard-' + (document.documentElement.lang || 'tr') + '-' + new Date().toISOString().slice(0, 10) + '.' + extension;
+    link.href = url; link.download = 'play-streamers-dashboard-' + locale + '-' + new Date().toISOString().slice(0, 10) + '.' + extension;
     document.body.append(link); link.click(); link.remove();
     window.setTimeout(() => URL.revokeObjectURL(url), 2000);
   }
@@ -3544,7 +3550,7 @@
       (Array.isArray(events) ? events : Object.values(events || {})).forEach(event => rows.push([
         translate(labels[kind] || kind), event.name || '—',
         Number.isFinite(Number(event.at)) ? new Date(Number(event.at)).toLocaleString(locale) : '—',
-        event.amount ?? event.count ?? event.months ?? '—', event.currency || '', event.sourceName || '', event.message || ''
+        event.amount != null || event.count != null || event.months != null ? new Intl.NumberFormat(locale).format(Number(event.amount ?? event.count ?? event.months)) : '—', event.currency || '', event.sourceName || '', event.message || ''
       ]));
     });
     const stats = [];
@@ -3555,13 +3561,17 @@
         else stats.push([path.join(' / '), node.name, new Intl.NumberFormat(locale).format(node.total), node.currency || '']);
         return;
       }
-      Object.entries(node).forEach(([key, value]) => walk(value, [...path, translate(labels[key] || key)]));
+      Object.entries(node).forEach(([key, value]) => walk(value, labels[key] ? [...path, translate(labels[key])] : path));
     };
     walk(current.stats || {}, []);
     const table = (headers, data) => '<table><thead><tr>' + headers.map(label => '<th>' + esc(translate(label)) + '</th>').join('') + '</tr></thead><tbody>' + (data.length ? data.map(row => '<tr>' + row.map(value => '<td>' + esc(value) + '</td>').join('') + '</tr>').join('') : '<tr><td colspan="' + headers.length + '">' + esc(translate('Henüz veri yok.')) + '</td></tr>') + '</tbody></table>';
-    return '<!doctype html><html lang="' + esc(locale) + '"><meta charset="utf-8"><meta name="viewport" content="width=device-width"><title>Play Streamers</title><style>body{font:15px/1.65 system-ui;margin:32px;color:#20242b;background:#fff}h1{font-size:28px}h2{margin-top:32px}table{border-collapse:collapse;width:100%;margin:16px 0}th,td{padding:12px;border:1px solid #ccd1da;text-align:start;vertical-align:top;overflow-wrap:anywhere}th{background:#eef1f5}tr:nth-child(even){background:#fafbfc}p{color:#535d6b}@media print{body{margin:10mm}tr{break-inside:avoid}}</style><h1>Play Streamers · ' + esc(translate('Dashboard raporu')) + '</h1><p>' + esc(translate('Oluşturulma zamanı')) + ': ' + esc(new Date().toLocaleString(locale)) + '</p><p>' + esc(translate('Tutarlar kayıtlı para birimleriyle gösterilir. Bu dosyada parola ve oturum anahtarı bulunmaz.')) + '</p><h2>' + esc(translate('Olaylar')) + '</h2>' + table(['Tür', 'Kullanıcı', 'Tarih ve saat', 'Değer', 'Para birimi', 'Platform', 'Mesaj'], rows) + '<h2>' + esc(translate('Yayıncı istatistikleri')) + '</h2>' + table(['Bölüm', 'Kullanıcı', 'Değer', 'Para birimi'], stats) + '</html>';
+    return '<!doctype html><html lang="' + esc(locale) + '" dir="' + (locale === 'ar' ? 'rtl' : 'ltr') + '"><meta charset="utf-8"><meta name="viewport" content="width=device-width"><title>Play Streamers</title><style>body{font:15px/1.65 system-ui;margin:32px;color:#20242b;background:#fff}h1{font-size:28px}h2{margin-top:32px}table{border-collapse:collapse;width:100%;margin:16px 0}th,td{padding:12px;border:1px solid #ccd1da;text-align:start;vertical-align:top;overflow-wrap:anywhere}th{background:#eef1f5}tr:nth-child(even){background:#fafbfc}p{color:#535d6b}@media print{body{margin:10mm}tr{break-inside:avoid}}</style><h1>Play Streamers · ' + esc(translate('Dashboard raporu')) + '</h1><p>' + esc(translate('Oluşturulma zamanı')) + ': ' + esc(new Date().toLocaleString(locale)) + '</p><p>' + esc(translate('Tutarlar kayıtlı para birimleriyle gösterilir. Bu dosyada parola ve oturum anahtarı bulunmaz.')) + ' ' + esc(translate('Kullanıcı adları ve özgün mesajlar değiştirilmez.')) + '</p><h2>' + esc(translate('Olaylar')) + '</h2>' + table(['Tür', 'Kullanıcı', 'Tarih ve saat', 'Değer', 'Para birimi', 'Platform', 'Mesaj'], rows) + '<h2>' + esc(translate('Yayıncı istatistikleri')) + '</h2>' + table(['Bölüm', 'Kullanıcı', 'Değer', 'Para birimi'], stats) + '</html>';
   }
-  function downloadPlanReport(current) { downloadPlanFile(buildPlanReport(current), 'html', 'text/html'); }
+  async function downloadPlanReport(current) {
+    const locale = currentInterfaceLanguage();
+    const translate = typeof window.psGetInterfaceTranslator === 'function' ? await window.psGetInterfaceTranslator(locale) : ui;
+    downloadPlanFile(buildPlanReport(current, translate, locale), 'html', 'text/html', locale);
+  }
   function showPlanTools() { window.ps119CloseRatePanel?.();
     const rank = currentPlanRank();
     const owner = String(state().settings?.user?.id || 'guest');
@@ -3576,7 +3586,7 @@
     const snapshotLabel = () => saved.snapshotAt ? ui('Son kayıt') + ': ' + new Date(saved.snapshotAt).toLocaleString(document.documentElement.lang || 'tr') : ui('Henüz anlık görüntü yok.');
     const lock = level => rank < level ? ' locked' : '';
     const disabled = level => rank < level ? ' disabled aria-disabled="true"' : '';
-    const layer = showDialog('ps115PlanTools', localizeInterfaceMarkup(`<button class="ps47-dialog-close" type="button" aria-label="Plan araçlarını kapat">×</button><span class="ps44-panel-title">WEB PLAN ARAÇLARI</span><h2>Yayın çalışma setin</h2><p class="ps47-lead">Tarayıcıda çalışan araçlar hesabına özel olarak bu cihazda saklanır. Plan yetkisi olmayan araçlar açıkça kilitli görünür.</p><div class="ps115-plan-grid"><article><span>FREE</span><h3>Hızlı notlar</h3><textarea id="ps115QuickNotes" data-no-translate placeholder="Yayın sırasında unutmaman gerekenleri yaz...">${esc(saved.notes || '')}</textarea></article><article><span>FREE</span><h3>Hedef panosu</h3><label>Hedef adı<input id="ps115GoalName" data-no-translate value="${esc(saved.goalName || '')}" placeholder="Örn. 250 takipçi"></label><label>İlerleme<input id="ps115GoalValue" type="number" min="0" data-no-translate value="${esc(saved.goalValue || '0')}"></label></article><article class="${lock(1)}">${rank < 1 ? '<small class="ps135-plan-lock">KİLİTLİ</small>' : ''}<span>PRO</span><h3>Yayın metni + teleprompter</h3><textarea id="ps115StreamScript" data-no-translate placeholder="Açılış, bölüm geçişleri ve kapanış metnin..."${disabled(1)}>${esc(saved.script || '')}</textarea></article><article class="${lock(1)}">${rank < 1 ? '<small class="ps135-plan-lock">KİLİTLİ</small>' : ''}<span>PRO</span><h3>Veri dışa aktarma</h3><p>Olayları ve istatistikleri seçili dilde, okunabilir tablolar içeren bir HTML raporu olarak indir.</p><button id="ps115Export" type="button"${disabled(1)}>Dashboard verisini indir</button></article><article class="${lock(2)}">${rank < 2 ? '<small class="ps135-plan-lock">KİLİTLİ</small>' : ''}<span>PRODUCT PRO</span><h3>İçerik dönüştürme</h3><p>Yayın metninden üç paylaşım taslağı oluştur. Başlıklar seçili dilde hazırlanır; yazdığın içerik korunur.</p><button id="ps115Repurpose" type="button"${disabled(2)}>Taslak oluştur</button><textarea id="ps115RepurposeOutput" data-no-translate readonly placeholder="Oluşturulan taslak burada görünür.">${esc(saved.repurpose || '')}</textarea></article><article class="${lock(2)}">${rank < 2 ? '<small class="ps135-plan-lock">KİLİTLİ</small>' : ''}<span>PRODUCT PRO</span><h3>Anlık görüntü</h3><p>Anlık görüntü bu tarayıcının yerel depolamasında, hesabına özel kaydedilir. Bilgisayarına dosya indirilmez; tarayıcı verilerini temizlersen silinir.</p><button id="ps115Snapshot" type="button"${disabled(2)}>Anlık görüntü kaydet</button><small id="ps115SnapshotStatus">${esc(snapshotLabel())}</small></article></div><div class="ps44-dialog-actions"><button class="ps44-cancel" type="button">Kapat</button><button class="ps44-confirm" id="ps115SaveTools" type="button">Çalışmayı kaydet</button></div>`));
+    const layer = showDialog('ps115PlanTools', localizeInterfaceMarkup(`<button class="ps47-dialog-close" type="button" aria-label="Plan araçlarını kapat">×</button><span class="ps44-panel-title">WEB PLAN ARAÇLARI</span><h2>Yayın çalışma setin</h2><p class="ps47-lead">Tarayıcıda çalışan araçlar hesabına özel olarak bu cihazda saklanır. Plan yetkisi olmayan araçlar açıkça kilitli görünür.</p><div class="ps115-plan-grid"><article><span>FREE</span><h3>Hızlı notlar</h3><textarea id="ps115QuickNotes" data-no-translate placeholder="Yayın sırasında unutmaman gerekenleri yaz...">${esc(saved.notes || '')}</textarea></article><article><span>FREE</span><h3>Hedef panosu</h3><label>Hedef adı<input id="ps115GoalName" data-no-translate value="${esc(saved.goalName || '')}" placeholder="Örn. 250 takipçi"></label><label>İlerleme<input id="ps115GoalValue" type="number" min="0" data-no-translate value="${esc(saved.goalValue || '0')}"></label></article><article class="${lock(1)}">${rank < 1 ? '<small class="ps135-plan-lock">KİLİTLİ</small>' : ''}<span>PRO</span><h3>Yayın metni + teleprompter</h3><textarea id="ps115StreamScript" data-no-translate placeholder="Açılış, bölüm geçişleri ve kapanış metnin..."${disabled(1)}>${esc(saved.script || '')}</textarea></article><article class="${lock(1)}">${rank < 1 ? '<small class="ps135-plan-lock">KİLİTLİ</small>' : ''}<span>PRO</span><h3>Veri dışa aktarma</h3><p>Olayları ve istatistikleri seçili dilde, okunabilir tablolar içeren bir HTML raporu olarak indir.</p><button id="ps115Export" type="button"${disabled(1)}>Dashboard verisini indir</button><small id="ps136ExportStatus" aria-live="polite"></small></article><article class="${lock(2)}">${rank < 2 ? '<small class="ps135-plan-lock">KİLİTLİ</small>' : ''}<span>PRODUCT PRO</span><h3>İçerik dönüştürme</h3><p>Kaynak metninden paylaşım, yayın duyurusu veya topluluk sorusu hazırla. Başlıklar ve çağrı cümleleri seçili dile uyar; kaynak metnin özgün dilinde korunur.</p><label>Kaynak metin<textarea id="ps136DraftSource" data-no-translate${disabled(2)}>${esc(saved.draftSource || saved.script || '')}</textarea></label><button id="ps136UseScript" type="button"${disabled(2)}>Yayın metnini kullan</button><label>Paylaşım türü<select id="ps136DraftFormat"${disabled(2)}><option value="all">Tüm taslaklar</option><option value="short">Kısa paylaşım</option><option value="announcement">Yayın duyurusu</option><option value="question">Topluluğa soru</option></select></label><label>Ana metin sınırı<select id="ps136DraftLength"${disabled(2)}><option value="140">140</option><option value="280" selected>280</option><option value="600">600</option></select></label><button id="ps115Repurpose" type="button"${disabled(2)}>Taslak oluştur</button><button id="ps136CopyDraft" type="button" disabled>Taslağı kopyala</button><small id="ps136DraftStatus" aria-live="polite"></small><textarea id="ps115RepurposeOutput" data-no-translate readonly placeholder="Oluşturulan taslak burada görünür.">${esc(saved.repurpose || '')}</textarea></article><article class="${lock(2)}">${rank < 2 ? '<small class="ps135-plan-lock">KİLİTLİ</small>' : ''}<span>PRODUCT PRO</span><h3>Anlık görüntü</h3><p>Anlık görüntü bu tarayıcının yerel depolamasında, hesabına özel kaydedilir. Bilgisayarına dosya indirilmez; tarayıcı verilerini temizlersen silinir.</p><button id="ps115Snapshot" type="button"${disabled(2)}>Anlık görüntü kaydet</button><small id="ps115SnapshotStatus">${esc(snapshotLabel())}</small></article></div><div class="ps44-dialog-actions"><button class="ps44-cancel" type="button">Kapat</button><button class="ps44-confirm" id="ps115SaveTools" type="button">Çalışmayı kaydet</button></div>`));
     $('.ps44-dialog', layer)?.classList.add('ps115-plan-dialog');
     const closeTools = () => closeDialog(layer);
     $$('.ps47-dialog-close,.ps44-cancel', layer).forEach(button => button.onclick = closeTools);
@@ -3587,6 +3597,9 @@
       goalValue: $('#ps115GoalValue', layer)?.value || '0',
       script: $('#ps115StreamScript', layer)?.value || '',
       repurpose: $('#ps115RepurposeOutput', layer)?.value || '',
+      draftSource: $('#ps136DraftSource', layer)?.value || '',
+      draftFormat: $('#ps136DraftFormat', layer)?.value || 'all',
+      draftLength: $('#ps136DraftLength', layer)?.value || '280',
     });
     $('#ps115SaveTools', layer).onclick = () => {
       saved = readTools();
@@ -3595,20 +3608,41 @@
       window.setTimeout(() => { if (button?.isConnected) button.textContent = ui('Çalışmayı kaydet'); }, 1100);
     };
     const exportButton = $('#ps115Export', layer);
-    if (exportButton && rank >= 1) exportButton.onclick = () => {
-      downloadPlanReport(state());
+    if (exportButton && rank >= 1) exportButton.onclick = async () => {
+      exportButton.disabled = true;
+      $('#ps136ExportStatus', layer).textContent = '';
+      try { await downloadPlanReport(state()); }
+      catch (error) { $('#ps136ExportStatus', layer).textContent = ui(error.message || 'Dil paketi yüklenemedi. Yeniden dene.'); }
+      finally { exportButton.disabled = false; }
     };
     const repurposeButton = $('#ps115Repurpose', layer);
-    if (repurposeButton && rank >= 2) repurposeButton.onclick = () => {
-      const script = String($('#ps115StreamScript', layer)?.value || saved.script || '').trim();
+    $('#ps136DraftFormat', layer).value = ['all','short','announcement','question'].includes(saved.draftFormat) ? saved.draftFormat : 'all';
+    $('#ps136DraftLength', layer).value = ['140','280','600'].includes(String(saved.draftLength)) ? String(saved.draftLength) : '280';
+    const generateDraft = () => {
+      if (rank < 2) return;
+      const script = String($('#ps136DraftSource', layer)?.value || '').trim();
       const goal = String($('#ps115GoalName', layer)?.value || '').trim();
-      const output = createContentDrafts(script, goal);
+      const output = createContentDrafts(script, goal, ui, { format: $('#ps136DraftFormat', layer).value, length: $('#ps136DraftLength', layer).value, locale: currentInterfaceLanguage() });
       $('#ps115RepurposeOutput', layer).value = output;
+      $('#ps115RepurposeOutput', layer).dir = currentInterfaceLanguage() === 'ar' ? 'rtl' : 'ltr';
+      $('#ps136CopyDraft', layer).disabled = !script;
+      $('#ps136DraftStatus', layer).textContent = script ? ui('Karakter') + ': ' + new Intl.NumberFormat(currentInterfaceLanguage()).format(Array.from(output).length) : '';
       if (script) {
         saved = { ...readTools(), repurpose: output, repurposeLanguage: document.documentElement.lang || 'tr' };
         localStorage.setItem(storageKey, JSON.stringify(saved));
-      } else $('#ps115StreamScript', layer)?.focus();
+      } else $('#ps136DraftSource', layer)?.focus();
     };
+    if (repurposeButton && rank >= 2) {
+      repurposeButton.onclick = generateDraft;
+      $('#ps136UseScript', layer).onclick = () => { $('#ps136DraftSource', layer).value = $('#ps115StreamScript', layer)?.value || ''; generateDraft(); };
+      for (const selector of ['#ps136DraftFormat','#ps136DraftLength']) $(selector, layer).onchange = () => { if ($('#ps136DraftSource', layer).value.trim()) generateDraft(); };
+      $('#ps136CopyDraft', layer).onclick = async () => {
+        try { await navigator.clipboard.writeText($('#ps115RepurposeOutput', layer).value); $('#ps136DraftStatus', layer).textContent = ui('Kopyalandı'); }
+        catch { $('#ps115RepurposeOutput', layer).focus(); $('#ps115RepurposeOutput', layer).select(); $('#ps136DraftStatus', layer).textContent = ui('Metni seçip kopyalayabilirsin.'); }
+      };
+      layer.psRefreshContentDrafts = () => { if (!layer.hidden && $('#ps136DraftSource', layer).value.trim() && $('#ps115RepurposeOutput', layer).value) generateDraft(); };
+      layer.psRefreshContentDrafts();
+    }
     const snapshotButton = $('#ps115Snapshot', layer);
     if (snapshotButton && rank >= 2) snapshotButton.onclick = () => {
       saved = { ...readTools(), snapshotAt: Date.now(), snapshot: { totals: state().totals || {}, stats: state().stats || {} } };
@@ -4205,6 +4239,7 @@
   window.addEventListener('ps:locale-will-change', () => { localeSurfaceSnapshot = captureLocaleSurface(); });
   window.addEventListener('ps:locale-change', () => {
     const snapshot = localeSurfaceSnapshot || captureLocaleSurface();
+    $('#ps115PlanTools')?.psRefreshContentDrafts?.();
     window.setTimeout(() => {
       refreshLocalizedDynamicSurfaces();
       restoreLocaleSurface(snapshot);

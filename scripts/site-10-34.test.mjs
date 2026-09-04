@@ -59,7 +59,7 @@ test('readable report exports localized tables without session information or ex
   const c = vm.createContext({ esc: value => String(value).replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;') });
   vm.runInContext(declaration(final, 'buildPlanReport'), c);
   const report = c.buildPlanReport({ settings: { userSession: 'MUST_NOT_EXPORT' }, events: { donations: [{ name: 'Viewer', at: 1, amount: 12, currency: 'EUR', message: '<script>alert(1)</script>' }] }, stats: {} }, text => 'FR:' + text, 'fr');
-  assert.match(report, /<html lang="fr">/);
+  assert.match(report, /<html lang="fr" dir="ltr">/);
   assert.match(report, /FR:Dashboard raporu/);
   assert.match(report, /FR:Kullanıcı/);
   assert.match(report, /&lt;script&gt;/);

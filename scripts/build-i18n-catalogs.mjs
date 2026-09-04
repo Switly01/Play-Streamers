@@ -11,7 +11,7 @@ const ts = createRequire(new URL('../swcreate-site/package.json', import.meta.ur
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const outputDirectory = join(root, 'locales');
-const version = '2026-09-04.1';
+const version = '2026-09-04.2';
 const languages = ['en', 'de', 'es', 'fr', 'ru', 'ar', 'ja'];
 const sourceFiles = ['index.html', 'privacy.html', 'terms.html', 'app.js', 'app-final.js', 'site-v7.js', 'server-analytics.js'];
 const extractionFiles = new Set(sourceFiles);

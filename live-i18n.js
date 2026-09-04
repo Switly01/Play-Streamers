@@ -1,5 +1,5 @@
 const SUPPORTED = new Set(["tr", "en", "de", "es", "fr", "ru", "ar", "ja"]);
-const CATALOG_VERSION = "2026-09-04.1";
+const CATALOG_VERSION = "2026-09-04.2";
 const catalogPromises = new Map();
 const renderedCatalogs = new Map();
 const COUNTRY_LOCALES = Object.freeze({
@@ -929,6 +929,11 @@ if (typeof window !== "undefined" && document.body && !location.protocol.startsW
     const initialCatalog = await loadCatalog(initialLanguage);
     let liveI18n = installLiveI18n({ catalog: initialCatalog });
     window.psLiveI18n = liveI18n;
+    window.psGetInterfaceTranslator = async locale => {
+      const catalog = await loadCatalog(locale);
+      if (locale !== 'tr' && !Object.keys(catalog).length) throw new Error('Dil paketi yüklenemedi. Yeniden dene.');
+      return createCatalogLookup({ ...(critical[locale] || {}), ...catalog });
+    };
     window.psTranslateInterface = value => liveI18n.translate(value);
     window.psSetLocale = async (nextLanguage, { source = "user" } = {}) => {
       const language = String(nextLanguage || "").toLowerCase();

@@ -4519,6 +4519,8 @@ body.ps-v9 #ps44HomeConnection .ps44-play-connect img { width:30px!important; he
   resize:vertical;
 }
 #ps115PlanTools .ps115-plan-grid textarea { min-height:96px; }
+#ps115PlanTools .ps115-plan-grid select { width:100%;min-height:44px;padding:10px 12px;border:1px solid #ffffff30;border-radius:11px;background:#111;color:#fff;font:inherit; }
+#ps115PlanTools #ps136CopyDraft:disabled { opacity:.45;cursor:not-allowed; }
 #ps115PlanTools .ps115-plan-grid button { min-height:41px; border:1px solid rgba(255,255,255,.26); border-radius:11px; color:#070707; background:#f4f4f1; font-size:10px; font-weight:900; }
 #ps115PlanTools .ps115-plan-grid article.locked { opacity:.52; }
 #ps115PlanTools .ps115-plan-grid article.locked::after { content:none; }

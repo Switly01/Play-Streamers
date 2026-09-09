@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'nonce-play-streamers-desktop' https://challenges.cloudflare.com; frame-src https://challenges.cloudflare.com; connect-src https://challenges.cloudflare.com; style-src 'nonce-play-streamers-desktop'; img-src data:; base-uri 'none'; form-action 'none'">
+  <title>SW Identity doğrulaması</title>
+  <style nonce="play-streamers-desktop">
+    :root{color-scheme:dark}*{box-sizing:border-box}html,body{width:100%;min-height:78px;margin:0;overflow:hidden;background:transparent;color:#aab4c7;font:700 10px/1.35 "Segoe UI",sans-serif}body{display:grid;place-items:center}.shell{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:10px;width:100%;min-height:78px;padding:6px 8px;border:1px solid #ffffff12;border-radius:12px;background:linear-gradient(120deg,#ffffff08,#06091060)}#challenge{display:grid;min-width:0;min-height:65px;place-items:center}.state{display:grid;gap:5px;min-width:94px;padding-right:5px}.state b{color:#e7edf8;font-size:9px;letter-spacing:.08em}.state span{color:#707c91;font-size:8px}.state i{width:7px;height:7px;border-radius:50%;background:#7c8798;box-shadow:0 0 12px #7c879866}.state.ready i{background:#53fc88;box-shadow:0 0 12px #53fc8888}.state.error i{background:#ff526b;box-shadow:0 0 12px #ff526b88}@media(max-width:390px){.shell{grid-template-columns:1fr}.state{display:none}}
+  </style>
+</head>
+<body>
+  <main class="shell"><div id="challenge"></div><div id="state" class="state"><i></i><b>SW IDENTITY</b><span>Kontrol hazırlanıyor</span></div></main>
+  <script nonce="play-streamers-desktop">
+    (()=>{
+      const params=new URLSearchParams(location.search);
+      const flowState=String(params.get('state')||'');
+      const requestedOrigin=String(params.get('parent_origin')||'');
+      const allowedOrigins=new Set(['http://tauri.localhost','https://tauri.localhost','http://localhost:1420','http://127.0.0.1:1420','http://localhost:4178','http://127.0.0.1:4178']);
+      const state=document.getElementById('state');
+      const label=state.querySelector('span');
+      if(!/^[a-f0-9]{48}$/i.test(flowState)||!allowedOrigins.has(requestedOrigin)){state.classList.add('error');label.textContent='İstek doğrulanamadı';return}
+      const send=token=>parent.postMessage({type:'ps-desktop-turnstile',state:flowState,token},requestedOrigin);
+      window.psDesktopTurnstile=()=>{
+        if(!window.turnstile)return;
+        window.turnstile.render('#challenge',{sitekey:'0x4AAAAAAD4Mr0GZFyPQkCSj',theme:'dark',size:'flexible',action:'sw-auth',callback:token=>{state.className='state ready';label.textContent='Doğrulandı';send(token)},'expired-callback':()=>{state.className='state';label.textContent='Yeniden doğrulanıyor';send('')},'error-callback':()=>{state.className='state error';label.textContent='Kontrol yüklenemedi';send('')}})
+      };
+    })();
+  </script>
+  <script nonce="play-streamers-desktop" src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit&amp;onload=psDesktopTurnstile" async defer></script>
+</body>
+</html>

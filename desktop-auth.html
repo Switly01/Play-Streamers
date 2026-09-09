@@ -17,6 +17,8 @@
       const params=new URLSearchParams(location.search);
       const flowState=String(params.get('state')||'');
       const requestedOrigin=String(params.get('parent_origin')||'');
+      const requestedLanguage=String(params.get('lang')||'tr').toLowerCase();
+      const language=['tr','en','de','es','fr','ru','ar','ja'].includes(requestedLanguage)?requestedLanguage:'tr';
       const allowedOrigins=new Set(['http://tauri.localhost','https://tauri.localhost','http://localhost:1420','http://127.0.0.1:1420','http://localhost:4178','http://127.0.0.1:4178']);
       const state=document.getElementById('state');
       const label=state.querySelector('span');
@@ -24,7 +26,7 @@
       const send=token=>parent.postMessage({type:'ps-desktop-turnstile',state:flowState,token},requestedOrigin);
       window.psDesktopTurnstile=()=>{
         if(!window.turnstile)return;
-        window.turnstile.render('#challenge',{sitekey:'0x4AAAAAAD4Mr0GZFyPQkCSj',theme:'dark',size:'flexible',action:'sw-auth',callback:token=>{state.className='state ready';label.textContent='Doğrulandı';send(token)},'expired-callback':()=>{state.className='state';label.textContent='Yeniden doğrulanıyor';send('')},'error-callback':()=>{state.className='state error';label.textContent='Kontrol yüklenemedi';send('')}})
+        window.turnstile.render('#challenge',{sitekey:'0x4AAAAAAD4Mr0GZFyPQkCSj',theme:'dark',size:'flexible',language,action:'sw-auth',callback:token=>{state.className='state ready';label.textContent='Doğrulandı';send(token)},'expired-callback':()=>{state.className='state';label.textContent='Yeniden doğrulanıyor';send('')},'error-callback':()=>{state.className='state error';label.textContent='Kontrol yüklenemedi';send('')}})
       };
     })();
   </script>

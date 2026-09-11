@@ -67,6 +67,11 @@
     }
 
     const url = new URL(location.href);
+    const recoveredRoute = url.searchParams.get('ps_route');
+    if (url.pathname === '/' && recoveredRoute && /^\/@[a-z0-9_-]{2,40}(?:[?#].*)?$/i.test(recoveredRoute)) {
+      history.replaceState(null, '', recoveredRoute);
+      url.href = location.href;
+    }
     if (hasOAuthReturn(url)) {
       scheduleRoute(300);
       return;
@@ -78,6 +83,15 @@
       replaceRoute(`/account?mode=${mode}`);
       path = '/account';
     }
+
+    const creatorMatch = path.match(/^\/@([a-z0-9_-]{2,40})$/i);
+    if (creatorMatch) {
+      window.ps125ReleaseFirstPaint?.();
+      window.psCreatorPage?.render(creatorMatch[1].toLowerCase());
+      setTitle(path);
+      return;
+    }
+    window.psCreatorPage?.destroy();
 
     const signedIn = api.hasSession();
     if (PRIVATE_ROUTES.has(path) && !signedIn) {

@@ -61,7 +61,14 @@
       root.replaceChildren();
       const shell = node('div', 'pscp-shell');
       const brand = node('a', 'pscp-brand'); brand.href = '/'; brand.append(node('span', '', 'PS'), node('strong', '', 'PLAY STREAMERS'), node('small', '', `@${page.slug || slug}`));
-      const intro = node('header', 'pscp-intro'); intro.append(node('span', 'pscp-avatar', String(page.title || 'Y').slice(0,1).toLocaleUpperCase('tr-TR')));
+      const intro = node('header', 'pscp-intro');
+      const avatar = node('span', 'pscp-avatar', String(page.title || 'Y').slice(0,1).toLocaleUpperCase('tr-TR'));
+      const avatarUrl = safeLink(page.avatarUrl);
+      if (avatarUrl) {
+        const image = node('img'); image.src = avatarUrl; image.alt = 'Yayıncı profil resmi';
+        image.addEventListener('error', () => image.remove(), { once:true }); avatar.append(image);
+      }
+      intro.append(avatar);
       const copy = node('div'); copy.append(node('h1', '', page.title || 'Yayıncı sayfası'), node('p', '', page.bio || '')); intro.append(copy);
       const grid = node('section', 'pscp-grid');
       (Array.isArray(page.blocks) ? page.blocks : []).filter(block => block?.visible !== false && allowed.has(block?.type)).slice(0,24).forEach(block => grid.append(card(block, payload.live)));

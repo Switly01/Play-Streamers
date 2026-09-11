@@ -408,6 +408,11 @@ export default {
         return desktopCreatorPage(request, env);
       }
 
+      const publicCreatorAvatarMatch = url.pathname.match(/^\/api\/public\/creator-pages\/([a-z0-9_-]{2,40})\/avatar$/);
+      if (publicCreatorAvatarMatch && request.method === "GET") {
+        return publicCreatorPageAvatar(request, env, publicCreatorAvatarMatch[1]);
+      }
+
       const publicCreatorPageMatch = url.pathname.match(/^\/api\/public\/creator-pages\/([a-z0-9_-]{2,40})$/);
       if (publicCreatorPageMatch && request.method === "GET") {
         return publicCreatorPage(request, env, publicCreatorPageMatch[1]);
@@ -2585,7 +2590,7 @@ async function publicCreatorPage(request, env, slug) {
   const recentlyObserved = Number(row.lastObservedAt || 0) >= Date.now() - 3 * 60_000;
   return apiResponse(request, {
     ok: true,
-    page: document,
+    page: { ...document, avatarUrl: `${API_ORIGIN}/api/public/creator-pages/${slug}/avatar` },
     publishedAt: Number(row.publishedAt || 0),
     live: {
       status: row.status === "live" && recentlyObserved ? "live" : "offline",
@@ -2593,6 +2598,34 @@ async function publicCreatorPage(request, env, slug) {
       currentViewers: row.status === "live" && recentlyObserved ? Math.max(0, Number(row.currentViewers || 0)) : 0,
     },
   });
+}
+
+async function publicCreatorPageAvatar(request, env, slug) {
+  await ensureDesktopPlatformSchema(env);
+  const row = await env.DB.prepare(`SELECT u.sw_identity_user_id AS swIdentityUserId, u.avatar_url AS avatarUrl
+    FROM ps_creator_pages p JOIN users u ON u.id = p.user_id
+    WHERE p.slug = ?1 AND p.is_published = 1 LIMIT 1`).bind(slug).first();
+  if (!row) return apiResponse(request, { error: "Yayıncı sayfası bulunamadı." }, 404);
+  const identityUserId = String(row.swIdentityUserId || "").trim();
+  if (/^[A-Za-z0-9_-]{8,128}$/.test(identityUserId) && env.SW_PRODUCT_SSO_SECRET) {
+    const response = await fetchExternal(`${SW_IDENTITY_ORIGIN}/api/internal/account/avatar`, {
+      method: "GET",
+      headers: { authorization: `Bearer ${env.SW_PRODUCT_SSO_SECRET}`, "x-sw-identity-user-id": identityUserId },
+    }, { operation: "public-creator-avatar", retries: 1 }).catch(() => null);
+    const contentType = String(response?.headers?.get("content-type") || "").toLowerCase();
+    if (response?.ok && /^image\/(?:png|jpeg|webp)(?:;|$)/.test(contentType)) {
+      return new Response(response.body, { status: 200, headers: {
+        "content-type": contentType,
+        "cache-control": "public, max-age=300",
+        "x-content-type-options": "nosniff",
+        "cross-origin-resource-policy": "cross-origin",
+        "content-security-policy": "default-src 'none'; frame-ancestors 'none'; base-uri 'none'",
+      } });
+    }
+  }
+  const legacyAvatar = creatorPageUrl(row.avatarUrl);
+  if (legacyAvatar) return Response.redirect(legacyAvatar, 302);
+  return new Response(null, { status: 404, headers: { "cache-control": "public, max-age=60", "x-content-type-options": "nosniff" } });
 }
 
 async function desktopStreamSessions(request, env) {

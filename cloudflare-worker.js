@@ -28,7 +28,10 @@ const ALLOWED_FRONTEND_ORIGINS = new Set([
 ]);
 const ALLOWED_DESKTOP_ORIGINS = new Set([
   "playstreamers://app",
+  "http://localhost:1420",
+  "http://127.0.0.1:1420",
   "http://localhost:4178",
+  "http://127.0.0.1:4178",
   "http://tauri.localhost",
   "https://tauri.localhost",
 ]);
@@ -78,8 +81,8 @@ const DONATE_OAUTH_PROVIDERS = Object.freeze({
     clientSecretVariable: "TIPEEESTREAM_CLIENT_SECRET",
   }),
 });
-const CURRENT_RELEASE_VERSION = "8.10";
-const CURRENT_RELEASE_PUBLISHED_AT = "2026-09-04T11:27:00Z";
+const CURRENT_RELEASE_VERSION = "8.13";
+const CURRENT_RELEASE_PUBLISHED_AT = "2026-09-09T19:15:00Z";
 const EXCHANGE_CURRENCIES = Object.freeze(["EUR", "TRY", "USD", "RUB", "SAR", "JPY"]);
 const EXCHANGE_CACHE_SECONDS = 5 * 60;
 const SW_IDENTITY_ORIGIN = "https://api.swcreate.com";
@@ -108,9 +111,23 @@ const PLAY_STREAMERS_FEATURES = Object.freeze([
   ["media-kit", "product-pro"], ["supporter-map", "product-pro"],
   ["revenue-cockpit", "product-pro"], ["monetization-gates", "product-pro"],
   ["snapshots", "product-pro"],
+  ["creator-wrapped", "product-pro"], ["moment-map", "product-pro"],
+  ["record-center", "pro"], ["comparison-arena", "pro"],
+  ["growth-lab", "product-pro"], ["scenario-simulator", "product-pro"],
+  ["sponsor-value", "product-pro"], ["sponsor-proof", "product-pro"],
+  ["payout-reconciliation", "product-pro"], ["invoice-desk", "pro"],
+  ["contract-risk-map", "product-pro"], ["sponsor-conflict-calendar", "product-pro"],
+  ["negotiation-memory", "product-pro"], ["stream-tech-doctor", "pro"],
+  ["settings-restore-point", "product-pro"], ["privacy-shield", "product-pro"],
+  ["account-security-center", "pro"], ["platform-migration-pack", "product-pro"],
+  ["rights-evidence-vault", "product-pro"], ["asset-expiry-radar", "pro"],
+  ["time-profitability", "product-pro"], ["channel-change-log", "pro"],
+  ["content-fatigue-meter", "product-pro"], ["emergency-file", "pro"],
+  ["payout-calendar", "pro"], ["reserve-plan", "pro"],
+  ["creator-page", "free"],
+  ["creator-career-file", "product-pro"], ["brand-file-quality", "pro"],
 ]);
 const PLAN_TIER_RANK = Object.freeze({ free: 0, pro: 1, "product-pro": 2 });
-
 const KICK_OAUTH = "https://id.kick.com";
 const KICK_API = "https://api.kick.com";
 const KICK_SCOPES = "user:read channel:read events:subscribe kicks:read";
@@ -312,22 +329,26 @@ export default {
           version: CURRENT_RELEASE_VERSION,
           identityProvider: "sw-identity",
           turnstileEnabled: isTurnstileEnabled(env),
-          aiEnabled: Boolean(env.AI || env.OPENAI_API_KEY),
+          aiEnabled: false,
           translationProvider: "local-static-build",
           liveTranslationEnabled: false,
         });
       }
 
       if (url.pathname === "/api/sw-identity/login" && request.method === "POST") {
-        return proxySwIdentityCredentialRequest(request, "login");
+        return proxySwIdentityCredentialRequest(request, "login", env);
       }
 
       if (url.pathname === "/api/sw-identity/register" && request.method === "POST") {
-        return proxySwIdentityCredentialRequest(request, "register");
+        return proxySwIdentityCredentialRequest(request, "register", env);
       }
 
       if (url.pathname === "/api/sw-identity/two-factor/verify" && request.method === "POST") {
-        return proxySwIdentityCredentialRequest(request, "two-factor/verify");
+        return proxySwIdentityCredentialRequest(request, "two-factor/verify", env);
+      }
+
+      if (url.pathname === "/api/sw-identity/remembered" && request.method === "POST") {
+        return proxySwIdentityCredentialRequest(request, "remembered", env);
       }
 
       if (LEGACY_PLAY_STREAMERS_AUTH_PATHS.has(url.pathname)) {
@@ -383,12 +404,26 @@ export default {
         return desktopFeatureSettings(request, env);
       }
 
+      if (url.pathname === "/api/platform/creator-page" && ["GET", "PUT"].includes(request.method)) {
+        return desktopCreatorPage(request, env);
+      }
+
+      const publicCreatorPageMatch = url.pathname.match(/^\/api\/public\/creator-pages\/([a-z0-9_-]{2,40})$/);
+      if (publicCreatorPageMatch && request.method === "GET") {
+        return publicCreatorPage(request, env, publicCreatorPageMatch[1]);
+      }
+
       if (url.pathname === "/api/platform/stream-sessions" && ["GET", "POST"].includes(request.method)) {
         return desktopStreamSessions(request, env);
       }
 
       if (url.pathname === "/api/platform/live-context" && request.method === "GET") {
         return desktopLiveContext(request, env);
+      }
+
+      const desktopTimelineMatch = url.pathname.match(/^\/api\/platform\/stream-sessions\/([A-Za-z0-9-]{20,64})\/timeline$/);
+      if (desktopTimelineMatch && request.method === "GET") {
+        return desktopStreamTimeline(request, env, desktopTimelineMatch[1]);
       }
 
       const desktopSessionMatch = url.pathname.match(/^\/api\/platform\/stream-sessions\/([A-Za-z0-9-]{20,64})$/);
@@ -1379,16 +1414,23 @@ async function fetchExternal(url, init = {}, options = {}) {
   }
 }
 
-async function proxySwIdentityCredentialRequest(request, route) {
+async function proxySwIdentityCredentialRequest(request, route, env) {
   const origin = String(request.headers.get("Origin") || "");
-  if (!["https://pstreamers.com", "https://www.pstreamers.com"].includes(origin)) {
+  const desktop = ALLOWED_DESKTOP_ORIGINS.has(origin);
+  if (!["https://pstreamers.com", "https://www.pstreamers.com"].includes(origin) && !desktop) {
     return apiResponse(request, { error: "Bu hesap isteğinin kaynağı doğrulanamadı." }, 403);
   }
+  if (desktop && !env.SW_PRODUCT_SSO_SECRET) return apiResponse(request, { error: "Masaüstü hesap köprüsü yapılandırılmamış." }, 503);
   const payload = await requestJson(request);
   const headers = new Headers({
     "content-type": "application/json",
-    "origin": origin,
+    "origin": desktop ? "https://pstreamers.com" : origin,
   });
+  if (desktop) {
+    headers.set("authorization", `Bearer ${env.SW_PRODUCT_SSO_SECRET}`);
+    headers.set("x-sw-product-login", "play-streamers");
+    headers.set("x-sw-product-device-agent", String(request.headers.get("user-agent") || "play-streamers-desktop").slice(0, 400));
+  }
   const turnstileToken = String(request.headers.get("X-Turnstile-Token") || payload.turnstileToken || "").trim();
   const flowId = String(request.headers.get("X-SW-Flow-ID") || "").trim();
   if (turnstileToken) headers.set("X-Turnstile-Token", turnstileToken);
@@ -2427,6 +2469,132 @@ async function desktopFeatureSettings(request, env) {
   return apiResponse(request, { ok: true, setting: { featureId, value: input?.value ?? null, updatedAt } });
 }
 
+const CREATOR_PAGE_BLOCK_TYPES = new Set(["hero", "links", "schedule", "live", "announcement", "video", "equipment", "text", "support"]);
+
+function creatorPageText(value, limit) {
+  return String(value || "").replace(/[\u0000-\u0008\u000b\u000c\u000e-\u001f\u007f]+/g, " ").trim().slice(0, limit);
+}
+
+function creatorPageUrl(value) {
+  try {
+    const url = new URL(String(value || ""));
+    return url.protocol === "https:" ? url.toString().slice(0, 500) : "";
+  } catch { return ""; }
+}
+
+function normalizeCreatorPageDocument(input, fallbackSlug = "yayinci") {
+  if (!input || typeof input !== "object") return null;
+  const slug = creatorPageText(input.slug || fallbackSlug, 40).toLowerCase().replace(/[^a-z0-9_-]+/g, "-").replace(/^-+|-+$/g, "");
+  if (!/^[a-z0-9][a-z0-9_-]{1,39}$/.test(slug)) return null;
+  const sourceBlocks = Array.isArray(input.blocks) ? input.blocks.slice(0, 24) : [];
+  const blocks = sourceBlocks.flatMap(item => {
+    if (!item || typeof item !== "object" || !CREATOR_PAGE_BLOCK_TYPES.has(item.type)) return [];
+    return [{
+      id: /^[A-Za-z0-9-]{8,80}$/.test(String(item.id || "")) ? String(item.id) : randomBase64Url(12),
+      type: item.type,
+      title: creatorPageText(item.title, 80) || "Başlıksız bölüm",
+      body: creatorPageText(item.body, 1200),
+      url: creatorPageUrl(item.url),
+      label: creatorPageText(item.label, 40),
+      width: item.width === "half" ? "half" : "full",
+      visible: item.visible !== false,
+    }];
+  });
+  if (!blocks.length || !blocks.some(item => item.type === "hero")) return null;
+  return {
+    version: 1,
+    slug,
+    title: creatorPageText(input.title, 80) || "Yayıncı sayfası",
+    bio: creatorPageText(input.bio, 240),
+    accent: /^#[0-9a-f]{6}$/i.test(String(input.accent || "")) ? String(input.accent).toLowerCase() : "#8ca8ff",
+    background: ["aurora", "midnight", "sunset", "mono"].includes(input.background) ? input.background : "aurora",
+    surface: input.surface === "solid" ? "solid" : "glass",
+    radius: Math.min(36, Math.max(8, Number(input.radius) || 24)),
+    blocks,
+    updatedAt: Math.min(Date.now(), Math.max(0, Number(input.updatedAt) || Date.now())),
+  };
+}
+
+function creatorPageRowDocument(row, column) {
+  try { return row?.[column] ? JSON.parse(row[column]) : null; } catch { return null; }
+}
+
+async function desktopCreatorPage(request, env) {
+  if (!desktopRequestOriginAllowed(request)) return apiResponse(request, { error: "Masaüstü uygulama kaynağı geçersiz." }, 403);
+  const current = await readUserSession(request, env);
+  if (!current) return apiResponse(request, { error: "Oturum bulunamadı." }, 401);
+  const userId = current.session.user.id;
+  await ensureDesktopPlatformSchema(env);
+  if (request.method === "GET") {
+    const row = await env.DB.prepare(`SELECT slug, draft_json AS draftJson, published_json AS publishedJson,
+      is_published AS isPublished, updated_at AS updatedAt, published_at AS publishedAt
+      FROM ps_creator_pages WHERE user_id = ?1 LIMIT 1`).bind(userId).first();
+    if (!row) return apiResponse(request, { ok: true, draft: null, published: false });
+    return apiResponse(request, {
+      ok: true,
+      draft: creatorPageRowDocument(row, "draftJson"),
+      published: Boolean(row.isPublished),
+      publishedAt: row.publishedAt ? Number(row.publishedAt) : null,
+      publishedUrl: row.isPublished ? `${FRONTEND_URL.replace(/\/$/, "")}/@${row.slug}` : null,
+    });
+  }
+  const input = await requestJson(request);
+  const action = input?.action === "publish" ? "publish" : "draft";
+  const user = await getUserById(userId, env);
+  const fallbackSlug = creatorPageText(user?.username || user?.displayName || "yayinci", 40).toLowerCase();
+  const document = normalizeCreatorPageDocument(input?.document, fallbackSlug);
+  if (!document) return apiResponse(request, { error: "Yayıncı sayfası verisi veya profil kapağı geçersiz." }, 400);
+  const valueJson = JSON.stringify(document);
+  if (valueJson.length > 60_000) return apiResponse(request, { error: "Yayıncı sayfası taslağı çok büyük." }, 413);
+  const owner = await env.DB.prepare("SELECT user_id AS userId FROM ps_creator_pages WHERE slug = ?1 LIMIT 1").bind(document.slug).first();
+  if (owner?.userId && owner.userId !== userId) return apiResponse(request, { error: "Bu sayfa adresi başka bir yayıncı tarafından kullanılıyor." }, 409);
+  const now = Date.now();
+  await env.DB.prepare(`INSERT INTO ps_creator_pages
+      (user_id, slug, draft_json, published_json, is_published, updated_at, published_at)
+      VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7)
+      ON CONFLICT(user_id) DO UPDATE SET
+        slug = excluded.slug,
+        draft_json = excluded.draft_json,
+        published_json = CASE WHEN ?5 = 1 THEN excluded.published_json ELSE ps_creator_pages.published_json END,
+        is_published = CASE WHEN ?5 = 1 THEN 1 ELSE ps_creator_pages.is_published END,
+        updated_at = excluded.updated_at,
+        published_at = CASE WHEN ?5 = 1 THEN excluded.published_at ELSE ps_creator_pages.published_at END`)
+    .bind(userId, document.slug, valueJson, action === "publish" ? valueJson : null, action === "publish" ? 1 : 0, now, action === "publish" ? now : null).run();
+  return apiResponse(request, {
+    ok: true,
+    action,
+    document,
+    publishedUrl: action === "publish" ? `${FRONTEND_URL.replace(/\/$/, "")}/@${document.slug}` : null,
+    updatedAt: now,
+  });
+}
+
+async function publicCreatorPage(request, env, slug) {
+  await ensureDesktopPlatformSchema(env);
+  const row = await env.DB.prepare(`SELECT p.user_id AS userId, p.slug, p.published_json AS publishedJson,
+      p.published_at AS publishedAt, r.status, r.last_observed_at AS lastObservedAt,
+      s.title AS streamTitle,
+      (SELECT viewer_count FROM ps_stream_samples sm WHERE sm.session_id = r.session_id ORDER BY sm.sample_minute DESC LIMIT 1) AS currentViewers
+    FROM ps_creator_pages p
+    LEFT JOIN ps_stream_runtime r ON r.user_id = p.user_id AND r.status = 'live'
+    LEFT JOIN ps_stream_sessions s ON s.id = r.session_id
+    WHERE p.slug = ?1 AND p.is_published = 1 LIMIT 1`).bind(slug).first();
+  if (!row) return apiResponse(request, { error: "Yayıncı sayfası bulunamadı." }, 404);
+  const document = creatorPageRowDocument(row, "publishedJson");
+  if (!document) return apiResponse(request, { error: "Yayıncı sayfası kullanılamıyor." }, 503);
+  const recentlyObserved = Number(row.lastObservedAt || 0) >= Date.now() - 3 * 60_000;
+  return apiResponse(request, {
+    ok: true,
+    page: document,
+    publishedAt: Number(row.publishedAt || 0),
+    live: {
+      status: row.status === "live" && recentlyObserved ? "live" : "offline",
+      title: row.status === "live" && recentlyObserved ? creatorPageText(row.streamTitle, 160) : "",
+      currentViewers: row.status === "live" && recentlyObserved ? Math.max(0, Number(row.currentViewers || 0)) : 0,
+    },
+  });
+}
+
 async function desktopStreamSessions(request, env) {
   if (!desktopRequestOriginAllowed(request)) return apiResponse(request, { error: "Masaüstü uygulama kaynağı geçersiz." }, 403);
   const current = await readUserSession(request, env);
@@ -2450,6 +2618,46 @@ async function desktopStreamSessions(request, env) {
     VALUES (?1, ?2, ?3, ?4, ?5, NULL, 0, 0, 0, 0, NULL)`)
     .bind(id, userId, platform, title || null, startedAt).run();
   return apiResponse(request, { ok: true, session: desktopSessionPayload({ id, platform, title, startedAt }) }, 201);
+}
+
+async function desktopStreamTimeline(request, env, sessionId) {
+  if (!desktopRequestOriginAllowed(request)) return apiResponse(request, { error: "Masaüstü uygulama kaynağı geçersiz." }, 403);
+  const current = await readUserSession(request, env);
+  if (!current) return apiResponse(request, { error: "Oturum bulunamadı." }, 401);
+  const session = await env.DB.prepare(`SELECT id, started_at AS startedAt, ended_at AS endedAt,
+      peak_viewers AS peakViewers FROM ps_stream_sessions WHERE id = ?1 AND user_id = ?2 LIMIT 1`)
+    .bind(sessionId, current.session.user.id).first();
+  if (!session) return apiResponse(request, { error: "Yayın oturumu bulunamadı." }, 404);
+  const startedAt = Number(session.startedAt || 0);
+  const endedAt = Number(session.endedAt || Date.now());
+  const duration = Math.max(1, endedAt - startedAt);
+  const [sampleRows, supportRows] = await env.DB.batch([
+    env.DB.prepare(`SELECT sample_minute AS minute, viewer_count AS viewers
+      FROM ps_stream_samples WHERE session_id = ?1 ORDER BY sample_minute ASC LIMIT 720`).bind(sessionId),
+    env.DB.prepare(`SELECT id, provider_name AS providerName, donor_name AS donorName,
+      amount_minor AS amountMinor, currency, COALESCE(event_at, observed_at, received_at) AS happenedAt
+      FROM donate_bridge_events WHERE user_id = ?1
+        AND COALESCE(event_at, observed_at, received_at) BETWEEN ?2 AND ?3
+      ORDER BY COALESCE(event_at, observed_at, received_at) ASC LIMIT 100`)
+      .bind(current.session.user.id, startedAt, endedAt),
+  ]);
+  const points = (sampleRows?.results || []).map(row => ({
+    minute: Math.max(0, Number(row.minute || 0)),
+    viewers: Math.max(0, Number(row.viewers || 0)),
+  }));
+  const events = (supportRows?.results || []).map(row => {
+    const rawAt = Number(row.happenedAt || startedAt);
+    const happenedAt = rawAt > 0 && rawAt < 10_000_000_000 ? rawAt * 1000 : rawAt;
+    return {
+      id: String(row.id || ""),
+      at: Math.max(0, Math.min(100, ((happenedAt - startedAt) / duration) * 100)),
+      kind: "Destek",
+      label: `${String(row.donorName || "Destekçi").slice(0, 80)} · ${String(row.providerName || "Platform").slice(0, 60)}`,
+      amountMinor: Math.max(0, Number(row.amountMinor || 0)),
+      currency: String(row.currency || "TRY").slice(0, 3),
+    };
+  });
+  return apiResponse(request, { ok: true, session: { id: sessionId, startedAt, endedAt, peakViewers: Number(session.peakViewers || 0) }, points, events });
 }
 
 async function finishDesktopStreamSession(request, env, sessionId) {
@@ -2873,105 +3081,6 @@ function deterministicInsight(input) {
   };
 }
 
-function responseOutputText(payload) {
-  for (const item of Array.isArray(payload?.output) ? payload.output : []) {
-    for (const content of Array.isArray(item?.content) ? item.content : []) {
-      if (content?.type === "output_text" && typeof content.text === "string") return content.text;
-    }
-  }
-  return null;
-}
-
-function validAiInsight(value) {
-  return value && typeof value.title === "string" && value.title.length <= 100
-    && typeof value.summary === "string" && value.summary.length <= 500
-    && Array.isArray(value.evidence) && value.evidence.length >= 1 && value.evidence.length <= 3
-    && value.evidence.every(item => typeof item === "string" && item.length <= 180)
-    && typeof value.nextAction === "string" && value.nextAction.length <= 240;
-}
-
-function parseAiInsightText(text, model) {
-  if (typeof text !== "string") return null;
-  const cleaned = text.trim().replace(/^```(?:json)?\s*/i, "").replace(/\s*```$/i, "");
-  const start = cleaned.indexOf("{");
-  const end = cleaned.lastIndexOf("}");
-  if (start < 0 || end <= start) return null;
-  try {
-    const parsed = JSON.parse(cleaned.slice(start, end + 1));
-    return validAiInsight(parsed) ? { ...parsed, model } : null;
-  } catch {
-    return null;
-  }
-}
-
-async function explainInsightWithOpenAi(summary, env) {
-  if (!env.OPENAI_API_KEY) return null;
-  const model = String(env.OPENAI_MODEL || "gpt-5.6-luna");
-  const response = await fetch("https://api.openai.com/v1/responses", {
-    method: "POST",
-    headers: { authorization: `Bearer ${env.OPENAI_API_KEY}`, "content-type": "application/json" },
-    body: JSON.stringify({
-      model,
-      instructions: "Sen Play Streamers yayın analiz yardımcısısın. Yalnız verilen sayısal özeti kullan. Türkçe, sakin, kısa ve kanıt gösteren bir açıklama yaz. Kesin neden bilinmiyorsa neden uydurma. Kişisel veri isteme veya üretme.",
-      input: JSON.stringify(summary),
-      max_output_tokens: 400,
-      text: { format: {
-        type: "json_schema",
-        name: "play_streamers_insight",
-        strict: true,
-        schema: {
-          type: "object",
-          additionalProperties: false,
-          properties: {
-            title: { type: "string", maxLength: 100 },
-            summary: { type: "string", maxLength: 500 },
-            evidence: { type: "array", minItems: 1, maxItems: 3, items: { type: "string", maxLength: 180 } },
-            nextAction: { type: "string", maxLength: 240 },
-          },
-          required: ["title", "summary", "evidence", "nextAction"],
-        },
-      } },
-    }),
-  });
-  if (!response.ok) return null;
-  const payload = await safeJson(response);
-  const text = responseOutputText(payload);
-  return parseAiInsightText(text, model);
-}
-
-async function explainInsightWithWorkersAi(summary, env) {
-  if (!env.AI || typeof env.AI.run !== "function") return null;
-  const model = "@cf/meta/llama-3.1-8b-instruct-fp8";
-  const payload = await env.AI.run(model, {
-    messages: [
-      {
-        role: "system",
-        content: "Sen Play Streamers yayın analiz yardımcısısın. Yalnız verilen sayısal özeti kullan. Türkçe, sakin, kısa ve kanıt gösteren bir açıklama yaz. Kesin neden bilinmiyorsa neden uydurma. Kişisel veri isteme veya üretme. Yalnız geçerli JSON döndür.",
-      },
-      {
-        role: "user",
-        content: `Şu sayısal yayın özetini açıkla: ${JSON.stringify(summary)}\nYalnız bu JSON biçimini döndür: {"title":"en fazla 100 karakter","summary":"en fazla 500 karakter","evidence":["1-3 kısa kanıt"],"nextAction":"en fazla 240 karakter"}`,
-      },
-    ],
-    max_tokens: 400,
-    temperature: 0.2,
-  });
-  const text = typeof payload?.response === "string"
-    ? payload.response
-    : typeof payload?.result?.response === "string"
-      ? payload.result.response
-      : typeof payload?.choices?.[0]?.message?.content === "string"
-        ? payload.choices[0].message.content
-        : null;
-  return parseAiInsightText(text, model);
-}
-
-async function explainInsightWithAi(summary, env) {
-  const openAiResult = await explainInsightWithOpenAi(summary, env).catch(() => null);
-  if (openAiResult) return openAiResult;
-  return explainInsightWithWorkersAi(summary, env).catch(() => null);
-}
-
 async function createDesktopInsight(request, env) {
   if (!desktopRequestOriginAllowed(request)) return apiResponse(request, { error: "Masaüstü uygulama kaynağı geçersiz." }, 403);
   const current = await readUserSession(request, env);
@@ -2992,29 +3101,14 @@ async function createDesktopInsight(request, env) {
       supporters: boundedInsightMetric(input?.previous?.supporters),
     },
   };
-  const fallback = deterministicInsight(numericSummary);
-  if (plan.tier !== "product-pro") return apiResponse(request, { ok: true, ai: false, planRequired: "product-pro", insight: fallback });
-  const inputHash = await sha256Hex(JSON.stringify(numericSummary));
-  const now = Math.floor(Date.now() / 1000);
-  const cached = await env.DB.prepare(`SELECT result_json AS resultJson, model FROM ps_ai_insights
-    WHERE user_id = ?1 AND insight_type = 'engagement' AND input_hash = ?2 AND expires_at > ?3 LIMIT 1`)
-    .bind(current.session.user.id, inputHash, now).first();
-  if (cached?.resultJson) {
-    try { return apiResponse(request, { ok: true, ai: Boolean(cached.model), cached: true, insight: JSON.parse(cached.resultJson) }); } catch { /* rebuild below */ }
-  }
-  const recent = await env.DB.prepare(`SELECT COUNT(*) AS total FROM ps_ai_insights
-    WHERE user_id = ?1 AND model IS NOT NULL AND created_at >= ?2`).bind(current.session.user.id, now - 60 * 60).first();
-  const aiResult = Number(recent?.total || 0) < 20 ? await explainInsightWithAi({ ...numericSummary, calculated: fallback }, env).catch(() => null) : null;
-  const insight = aiResult ? { ...fallback, ...aiResult } : fallback;
-  await env.DB.prepare(`INSERT INTO ps_ai_insights
-    (id, user_id, insight_type, input_hash, result_json, model, created_at, expires_at)
-    VALUES (?1, ?2, 'engagement', ?3, ?4, ?5, ?6, ?7)
-    ON CONFLICT(user_id, insight_type, input_hash) DO UPDATE SET result_json = excluded.result_json,
-      model = excluded.model, created_at = excluded.created_at, expires_at = excluded.expires_at`)
-    .bind(crypto.randomUUID(), current.session.user.id, inputHash, JSON.stringify(insight), aiResult?.model || null, now, now + 15 * 60).run();
-  return apiResponse(request, { ok: true, ai: Boolean(aiResult), cached: false, insight });
+  const insight = deterministicInsight(numericSummary);
+  return apiResponse(request, {
+    ok: true,
+    ai: false,
+    ...(plan.tier !== "product-pro" ? { planRequired: "product-pro" } : {}),
+    insight,
+  });
 }
-
 function normalizeDonateBridgePairingCode(value) {
   const code = String(value || "").toUpperCase().replace(/[^A-Z0-9]/g, "");
   // Sixteen-character codes are the current format. Previously issued 10/12
@@ -4553,6 +4647,17 @@ async function ensureDesktopPlatformSchemaInD1(env) {
     )`),
     env.DB.prepare("CREATE UNIQUE INDEX IF NOT EXISTS idx_ps_ai_insights_cache ON ps_ai_insights(user_id, insight_type, input_hash)"),
     env.DB.prepare("CREATE INDEX IF NOT EXISTS idx_ps_ai_insights_expires ON ps_ai_insights(expires_at)"),
+    env.DB.prepare(`CREATE TABLE IF NOT EXISTS ps_creator_pages (
+      user_id TEXT PRIMARY KEY NOT NULL,
+      slug TEXT NOT NULL UNIQUE,
+      draft_json TEXT NOT NULL,
+      published_json TEXT,
+      is_published INTEGER NOT NULL DEFAULT 0,
+      updated_at INTEGER NOT NULL,
+      published_at INTEGER,
+      FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+    )`),
+    env.DB.prepare("CREATE UNIQUE INDEX IF NOT EXISTS idx_ps_creator_pages_slug ON ps_creator_pages(slug)"),
   ]);
   desktopPlatformSchemaReady = true;
 }

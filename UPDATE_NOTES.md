@@ -4,13 +4,104 @@ Bu doküman; Play Streamers web uygulaması, Cloudflare Worker API'si ve Play Co
 
 ## Güncel sürümler
 
-- Web sitesi: **10.5.5**
-- Web uygulaması / ürün bağlamı: **5.2**
-- Play Connect: **1.15.2**
-- Desktop: **0.14.4**
-- Worker kaynak sabiti: **5.4**
+- Web sitesi: **10.36.0**
+- Web uygulaması / ürün bağlamı: **5.33.0**
+- Play Connect: **1.15.3**
+- Desktop: **0.51.0**
+- Worker kaynak sabiti: **8.14**
 
 > Yayın öncesinde Worker'daki bildirim sürüm sabiti ile bu sürüm geçmişi aynı numaraya yükseltilmelidir.
+
+### Desktop 0.51.0 · Sade yayıncı stüdyosu ve güncel kur
+
+- İkonların etrafındaki ayrı renkli yüzey/çerçeve kaldırıldı; simgeler kendi
+  kontrollerinin rengini kullanıyor. Ana Sayfa akışındaki 01/02/03 kaldırıldı.
+- Kur verisi beş dakika sonra tekrar alınır, uygulamaya dönüşte kontrol edilir.
+  Elle yenileme sağlayıcı önbelleğini de atlar. Tutar, kaynak ve hedef para
+  birimi seçilebilen dönüşüm alanı eklendi.
+- Yayıncı Sayfası iki sütunlu, adım odaklı düzenleyiciye dönüştürüldü.
+  Profil, medya, bağlantılar, içerik, tasarım, yayın ve analiz ayrı kullanılır.
+- Bilgisayardan arka plan, profil ve bant görseli seçilebilir. Görseller
+  sıkıştırılır; hesaptaki taslakta ve yayınlanan sayfada saklanır. SVG ve
+  çalıştırılabilir veri bağlantıları kabul edilmez.
+- Arka planın karartması, sığma biçimi ve konumu; içerik hizası, zemin ve
+  ikincil yazı renkleri ayarlanabilir.
+- Herkese açık profil ana siteye yönlendiren üst gezinme içermez. Bağımsız
+  HTML çıktısı aynı düzen, medya ve efektleri taşır; API olmadan açılır.
+  Canlı durum bu bağımsız çevrimdışı çıktıda çevrimdışı gösterilir.
+- Geri sayım, önizleme ses düzeyi, gerçek imleç/ışık etkileri ve önizlemeyi
+  kapatma düzeltildi. Önizleme uygulamanın pencere tuşlarını kapatmaz.
+- Masaüstü uygulaması yayımlanmadı; yalnız gerekli Worker ve herkese açık
+  profil dosyaları güncellendi.
+
+### Desktop 0.50.0 · Özelleştirilebilir yayıncı sayfası stüdyosu
+
+- Yayıncı Sayfası; dört düzen, altı renkli zemin, beş hareketli efekt, görsel
+  veya video arka plan, cam yoğunluğu, renk, yazı, düğme, avatar ve imleç
+  kontrolleriyle canlı bir tasarım stüdyosuna dönüştürüldü.
+- Sosyal hesaplar, bağlantı/kopyalama eylemleri, müzik çalar, galeri, geri
+  sayım, konum, yayın takvimi, otomatik canlı durum ve karşılama ekranı aynı
+  hesaba bağlı belge içinde çalışıyor.
+- Masaüstü, tablet ve telefon önizlemesi; güvenli HTTPS medya doğrulaması,
+  paylaşım başlığı/görseli ve bağımsız HTML çıktısı eklendi.
+- Yayınlanan sayfalarda kişisel veri tutmadan son 30 günlük görüntülenme,
+  bağlantı tıklaması ve tıklama oranı ölçülüyor. Worker ve web sayfası canlıya
+  alındı; masaüstü uygulaması yayımlanmadı.
+
+### Desktop 0.49.2 · Doğal derinlik ve temiz içerik akışı
+
+- Düz içerik satırlarını otomatik olarak kutuya alan genel tema kuralı
+  kaldırıldı; yalnız gerçek kart ve paneller tema yüzeyi alıyor.
+- Kontroller normal durumda ince optik yükseklik taşıyor. Hover sırasında yer
+  değiştirmiyor veya büyümüyor; yalnız ışık ve kenar tepkisi veriyor.
+- Büyütülmüş Dashboard kartının merkezleme davranışı korunuyor.
+- Yer değiştirmeyen hover kontrolü, düz zaman çizelgesi, bütün masaüstü akışı,
+  Store güncellemesi ve Rust güvenlik testleri doğrulandı.
+
+### Desktop 0.49.1 · Eksiksiz uygulama temaları
+
+- Tema sözleşmesi bileşen stillerinden sonra yüklenen son katmana taşındı; geç
+  yüklenen ekranlar artık varsayılan mavi/gri palete dönmüyor.
+- Ana Sayfa, Dashboard, Play Connect, yayın sayacı, hesap, destek, formlar,
+  açılır pencereler ve bütün birleşik araç yüzeyleri seçilen temayı izliyor.
+- Yayıncı Sayfası düzenleyicisi uygulama temasına bağlanırken kişisel sayfa
+  önizlemesi, platform markaları ve anlam taşıyan durum renkleri korunuyor.
+- Beş tema düzenleyici ve gelişmiş araç yüzeylerinde hesaplanan görsel stillerle
+  sınandı; kapsamlı masaüstü, Store güncellemesi ve Rust testleri geçti.
+
+### Desktop 0.49.0 · Premium kontroller, tema ve dil sistemi
+
+- Menü kontrolleri düzleştirildi; ana ve ikincil eylemler optik kenarlı, temaya
+  bağlı cam düğme sistemine geçirildi.
+- Beş temanın renkleri Dashboard, Play Connect, destek, ayarlar, grafikler,
+  formlar ve açılır yüzeylerde ortak değişkenlerden uygulanır.
+- Yayıncı Sayfası düzenleyicisi uygulama temasını izlerken sayfanın kişisel
+  vurgu rengi yalnız önizlemeye uygulanır.
+- Dil değişimi hedef çevrimdışı kataloğa doğrudan geçer ve Türkçe ara görüntü
+  oluşturmaz. Yedi alternatif dilde 1.892 arayüz metni paketlenir.
+
+### Desktop 0.48.1 · Rafine uygulama kontrolleri
+
+- Düğmelerin altındaki kalın, plastik görünümlü yükseltme katmanı kaldırıldı.
+- Normal durumda ince cam kenarı ve yumuşak gölge, üzerine gelince bir piksellik
+  hareket, basıldığında kısa ve doğal geri bildirim kullanılır.
+- Play Connect platform seçimlerinin renk kimliği korunurken kalın renkli kaide
+  kaldırıldı. Ortak davranış bütün yerel uygulama yüzeylerinde doğrulandı.
+
+### Desktop 0.48.0 · Özgür yayıncı sayfası
+
+- Takvim; profil, bağlantı, canlı durum, duyuru, video, ekipman, özel içerik ve
+  destek bileşenleriyle birlikte sürüklenebilir bir yayıncı sayfası kartına
+  dönüştürüldü.
+- Taslaklar hesap başına yerelde saklanır; masaüstü/telefon önizlemesi, şablonlar,
+  görünüm seçenekleri ve bağımsız HTML indirme çalışır.
+- Worker ve D1 kaynakları özel taslak eşitlemesi, benzersiz kullanıcı adresi ve
+  yalnız açıkça yayımlanan görüntünün anonim okunması için hazırlandı.
+- Uygulama önizlemesi ve herkese açık yayıncı sayfası, SW Identity hesabındaki
+  güncel profil fotoğrafını güvenli sunucu aracısı üzerinden birlikte kullanır.
+- Herkese açık renderer kullanıcı kodu çalıştırmaz ve yalnız güvenli HTTPS
+  bağlantılarını açar. Gereken site görüntüleyicisi, Worker ve D1 tablosu
+  yayımlandı; masaüstü uygulaması ve Store paketi yayımlanmadı.
 
 ## Play Streamers web uygulaması
 

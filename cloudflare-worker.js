@@ -81,8 +81,8 @@ const DONATE_OAUTH_PROVIDERS = Object.freeze({
     clientSecretVariable: "TIPEEESTREAM_CLIENT_SECRET",
   }),
 });
-const CURRENT_RELEASE_VERSION = "8.13";
-const CURRENT_RELEASE_PUBLISHED_AT = "2026-09-09T19:15:00Z";
+const CURRENT_RELEASE_VERSION = "8.14";
+const CURRENT_RELEASE_PUBLISHED_AT = "2026-09-12T02:21:05Z";
 const EXCHANGE_CURRENCIES = Object.freeze(["EUR", "TRY", "USD", "RUB", "SAR", "JPY"]);
 const EXCHANGE_CACHE_SECONDS = 5 * 60;
 const SW_IDENTITY_ORIGIN = "https://api.swcreate.com";
@@ -2496,6 +2496,12 @@ function creatorPageUrl(value) {
   } catch { return ""; }
 }
 
+function creatorPageAsset(value) {
+  const asset = String(value || "");
+  if (asset.length <= 300_000 && /^data:image\/(?:png|jpeg|webp);base64,[A-Za-z0-9+/]+={0,2}$/.test(asset)) return asset;
+  return creatorPageUrl(asset);
+}
+
 function creatorPageColor(value, fallback) {
   return /^#[0-9a-f]{6}$/i.test(String(value || "")) ? String(value).toLowerCase() : fallback;
 }
@@ -2556,13 +2562,16 @@ function normalizeCreatorPageDocument(input, fallbackSlug = "yayinci") {
     slug,
     title: creatorPageText(input.title, 80) || "Yayıncı sayfası",
     bio: creatorPageText(input.bio, 320),
-    profileImageUrl: creatorPageUrl(input.profileImageUrl),
-    bannerUrl: creatorPageUrl(input.bannerUrl),
+    profileImageUrl: creatorPageAsset(input.profileImageUrl),
+    bannerUrl: creatorPageAsset(input.bannerUrl),
     appearance: {
       layout: creatorPageChoice(sourceAppearance.layout, ["centered", "split", "compact", "portfolio"], "centered"),
       background: creatorPageChoice(sourceAppearance.background, ["aurora", "midnight", "sunset", "mono", "ocean", "neon"], "aurora"),
       backgroundType: creatorPageChoice(sourceAppearance.backgroundType, ["preset", "image", "video"], "preset"),
-      backgroundUrl: creatorPageUrl(sourceAppearance.backgroundUrl),
+      backgroundUrl: creatorPageAsset(sourceAppearance.backgroundUrl),
+      backgroundDim: creatorPageNumber(sourceAppearance.backgroundDim, 0, 90, 35),
+      backgroundFit: creatorPageChoice(sourceAppearance.backgroundFit, ["cover", "contain"], "cover"),
+      backgroundPosition: creatorPageChoice(sourceAppearance.backgroundPosition, ["center", "top", "bottom"], "center"),
       backgroundColor: creatorPageColor(sourceAppearance.backgroundColor, "#070a11"),
       accent: creatorPageColor(sourceAppearance.accent, "#8ca8ff"),
       secondary: creatorPageColor(sourceAppearance.secondary, "#a05cff"),
@@ -2590,7 +2599,7 @@ function normalizeCreatorPageDocument(input, fallbackSlug = "yayinci") {
       enabled: sourceAudio.enabled === true,
       url: creatorPageUrl(sourceAudio.url),
       title: creatorPageText(sourceAudio.title, 80) || "Sayfa müziği",
-      coverUrl: creatorPageUrl(sourceAudio.coverUrl),
+      coverUrl: creatorPageAsset(sourceAudio.coverUrl),
       loop: sourceAudio.loop !== false,
       volume: creatorPageNumber(sourceAudio.volume, 0, 100, 45),
     },
@@ -2603,8 +2612,8 @@ function normalizeCreatorPageDocument(input, fallbackSlug = "yayinci") {
     seo: {
       title: creatorPageText(sourceSeo.title, 80) || creatorPageText(input.title, 80) || "Yayıncı sayfası",
       description: creatorPageText(sourceSeo.description, 220) || creatorPageText(input.bio, 220),
-      imageUrl: creatorPageUrl(sourceSeo.imageUrl),
-      faviconUrl: creatorPageUrl(sourceSeo.faviconUrl),
+      imageUrl: creatorPageAsset(sourceSeo.imageUrl),
+      faviconUrl: creatorPageAsset(sourceSeo.faviconUrl),
     },
     socials,
     blocks,
@@ -2635,14 +2644,14 @@ async function desktopCreatorPage(request, env) {
       publishedUrl: row.isPublished ? `${FRONTEND_URL.replace(/\/$/, "")}/@${row.slug}` : null,
     });
   }
-  const input = await requestJson(request);
+  const input = await requestJson(request, 1_000_000);
   const action = input?.action === "publish" ? "publish" : "draft";
   const user = await getUserById(userId, env);
   const fallbackSlug = creatorPageText(user?.username || user?.displayName || "yayinci", 40).toLowerCase();
   const document = normalizeCreatorPageDocument(input?.document, fallbackSlug);
   if (!document) return apiResponse(request, { error: "Yayıncı sayfası verisi veya profil kapağı geçersiz." }, 400);
   const valueJson = JSON.stringify(document);
-  if (valueJson.length > 120_000) return apiResponse(request, { error: "Yayıncı sayfası taslağı çok büyük." }, 413);
+  if (valueJson.length > 950_000) return apiResponse(request, { error: "Yayıncı sayfası taslağı çok büyük." }, 413);
   const owner = await env.DB.prepare("SELECT user_id AS userId FROM ps_creator_pages WHERE slug = ?1 LIMIT 1").bind(document.slug).first();
   if (owner?.userId && owner.userId !== userId) return apiResponse(request, { error: "Bu sayfa adresi başka bir yayıncı tarafından kullanılıyor." }, 409);
   const now = Date.now();
@@ -8873,7 +8882,7 @@ function isExtensionTranslationRequest(request, origin) {
 }
 
 async function readPublicExchangeRates(request) {
-  const cacheKey = new Request(`${API_ORIGIN}/__edge-cache/exchange-rates-v3`, { method: "GET" });
+  const cacheKey = new Request(`${API_ORIGIN}/__edge-cache/exchange-rates-v4`, { method: "GET" });
   const forceRefresh = new URL(request.url).searchParams.has("refresh");
   if (!forceRefresh) {
     try {
@@ -8891,11 +8900,11 @@ async function readPublicExchangeRates(request) {
   const [providerResponse, tcmbResponse] = await Promise.all([
     fetch(`https://api.frankfurter.dev/v2/rates?base=EUR&quotes=${quotes}`, {
       headers: { accept: "application/json" },
-      cf: { cacheEverything: true, cacheTtl: EXCHANGE_CACHE_SECONDS },
+      cf: { cacheEverything: !forceRefresh, cacheTtl: forceRefresh ? 0 : EXCHANGE_CACHE_SECONDS },
     }).catch(() => null),
     fetch("https://www.tcmb.gov.tr/kurlar/today.xml", {
       headers: { accept: "application/xml,text/xml;q=0.9,*/*;q=0.5" },
-      cf: { cacheEverything: true, cacheTtl: EXCHANGE_CACHE_SECONDS },
+      cf: { cacheEverything: !forceRefresh, cacheTtl: forceRefresh ? 0 : EXCHANGE_CACHE_SECONDS },
     }).catch(() => null),
   ]);
   const providerRows = providerResponse?.ok ? await providerResponse.json().catch(() => []) : [];
@@ -8947,6 +8956,7 @@ async function readPublicExchangeRates(request) {
   const body = {
     ok: true,
     base: "TRY",
+    rateConvention: "quote-per-base",
     rates,
     rateDate,
     refreshedAt: new Date().toISOString(),
@@ -9196,16 +9206,16 @@ function parseBase64UrlJson(value) {
   return JSON.parse(new TextDecoder().decode(base64UrlToBytes(value)));
 }
 
-async function requestJson(request) {
+async function requestJson(request, maxBytes = MAX_JSON_BODY_BYTES) {
   const contentLength = Number(request.headers.get("content-length") || 0);
-  if (Number.isFinite(contentLength) && contentLength > MAX_JSON_BODY_BYTES) {
+  if (Number.isFinite(contentLength) && contentLength > maxBytes) {
     const error = new Error("Request body too large");
     error.code = "BODY_TOO_LARGE";
     throw error;
   }
   try {
     const text = await request.text();
-    if (new TextEncoder().encode(text).byteLength > MAX_JSON_BODY_BYTES) {
+    if (new TextEncoder().encode(text).byteLength > maxBytes) {
       const error = new Error("Request body too large");
       error.code = "BODY_TOO_LARGE";
       throw error;

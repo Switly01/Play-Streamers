@@ -408,9 +408,18 @@ export default {
         return desktopCreatorPage(request, env);
       }
 
+      if (url.pathname === "/api/platform/creator-page/analytics" && request.method === "GET") {
+        return desktopCreatorPageAnalytics(request, env);
+      }
+
       const publicCreatorAvatarMatch = url.pathname.match(/^\/api\/public\/creator-pages\/([a-z0-9_-]{2,40})\/avatar$/);
       if (publicCreatorAvatarMatch && request.method === "GET") {
         return publicCreatorPageAvatar(request, env, publicCreatorAvatarMatch[1]);
+      }
+
+      const publicCreatorAnalyticsMatch = url.pathname.match(/^\/api\/public\/creator-pages\/([a-z0-9_-]{2,40})\/analytics$/);
+      if (publicCreatorAnalyticsMatch && request.method === "POST") {
+        return publicCreatorPageAnalytics(request, env, publicCreatorAnalyticsMatch[1]);
       }
 
       const publicCreatorPageMatch = url.pathname.match(/^\/api\/public\/creator-pages\/([a-z0-9_-]{2,40})$/);
@@ -2474,7 +2483,7 @@ async function desktopFeatureSettings(request, env) {
   return apiResponse(request, { ok: true, setting: { featureId, value: input?.value ?? null, updatedAt } });
 }
 
-const CREATOR_PAGE_BLOCK_TYPES = new Set(["hero", "links", "schedule", "live", "announcement", "video", "equipment", "text", "support"]);
+const CREATOR_PAGE_BLOCK_TYPES = new Set(["hero", "links", "schedule", "live", "announcement", "video", "equipment", "text", "support", "socials", "music", "location", "countdown", "gallery"]);
 
 function creatorPageText(value, limit) {
   return String(value || "").replace(/[\u0000-\u0008\u000b\u000c\u000e-\u001f\u007f]+/g, " ").trim().slice(0, limit);
@@ -2483,22 +2492,35 @@ function creatorPageText(value, limit) {
 function creatorPageUrl(value) {
   try {
     const url = new URL(String(value || ""));
-    return url.protocol === "https:" ? url.toString().slice(0, 500) : "";
+    return url.protocol === "https:" ? url.toString().slice(0, 700) : "";
   } catch { return ""; }
+}
+
+function creatorPageColor(value, fallback) {
+  return /^#[0-9a-f]{6}$/i.test(String(value || "")) ? String(value).toLowerCase() : fallback;
+}
+
+function creatorPageNumber(value, min, max, fallback) {
+  const number = Number(value);
+  return Number.isFinite(number) ? Math.min(max, Math.max(min, number)) : fallback;
+}
+
+function creatorPageChoice(value, choices, fallback) {
+  return choices.includes(value) ? value : fallback;
 }
 
 function normalizeCreatorPageDocument(input, fallbackSlug = "yayinci") {
   if (!input || typeof input !== "object") return null;
   const slug = creatorPageText(input.slug || fallbackSlug, 40).toLowerCase().replace(/[^a-z0-9_-]+/g, "-").replace(/^-+|-+$/g, "");
   if (!/^[a-z0-9][a-z0-9_-]{1,39}$/.test(slug)) return null;
-  const sourceBlocks = Array.isArray(input.blocks) ? input.blocks.slice(0, 24) : [];
+  const sourceBlocks = Array.isArray(input.blocks) ? input.blocks.slice(0, 32) : [];
   const blocks = sourceBlocks.flatMap(item => {
     if (!item || typeof item !== "object" || !CREATOR_PAGE_BLOCK_TYPES.has(item.type)) return [];
     return [{
       id: /^[A-Za-z0-9-]{8,80}$/.test(String(item.id || "")) ? String(item.id) : randomBase64Url(12),
       type: item.type,
       title: creatorPageText(item.title, 80) || "Başlıksız bölüm",
-      body: creatorPageText(item.body, 1200),
+      body: creatorPageText(item.body, 2400),
       url: creatorPageUrl(item.url),
       label: creatorPageText(item.label, 40),
       width: item.width === "half" ? "half" : "full",
@@ -2506,15 +2528,85 @@ function normalizeCreatorPageDocument(input, fallbackSlug = "yayinci") {
     }];
   });
   if (!blocks.length || !blocks.some(item => item.type === "hero")) return null;
+  const legacyAppearance = {
+    accent: input.accent,
+    background: input.background,
+    radius: input.radius,
+    cardOpacity: input.surface === "solid" ? 100 : 62,
+    cardBlur: input.surface === "solid" ? 0 : 24,
+  };
+  const sourceAppearance = input.appearance && typeof input.appearance === "object" ? input.appearance : legacyAppearance;
+  const sourceAudio = input.audio && typeof input.audio === "object" ? input.audio : {};
+  const sourceEntrance = input.entrance && typeof input.entrance === "object" ? input.entrance : {};
+  const sourceSeo = input.seo && typeof input.seo === "object" ? input.seo : {};
+  const socials = (Array.isArray(input.socials) ? input.socials : []).slice(0, 24).flatMap(item => {
+    if (!item || typeof item !== "object") return [];
+    return [{
+      id: /^[A-Za-z0-9-]{8,80}$/.test(String(item.id || "")) ? String(item.id) : randomBase64Url(12),
+      platform: creatorPageText(item.platform, 30) || "Web",
+      label: creatorPageText(item.label, 60) || "Bağlantı",
+      value: creatorPageText(item.value, 160),
+      url: creatorPageUrl(item.url),
+      mode: item.mode === "copy" ? "copy" : "link",
+      visible: item.visible !== false,
+    }];
+  });
   return {
-    version: 1,
+    version: 2,
     slug,
     title: creatorPageText(input.title, 80) || "Yayıncı sayfası",
-    bio: creatorPageText(input.bio, 240),
-    accent: /^#[0-9a-f]{6}$/i.test(String(input.accent || "")) ? String(input.accent).toLowerCase() : "#8ca8ff",
-    background: ["aurora", "midnight", "sunset", "mono"].includes(input.background) ? input.background : "aurora",
-    surface: input.surface === "solid" ? "solid" : "glass",
-    radius: Math.min(36, Math.max(8, Number(input.radius) || 24)),
+    bio: creatorPageText(input.bio, 320),
+    profileImageUrl: creatorPageUrl(input.profileImageUrl),
+    bannerUrl: creatorPageUrl(input.bannerUrl),
+    appearance: {
+      layout: creatorPageChoice(sourceAppearance.layout, ["centered", "split", "compact", "portfolio"], "centered"),
+      background: creatorPageChoice(sourceAppearance.background, ["aurora", "midnight", "sunset", "mono", "ocean", "neon"], "aurora"),
+      backgroundType: creatorPageChoice(sourceAppearance.backgroundType, ["preset", "image", "video"], "preset"),
+      backgroundUrl: creatorPageUrl(sourceAppearance.backgroundUrl),
+      backgroundColor: creatorPageColor(sourceAppearance.backgroundColor, "#070a11"),
+      accent: creatorPageColor(sourceAppearance.accent, "#8ca8ff"),
+      secondary: creatorPageColor(sourceAppearance.secondary, "#a05cff"),
+      textColor: creatorPageColor(sourceAppearance.textColor, "#f6f8ff"),
+      mutedColor: creatorPageColor(sourceAppearance.mutedColor, "#b7c0d0"),
+      cardColor: creatorPageColor(sourceAppearance.cardColor, "#121724"),
+      cardOpacity: creatorPageNumber(sourceAppearance.cardOpacity, 10, 100, 62),
+      cardBlur: creatorPageNumber(sourceAppearance.cardBlur, 0, 42, 24),
+      radius: creatorPageNumber(sourceAppearance.radius, 4, 40, 24),
+      contentWidth: creatorPageNumber(sourceAppearance.contentWidth, 680, 1320, 1040),
+      alignment: creatorPageChoice(sourceAppearance.alignment, ["left", "center"], "left"),
+      font: creatorPageChoice(sourceAppearance.font, ["modern", "rounded", "editorial", "mono"], "modern"),
+      buttonStyle: creatorPageChoice(sourceAppearance.buttonStyle, ["solid", "glass", "outline"], "solid"),
+      effect: creatorPageChoice(sourceAppearance.effect, ["orbs", "stars", "waves", "plasma", "spotlight", "none"], "orbs"),
+      effectIntensity: creatorPageNumber(sourceAppearance.effectIntensity, 0, 100, 65),
+      motionSpeed: creatorPageNumber(sourceAppearance.motionSpeed, 0, 100, 55),
+      animatedBorder: sourceAppearance.animatedBorder !== false,
+      monochromeIcons: sourceAppearance.monochromeIcons === true,
+      titleEffect: creatorPageChoice(sourceAppearance.titleEffect, ["none", "typewriter", "glow"], "none"),
+      cursor: creatorPageChoice(sourceAppearance.cursor, ["default", "glow", "ring"], "glow"),
+      avatarShape: creatorPageChoice(sourceAppearance.avatarShape, ["rounded", "circle", "square"], "rounded"),
+      showBranding: sourceAppearance.showBranding !== false,
+    },
+    audio: {
+      enabled: sourceAudio.enabled === true,
+      url: creatorPageUrl(sourceAudio.url),
+      title: creatorPageText(sourceAudio.title, 80) || "Sayfa müziği",
+      coverUrl: creatorPageUrl(sourceAudio.coverUrl),
+      loop: sourceAudio.loop !== false,
+      volume: creatorPageNumber(sourceAudio.volume, 0, 100, 45),
+    },
+    entrance: {
+      enabled: sourceEntrance.enabled === true,
+      title: creatorPageText(sourceEntrance.title, 80) || "Yayınıma hoş geldin",
+      subtitle: creatorPageText(sourceEntrance.subtitle, 160) || "Sayfaya girmek için dokun",
+      button: creatorPageText(sourceEntrance.button, 40) || "Sayfaya gir",
+    },
+    seo: {
+      title: creatorPageText(sourceSeo.title, 80) || creatorPageText(input.title, 80) || "Yayıncı sayfası",
+      description: creatorPageText(sourceSeo.description, 220) || creatorPageText(input.bio, 220),
+      imageUrl: creatorPageUrl(sourceSeo.imageUrl),
+      faviconUrl: creatorPageUrl(sourceSeo.faviconUrl),
+    },
+    socials,
     blocks,
     updatedAt: Math.min(Date.now(), Math.max(0, Number(input.updatedAt) || Date.now())),
   };
@@ -2550,7 +2642,7 @@ async function desktopCreatorPage(request, env) {
   const document = normalizeCreatorPageDocument(input?.document, fallbackSlug);
   if (!document) return apiResponse(request, { error: "Yayıncı sayfası verisi veya profil kapağı geçersiz." }, 400);
   const valueJson = JSON.stringify(document);
-  if (valueJson.length > 60_000) return apiResponse(request, { error: "Yayıncı sayfası taslağı çok büyük." }, 413);
+  if (valueJson.length > 120_000) return apiResponse(request, { error: "Yayıncı sayfası taslağı çok büyük." }, 413);
   const owner = await env.DB.prepare("SELECT user_id AS userId FROM ps_creator_pages WHERE slug = ?1 LIMIT 1").bind(document.slug).first();
   if (owner?.userId && owner.userId !== userId) return apiResponse(request, { error: "Bu sayfa adresi başka bir yayıncı tarafından kullanılıyor." }, 409);
   const now = Date.now();
@@ -2598,6 +2690,45 @@ async function publicCreatorPage(request, env, slug) {
       currentViewers: row.status === "live" && recentlyObserved ? Math.max(0, Number(row.currentViewers || 0)) : 0,
     },
   });
+}
+
+async function desktopCreatorPageAnalytics(request, env) {
+  if (!desktopRequestOriginAllowed(request)) return apiResponse(request, { error: "Masaüstü uygulama kaynağı geçersiz." }, 403);
+  const current = await readUserSession(request, env);
+  if (!current) return apiResponse(request, { error: "Oturum bulunamadı." }, 401);
+  await ensureDesktopPlatformSchema(env);
+  const since = new Date(Date.now() - 29 * 86400000).toISOString().slice(0, 10);
+  const rows = await env.DB.prepare(`SELECT day, metric_key AS metricKey, count
+    FROM ps_creator_page_analytics WHERE user_id = ?1 AND day >= ?2 ORDER BY day ASC`)
+    .bind(current.session.user.id, since).all();
+  const results = rows?.results || [];
+  const views = results.filter(row => row.metricKey === "view").reduce((sum, row) => sum + Math.max(0, Number(row.count || 0)), 0);
+  const clicks = results.filter(row => String(row.metricKey || "").startsWith("click:")).reduce((sum, row) => sum + Math.max(0, Number(row.count || 0)), 0);
+  const links = results.filter(row => String(row.metricKey || "").startsWith("click:")).reduce((map, row) => {
+    const key = String(row.metricKey).slice(6);
+    map[key] = (map[key] || 0) + Math.max(0, Number(row.count || 0));
+    return map;
+  }, {});
+  const days = results.filter(row => row.metricKey === "view").map(row => ({ day: row.day, views: Math.max(0, Number(row.count || 0)) }));
+  return apiResponse(request, { ok: true, periodDays: 30, views, clicks, clickRate: views ? Math.round(clicks / views * 1000) / 10 : 0, links, days });
+}
+
+async function publicCreatorPageAnalytics(request, env, slug) {
+  await ensureDesktopPlatformSchema(env);
+  const input = await requestJson(request);
+  const event = input?.event === "click" ? "click" : input?.event === "view" ? "view" : "";
+  if (!event) return apiResponse(request, { error: "Analiz olayı geçersiz." }, 400);
+  const key = event === "click" ? creatorPageText(input?.key, 80).toLowerCase().replace(/[^a-z0-9:_-]+/g, "-") : "";
+  if (event === "click" && !key) return apiResponse(request, { error: "Bağlantı kimliği geçersiz." }, 400);
+  const page = await env.DB.prepare("SELECT user_id AS userId FROM ps_creator_pages WHERE slug = ?1 AND is_published = 1 LIMIT 1").bind(slug).first();
+  if (!page) return apiResponse(request, { error: "Yayıncı sayfası bulunamadı." }, 404);
+  const day = new Date().toISOString().slice(0, 10);
+  const metricKey = event === "view" ? "view" : `click:${key}`;
+  await env.DB.prepare(`INSERT INTO ps_creator_page_analytics (user_id, day, metric_key, count, updated_at)
+    VALUES (?1, ?2, ?3, 1, ?4)
+    ON CONFLICT(user_id, day, metric_key) DO UPDATE SET count = count + 1, updated_at = excluded.updated_at`)
+    .bind(page.userId, day, metricKey, Date.now()).run();
+  return apiResponse(request, { ok: true }, 202);
 }
 
 async function publicCreatorPageAvatar(request, env, slug) {
@@ -4691,6 +4822,16 @@ async function ensureDesktopPlatformSchemaInD1(env) {
       FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
     )`),
     env.DB.prepare("CREATE UNIQUE INDEX IF NOT EXISTS idx_ps_creator_pages_slug ON ps_creator_pages(slug)"),
+    env.DB.prepare(`CREATE TABLE IF NOT EXISTS ps_creator_page_analytics (
+      user_id TEXT NOT NULL,
+      day TEXT NOT NULL,
+      metric_key TEXT NOT NULL,
+      count INTEGER NOT NULL DEFAULT 0,
+      updated_at INTEGER NOT NULL,
+      PRIMARY KEY (user_id, day, metric_key),
+      FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+    )`),
+    env.DB.prepare("CREATE INDEX IF NOT EXISTS idx_ps_creator_page_analytics_day ON ps_creator_page_analytics(user_id, day)"),
   ]);
   desktopPlatformSchemaReady = true;
 }

@@ -81,8 +81,8 @@ const DONATE_OAUTH_PROVIDERS = Object.freeze({
     clientSecretVariable: "TIPEEESTREAM_CLIENT_SECRET",
   }),
 });
-const CURRENT_RELEASE_VERSION = "8.15";
-const CURRENT_RELEASE_PUBLISHED_AT = "2026-09-12T03:44:07Z";
+const CURRENT_RELEASE_VERSION = "8.16";
+const CURRENT_RELEASE_PUBLISHED_AT = "2026-09-12T18:00:00Z";
 const EXCHANGE_CURRENCIES = Object.freeze(["EUR", "TRY", "USD", "RUB", "SAR", "JPY"]);
 const EXCHANGE_CACHE_SECONDS = 5 * 60;
 const SW_IDENTITY_ORIGIN = "https://api.swcreate.com";
@@ -2387,7 +2387,7 @@ async function desktopPlatformBootstrap(request, env) {
   const user = await getUserById(current.session.user.id, env);
   if (!user) return apiResponse(request, { signedIn: false }, 401);
   const plan = await desktopEntitlement(user.id, env);
-  const [settingsResult, sessionsResult, monitorResult] = await env.DB.batch([
+  const [settingsResult, sessionsResult, monitorResult, kickAvatarResult] = await env.DB.batch([
     env.DB.prepare(`SELECT feature_id AS featureId, value_json AS valueJson, updated_at AS updatedAt
       FROM ps_feature_settings WHERE user_id = ?1 ORDER BY updated_at DESC LIMIT 100`).bind(user.id),
     env.DB.prepare(`SELECT id, platform, title, started_at AS startedAt, ended_at AS endedAt,
@@ -2404,11 +2404,15 @@ async function desktopPlatformBootstrap(request, env) {
       LEFT JOIN ps_stream_runtime r ON r.user_id = m.user_id
       LEFT JOIN ps_stream_sessions s ON s.id = r.session_id
       WHERE m.user_id = ?1 LIMIT 1`).bind(user.id),
+    env.DB.prepare(`SELECT json_extract(account_json, '$.profilePicture') AS profilePicture
+      FROM kick_sessions WHERE user_id = ?1 AND account_json IS NOT NULL
+      ORDER BY created_at DESC LIMIT 1`).bind(user.id),
   ]);
   const monitor = monitorResult?.results?.[0] || null;
+  const kickProfilePicture = creatorPageUrl(kickAvatarResult?.results?.[0]?.profilePicture);
   return apiResponse(request, {
     signedIn: true,
-    user,
+    user: { ...user, kickProfilePicture: kickProfilePicture || null },
     plan,
     features: enabledDesktopFeatures(plan.tier),
     settings: (settingsResult?.results || []).map(desktopSettingPayload),
@@ -2742,10 +2746,15 @@ async function publicCreatorPageAnalytics(request, env, slug) {
 
 async function publicCreatorPageAvatar(request, env, slug) {
   await ensureDesktopPlatformSchema(env);
-  const row = await env.DB.prepare(`SELECT u.sw_identity_user_id AS swIdentityUserId, u.avatar_url AS avatarUrl
+  const row = await env.DB.prepare(`SELECT u.sw_identity_user_id AS swIdentityUserId, u.avatar_url AS avatarUrl,
+      (SELECT json_extract(ks.account_json, '$.profilePicture') FROM kick_sessions ks
+        WHERE ks.user_id = u.id AND ks.account_json IS NOT NULL
+        ORDER BY ks.created_at DESC LIMIT 1) AS kickAvatarUrl
     FROM ps_creator_pages p JOIN users u ON u.id = p.user_id
     WHERE p.slug = ?1 AND p.is_published = 1 LIMIT 1`).bind(slug).first();
   if (!row) return apiResponse(request, { error: "Yayıncı sayfası bulunamadı." }, 404);
+  const kickAvatar = creatorPageUrl(row.kickAvatarUrl);
+  if (kickAvatar) return Response.redirect(kickAvatar, 302);
   const identityUserId = String(row.swIdentityUserId || "").trim();
   if (/^[A-Za-z0-9_-]{8,128}$/.test(identityUserId) && env.SW_PRODUCT_SSO_SECRET) {
     const response = await fetchExternal(`${SW_IDENTITY_ORIGIN}/api/internal/account/avatar`, {

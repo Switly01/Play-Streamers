@@ -60,12 +60,6 @@
 
   function applyCurrentRoute() {
     if (applying) return;
-    const api = routeApi();
-    if (!api) {
-      if (retryCount++ < 150) scheduleRoute();
-      return;
-    }
-
     const url = new URL(location.href);
     const recoveredRoute = url.searchParams.get('ps_route');
     if (url.pathname === '/' && recoveredRoute && /^\/@[a-z0-9_-]{2,40}(?:[?#].*)?$/i.test(recoveredRoute)) {
@@ -92,6 +86,12 @@
       return;
     }
     window.psCreatorPage?.destroy();
+
+    const api = routeApi();
+    if (!api) {
+      if (retryCount++ < 150) scheduleRoute();
+      return;
+    }
 
     const signedIn = api.hasSession();
     if (PRIVATE_ROUTES.has(path) && !signedIn) {

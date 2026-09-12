@@ -53,7 +53,7 @@
     void fetch(`${API}/api/public/creator-pages/${encodeURIComponent(slug)}/analytics`,{method:'POST',credentials:'omit',keepalive:true,signal:AbortSignal.timeout(2500),headers:{'content-type':'application/json'},body:JSON.stringify({event,key})}).catch(()=>{});
   }
   async function render(slug, embeddedPayload = null) {
-    destroy(); document.documentElement.classList.add('ps-creator-page-open'); root=node('main','pscp-root'); root.append(node('div','pscp-loading','Yayıncı sayfası hazırlanıyor…')); document.body.append(root);
+    destroy(); document.documentElement.classList.add('ps-creator-page-open'); root=node('main','pscp-root'); root.append(node('div','pscp-loading','Yayıncı sayfası hazırlanıyor…')); document.body.append(root); document.documentElement.classList.remove('ps-creator-route-pending');
     try {
       const payload = embeddedPayload || await fetch(`${API}/api/public/creator-pages/${encodeURIComponent(slug)}`,{cache:'no-store',credentials:'omit'}).then(async response=>{const body=await response.json().catch(()=>null);if(!response.ok)throw new Error(body?.error||'Yayıncı sayfası bulunamadı.');return body});if(!payload?.page)throw new Error('Yayıncı sayfası bulunamadı.');
       const page=payload.page,a=appearance(page),font={modern:'"Plus Jakarta Sans","Segoe UI",sans-serif',rounded:'"Trebuchet MS","Segoe UI",sans-serif',editorial:'Georgia,"Times New Roman",serif',mono:'"JetBrains Mono",Consolas,monospace'}[a.font];

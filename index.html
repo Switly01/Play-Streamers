@@ -27,6 +27,10 @@
     document.documentElement.dir = 'ltr';
     document.documentElement.dataset.psSourceLocale = 'tr';
     document.documentElement.dataset.psLiveLocale = language;
+    if (/^\/@[a-z0-9_-]{2,40}\/?$/i.test(location.pathname)) {
+      document.documentElement.classList.add('ps-creator-route-pending');
+      window.setTimeout(() => document.documentElement.classList.remove('ps-creator-route-pending'), 8000);
+    }
     if (language !== 'tr') {
       document.documentElement.classList.add('ps-i18n-booting');
       window.setTimeout(() => document.documentElement.classList.remove('ps-i18n-booting'), 2400);
@@ -34,7 +38,7 @@
   } catch (_) {}
 })();
 </script>
-<style>html:is(.ps-i18n-booting,.ps15-session-pending) body{opacity:.01}html:is(.ps-i18n-booting,.ps15-session-pending)::before{position:fixed;inset:0;z-index:2147483646;display:grid;place-items:center;background:radial-gradient(circle at 50% 44%,#ffffff18,transparent 27%),radial-gradient(circle at 18% 24%,#fff 0 1px,transparent 2px) 0 0/180px 180px,radial-gradient(circle at 74% 68%,#ffffffaa 0 1px,transparent 2px) 0 0/250px 250px,#030303;color:#f7f7f4;content:"";animation:ps-i18n-stars 12s linear infinite}html:is(.ps-i18n-booting,.ps15-session-pending)::after{position:fixed;left:50%;top:50%;z-index:2147483647;display:flex;width:min(240px,calc(100vw - 40px));height:158px;box-sizing:border-box;align-items:flex-end;justify-content:center;border:1px solid #ffffff24;border-radius:30px;padding:0 20px 27px;background:radial-gradient(circle at 50% 35%,#ffffff12,transparent 48%),url("play-streamers-ps-logo.svg?v=10.14") center 36%/68px 68px no-repeat,linear-gradient(145deg,#ffffff13,#070709e8);box-shadow:0 28px 80px #000,inset 0 1px #ffffff48;color:#f7f7f4;content:"PLAY STREAMERS";font:800 9px/1 "Space Grotesk","Segoe UI",sans-serif;letter-spacing:.24em;filter:drop-shadow(0 0 18px #ffffff22);transform:translate(-50%,-50%);animation:none;-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px)}@keyframes ps-i18n-stars{to{background-position:0 0,180px 180px,-250px 250px,0 0}}html:not(.ps-i18n-booting):not(.ps15-session-pending) body{transition:opacity .16s ease}@media(max-width:760px){html:is(.ps-i18n-booting,.ps15-session-pending)::before{animation:none;background:radial-gradient(circle at 50% 42%,#ffffff10,transparent 32%),#030303}html:is(.ps-i18n-booting,.ps15-session-pending)::after{height:148px;border-radius:26px;-webkit-backdrop-filter:none;backdrop-filter:none}}@media(prefers-reduced-motion:reduce){html:is(.ps-i18n-booting,.ps15-session-pending)::before{animation:none}}</style>
+<style>html:is(.ps-i18n-booting,.ps15-session-pending) body{opacity:.01}html.ps-creator-route-pending body>*:not(.pscp-root){opacity:0!important;pointer-events:none!important}html.ps-creator-route-pending body{background:#070a11!important}html:is(.ps-i18n-booting,.ps15-session-pending)::before{position:fixed;inset:0;z-index:2147483646;display:grid;place-items:center;background:radial-gradient(circle at 50% 44%,#ffffff18,transparent 27%),radial-gradient(circle at 18% 24%,#fff 0 1px,transparent 2px) 0 0/180px 180px,radial-gradient(circle at 74% 68%,#ffffffaa 0 1px,transparent 2px) 0 0/250px 250px,#030303;color:#f7f7f4;content:"";animation:ps-i18n-stars 12s linear infinite}html:is(.ps-i18n-booting,.ps15-session-pending)::after{position:fixed;left:50%;top:50%;z-index:2147483647;display:flex;width:min(240px,calc(100vw - 40px));height:158px;box-sizing:border-box;align-items:flex-end;justify-content:center;border:1px solid #ffffff24;border-radius:30px;padding:0 20px 27px;background:radial-gradient(circle at 50% 35%,#ffffff12,transparent 48%),url("play-streamers-ps-logo.svg?v=10.14") center 36%/68px 68px no-repeat,linear-gradient(145deg,#ffffff13,#070709e8);box-shadow:0 28px 80px #000,inset 0 1px #ffffff48;color:#f7f7f4;content:"PLAY STREAMERS";font:800 9px/1 "Space Grotesk","Segoe UI",sans-serif;letter-spacing:.24em;filter:drop-shadow(0 0 18px #ffffff22);transform:translate(-50%,-50%);animation:none;-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px)}@keyframes ps-i18n-stars{to{background-position:0 0,180px 180px,-250px 250px,0 0}}html:not(.ps-i18n-booting):not(.ps15-session-pending) body{transition:opacity .16s ease}@media(max-width:760px){html:is(.ps-i18n-booting,.ps15-session-pending)::before{animation:none;background:radial-gradient(circle at 50% 42%,#ffffff10,transparent 32%),#030303}html:is(.ps-i18n-booting,.ps15-session-pending)::after{height:148px;border-radius:26px;-webkit-backdrop-filter:none;backdrop-filter:none}}@media(prefers-reduced-motion:reduce){html:is(.ps-i18n-booting,.ps15-session-pending)::before{animation:none}}</style>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preconnect" href="https://api.pstreamers.com" crossorigin>
@@ -60,7 +64,7 @@
 })();
 </script>
   <link rel="stylesheet" href="site-v7.css?v=10.36.0">
-  <link rel="stylesheet" href="creator-page-public.css?v=0.51.0">
+  <link rel="stylesheet" href="creator-page-public.css?v=0.53.0">
 
 
 </head>
@@ -200,8 +204,8 @@
 <style id="ps44-final-interface-repair" data-bundled-style></style>
 <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js" integrity="sha384-lQXOAyZwHXE55JFyrOMB7nY2Wv+m5ZWNtJcHrd1rceRQXAYNLak8ukN5TjBTcIwz" crossorigin="anonymous"></script>
   <script src="app-final.js?v=5.33.0"></script>
-  <script src="creator-page-public.js?v=0.51.0"></script>
-  <script src="site-router.js?v=1.2"></script><meta id="ps44-final-interface-repair-script" data-bundled-script="true">
+  <script src="creator-page-public.js?v=0.53.0"></script>
+  <script src="site-router.js?v=1.3"></script><meta id="ps44-final-interface-repair-script" data-bundled-script="true">
   <script src="server-analytics.js?v=6.1"></script>
 <script src="site-v7.js?v=10.36.0"></script>
   <script type="module" src="live-i18n.js?v=10.12.0"></script>

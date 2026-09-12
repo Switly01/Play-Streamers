@@ -81,8 +81,8 @@ const DONATE_OAUTH_PROVIDERS = Object.freeze({
     clientSecretVariable: "TIPEEESTREAM_CLIENT_SECRET",
   }),
 });
-const CURRENT_RELEASE_VERSION = "8.14";
-const CURRENT_RELEASE_PUBLISHED_AT = "2026-09-12T02:21:05Z";
+const CURRENT_RELEASE_VERSION = "8.15";
+const CURRENT_RELEASE_PUBLISHED_AT = "2026-09-12T03:44:07Z";
 const EXCHANGE_CURRENCIES = Object.freeze(["EUR", "TRY", "USD", "RUB", "SAR", "JPY"]);
 const EXCHANGE_CACHE_SECONDS = 5 * 60;
 const SW_IDENTITY_ORIGIN = "https://api.swcreate.com";
@@ -2824,6 +2824,8 @@ async function desktopStreamTimeline(request, env, sessionId) {
     return {
       id: String(row.id || ""),
       at: Math.max(0, Math.min(100, ((happenedAt - startedAt) / duration) * 100)),
+      minute: Math.max(0, Math.min(duration, happenedAt - startedAt) / 60_000),
+      occurredAt: happenedAt,
       kind: "Destek",
       label: `${String(row.donorName || "Destekçi").slice(0, 80)} · ${String(row.providerName || "Platform").slice(0, 60)}`,
       amountMinor: Math.max(0, Number(row.amountMinor || 0)),

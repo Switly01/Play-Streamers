@@ -1,5 +1,5 @@
 const SUPPORTED = new Set(["tr", "en", "de", "es", "fr", "ru", "ar", "ja"]);
-const CATALOG_VERSION = "2026-09-04.3";
+const CATALOG_VERSION = "2026-09-14.1";
 const catalogPromises = new Map();
 const renderedCatalogs = new Map();
 const COUNTRY_LOCALES = Object.freeze({

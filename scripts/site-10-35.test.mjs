@@ -54,7 +54,10 @@ test('cron dispatch isolates measurements from audit CPU usage', async () => {
   vm.runInContext('var job = {' + method + '}', c);
   const ctx = { waitUntil: promise => promise };
   await c.job.scheduled({ cron: '* * * * *' }, {}, ctx);
-  assert.deepEqual(calls, ['syncScheduledKickMetrics']);
+  assert.deepEqual(calls, ['syncScheduledKickMetrics','syncScheduledLiveSessions']);
+  calls.length = 0;
+  await c.job.scheduled({ cron: '*/2 * * * *' }, {}, ctx);
+  assert.deepEqual(calls, ['syncScheduledDonateOAuthConnections']);
   calls.length = 0;
   await c.job.scheduled({ cron: '*/15 * * * *' }, {}, ctx);
   assert.deepEqual(calls, ['runScheduledPlayBotAudit']);

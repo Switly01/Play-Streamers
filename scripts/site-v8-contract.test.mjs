@@ -11,14 +11,16 @@ test('site 10 assets are cache-busted and use fluid monochrome glass', async () 
     read('site-v7.css'),
     read('play-streamers-ps-logo.svg'),
   ]);
-  assert.match(html, /play-streamers-build" content="2026-09-04-site-10\.36\.0"/);
-  assert.match(html, /site-v7\.css\?v=10\.36\.0/);
-  assert.match(html, /app\.js\?v=5\.12\.0/);
-  assert.match(html, /site-v7\.js\?v=10\.36\.0/);
-  assert.match(html, /app-final\.js\?v=5\.33\.0/);
+  const buildVersion=html.match(/play-streamers-build" content="\d{4}-\d{2}-\d{2}-site-(\d+\.\d+\.\d+)"/)?.[1];
+  assert.ok(buildVersion,'dated site build version must be present');
+  assert.ok(html.includes(`site-v7.css?v=${buildVersion}`));
+  assert.match(html, /app\.js\?v=5\.12\.2/);
+  assert.match(html, /site-router\.js\?v=1\.4/);
+  assert.ok(html.includes(`site-v7.js?v=${buildVersion}`));
+  assert.match(html, /app-final\.js\?v=5\.33\.\d+/);
   assert.match(html, /window\.ps125ReleaseFirstPaint = releaseFirstPaint/);
   assert.match(html, /window\.setTimeout\(releaseFirstPaint, 4800\)/);
-  assert.match(html, /live-i18n\.js\?v=10\.12\.0/);
+  assert.match(html, /live-i18n\.js\?v=10\.12\.\d+/);
   assert.match(css, /html\[data-ps-site-version="8"\]/);
   assert.match(css, /--signal: #f5f5f2/);
   assert.match(css, /@keyframes ps82-meteor/);
@@ -77,7 +79,8 @@ test('public home promotes the desktop app without restoring legacy hero', async
   assert.match(source, /className = 'landing-main ps8-home'/);
   assert.match(source, /Windows için indir/);
   assert.match(source, /Windows 10\/11 · 64 bit/);
-  assert.match(source, /APP v0\.14\.5/);
+  const family=JSON.parse(await read('release-notes-family.localized.json'));
+  assert.ok(source.includes(`APP v${family.locales.tr.products.app.current}`));
   assert.match(source, /data-ps8-action="register"/);
   assert.match(source, /data-ps8-action="products"/);
   assert.match(source, /id="ps8-about"/);
@@ -210,8 +213,13 @@ test('SW Identity owns direct login and registration without legacy account leak
   assert.match(identityWorker, /hostname === \"pstreamers\.com\"/);
   assert.match(app, /installIdentityCalendar/);
   assert.match(app, /productRedirectUrl/);
-  assert.match(identityWorker, /SW_IDENTITY_VERSION = "1\.9\.0"/);
+  assert.match(identityWorker, /SW_IDENTITY_VERSION = "1\.9\.3"/);
   assert.match(identityWorker, /createProductHandoffTarget/);
+  assert.match(identityWorker, /trustedProductCredentialRequest/);
+  assert.match(identityWorker, /productOnly \? null : await createSession/);
+  assert.match(identityWorker, /async function rememberedLogin/);
+  assert.match(identityWorker, /rememberedLoginToken: nextToken/);
+  assert.match(identityWorker, /const productRedirectUrl = await createProductHandoffTarget\(env, request, row, product\)/);
   assert.match(identityWorker, /handleInternalProductAccount/);
   assert.match(identityWorker, /\/api\/internal\/account\/profile/);
   assert.match(identityWorker, /\/api\/internal\/account\/security\/challenge/);
@@ -236,9 +244,29 @@ test('SW Identity owns direct login and registration without legacy account leak
   assert.match(worker, /proxySwIdentityCredentialRequest/);
   assert.match(worker, /proxySwIdentityAccountRequest/);
   assert.match(worker, /\/api\/sw-identity\/login/);
+  assert.match(worker, /\/api\/sw-identity\/remembered/);
   assert.match(worker, /\/api\/sw-identity\/account\/profile/);
   assert.match(worker, /proxySwIdentityAccountAvatar/);
   assert.match(worker, /\/api\/sw-identity\/account\/totp\/confirm/);
+});
+
+test('desktop password login uses a constrained in-app Turnstile bridge', async () => {
+  const [challenge, worker, auth, app] = await Promise.all([
+    read('desktop-auth.html'),
+    read('cloudflare-worker.js'),
+    read('play-streamers-desktop/src/AuthScreen.tsx'),
+    read('play-streamers-desktop/src/App.tsx'),
+  ]);
+  assert.match(challenge, /ps-desktop-turnstile/);
+  assert.match(challenge, /https:\/\/challenges\.cloudflare\.com/);
+  assert.match(challenge, /requestedOrigin/);
+  assert.doesNotMatch(challenge, /postMessage\([^)]*,\s*['"]\*['"]\)/);
+  assert.doesNotMatch(challenge, /password|rememberedLoginToken/i);
+  assert.match(worker, /const desktop = ALLOWED_DESKTOP_ORIGINS\.has\(origin\)/);
+  assert.match(app, /\/api\/sw-identity\/login/);
+  assert.match(app, /productRedirectUrl/);
+  assert.match(auth, /auth-turnstile-frame/);
+  assert.doesNotMatch(auth, /identity-login/);
 });
 
 test('privacy and terms share the premium legal design', async () => {
@@ -270,7 +298,9 @@ test('versioned locale catalogs cover public, account, support and legal surface
   ];
   for (const language of ['en', 'de', 'es', 'fr', 'ru', 'ar', 'ja']) {
     const catalog = JSON.parse(await read(`locales/${language}.json`));
-    assert.equal(catalog.version, '2026-09-04.2');
+    const runtimeVersion=(await read('live-i18n.js')).match(/CATALOG_VERSION\s*=\s*"([^"]+)"/)?.[1];
+    assert.ok(runtimeVersion);
+    assert.equal(catalog.version,runtimeVersion);
     assert.equal(catalog.sourceLanguage, 'tr');
     assert.equal(catalog.language, language);
     assert.ok(Object.keys(catalog.translations).length >= 1000);

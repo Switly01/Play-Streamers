@@ -787,6 +787,7 @@
       document.body.classList.remove('auth-locked');
       if (updateRoute) syncCleanRoute('/home');
       queueRepair();
+      window.setTimeout(showPlayConnectWelcome, 250);
     };
     if (useLoader && typeof window.psUnifiedLoad === 'function') window.psUnifiedLoad(reveal);
     else if (useLoader && typeof window.ps28Load === 'function') window.ps28Load(reveal);
@@ -1134,6 +1135,33 @@
     if (/Firefox\//i.test(agent)) return { href: PLAY_CONNECT_STORES.firefox, label: "Firefox'a ekle", external: true };
     if (/Edg\/|OPR\/|Chrome\/|Chromium\//i.test(agent)) return { href: PLAY_CONNECT_STORES.chromium, label: 'Tarayıcı mağazasında aç', external: true };
     return { href: PLAY_CONNECT_STORES.fallback, label: "Play Connect'i indir", external: false };
+  }
+  function showPlayConnectWelcome() {
+    const current = state(), home = $('#psSecondHome');
+    if (!current.settings?.userSession || !current.settings?.playConnectWelcomePending || !home || home.hidden || $('#psConnectWelcome')) return;
+    const previousFocus = document.activeElement;
+    const layer = document.createElement('div');
+    layer.id = 'psConnectWelcome'; layer.className = 'account-blocker ps-connect-welcome';
+    // Official store links only: do not imply an unsupported browser can install a ZIP.
+    const firefox = /Firefox\//i.test(navigator.userAgent || '');
+    layer.innerHTML = `<section class="auth-dialog" role="dialog" aria-modal="true" aria-labelledby="psConnectWelcomeTitle" aria-describedby="psConnectWelcomeCopy" tabindex="-1"><img class="ps-connect-welcome-logo" src="./play-connect-pc-logo.svg?v=2.1" alt=""><h2 id="psConnectWelcomeTitle">${esc(ui('Play Connect ile yayına hazırlan'))}</h2><p id="psConnectWelcomeCopy">${esc(ui('Bağış platformlarını bağlamak için Play Connect eklentisini tarayıcına ekle.'))}</p><ol><li>${esc(ui('Mağaza bağlantısını aç ve eklentiyi tarayıcına ekle.'))}</li><li>${esc(ui('Tarayıcının eklentiler menüsünden Play Connect’i aç.'))}</li><li>${esc(ui('Play Streamers hesabını eşleştir ve kullandığın platformların kurulumunu tamamla.'))}</li></ol><a class="auth-submit" href="${firefox ? PLAY_CONNECT_STORES.firefox : PLAY_CONNECT_STORES.chromium}" target="_blank" rel="noopener noreferrer">${esc(ui(firefox ? "Firefox'a ekle" : 'Chrome / Edge mağazasında aç'))}</a><a class="ps-connect-welcome-alternative" href="${firefox ? PLAY_CONNECT_STORES.chromium : PLAY_CONNECT_STORES.firefox}" target="_blank" rel="noopener noreferrer">${esc(ui(firefox ? 'Chrome / Edge mağazasında aç' : "Firefox'a ekle"))}</a><button class="ps-connect-welcome-dismiss" type="button">${esc(ui('Şimdilik geç'))}</button></section>`;
+    const dismiss = () => {
+      const next = state();
+      if (next.settings?.user?.id === current.settings?.user?.id) {
+        next.settings.playConnectWelcomePending = false; saveAccountState(next);
+      }
+      layer.remove(); previousFocus?.focus?.();
+    };
+    layer.querySelector('button').onclick = dismiss;
+    layer.querySelectorAll('a').forEach(link => link.addEventListener('click', dismiss));
+    layer.addEventListener('keydown', event => {
+      if (event.key === 'Escape') { event.preventDefault(); event.stopPropagation(); dismiss(); }
+      if (event.key !== 'Tab') return;
+      const controls = [...layer.querySelectorAll('a,button')], first = controls[0], last = controls.at(-1);
+      if (event.shiftKey && (document.activeElement === first || !controls.includes(document.activeElement))) { event.preventDefault(); last.focus(); }
+      else if (!event.shiftKey && (document.activeElement === last || !controls.includes(document.activeElement))) { event.preventDefault(); first.focus(); }
+    });
+    document.body.append(layer); layer.querySelector('a').focus(); window.dispatchEvent(new Event('ps:i18n-refresh'));
   }
   const DONATE_PROVIDER_ICON_DATA = Object.freeze({
     "boosty": "data:image/png;base64,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",

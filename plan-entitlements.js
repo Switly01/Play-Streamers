@@ -1,0 +1,21 @@
+// Shared by the desktop and API. Container access is separate from paid tools.
+export const DESKTOP_TOOL_TIERS = Object.freeze({
+  "performance-planner": "free", "goal-board": "free",
+  "content-planner": "free", "idea-vault": "free", "quick-notes": "free",
+  "stream-script": "free", "silence-rescuer": "free", "themes": "free",
+  "data-export": "pro", "broadcast-summary": "pro", "after-stream-report": "pro",
+  "stream-intelligence": "pro", "audience-pulse": "pro",
+  "experiment-cycle": "pro", "channel-experiment-ledger": "pro",
+  "trend-record-center": "pro", "record-center": "pro", "comparison-arena": "pro",
+  "teleprompter": "pro", "clip-markers": "pro", "wellbeing": "pro",
+  "visual-quality-center": "pro", "overlay-studio": "pro", "brand-file-quality": "pro",
+  "rights-library": "pro", "rights-library-ledger": "pro",
+  "finance-center": "pro", "finance-ledger": "pro", "supporter-map": "pro",
+  "technical-health-center": "pro", "asset-lifecycle": "pro", "stream-tech-doctor": "pro",
+  "backup-center": "pro", "settings-restore-point": "pro",
+  "monetization-gates": "product-pro", "scenario-simulator": "product-pro",
+  "speech-coach": "product-pro", "content-fatigue-meter": "product-pro",
+  "revenue-cockpit": "product-pro", "sponsorship-center": "product-pro",
+  "sponsor-deal-center": "product-pro", "media-career-center": "product-pro",
+  "creator-portfolio": "product-pro",
+});

@@ -66,7 +66,7 @@
       history.replaceState(null, '', recoveredRoute);
       url.href = location.href;
     }
-    if (hasOAuthReturn(url)) {
+    if (window.psIdentityCallbackPending || hasOAuthReturn(url)) {
       scheduleRoute(300);
       return;
     }
@@ -114,7 +114,9 @@
       else if (path === '/dashboard') api.dashboard();
       else if (path === '/updates') api.updates();
       else if (path === '/account') {
-        if (signedIn) {
+        if (url.searchParams.get('two_factor') === '1' && document.querySelector('#landingAuthModal [name="code"]')) {
+          // OAuth callback owns this challenge; do not replace it with a login form.
+        } else if (signedIn) {
           path = '/account/data';
           replaceRoute(path);
           api.account('data');
@@ -144,6 +146,7 @@
 
   window.addEventListener('popstate', applyCurrentRoute);
   window.addEventListener('ps-route-change', applyCurrentRoute);
+  window.addEventListener('ps:identity-settled', () => scheduleRoute(0));
   new MutationObserver(observeAuthDismissal).observe(document.documentElement, { childList: true, subtree: true });
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', () => scheduleRoute(0), { once: true });
   else scheduleRoute(0);

@@ -34,3 +34,8 @@ and browser extension are closed. Apply it after `0010` and before Worker 5.0.
 `0013_sw_bot_issue_reports.sql` stores deterministic SW Bot explanations by
 issue hash. Apply it after `0012`; Worker 6.4 also creates the table lazily for
 safe rollout compatibility.
+
+`0016_creator_pages.sql` and `0017_creator_page_analytics.sql` add published
+creator pages and their aggregate counters. `0018_creator_page_analytics_rate.sql`
+adds the privacy-preserving, minute-bucketed abuse limit. Worker 8.18 creates
+these tables lazily so existing environments can roll forward safely.

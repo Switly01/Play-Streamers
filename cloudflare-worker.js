@@ -1,3 +1,5 @@
+import { DESKTOP_TOOL_TIERS } from "./plan-entitlements.js";
+
 /**
  * Play Streamers - Cloudflare Worker
  *
@@ -81,8 +83,8 @@ const DONATE_OAUTH_PROVIDERS = Object.freeze({
     clientSecretVariable: "TIPEEESTREAM_CLIENT_SECRET",
   }),
 });
-const CURRENT_RELEASE_VERSION = "8.16";
-const CURRENT_RELEASE_PUBLISHED_AT = "2026-09-12T18:00:00Z";
+const CURRENT_RELEASE_VERSION = "8.18";
+const CURRENT_RELEASE_PUBLISHED_AT = "2026-09-13T22:56:15Z";
 const EXCHANGE_CURRENCIES = Object.freeze(["EUR", "TRY", "USD", "RUB", "SAR", "JPY"]);
 const EXCHANGE_CACHE_SECONDS = 5 * 60;
 const SW_IDENTITY_ORIGIN = "https://api.swcreate.com";
@@ -91,7 +93,7 @@ const WEB_IDENTITY_REDIRECTS = new Set([
   "https://pstreamers.com/identity/callback",
   "https://www.pstreamers.com/identity/callback",
 ]);
-const PLAY_STREAMERS_FEATURES = Object.freeze([
+const PLAY_STREAMERS_FEATURES = Object.freeze([...new Map([
   ["home-command-center", "free"], ["quick-notes", "free"], ["stream-timer", "free"],
   ["live-events", "free"], ["goal-board", "free"], ["basic-stats", "free"],
   ["idea-vault", "free"],
@@ -126,7 +128,7 @@ const PLAY_STREAMERS_FEATURES = Object.freeze([
   ["payout-calendar", "pro"], ["reserve-plan", "pro"],
   ["creator-page", "free"],
   ["creator-career-file", "product-pro"], ["brand-file-quality", "pro"],
-]);
+].map(([id,tier])=>[id,DESKTOP_TOOL_TIERS[id] || tier]).concat(Object.entries(DESKTOP_TOOL_TIERS))).entries()]);
 const PLAN_TIER_RANK = Object.freeze({ free: 0, pro: 1, "product-pro": 2 });
 const KICK_OAUTH = "https://id.kick.com";
 const KICK_API = "https://api.kick.com";
@@ -873,9 +875,9 @@ export default {
     if (controller.cron === '*/15 * * * *') {
       context.waitUntil(runScheduledPlayBotAudit(env));
     } else if (controller.cron === '*/2 * * * *') {
-      context.waitUntil(Promise.all([syncScheduledDonateOAuthConnections(env), syncScheduledLiveSessions(env)]));
+      context.waitUntil(syncScheduledDonateOAuthConnections(env));
     } else {
-      context.waitUntil(syncScheduledKickMetrics(env));
+      context.waitUntil(Promise.all([syncScheduledKickMetrics(env), syncScheduledLiveSessions(env)]));
     }
   },
 };
@@ -2232,7 +2234,7 @@ async function upsertSwIdentityUser(identity, env) {
     await env.DB.prepare(`UPDATE users SET sw_identity_user_id = ?1,
       display_name = CASE WHEN username IS NULL THEN ?2 ELSE display_name END,
       updated_at = ?3 WHERE id = ?4`).bind(swUserId, displayName, now, existing.id).run();
-    return getUserById(existing.id, env);
+    return { user: await getUserById(existing.id, env), isNewUser: false };
   }
   const id = randomBase64Url(24);
   const email = publicEmail || `sw-${swUserId.slice(0, 48)}-${id.slice(0, 8)}@local.play-streamers.invalid`;
@@ -2240,7 +2242,7 @@ async function upsertSwIdentityUser(identity, env) {
     (id, google_sub, sw_identity_user_id, email, email_linked, username, display_name, avatar_url, created_at, updated_at)
     VALUES (?1, NULL, ?2, ?3, ?4, NULL, ?5, NULL, ?6, ?6)`)
     .bind(id, swUserId, email, publicEmail ? 1 : 0, displayName, now).run();
-  return getUserById(id, env);
+  return { user: await getUserById(id, env), isNewUser: true };
 }
 
 async function exchangeDesktopSwIdentity(request, env) {
@@ -2266,9 +2268,9 @@ async function exchangeDesktopSwIdentity(request, env) {
   if (!identityResponse.ok || !identity?.ok || !identity?.user) {
     return apiResponse(request, { error: identity?.error || "SW Identity giriş kodu doğrulanamadı." }, identityResponse.status === 401 ? 401 : 502);
   }
-  let user;
+  let user, isNewUser = false;
   try {
-    user = await upsertSwIdentityUser(identity.user, env);
+    ({ user, isNewUser } = await upsertSwIdentityUser(identity.user, env));
   } catch (error) {
     if (error?.message === "SW_IDENTITY_EMAIL_CONFLICT") return apiResponse(request, { error: "Bu e-posta başka bir SW Identity hesabına bağlı." }, 409);
     throw error;
@@ -2292,6 +2294,7 @@ async function exchangeDesktopSwIdentity(request, env) {
     plan,
     features: enabledDesktopFeatures(plan.tier),
     identityProvider: "sw-identity",
+    isNewUser,
   };
   return WEB_IDENTITY_REDIRECTS.has(redirectUri)
     ? authenticatedApiResponse(request, payload, 200, sessionId)
@@ -2682,25 +2685,37 @@ async function desktopCreatorPage(request, env) {
 async function publicCreatorPage(request, env, slug) {
   await ensureDesktopPlatformSchema(env);
   const row = await env.DB.prepare(`SELECT p.user_id AS userId, p.slug, p.published_json AS publishedJson,
-      p.published_at AS publishedAt, r.status, r.last_observed_at AS lastObservedAt,
-      s.title AS streamTitle,
+      p.published_at AS publishedAt, r.status, COALESCE(m.last_checked_at, r.last_observed_at, 0) AS lastObservedAt,
+      m.last_error AS monitorError,
+      s.title AS streamTitle, s.started_at AS streamStartedAt, u.kick_username AS kickUsername,
+      (SELECT sx.started_at FROM ps_stream_sessions sx WHERE sx.user_id = p.user_id AND sx.platform = 'Kick' AND json_extract(sx.summary_json, '$.collector') = 'server-automatic' ORDER BY sx.started_at DESC LIMIT 1) AS lastStreamStartedAt,
+      (SELECT sx.ended_at FROM ps_stream_sessions sx WHERE sx.user_id = p.user_id AND sx.platform = 'Kick' AND json_extract(sx.summary_json, '$.collector') = 'server-automatic' AND sx.ended_at IS NOT NULL ORDER BY sx.ended_at DESC LIMIT 1) AS lastStreamEndedAt,
       (SELECT viewer_count FROM ps_stream_samples sm WHERE sm.session_id = r.session_id ORDER BY sm.sample_minute DESC LIMIT 1) AS currentViewers
     FROM ps_creator_pages p
-    LEFT JOIN ps_stream_runtime r ON r.user_id = p.user_id AND r.status = 'live'
+    JOIN users u ON u.id = p.user_id
+    LEFT JOIN ps_stream_runtime r ON r.user_id = p.user_id
+    LEFT JOIN ps_kick_monitor_state m ON m.user_id = p.user_id
     LEFT JOIN ps_stream_sessions s ON s.id = r.session_id
     WHERE p.slug = ?1 AND p.is_published = 1 LIMIT 1`).bind(slug).first();
   if (!row) return apiResponse(request, { error: "Yayıncı sayfası bulunamadı." }, 404);
   const document = creatorPageRowDocument(row, "publishedJson");
   if (!document) return apiResponse(request, { error: "Yayıncı sayfası kullanılamıyor." }, 503);
-  const recentlyObserved = Number(row.lastObservedAt || 0) >= Date.now() - 3 * 60_000;
+  const recentlyObserved = !row.monitorError && Number(row.lastObservedAt || 0) >= Date.now() - 3 * 60_000;
+  const liveNow = row.status === "live" && recentlyObserved;
+  const kickUsername = String(row.kickUsername || "").trim();
   return apiResponse(request, {
     ok: true,
     page: { ...document, avatarUrl: `${API_ORIGIN}/api/public/creator-pages/${slug}/avatar` },
     publishedAt: Number(row.publishedAt || 0),
     live: {
-      status: row.status === "live" && recentlyObserved ? "live" : "offline",
-      title: row.status === "live" && recentlyObserved ? creatorPageText(row.streamTitle, 160) : "",
-      currentViewers: row.status === "live" && recentlyObserved ? Math.max(0, Number(row.currentViewers || 0)) : 0,
+      status: liveNow ? "live" : recentlyObserved ? "offline" : "unknown",
+      title: liveNow ? creatorPageText(row.streamTitle, 160) : "",
+      currentViewers: liveNow ? Math.max(0, Number(row.currentViewers || 0)) : 0,
+      startedAt: liveNow ? Math.max(0, Number(row.streamStartedAt || 0)) || null : null,
+      lastStreamStartedAt: Math.max(0, Number(row.lastStreamStartedAt || 0)) || null,
+      lastStreamEndedAt: Math.max(0, Number(row.lastStreamEndedAt || 0)) || null,
+      lastCheckedAt: Math.max(0, Number(row.lastObservedAt || 0)) || null,
+      channelUrl: /^[a-z0-9_.-]{2,32}$/i.test(kickUsername) ? `https://kick.com/${encodeURIComponent(kickUsername)}` : "",
     },
   });
 }
@@ -2728,6 +2743,9 @@ async function desktopCreatorPageAnalytics(request, env) {
 
 async function publicCreatorPageAnalytics(request, env, slug) {
   await ensureDesktopPlatformSchema(env);
+  if (!(await allowCreatorPageAnalyticsRequest(request, slug, env))) {
+    return apiResponse(request, { error: "Analiz sınırına ulaşıldı. Kısa süre sonra yeniden dene." }, 429);
+  }
   const input = await requestJson(request);
   const event = input?.event === "click" ? "click" : input?.event === "view" ? "view" : "";
   if (!event) return apiResponse(request, { error: "Analiz olayı geçersiz." }, 400);
@@ -2742,6 +2760,18 @@ async function publicCreatorPageAnalytics(request, env, slug) {
     ON CONFLICT(user_id, day, metric_key) DO UPDATE SET count = count + 1, updated_at = excluded.updated_at`)
     .bind(page.userId, day, metricKey, Date.now()).run();
   return apiResponse(request, { ok: true }, 202);
+}
+
+async function allowCreatorPageAnalyticsRequest(request, slug, env) {
+  const minute = Math.floor(Date.now() / 60000);
+  const ip = String(request.headers.get("CF-Connecting-IP") || "unknown").slice(0, 64);
+  const rateKey = await sha256Hex(`creator-analytics:v1:${env.AUTH_PEPPER}:${ip}:${slug}`);
+  const result = await env.DB.prepare(`INSERT INTO ps_creator_page_analytics_rate (rate_key, bucket, count)
+    VALUES (?1, ?2, 1)
+    ON CONFLICT(rate_key, bucket) DO UPDATE SET count = count + 1
+      WHERE ps_creator_page_analytics_rate.count < 60`)
+    .bind(rateKey, minute).run();
+  return Number(result?.meta?.changes || 0) === 1;
 }
 
 async function publicCreatorPageAvatar(request, env, slug) {
@@ -3270,6 +3300,7 @@ async function createDesktopInsight(request, env) {
   const current = await readUserSession(request, env);
   if (!current) return apiResponse(request, { error: "Oturum bulunamadı." }, 401);
   const plan = await desktopEntitlement(current.session.user.id, env);
+  if (!enabledDesktopFeatures(plan.tier).includes("stream-intelligence")) return apiResponse(request, { error: "Bu özellik mevcut planında açık değil.", planRequired: DESKTOP_TOOL_TIERS["stream-intelligence"] }, 403);
   const input = await requestJson(request);
   const numericSummary = {
     current: {
@@ -3289,7 +3320,6 @@ async function createDesktopInsight(request, env) {
   return apiResponse(request, {
     ok: true,
     ai: false,
-    ...(plan.tier !== "product-pro" ? { planRequired: "product-pro" } : {}),
     insight,
   });
 }
@@ -4852,6 +4882,13 @@ async function ensureDesktopPlatformSchemaInD1(env) {
       FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
     )`),
     env.DB.prepare("CREATE INDEX IF NOT EXISTS idx_ps_creator_page_analytics_day ON ps_creator_page_analytics(user_id, day)"),
+    env.DB.prepare(`CREATE TABLE IF NOT EXISTS ps_creator_page_analytics_rate (
+      rate_key TEXT NOT NULL,
+      bucket INTEGER NOT NULL,
+      count INTEGER NOT NULL DEFAULT 0,
+      PRIMARY KEY (rate_key, bucket)
+    )`),
+    env.DB.prepare("CREATE INDEX IF NOT EXISTS idx_ps_creator_page_analytics_rate_bucket ON ps_creator_page_analytics_rate(bucket)"),
   ]);
   desktopPlatformSchemaReady = true;
 }
@@ -5556,6 +5593,7 @@ async function maintainSecurityStorage(env) {
       env.DB.prepare("DELETE FROM kick_refresh_locks WHERE locked_until <= ?1").bind(now),
       env.DB.prepare("DELETE FROM support_email_log WHERE created_at <= ?1").bind(now - 7 * 24 * 60 * 60 * 1000),
       env.DB.prepare("DELETE FROM donate_bridge_pairing_codes WHERE expires_at <= ?1 OR claimed_at IS NOT NULL").bind(now),
+      env.DB.prepare("DELETE FROM ps_creator_page_analytics_rate WHERE bucket < ?1").bind(Math.floor(now / 60000) - 10),
     ]);
     const removed = results.reduce((total, result) => total + Number(result?.meta?.changes || 0), 0);
     if (removed > 0) logSecurityEvent("security_storage_pruned", { removed });

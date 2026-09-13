@@ -1,7 +1,7 @@
 (() => {
   const KEY='play-streamers-v17-site'; const API_BASE='https://api.pstreamers.com'; let removalTimers=new Set(); let activeKickSession=''; let activeUserSession=''; let kickConnectionStatus='Giriş yapılmadı'; let liveInfo={state:'idle',message:'Kick bağlantısı bekleniyor'}; let landingMode=true; const resumeAccountFlow=sessionStorage.getItem('play-streamers-account-flow')==='1';
   const empty=()=>({settings:{kickSession:activeKickSession,kickAccount:null,userSession:activeUserSession,user:null},events:{followers:[],subs:{},kicks:[],gifts:[],donations:[]},totals:{followers:0,kicks:0,donations:0,gifts:0},stats:{subs:{},joined:{},gifts:{month:{},all:{}},kicks:{month:{},all:{}},donations:{month:{},all:{}}}});
-  let state=JSON.parse(localStorage.getItem(KEY)||'null')||empty(); const stateDefaults=empty();
+  let state; try { state=JSON.parse(localStorage.getItem(KEY)||'null'); } catch {} if(!state||typeof state!=='object'||Array.isArray(state))state=empty(); const stateDefaults=empty();
   state.settings={...stateDefaults.settings,...(state.settings&&typeof state.settings==='object'?state.settings:{})};
   state.events={...stateDefaults.events,...(state.events&&typeof state.events==='object'?state.events:{})};
   state.events.followers=Array.isArray(state.events.followers)?state.events.followers:[];state.events.kicks=Array.isArray(state.events.kicks)?state.events.kicks:[];state.events.gifts=Array.isArray(state.events.gifts)?state.events.gifts:[];state.events.donations=Array.isArray(state.events.donations)?state.events.donations:[];state.events.subs=state.events.subs&&typeof state.events.subs==='object'?state.events.subs:{};
@@ -35,8 +35,56 @@
   const SW_IDENTITY_REDIRECT='https://pstreamers.com/identity/callback';
   function identityProductRequest(stateValue=''){const requestState=stateValue||Array.from(crypto.getRandomValues(new Uint8Array(24)),byte=>byte.toString(16).padStart(2,'0')).join('');sessionStorage.setItem('ps-sw-identity-state',requestState);return{clientId:'play-streamers',redirectUri:SW_IDENTITY_REDIRECT,state:requestState}}
   function identityAuthorizePath(product=identityProductRequest()){const path=new URL('/api/auth/product/authorize',SW_IDENTITY_ORIGIN);path.searchParams.set('client_id',product.clientId);path.searchParams.set('redirect_uri',product.redirectUri);path.searchParams.set('state',product.state);return path}
-  function startSwIdentityLogin(provider=''){const authorize=identityAuthorizePath();const remember=$('#landingAuthModal [name="remember"]')?.checked===true;sessionStorage.setItem('ps48RememberChoice',remember?'1':'0');sessionStorage.setItem('psCurrentSession','1');if(provider==='google'||provider==='kick'){const target=new URL(`/api/auth/oauth/${provider}/start`,SW_IDENTITY_ORIGIN);target.searchParams.set('return_to',`${authorize.pathname}${authorize.search}`);target.searchParams.set('mode','login');target.searchParams.set('remember',remember?'1':'0');location.assign(target.toString());return}location.assign(authorize.toString())}
-  async function completeSwIdentityCallback(){const url=new URL(location.href);const isCallback=url.pathname==='/identity/callback'||url.searchParams.get('sw_identity_callback')==='1';if(!isCallback)return false;const code=String(url.searchParams.get('code')||''),returnedState=String(url.searchParams.get('state')||''),expectedState=String(sessionStorage.getItem('ps-sw-identity-state')||'');if(!expectedState||returnedState!==expectedState){history.replaceState(null,'','/');notice('SW Identity doğrulanamadı','Giriş isteğinin güvenlik kodu eşleşmedi. Lütfen yeniden dene.','!');return true}if(url.searchParams.get('two_factor_required')==='1'){const challengeId=String(url.searchParams.get('challenge_id')||'');history.replaceState(null,'','/account?mode=login&two_factor=1');showLandingAuthV101('login');const form=$('#landingAuthModal .ps-identity-credential-form');showInlineTwoFactor(form,challengeId,{clientId:'play-streamers',redirectUri:SW_IDENTITY_REDIRECT,state:returnedState});return true}if(!/^[a-f0-9]{64}$/i.test(code)){history.replaceState(null,'','/');notice('SW Identity doğrulanamadı','Tek kullanımlık giriş kodu alınamadı. Lütfen yeniden dene.','!');return true}sessionStorage.removeItem('ps-sw-identity-state');try{const response=await fetch(`${API_BASE}/api/auth/sw/exchange`,{method:'POST',credentials:'include',headers:{'content-type':'application/json'},body:JSON.stringify({code,redirectUri:SW_IDENTITY_REDIRECT})});const data=await response.json().catch(()=>({}));if(!response.ok||!data.sessionId)throw new Error(data.error||'SW Identity girişi tamamlanamadı.');landingMode=false;activeUserSession=data.sessionId;adoptAuthenticatedUser(data.user);state.settings.userSession=activeUserSession;if(data.plan)state.settings.plan=data.plan;save();history.replaceState(null,'','/home');render();notice('SW Identity bağlandı',`${data.plan?.label||'Free'} planın ve hesabın eşitlendi.`,'✓');refreshInterfaceLanguage()}catch(error){history.replaceState(null,'','/');notice('Giriş tamamlanamadı',error.message||'SW Identity şu anda yanıt vermedi.','!')}return true}
+  function startSwIdentityLogin(provider=''){
+    const authorize=identityAuthorizePath();
+    const remember=$('#landingAuthModal [name="remember"]')?.checked===true;
+    sessionStorage.setItem('ps48RememberChoice',remember?'1':'0');sessionStorage.setItem('psCurrentSession','1');
+    if(provider==='google'||provider==='kick'){
+      const target=new URL(`/api/auth/oauth/${provider}/start`,SW_IDENTITY_ORIGIN);
+      target.searchParams.set('return_to',`${authorize.pathname}${authorize.search}`);
+      // Provider buttons continue with an existing identity or create it on first use.
+      target.searchParams.set('mode','register');target.searchParams.set('remember',remember?'1':'0');
+      location.assign(target.toString());return;
+    }
+    location.assign(authorize.toString());
+  }
+  async function completeSwIdentityCallback(){
+    const url=new URL(location.href);
+    if(url.pathname.replace(/\/+$/,'')!=='/identity/callback'&&url.searchParams.get('sw_identity_callback')!=='1')return false;
+    window.psIdentityCallbackPending=true;
+    const code=String(url.searchParams.get('code')||''),returnedState=String(url.searchParams.get('state')||''),expectedState=String(sessionStorage.getItem('ps-sw-identity-state')||'');
+    // Remove one-time codes before any asynchronous request or external resource can reuse the URL.
+    history.replaceState(null,'','/account?mode=login');
+    let requestTimer=0;
+    try{
+      if(!expectedState||returnedState!==expectedState)throw new Error('Giriş isteğinin güvenlik kodu eşleşmedi. Lütfen yeniden dene.');
+      if(url.searchParams.get('two_factor_required')==='1'){
+        const challengeId=String(url.searchParams.get('challenge_id')||'');
+        history.replaceState(null,'','/account?mode=login&two_factor=1');
+        showLandingAuthV101('login');
+        showInlineTwoFactor($('#landingAuthModal .ps-identity-credential-form'),challengeId,{clientId:'play-streamers',redirectUri:SW_IDENTITY_REDIRECT,state:returnedState});
+        return true;
+      }
+      if(!/^[a-f0-9]{64}$/i.test(code))throw new Error('Tek kullanımlık giriş kodu alınamadı. Lütfen yeniden dene.');
+      sessionStorage.removeItem('ps-sw-identity-state');
+      const controller=new AbortController();requestTimer=window.setTimeout(()=>controller.abort(),20000);
+      const response=await fetch(`${API_BASE}/api/auth/sw/exchange`,{method:'POST',credentials:'include',signal:controller.signal,headers:{'content-type':'application/json'},body:JSON.stringify({code,redirectUri:SW_IDENTITY_REDIRECT})});
+      const data=await response.json().catch(()=>({}));
+      if(!response.ok||!data.sessionId)throw new Error(data.error||'SW Identity girişi tamamlanamadı.');
+      landingMode=false;activeUserSession=data.sessionId;adoptAuthenticatedUser(data.user);state.settings.userSession=activeUserSession;
+      if(data.plan)state.settings.plan=data.plan;
+      if(data.isNewUser===true)state.settings.playConnectWelcomePending=true;
+      save();history.replaceState(null,'','/home');render();
+      notice('SW Identity bağlandı',`${data.plan?.label||'Free'} planın ve hesabın eşitlendi.`,'✓');refreshInterfaceLanguage();
+    }catch(error){
+      history.replaceState(null,'','/account?mode=login');
+      notice('Giriş tamamlanamadı',error?.name==='AbortError'?'Giriş hizmeti zamanında yanıt vermedi. Lütfen yeniden dene.':error.message||'SW Identity şu anda yanıt vermedi.','!');
+    }finally{
+      window.clearTimeout(requestTimer);window.psIdentityCallbackPending=false;
+      window.dispatchEvent(new Event('ps:identity-settled'));
+    }
+    return true;
+  }
   function showLandingAuth(mode){const existing=$('#landingAuthModal');if(existing)existing.remove();const isLogin=mode==='login';const layer=document.createElement('div');layer.className='landing-auth-modal ps-identity-auth';layer.id='landingAuthModal';layer.innerHTML=`<section class="auth-dialog" data-sw-identity-auth="1"><button class="auth-close" type="button" aria-label="Kapat">×</button><div class="ps-identity-wordmark" aria-label="Play Streamers"><img src="./play-streamers-ps-logo.svg?v=10" alt=""><span>Play Streamers</span></div><span class="eyebrow">SW IDENTITY İLE KORUNUR</span><h2>${isLogin?'SW hesabına giriş yap':'SW hesabını oluştur'}</h2><p>${isLogin?'Play Streamers verilerin, planın ve güvenliğin tek SW Identity hesabınla açılır.':'Kayıt işlemi merkezi SW Identity hesabını oluşturur; ayrıca bir Play Streamers hesabı açılmaz.'}</p><label class="ps48-remember ps-identity-remember"><input type="checkbox" name="remember"><span>Beni hatırla</span></label><button class="auth-submit ps-sw-identity-submit" type="button" id="modalSwIdentity"><span class="ps-sw-shield" aria-hidden="true">SW</span><b>${isLogin?'SW hesabımla giriş yap':'SW Identity hesabı oluştur'}</b><i>→</i></button><div class="auth-divider"><span>veya sağlayıcıyla devam et</span></div><div class="ps-identity-providers"><button type="button" id="modalGoogle" aria-label="Google ile SW Identity girişi"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#4285F4" d="M21.6 12.2c0-.7-.1-1.4-.2-2.1H12v4h5.4a4.6 4.6 0 0 1-2 3v2.6h3.2c1.9-1.8 3-4.3 3-7.5Z"/><path fill="#34A853" d="M12 22c2.7 0 5-.9 6.6-2.3l-3.2-2.6c-.9.6-2 1-3.4 1-2.6 0-4.8-1.8-5.6-4.1H3.1v2.7A10 10 0 0 0 12 22Z"/><path fill="#FBBC05" d="M6.4 14a6 6 0 0 1 0-4V7.3H3.1a10 10 0 0 0 0 9.4L6.4 14Z"/><path fill="#EA4335" d="M12 5.9c1.5 0 2.8.5 3.8 1.5l2.9-2.8A9.7 9.7 0 0 0 3.1 7.3L6.4 10c.8-2.3 3-4.1 5.6-4.1Z"/></svg></button><button type="button" id="modalKick" aria-label="Kick ile SW Identity girişi"><svg viewBox="0 0 24 28" aria-hidden="true"><path fill-rule="evenodd" d="M1 1H9.7V7.15H12.6V4.08H15.5V1H24V10.23H21.1V13.31H18.2V16.38H21.1V19.46H24V27H15.5V24H12.6V20.92H9.7V27H1V1Z"/></svg></button></div><div class="ps-identity-trust"><i></i><span>SW Identity güvenlik ve plan altyapısı</span></div></section>`;document.body.append(layer);$('.auth-close',layer).onclick=removeLandingAuth;layer.onclick=event=>{if(event.target===layer)removeLandingAuth()};$('#modalSwIdentity',layer).onclick=()=>startSwIdentityLogin();$('#modalGoogle',layer).onclick=()=>startSwIdentityLogin('google');$('#modalKick',layer).onclick=()=>startSwIdentityLogin('kick')}
   function continueProductSignIn(data,product){sessionStorage.setItem('ps48RememberChoice',$('#landingAuthModal [name="remember"]')?.checked?'1':'0');if(data?.productRedirectUrl){location.assign(data.productRedirectUrl);return}location.assign(identityAuthorizePath(product).toString())}
   function showInlineTwoFactor(form,challengeId,product){
@@ -231,7 +279,7 @@
   if(googleJustConnected)notice('Hesabın oluşturuldu','Google hesabınla Play Streamers’a giriş yaptın.','✓');
   if(activeKickSession)void refreshKickStatus(false);
   if(activeKickSession)void refreshLiveStatus();
-  if(location.pathname==='/identity/callback'||new URLSearchParams(location.search).get('sw_identity_callback')==='1')void completeSwIdentityCallback();else void refreshUserSession();
+  if(location.pathname.replace(/\/+$/,'')==='/identity/callback'||new URLSearchParams(location.search).get('sw_identity_callback')==='1')void completeSwIdentityCallback();else void refreshUserSession();
 })();
 
 /* Play Streamers 2.2 Beta progressive interface layer */

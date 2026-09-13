@@ -5746,3 +5746,14 @@ body.ps-v9 :is(#panelGrid,#ps13CardCopy) .entries:has(li[data-kind="donations"])
   body.ps-v9 #ps51AccountCenter .ps66-create { grid-template-columns:1fr!important; }
   body.ps-v9 #ps51AccountCenter #ps66CreateWebhook { max-width:none!important;width:100%!important; }
 }
+.ps-connect-welcome{z-index:2147483000!important;padding:20px;overflow:auto}
+.ps-connect-welcome .auth-dialog{width:min(460px,100%);max-height:calc(100dvh - 40px);overflow:auto;box-sizing:border-box;padding:30px;border:1px solid #ffffff30;border-radius:24px;background:#101014;color:#f7f7f4;box-shadow:0 24px 90px #000c}
+.ps-connect-welcome-logo{display:block;width:54px;height:54px;margin-bottom:18px}
+.ps-connect-welcome h2{font-size:25px;line-height:1.2;margin:0 0 14px}
+.ps-connect-welcome p,.ps-connect-welcome ol{color:#c0c0c8;font-size:14px;line-height:1.6}
+.ps-connect-welcome ol{padding-inline-start:22px;margin:18px 0 24px}
+.ps-connect-welcome li+li{margin-top:9px}
+.ps-connect-welcome .auth-submit{display:block;text-align:center;text-decoration:none;box-sizing:border-box}
+.ps-connect-welcome-alternative{display:block;text-align:center;margin:14px 0;color:#eee;font-size:13px}
+.ps-connect-welcome-dismiss{display:block;width:100%;padding:12px;border:1px solid #ffffff2c;border-radius:12px;color:#ddd;background:#ffffff08;cursor:pointer}
+.ps-connect-welcome :is(a,button):focus-visible{outline:2px solid #fff;outline-offset:4px}

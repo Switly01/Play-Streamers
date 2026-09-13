@@ -56,6 +56,10 @@ try {
   const siteStableBorder = await site.locator('#ps44UpdatesDialog .stable-release').first().evaluate(node => getComputedStyle(node).borderColor);
   const siteBetaBorder = await site.locator('#ps44UpdatesDialog .beta-release').first().evaluate(node => getComputedStyle(node).borderColor);
   assert.notEqual(siteStableBorder, siteBetaBorder);
+  await site.locator('.ps-release-product-tabs button').filter({hasText:'Play Connect'}).click();
+  for (const version of ['1.7','1.8','1.9','2.0']) {
+    assert.ok((await site.locator('#ps44UpdatesDialog').innerText()).includes(version), `${version} missing from website UI`);
+  }
   await site.screenshot({ path: path.join(evidenceDir, 'play-streamers-web.png'), fullPage: true });
 
   const connect = await context.newPage();
@@ -84,7 +88,10 @@ try {
   await connect.locator('#updateNotesButton').click();
   await connect.locator('#updateNotesModal').waitFor({ state: 'visible' });
   assert.equal(await connect.locator('#updateNotesTitle').textContent(), 'Play Connect Güncelleme Notları');
-  assert.equal(await connect.locator('#updateNotesList article').count(), 17);
+  assert.equal(await connect.locator('#updateNotesList article').count(), 20);
+  for (const version of ['1.7','1.8','1.9','2.0']) {
+    assert.ok((await connect.locator('#updateNotesList').innerText()).includes(version), `${version} missing from Connect UI`);
+  }
   assert.ok(await connect.locator('#updateNotesList .beta-release').count() > 0);
   const connectStableBorder = await connect.locator('#updateNotesList .stable-release').first().evaluate(node => getComputedStyle(node).borderColor);
   const connectBetaBorder = await connect.locator('#updateNotesList .beta-release').first().evaluate(node => getComputedStyle(node).borderColor);
@@ -113,6 +120,10 @@ try {
     'Play Connect Güncelleme Notları'
   ]);
   assert.equal(await sw.locator('.sw-update-tabs button').count(), 5);
+  await sw.locator('.sw-update-tabs button').filter({hasText:'Play Connect'}).click();
+  for (const version of ['1.7','1.8','1.9','2.0']) {
+    assert.ok((await sw.locator('.sw-update-notes').innerText()).includes(version), `${version} missing from SW Create UI`);
+  }
   assert.ok(await sw.locator('.sw-update-notes .beta-release').count() > 0);
   const swStableBorder = await sw.locator('.sw-update-notes .stable-release').first().evaluate(node => getComputedStyle(node).borderBottomColor);
   const swBetaBorder = await sw.locator('.sw-update-notes .beta-release').first().evaluate(node => getComputedStyle(node).borderColor);
@@ -131,7 +142,7 @@ try {
   await sw.screenshot({ path: path.join(evidenceDir, 'sw-create-arabic.png'), fullPage: true });
 
   await browser.close();
-  console.log('Release notes UI QA passed: web=3 tabs, Play Connect=17 releases, SW Create=5 tabs, beta styling and locale switches verified.');
+  console.log('Release notes UI QA passed: web=3 tabs, Play Connect=20 releases, SW Create=5 tabs, missing versions restored, beta styling and locale switches verified.');
 } finally {
   siteServer.kill();
   swServer.kill();

@@ -5,9 +5,34 @@ import { readFile } from 'node:fs/promises';
 const root = new URL('../', import.meta.url);
 const source = JSON.parse(await readFile(new URL('release-notes-family.json', root), 'utf8'));
 const localized = JSON.parse(await readFile(new URL('release-notes-family.localized.json', root), 'utf8'));
-const expectedCounts = { web:18, app:19, connect:17, identity:15, swcreate:19 };
+const expectedCounts = { web:18, app:19, connect:20, identity:15, swcreate:19 };
 const expectedVersions = { web:'1.8', app:'1.9', connect:'2.0', identity:'1.5', swcreate:'1.9' };
 const languages = ['tr','en','de','es','fr','ru','ar','ja'];
+
+test('Connect 2.0 preserves the full stable history, including 1.7, 1.8 and 1.9', async () => {
+  const versions = ['2.0', ...Array.from({ length:10 }, (_, index) => `1.${9-index}`)];
+  assert.deepEqual(source.products.connect.entries.filter(entry => !entry.beta).map(entry => entry.version), versions);
+  assert.equal(source.products.connect.entries.find(entry => entry.version === '1.7').title, 'Birleşik Bağlantı');
+  for (const language of languages) {
+    const entries = localized.locales[language].products.connect.entries;
+    assert.deepEqual(entries.filter(entry => !entry.beta).map(entry => entry.version), versions);
+    for (const version of ['1.7','1.8','1.9','2.0']) {
+      const translated = entries.find(entry => entry.version === version);
+      const original = source.products.connect.entries.find(entry => entry.version === version);
+      assert.equal(translated.items.length, original.items.length);
+      if (language !== 'tr') translated.items.forEach((item,index) => assert.notEqual(item,original.items[index], `${language}/${version}/${index}`));
+    }
+  }
+  const manifest = JSON.parse(await readFile(new URL('play-connect/manifest.json',root),'utf8'));
+  assert.equal(manifest.version,'2.0');
+  assert.equal(manifest.version_name,'2.0');
+});
+
+test('all shipped source surfaces embed the exact same archive', async () => {
+  for (const path of ['play-connect/release-notes-family.localized.json','play-streamers-desktop/src/release-notes-family.localized.json','swcreate-site/src/release-notes-family.localized.json']) {
+    assert.deepEqual(JSON.parse(await readFile(new URL(path,root),'utf8')),localized,path);
+  }
+});
 
 test('supplied family history is complete and beta releases are explicitly marked', () => {
   assert.deepEqual(Object.fromEntries(Object.entries(source.products).map(([key, product]) => [key, product.entries.length])), expectedCounts);

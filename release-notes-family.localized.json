@@ -503,6 +503,39 @@
           "entries": [
             {
               "version": "2.0",
+              "title": "Güncelleme Notları",
+              "beta": false,
+              "items": [
+                "Ürün güncelleme geçmişlerine ortak arşivden erişim sağlandı.",
+                "Sekiz dilde hazır arayüz metinleri eklentinin içinde sunuldu.",
+                "Chrome ve Firefox paketleri ortak kaynaklarla eşitlendi."
+              ]
+            },
+            {
+              "version": "1.9",
+              "title": "Olayın Ayrıntısı",
+              "beta": false,
+              "items": [
+                "Platform, gönderen, tutar, mesaj ve zamanla olay ayırt etme güçlendirildi.",
+                "İlk gerçek bildirimin kaçırılmasına neden olabilecek durumlar düzeltildi.",
+                "Gönderen ve mesaj bilgilerinin doğru okunması geliştirildi.",
+                "Aynı içerikle farklı zamanda gelen olayların ayrımı sağlandı."
+              ]
+            },
+            {
+              "version": "1.8",
+              "title": "Sessiz Bağlantı",
+              "beta": false,
+              "items": [
+                "Arka plan takibi etkin çalışacak şekilde düzenlendi.",
+                "Doğrulanan bağlantı adresi kaldırılana kadar sabit tutuldu.",
+                "Bağlantı kaldırma için özel onay penceresi eklendi.",
+                "Bildirim seslerinin OBS sesine ek olarak tekrar çalması engellendi.",
+                "İlk bağlantıda görülen geçmiş olaylar yeni bağışlardan ayrıldı."
+              ]
+            },
+            {
+              "version": "1.7",
               "title": "Birleşik Bağlantı",
               "beta": false,
               "items": [
@@ -1619,6 +1652,39 @@
           "entries": [
             {
               "version": "2.0",
+              "title": "Update Notes",
+              "beta": false,
+              "items": [
+                "Access to product update history from common archive.",
+                "Ready interface texts in eight languages are presented in the plugin.",
+                "Chrome and Firefox packages were equal to common sources."
+              ]
+            },
+            {
+              "version": "1.9",
+              "title": "Detail",
+              "beta": false,
+              "items": [
+                "The platform was strengthened to distinguish incidents from the sender, amount, message and time.",
+                "Fixed situations that may cause the first real notice to be missed.",
+                "The correct reading of the sender and message information was improved.",
+                "Different events with the same content were given."
+              ]
+            },
+            {
+              "version": "1.8",
+              "title": "Silent Connection",
+              "beta": false,
+              "items": [
+                "Background tracking was held to work effectively.",
+                "The correct link address was fixed until removed.",
+                "Added special approval window for connection removal.",
+                "In addition to OBS voice of notification sounds, it was blocked again.",
+                "The past events seen in the first link were left from new donations."
+              ]
+            },
+            {
+              "version": "1.7",
               "title": "United Connection",
               "beta": false,
               "items": [
@@ -2735,6 +2801,39 @@
           "entries": [
             {
               "version": "2.0",
+              "title": "Aktualisierungshinweise",
+              "beta": false,
+              "items": [
+                "Zugriff auf die Produktaktualisierungshistorie aus dem gemeinsamen Archiv.",
+                "Ready Interface Texte in acht Sprachen werden im Plugin präsentiert.",
+                "Chrome- und Firefox-Pakete waren gemeinsamen Quellen gleich."
+              ]
+            },
+            {
+              "version": "1.9",
+              "title": "Einzelheiten",
+              "beta": false,
+              "items": [
+                "Die Plattform wurde gestärkt, um Vorfälle von Absender, Menge, Nachricht und Zeit zu unterscheiden.",
+                "Behebte Situationen, die dazu führen können, dass die erste echte Nachricht verpasst wird.",
+                "Das korrekte Lesen der Absender- und Nachrichteninformationen wurde verbessert.",
+                "Es wurden verschiedene Veranstaltungen mit dem gleichen Inhalt gegeben."
+              ]
+            },
+            {
+              "version": "1.8",
+              "title": "Stille Verbindung",
+              "beta": false,
+              "items": [
+                "Hintergrund-Tracking wurde gehalten, um effektiv zu arbeiten.",
+                "Die richtige Linkadresse wurde bis zum Entfernen behoben.",
+                "Spezielles Genehmigungsfenster für die Verbindungsentfernung hinzugefügt.",
+                "Zusätzlich zu OBS Stimme der Benachrichtigung Sounds, wurde es wieder blockiert.",
+                "Die vergangenen Ereignisse im ersten Link wurden von neuen Spenden hinterlassen."
+              ]
+            },
+            {
+              "version": "1.7",
               "title": "United Connection",
               "beta": false,
               "items": [
@@ -3851,6 +3950,39 @@
           "entries": [
             {
               "version": "2.0",
+              "title": "Notas de actualización",
+              "beta": false,
+              "items": [
+                "Acceso al historial de actualización de productos desde archivo común.",
+                "Los textos de interfaz listos en ocho idiomas se presentan en el plugin.",
+                "Chrome y Firefox paquetes eran iguales a las fuentes comunes."
+              ]
+            },
+            {
+              "version": "1.9",
+              "title": "Detalle",
+              "beta": false,
+              "items": [
+                "Se fortaleció la plataforma para distinguir los incidentes del remitente, la cantidad, el mensaje y el tiempo.",
+                "Situaciones fijas que pueden causar que se pierda el primer aviso real.",
+                "Se mejoró la lectura correcta del remitente y la información del mensaje.",
+                "Se dieron diferentes eventos con el mismo contenido."
+              ]
+            },
+            {
+              "version": "1.8",
+              "title": "Conexión silenciosa",
+              "beta": false,
+              "items": [
+                "Se realizó un seguimiento de los antecedentes para trabajar eficazmente.",
+                "La dirección de enlace correcta fue fijada hasta que se eliminó.",
+                "Añadido ventana de aprobación especial para la eliminación de conexión.",
+                "Además de la voz OBS de los sonidos de notificación, se bloqueó de nuevo.",
+                "Los acontecimientos pasados vistos en el primer enlace fueron dejados de nuevas donaciones."
+              ]
+            },
+            {
+              "version": "1.7",
               "title": "United Connection",
               "beta": false,
               "items": [
@@ -4967,6 +5099,39 @@
           "entries": [
             {
               "version": "2.0",
+              "title": "Mise à jour des notes",
+              "beta": false,
+              "items": [
+                "Accès à l'historique des mises à jour de produits à partir de l'archive commune.",
+                "Les textes d'interface prêts en huit langues sont présentés dans le plugin.",
+                "Les paquets Chrome et Firefox étaient égaux à des sources communes."
+              ]
+            },
+            {
+              "version": "1.9",
+              "title": "Détail",
+              "beta": false,
+              "items": [
+                "La plateforme a été renforcée pour distinguer les incidents de l'expéditeur, le montant, le message et le temps.",
+                "Les situations fixes qui peuvent causer le premier avis réel à manquer.",
+                "La lecture correcte de l'expéditeur et de l'information du message a été améliorée.",
+                "Différents événements avec le même contenu ont été donnés."
+              ]
+            },
+            {
+              "version": "1.8",
+              "title": "Connexion silencieuse",
+              "beta": false,
+              "items": [
+                "Le suivi des antécédents a été tenu pour fonctionner efficacement.",
+                "L'adresse correcte du lien a été corrigée jusqu'à suppression.",
+                "Ajout d'une fenêtre d'approbation spéciale pour la suppression de connexion.",
+                "En plus de la voix OBS des sons de notification, il a été à nouveau bloqué.",
+                "Les événements passés observés dans le premier lien ont été laissés de nouveaux dons."
+              ]
+            },
+            {
+              "version": "1.7",
               "title": "Connexion unie",
               "beta": false,
               "items": [
@@ -6083,6 +6248,39 @@
           "entries": [
             {
               "version": "2.0",
+              "title": "Обновление Notes",
+              "beta": false,
+              "items": [
+                "Доступ к истории обновления продукта из общего архива.",
+                "В плагине представлены готовые тексты интерфейса на восьми языках.",
+                "Пакеты Chrome и Firefox были равны общим источникам."
+              ]
+            },
+            {
+              "version": "1.9",
+              "title": "Подробнее",
+              "beta": false,
+              "items": [
+                "Платформа была усилена, чтобы отличать инциденты от отправителя, количества, сообщения и времени.",
+                "Фиксированные ситуации, которые могут привести к пропущению первого реального уведомления.",
+                "Улучшено правильное чтение отправителя и информации сообщения.",
+                "Были проведены различные мероприятия с одинаковым содержанием."
+              ]
+            },
+            {
+              "version": "1.8",
+              "title": "Тихая связь",
+              "beta": false,
+              "items": [
+                "Справочное отслеживание было проведено для эффективной работы.",
+                "Правильный адрес ссылки был исправлен до удаления.",
+                "Добавлено специальное окно утверждения для удаления соединения.",
+                "Помимо звуков оповещения OBS, он был снова заблокирован.",
+                "Прошлые события, увиденные в первой ссылке, остались от новых пожертвований."
+              ]
+            },
+            {
+              "version": "1.7",
               "title": "Объединенная связь",
               "beta": false,
               "items": [
@@ -7199,6 +7397,39 @@
           "entries": [
             {
               "version": "2.0",
+              "title": "آخر الحواشي",
+              "beta": false,
+              "items": [
+                "الحصول على تاريخ تحديث المنتجات من المحفوظات المشتركة.",
+                "وتُعرض نصوص الوصلات البينية الجاهزة بثماني لغات في البلوغين.",
+                "ومجموعات الكروم وفايرفوكس متساوية مع المصادر المشتركة."
+              ]
+            },
+            {
+              "version": "1.9",
+              "title": "التجزئة",
+              "beta": false,
+              "items": [
+                "وتم تعزيز المنبر لتمييز الحوادث عن المرسل والمبلغ والرسالة والزمن.",
+                "الحالات الثابتة التي قد تتسبب في تضييع أول إشعار حقيقي.",
+                "وتم تحسين القراءة الصحيحة للمرسل ومعلومات الرسائل.",
+                "وقُدمت أحداث مختلفة بنفس المحتوى."
+              ]
+            },
+            {
+              "version": "1.8",
+              "title": "الارتباط الصمت",
+              "beta": false,
+              "items": [
+                "واضطُلع بتتبع المعلومات الأساسية للعمل بفعالية.",
+                "العنوان الصحيح تم إصلاحه حتى أزيل",
+                "أضيفت نافذة موافقة خاصة لإزالتها",
+                "تم منع أصوات الإشعارات من التشغيل مرة أخرى بالإضافة إلى الصوت OBS.",
+                "تم فصل الأحداث السابقة التي شوهدت في الرابط الأول عن التبرعات الجديدة."
+              ]
+            },
+            {
+              "version": "1.7",
               "title": "يونايتد لينك",
               "beta": false,
               "items": [
@@ -8315,6 +8546,39 @@
           "entries": [
             {
               "version": "2.0",
+              "title": "更新情報",
+              "beta": false,
+              "items": [
+                "一般的なアーカイブから製品更新履歴へのアクセス。",
+                "8つの言語のReadyインターフェイスのテキストはプラグインに表示されます。",
+                "ChromeとFirefoxのパッケージは、一般的なソースと同等でした。"
+              ]
+            },
+            {
+              "version": "1.9",
+              "title": "ニュース",
+              "beta": false,
+              "items": [
+                "プラットフォームは、送信者、金額、メッセージ、時刻からインシデントを区別するために強化されました。",
+                "最初の本当の通知を見逃す可能性のある状況を修正しました。",
+                "送信者およびメッセージ情報の正しい読み込みが改善されました。",
+                "同じ内容の異なるイベントが与えられた。"
+              ]
+            },
+            {
+              "version": "1.8",
+              "title": "無声接続",
+              "beta": false,
+              "items": [
+                "背景の追跡は効果的に働くために保持されました。",
+                "削除するまでの正しいリンクアドレスを修正しました。",
+                "接続除去のための特別な承認ウィンドウを追加しました。",
+                "通知音のOBS音声に加えて、再びブロックされた。",
+                "最初のリンクで見た過去のイベントは、新しい寄付から残されたものです。"
+              ]
+            },
+            {
+              "version": "1.7",
               "title": "ユナイテッド・コネクション",
               "beta": false,
               "items": [

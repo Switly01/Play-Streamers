@@ -500,6 +500,39 @@
       "entries": [
         {
           "version": "2.0",
+          "title": "Güncelleme Notları",
+          "beta": false,
+          "items": [
+            "Ürün güncelleme geçmişlerine ortak arşivden erişim sağlandı.",
+            "Sekiz dilde hazır arayüz metinleri eklentinin içinde sunuldu.",
+            "Chrome ve Firefox paketleri ortak kaynaklarla eşitlendi."
+          ]
+        },
+        {
+          "version": "1.9",
+          "title": "Olayın Ayrıntısı",
+          "beta": false,
+          "items": [
+            "Platform, gönderen, tutar, mesaj ve zamanla olay ayırt etme güçlendirildi.",
+            "İlk gerçek bildirimin kaçırılmasına neden olabilecek durumlar düzeltildi.",
+            "Gönderen ve mesaj bilgilerinin doğru okunması geliştirildi.",
+            "Aynı içerikle farklı zamanda gelen olayların ayrımı sağlandı."
+          ]
+        },
+        {
+          "version": "1.8",
+          "title": "Sessiz Bağlantı",
+          "beta": false,
+          "items": [
+            "Arka plan takibi etkin çalışacak şekilde düzenlendi.",
+            "Doğrulanan bağlantı adresi kaldırılana kadar sabit tutuldu.",
+            "Bağlantı kaldırma için özel onay penceresi eklendi.",
+            "Bildirim seslerinin OBS sesine ek olarak tekrar çalması engellendi.",
+            "İlk bağlantıda görülen geçmiş olaylar yeni bağışlardan ayrıldı."
+          ]
+        },
+        {
+          "version": "1.7",
           "title": "Birleşik Bağlantı",
           "beta": false,
           "items": [

@@ -11,7 +11,8 @@ const productKeys = new Map([
   ['SW Identity', 'identity'],
   ['SW Create', 'swcreate'],
 ]);
-const productVersionOverrides = { connect: '2.0' };
+// Extend the supplied archive without renumbering any historical release.
+const supplemental = JSON.parse(await readFile(new URL('../release-notes-family.supplemental.json', import.meta.url), 'utf8'));
 
 const lines = (await readFile(resolve(input), 'utf8')).replace(/^\uFEFF/, '').split(/\r?\n/);
 const products = {};
@@ -69,9 +70,12 @@ const output = {
   },
   productOrder: ['swcreate', 'identity', 'web', 'app', 'connect'],
   products: Object.fromEntries(Object.entries(products).map(([key, value]) => {
-    const entries = [...value.entries].reverse();
-    const current = productVersionOverrides[key] || entries[0].version;
-    if (productVersionOverrides[key]) entries[0] = { ...entries[0], version: current };
+    const additions = supplemental.products[key]?.entries || [];
+    const entries = [...additions].reverse().concat([...value.entries].reverse());
+    if (new Set(entries.map(entry => entry.version)).size !== entries.length) {
+      throw new Error(`${value.name}: yinelenen sürüm kaydı.`);
+    }
+    const current = entries[0].version;
     return [key, {
       name: value.name,
       tabTitle: `${value.name} Güncelleme Notları`,

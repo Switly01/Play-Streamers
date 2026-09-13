@@ -64,7 +64,7 @@ try {
     globalThis.chrome = {
       i18n: { getUILanguage: () => 'tr-TR' },
       runtime: {
-        getManifest: () => ({ version: '1.15.4' }),
+        getManifest: () => ({ version: '1.7' }),
         sendMessage: async message => message?.type === 'GET_STATE'
           ? { ok: true, result: {
               connection: { paired: false, serverConnectedProviderIds: [] },

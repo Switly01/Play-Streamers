@@ -6,11 +6,14 @@ const root = new URL('../', import.meta.url);
 const source = JSON.parse(await readFile(new URL('release-notes-family.json', root), 'utf8'));
 const localized = JSON.parse(await readFile(new URL('release-notes-family.localized.json', root), 'utf8'));
 const expectedCounts = { web:18, app:19, connect:17, identity:15, swcreate:19 };
+const expectedVersions = { web:'1.8', app:'1.9', connect:'1.7', identity:'1.5', swcreate:'1.9' };
 const languages = ['tr','en','de','es','fr','ru','ar','ja'];
 
 test('supplied family history is complete and beta releases are explicitly marked', () => {
   assert.deepEqual(Object.fromEntries(Object.entries(source.products).map(([key, product]) => [key, product.entries.length])), expectedCounts);
+  assert.deepEqual(Object.fromEntries(Object.entries(source.products).map(([key, product]) => [key, product.current])), expectedVersions);
   for (const product of Object.values(source.products)) {
+    assert.equal(product.entries[0].version, product.current, `${product.name} current version does not match its newest note`);
     assert.ok(product.entries.some(entry => entry.beta), `${product.name} beta history missing`);
     assert.ok(product.entries.some(entry => !entry.beta), `${product.name} full releases missing`);
     for (const entry of product.entries) {
@@ -26,6 +29,7 @@ test('all eight locale archives preserve every release and translate user copy',
     const archive = localized.locales[language];
     for (const [key, count] of Object.entries(expectedCounts)) {
       assert.equal(archive.products[key].entries.length, count, `${language}/${key}`);
+      assert.equal(archive.products[key].current, expectedVersions[key], `${language}/${key} current version`);
       assert.match(archive.products[key].tabTitle, /Play Streamers|Play Connect|SW Identity|SW Create/);
     }
     if (language !== 'tr') {

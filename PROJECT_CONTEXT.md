@@ -1,5 +1,26 @@
 # Play Streamers — Kalıcı Proje Bağlamı
 
+## Sosyal giriş ve ilk Play Connect kurulumu yayını · 14 Eylül 2026
+
+- Google/Kick düğmeleri artık mevcut SW Identity hesabını açar, ilk kullanımda
+  hesabı oluşturur ve kullanıcıyı ürün dönüş koduyla Play Streamers'a taşır.
+  Callback yönlendirici yarışı, sondaki `/`, iki aşamalı doğrulama ve 20 saniyelik
+  kontrollü zaman aşımı kapsanır; tek kullanımlık kod ağ isteğinden önce URL'den
+  kaldırılır.
+- Yeni yerel Play Streamers hesabı ilk ana sayfada erişilebilir Play Connect
+  kurulum penceresini görür. Resmî Chrome/Edge ve Firefox mağazaları sunulur;
+  tercih hesap bazında saklanır ve yedi ek dil çevrimdışı katalogdadır.
+- Play Streamers API 8.18, yeni hesap işaretini sunucu tarafında üretir. Açık
+  yayıncı analitiği ham IP saklamayan dakikalık D1 sınırı kullanır; tablo güvenli
+  uyumluluk başlangıcında oluşturulup canlı D1'de doğrulandı.
+- API dağıtımı `fe07c94c-9d1a-4b6c-b21d-bb21dadb4eb0`, GitHub Pages kaynak
+  yayını `a251562` olarak tamamlandı. Canlı frontend `app.js 5.12.2`, API health
+  `8.18`, izinli CORS `204` ve oturumsuz hesap isteği `401` olarak doğrulandı.
+- Gerçek Google/Kick hesabı ve iki aşamalı doğrulama kodu otomatik testte
+  kullanılmadı. GitHub Pages yanıtında HSTS/CSP başlıkları yoktur; mevcut
+  Wrangler OAuth yetkisi zone-read ile sınırlı olduğundan bu başlıklar Cloudflare
+  bölge ayarına bu dağıtımda eklenemedi. HTML callback'leri `no-referrer` kullanır.
+
 ## Ürün ailesi güncelleme notları · 13 Eylül 2026
 
 - Kullanıcının birleştirilmiş kaynağındaki 88 sürüm kaydı; Play Streamers Web,

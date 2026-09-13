@@ -23,7 +23,7 @@ await page.addInitScript(({providers,featured})=>{
   const configs=Object.fromEntries(providers.map(provider=>[provider.id,{enabled:false,status:'setup'}]));
   const state={connection:{paired:false,serverConnectedProviderIds:[]},providers:configs,providerCatalog:providers,featuredProviderIds:featured,activity:[],queueCount:0};
   window.qaState=state;window.qaMessages=[];
-  window.chrome={i18n:{getUILanguage:()=>navigator.language},runtime:{getManifest:()=>({version:'1.15.2'}),getURL:p=>location.origin+'/'+p,sendMessage:async message=>{
+  window.chrome={i18n:{getUILanguage:()=>navigator.language},runtime:{getManifest:()=>({version:'1.15.3'}),getURL:p=>location.origin+'/'+p,sendMessage:async message=>{
     window.qaMessages.push(message);
     if(message.type==='GET_PROVIDER_ALERT_URL')return{ok:true,result:{url:configs[message.providerId].alertUrl||''}};
     if(message.type==='SAVE_PROVIDER'){

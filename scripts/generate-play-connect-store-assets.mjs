@@ -100,7 +100,7 @@ async function installFixture(page) {
       i18n: { getUILanguage: () => navigator.language },
       runtime: {
         id: 'play-connect-store-preview',
-        getManifest: () => ({ version: '1.15.2' }),
+        getManifest: () => ({ version: '1.15.3' }),
         getURL: value => `${location.origin}/${value}`,
         sendMessage: async message => {
           if (message.type === 'GET_PROVIDER_ALERT_URL') {
@@ -119,7 +119,8 @@ async function installFixture(page) {
 }
 
 async function screenshotOptions(fileName, providerId, locale = 'tr', zoom = '0.91') {
-  const page = await browser.newPage({ viewport: { width: 1280, height: 800 }, locale: locale === 'tr' ? 'tr-TR' : 'en-US', deviceScaleFactor: 1 });
+  const browserLocales = { tr: 'tr-TR', en: 'en-US', de: 'de-DE', es: 'es-ES', fr: 'fr-FR', ru: 'ru-RU', ar: 'ar-SA', ja: 'ja-JP' };
+  const page = await browser.newPage({ viewport: { width: 1280, height: 800 }, locale: browserLocales[locale] || 'en-US', deviceScaleFactor: 1 });
   await installFixture(page);
   await page.goto(`${origin}/options/options.html?provider=${providerId}`);
   await page.waitForSelector('#providerForm');
@@ -132,7 +133,9 @@ async function screenshotOptions(fileName, providerId, locale = 'tr', zoom = '0.
     document.documentElement.style.setProperty('--store-preview', '1');
     document.body.style.zoom = previewZoom;
   }, zoom);
-  await page.screenshot({ path: path.join(outputRoot, fileName) });
+  const outputFile = path.join(outputRoot, fileName);
+  await fs.mkdir(path.dirname(outputFile), { recursive: true });
+  await page.screenshot({ path: outputFile });
   await page.close();
 }
 
@@ -161,7 +164,7 @@ async function renderPromo({ width, height, fileName, eyebrow, title, detail, sc
   </style></head><body>
     <div class="brand"><img src="${logo}"><div><b>Play Connect</b><small>Play Streamers bağlantı paneli</small></div></div>
     <div class="copy"><div class="eyebrow">${escapeHtml(eyebrow)}</div><h1>${escapeHtml(title)}</h1><p>${escapeHtml(detail)}</p><div class="chips"><span>8 DİL</span><span>AKILLI PARA BİRİMİ</span><span>YEREL ÖNBELLEK</span></div></div>
-    <div class="shot"><img src="${screenshot}"></div><div class="version">v1.15.2</div>
+    <div class="shot"><img src="${screenshot}"></div><div class="version">v1.15.3</div>
   </body></html>`);
   await page.screenshot({ path: path.join(outputRoot, fileName) });
   await page.close();
@@ -174,10 +177,16 @@ try {
   await screenshotOptions('02-obs-baglantisi.png', 'streamlabs');
   await screenshotOptions('03-dogrulanmis-bagislar.png', 'itemsatis', 'en', '0.82');
 
+  for (const locale of ['tr', 'en', 'de', 'es', 'fr', 'ru', 'ar', 'ja']) {
+    await screenshotOptions(`locales/${locale}/01-play-connect-panel.png`, 'bynogame', locale);
+    await screenshotOptions(`locales/${locale}/02-obs-alert-box.png`, 'streamlabs', locale);
+    await screenshotOptions(`locales/${locale}/03-donation-events.png`, 'itemsatis', locale, '0.82');
+  }
+
   await renderPromo({
     width: 440,
     height: 280,
-    fileName: '04-kucuk-tanitim-440x280.png',
+    fileName: '04-kucuk-tanitim-440x280-v1.15.3.png',
     eyebrow: 'BAĞLANTI · ÇEVİRİ · GÜVENLİK',
     title: 'Tüm platformlar. Tek akıcı panel.',
     detail: 'Yeni sıvı cam arayüz, çevrimdışı dil önbelleği ve otomatik para birimi.',
@@ -187,7 +196,7 @@ try {
   await renderPromo({
     width: 1400,
     height: 560,
-    fileName: '05-kayan-tanitim-1400x560.png',
+    fileName: '05-kayan-tanitim-1400x560-v1.15.3.png',
     eyebrow: 'BAĞLANTILAR · ÇEVİRİ · GÜVENLİK',
     title: 'Yayın bağlantıların artık daha akıcı.',
     detail: 'Destek platformlarını OBS / Alert Box bağlantısıyla ekle. Sekiz dilde, seçilen dile uygun para birimiyle ve yeniden çeviri beklemeden yönet.',

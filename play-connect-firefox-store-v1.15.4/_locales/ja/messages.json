@@ -1,0 +1,6 @@
+{
+  "extensionName": { "message": "Play Connect" },
+  "extensionShortName": { "message": "Play Connect" },
+  "extensionDescription": { "message": "支援プラットフォームを安全なローカル接続とサーバー配信でPlay Streamersアカウントに接続します。" },
+  "extensionActionTitle": { "message": "Play Connectを開く" }
+}

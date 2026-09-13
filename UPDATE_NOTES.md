@@ -4,13 +4,23 @@ Bu doküman; Play Streamers web uygulaması, Cloudflare Worker API'si ve Play Co
 
 ## Güncel sürümler
 
-- Web sitesi: **10.36.0**
-- Web uygulaması / ürün bağlamı: **5.33.0**
-- Play Connect: **1.15.3**
+- Web sitesi: **10.36.1**
+- Web uygulaması / ürün bağlamı: **5.33.1**
+- Play Connect: **1.15.4**
 - Desktop: **0.51.0**
 - Worker kaynak sabiti: **8.14**
 
 > Yayın öncesinde Worker'daki bildirim sürüm sabiti ile bu sürüm geçmişi aynı numaraya yükseltilmelidir.
+
+### Ürün ailesi güncelleme notları · 13 Eylül 2026
+
+- Web sitesindeki güncelleme notları Play Streamers Web, Play Streamers App ve
+  Play Connect için üç ayrı başlık ve tam sürüm geçmişi sunar.
+- Play Connect 1.15.4 ayarlarına 17 sürümlük kendi güncelleme notları eklendi.
+- Beş ürünün toplam 88 sürüm kaydı sekiz dilde paketlendi; beta sürümleri amber
+  renkle tam sürümlerden ayrılır.
+- Masaüstü uygulamasında aynı üç başlık derlenip doğrulandı ancak uygulama ve
+  Microsoft Store paketi yayımlanmadı.
 
 ### Desktop 0.51.0 · Sade yayıncı stüdyosu ve güncel kur
 

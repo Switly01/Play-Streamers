@@ -155,7 +155,7 @@
     const playConnectCopy = playConnectConnected
       ? ui('{count} bağlantı aktif').replace('{count}', String(connectionCount))
       : ui('Henüz bağlantı kurulmadı');
-    panel.innerHTML = `<span class="ps44-panel-title">${esc(ui('BAĞLANTI DURUMU'))}</span><article class="ps44-platform"><i class="ps44-platform-mark ps44-kick-mark"><img src="./assets/kick-logo.svg?v=10.14" alt=""></i><span><b>Kick</b><small>${esc(kickCopy)}</small></span>${info.connected ? '<i class="ps44-state">✓</i>' : `<button class="ps44-connect" type="button" aria-label="${esc(ui('Kick bağlantısı kur'))}">→</button>`}</article><article class="ps44-platform"><i class="ps44-platform-mark ps44-play-connect"><img src="./play-connect-pc-logo.svg?v=1.15.2" alt=""></i><span><b>Play Connect</b><small>${esc(playConnectCopy)}</small></span><i class="ps44-state${playConnectConnected ? '' : ' off'}">${playConnectConnected ? '✓' : '×'}</i></article>`;
+    panel.innerHTML = `<span class="ps44-panel-title">${esc(ui('BAĞLANTI DURUMU'))}</span><article class="ps44-platform"><i class="ps44-platform-mark ps44-kick-mark"><img src="./assets/kick-logo.svg?v=10.14" alt=""></i><span><b>Kick</b><small>${esc(kickCopy)}</small></span>${info.connected ? '<i class="ps44-state">✓</i>' : `<button class="ps44-connect" type="button" aria-label="${esc(ui('Kick bağlantısı kur'))}">→</button>`}</article><article class="ps44-platform"><i class="ps44-platform-mark ps44-play-connect"><img src="./play-connect-pc-logo.svg?v=1.15.4" alt=""></i><span><b>Play Connect</b><small>${esc(playConnectCopy)}</small></span><i class="ps44-state${playConnectConnected ? '' : ' off'}">${playConnectConnected ? '✓' : '×'}</i></article>`;
     window.dispatchEvent(new Event('ps:i18n-refresh'));
     const connect = $('.ps44-connect', panel);
     if (connect) connect.onclick = event => {
@@ -190,7 +190,60 @@
     return new Intl.DateTimeFormat(locale, { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' })
       .format(new Date(Date.UTC(Number(match[3]), months[match[2]], Number(match[1]))));
   }
-  function showUpdates() {
+  let releaseNotesArchivePromise = null;
+  async function showUpdates() {
+    closeLocaleMenus(); closeHomePanels(); closeStatus(); closeNotifications();
+    if (location.pathname !== '/updates') updatesReturnPath = state().settings?.userSession ? visibleMemberRoute() : '/';
+    else if (!updatesReturnPath) updatesReturnPath = state().settings?.userSession ? visibleMemberRoute() : '/';
+    syncCleanRoute('/updates');
+    try {
+      releaseNotesArchivePromise ||= fetch('./release-notes-family.localized.json', { cache: 'no-cache' }).then(response => {
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        return response.json();
+      });
+      const payload = await releaseNotesArchivePromise;
+      const language = String(localStorage.getItem('ps15-locale') || document.documentElement.lang || 'tr').split('-')[0];
+      const archive = payload.locales?.[language] || payload.locales?.tr;
+      const productKeys = ['web', 'app', 'connect'];
+      let activeProduct = 'web';
+      const layer = showDialog('ps44UpdatesDialog', `<div class="ps-release-notes-localized" data-no-translate><button class="ps47-dialog-close" type="button" aria-label="${esc(archive.ui.close)}">×</button><span class="ps44-panel-title">${esc(archive.ui.eyebrow)}</span><h2>${esc(archive.ui.title)}</h2><p class="ps47-lead">${esc(archive.ui.intro)}</p><nav class="ps-release-product-tabs" role="tablist" aria-label="${esc(archive.ui.title)}"></nav><div class="ps48-update-history"></div><div class="ps44-dialog-actions"><button class="ps44-confirm" type="button">${esc(archive.ui.done)}</button></div></div>`);
+      $('.ps44-dialog', layer)?.classList.add('ps47-rich-dialog');
+      const tabs = $('.ps-release-product-tabs', layer);
+      const timeline = $('.ps48-update-history', layer);
+      const setExpanded = (article, expanded) => {
+        const button = $('.ps51-update-expand', article), list = $('ul', article);
+        article.classList.toggle('ps51-update-expanded', expanded);
+        if (list) list.hidden = !expanded;
+        if (button) {
+          button.textContent = expanded ? String.fromCharCode(8722) : '+';
+          button.setAttribute('aria-expanded', String(expanded));
+          const version = $('.ps50-version-heading b', article)?.textContent || '';
+          button.setAttribute('aria-label', `${version} ${expanded ? archive.ui.collapse : archive.ui.expand}`);
+        }
+      };
+      const renderProduct = key => {
+        activeProduct = key;
+        const product = archive.products[key];
+        $$('.ps-release-product-tabs button', layer).forEach(button => button.setAttribute('aria-selected', String(button.dataset.product === key)));
+        timeline.innerHTML = product.entries.map((note, index) => `<article class="ps48-update-version ${note.beta ? 'beta-release' : 'stable-release'}${index === 0 ? ' is-latest ps51-update-expanded' : ''}"><header><span class="ps50-version-heading"><b>${esc(note.version)}</b><span class="ps-release-channel">${esc(note.beta ? archive.ui.beta : archive.ui.fullRelease)}</span>${index === 0 ? `<span class="ps50-latest-badge">${esc(archive.ui.latest)}</span>` : ''}</span><button class="ps51-update-expand" type="button" aria-expanded="${index === 0}">${index === 0 ? '&#8722;' : '+'}</button></header><h3>${esc(note.title)}</h3><ul${index === 0 ? '' : ' hidden'}>${note.items.map(item => `<li>${esc(item)}</li>`).join('')}</ul></article>`).join('');
+        $$('.ps48-update-version', timeline).forEach((article, index) => setExpanded(article, index === 0));
+        $$('.ps51-update-expand', timeline).forEach(button => button.onclick = event => {
+          event.preventDefault();
+          const article = button.closest('.ps48-update-version');
+          setExpanded(article, button.getAttribute('aria-expanded') !== 'true');
+        });
+        timeline.scrollTop = 0;
+      };
+      tabs.innerHTML = productKeys.map(key => `<button type="button" role="tab" data-product="${key}" aria-selected="${key === activeProduct}">${esc(archive.products[key].tabTitle)}</button>`).join('');
+      $$('.ps-release-product-tabs button', layer).forEach(button => button.onclick = () => renderProduct(button.dataset.product));
+      renderProduct(activeProduct);
+      $$('.ps47-dialog-close,.ps44-confirm', layer).forEach(button => button.onclick = closeUpdates);
+    } catch (error) {
+      releaseNotesArchivePromise = null;
+      showLegacyUpdates();
+    }
+  }
+  function showLegacyUpdates() {
     closeLocaleMenus(); closeHomePanels(); closeStatus(); closeNotifications();
     if (location.pathname !== '/updates') updatesReturnPath = state().settings?.userSession ? visibleMemberRoute() : '/';
     else if (!updatesReturnPath) updatesReturnPath = state().settings?.userSession ? visibleMemberRoute() : '/';
@@ -584,7 +637,7 @@
         <div class="ps131-product-tabs" role="tablist" aria-label="Ürünlerimiz bölümleri"><button type="button" role="tab" data-ps131-product-tab="subscriptions">Abonelikler</button><button type="button" role="tab" data-ps131-product-tab="desktop">Masaüstü uygulaması</button><button type="button" role="tab" data-ps131-product-tab="ecosystem">Ürünler</button></div>
         <section class="ps131-product-panel" role="tabpanel" data-ps131-product-panel="subscriptions"><div class="ps-plan-preview ps130-plans" aria-label="Play Streamers planları"><article><span>FREE</span><b>Yayınını düzenle</b><small>Canlı olaylar, sayaç, notlar, hedefler ve fikir kasası.</small><ul><li>Hızlı notlar</li><li>Hedef panosu</li><li>Canlı olay merkezi</li></ul></article><article><span>PRO</span><b>Üretim sistemini kur</b><small>İçerik akışı, teleprompter, marka ve yerel kasa araçları.</small><ul><li>Yayın raporu ve gelişmiş grafikler</li><li>Teleprompter ve veri dışa aktarma</li><li>Marka ve topluluk araçları</li></ul></article><article><span>PRODUCT PRO</span><b>Veriyi avantaja çevir</b><small>Kanıtlı karşılaştırmalar, SW AI açıklaması ve doğrulanmış gelir görünümleri.</small><ul><li>Yayın zekâsı ve izleyici nabzı</li><li>İçerik dönüştürme ve akıllı uyarılar</li><li>Gelir kokpiti ve anlık görüntüler</li></ul></article></div></section>
         <section class="ps131-product-panel" role="tabpanel" data-ps131-product-panel="desktop" hidden><div class="ps131-desktop-showcase"><span class="ps131-desktop-mark"><img src="./play-streamers-ps-logo.svg?v=10.29" alt=""></span><div><span>MASAÜSTÜ UYGULAMASI · 0.14.5</span><h2>Yayın işlerinin tamamı tek çalışma alanında.</h2><p>Canlı merkez, analiz, içerik, topluluk, marka, gelir, yerel kasa ve yayın ayarlarını Windows 10 ve 11 üzerinde birlikte yönet.</p><div class="ps130-capabilities" aria-label="Masaüstü uygulaması yetenekleri"><article><i>01</i><span><b>Canlı merkez</b><small>Kick ve Play Connect olaylarını tek akışta izle.</small></span></article><article><i>02</i><span><b>Yayın zekâsı</b><small>Oturum ve etkileşim değişimlerini karşılaştır.</small></span></article><article><i>03</i><span><b>Yerel çalışma</b><small>Hassas üretim verilerini bilgisayarında tut.</small></span></article></div><a class="ps131-desktop-download" href="${WINDOWS_STORE_INSTALLER_URL}" data-ps-store-installer="product">Windows için indir</a><small>Microsoft Store Web Installer · 64 bit</small></div></div></section>
-        <section class="ps131-product-panel" role="tabpanel" data-ps131-product-panel="ecosystem" hidden><div class="ps131-ecosystem-grid"><a href="https://pstreamers.com"><i><img src="./play-streamers-ps-logo.svg?v=10.29" alt=""></i><span><em>SİTE</em><b>Play Streamers</b><small>Yayıncı paneli ve ürün merkezi</small></span></a><a href="https://swcreate.com" target="_blank" rel="noopener noreferrer"><i><img src="swcreate-sw-logo-transparent.png" alt=""></i><span><em>SİTE</em><b>SW Create</b><small>Ortak hesap, güvenlik ve plan yönetimi</small></span></a><a href="${esc(playConnect.href)}"${playConnect.external ? ' target="_blank" rel="noopener noreferrer"' : ' download'}><i><img src="./play-connect-pc-logo.svg?v=1.15.2" alt=""></i><span><em>EKLENTİ</em><b>Play Connect</b><small>${esc(playConnect.label)}</small></span></a><a href="${WINDOWS_STORE_INSTALLER_URL}" data-ps-store-installer="product"><i><img src="./play-streamers-ps-logo.svg?v=10.29" alt=""></i><span><em>MASAÜSTÜ UYGULAMASI</em><b>Play Streamers Desktop</b><small>Microsoft Store üzerinden güvenli kurulum</small></span></a></div></section>`;
+        <section class="ps131-product-panel" role="tabpanel" data-ps131-product-panel="ecosystem" hidden><div class="ps131-ecosystem-grid"><a href="https://pstreamers.com"><i><img src="./play-streamers-ps-logo.svg?v=10.29" alt=""></i><span><em>SİTE</em><b>Play Streamers</b><small>Yayıncı paneli ve ürün merkezi</small></span></a><a href="https://swcreate.com" target="_blank" rel="noopener noreferrer"><i><img src="swcreate-sw-logo-transparent.png" alt=""></i><span><em>SİTE</em><b>SW Create</b><small>Ortak hesap, güvenlik ve plan yönetimi</small></span></a><a href="${esc(playConnect.href)}"${playConnect.external ? ' target="_blank" rel="noopener noreferrer"' : ' download'}><i><img src="./play-connect-pc-logo.svg?v=1.15.4" alt=""></i><span><em>EKLENTİ</em><b>Play Connect</b><small>${esc(playConnect.label)}</small></span></a><a href="${WINDOWS_STORE_INSTALLER_URL}" data-ps-store-installer="product"><i><img src="./play-streamers-ps-logo.svg?v=10.29" alt=""></i><span><em>MASAÜSTÜ UYGULAMASI</em><b>Play Streamers Desktop</b><small>Microsoft Store üzerinden güvenli kurulum</small></span></a></div></section>`;
       bindProductTabs(content);
     } else {
       content.innerHTML = `<span class="ps49-info-kicker">PLAY STREAMERS · ${esc(data.title).toUpperCase()}</span><h1>${esc(data.title)}</h1><p class="ps49-info-lead">${esc(data.lead)}</p><div class="ps49-info-grid">${data.cards.map((card, index) => `<article class="ps49-info-card${data.security ? ' ps54-security-card' : ''}"><span>0${index + 1}</span><h2>${esc(card[0])}</h2><p>${esc(card[1])}</p></article>`).join('')}</div>`;
@@ -1074,7 +1127,7 @@
   const PLAY_CONNECT_STORES = Object.freeze({
     chromium: 'https://chromewebstore.google.com/detail/play-connect/mpebmfjcdkflgiloecjonopfknojdaip',
     firefox: 'https://addons.mozilla.org/en-US/firefox/addon/play-connect/',
-    fallback: './play-connect-v1.15.2.zip?v=1.15.2'
+    fallback: './play-connect-v1.15.4.zip?v=1.15.4'
   });
   function playConnectStore() {
     const agent = navigator.userAgent || '';
@@ -1392,7 +1445,7 @@
       : '';
     const canCreatePairing = donateBridgeDevicesLoaded && !donateBridgePairing;
     const pairingButton = visibleDevices.length ? 'Bağlantıyı yenile' : 'Eklentiyi eşleştir';
-    return `<article class="ps62-bridge-card"><div class="ps62-bridge-head"><i class="ps62-bridge-mark"><img src="./play-connect-pc-logo.svg?v=1.15.2" alt="Play Connect PC logosu"></i><span><b>Play Connect</b><small><span>Donate bağlantılarını tarayıcıda açık sekme bırakmadan güvenli biçimde sürdürür. Erişim bilgileri cihazında kalır; sunucuya yalnızca doğrulanmış olaylar ulaşır.</span> <span>${donateBridgeProviderCatalog.length ? esc(ui(`${donateBridgeProviderCatalog.length} hazır platform`)) : 'Platform listesi hazırlanıyor'} · ${visibleDevices.length ? esc(ui(`${visibleDevices.length} cihaz bağlı.`)) : esc(ui('Henüz cihaz bağlı değil.'))}</span></small></span><span class="ps62-downloads"><a class="ps51-secondary ps62-download primary" href="${esc(store.href)}"${store.external ? ' target="_blank" rel="noopener noreferrer"' : ' download'}>${esc(store.label)}</a></span></div>${providerCatalogHtml}${donateWebhookConnectionsHtml()}${donateOAuthConnectionsHtml()}<div class="ps62-bridge-actions">${canCreatePairing ? `<button id="ps62CreatePairing" class="ps51-primary" type="button" data-replaces-connection="${visibleDevices.length ? 'true' : 'false'}">${pairingButton}</button>` : ''}<button id="ps62RefreshDevices" class="ps51-secondary" type="button">Durumu yenile</button></div>${pairingHtml}${deviceHtml}<p id="ps62BridgeStatus" class="ps51-account-status" aria-live="polite"></p></article>`;
+    return `<article class="ps62-bridge-card"><div class="ps62-bridge-head"><i class="ps62-bridge-mark"><img src="./play-connect-pc-logo.svg?v=1.15.4" alt="Play Connect PC logosu"></i><span><b>Play Connect</b><small><span>Donate bağlantılarını tarayıcıda açık sekme bırakmadan güvenli biçimde sürdürür. Erişim bilgileri cihazında kalır; sunucuya yalnızca doğrulanmış olaylar ulaşır.</span> <span>${donateBridgeProviderCatalog.length ? esc(ui(`${donateBridgeProviderCatalog.length} hazır platform`)) : 'Platform listesi hazırlanıyor'} · ${visibleDevices.length ? esc(ui(`${visibleDevices.length} cihaz bağlı.`)) : esc(ui('Henüz cihaz bağlı değil.'))}</span></small></span><span class="ps62-downloads"><a class="ps51-secondary ps62-download primary" href="${esc(store.href)}"${store.external ? ' target="_blank" rel="noopener noreferrer"' : ' download'}>${esc(store.label)}</a></span></div>${providerCatalogHtml}${donateWebhookConnectionsHtml()}${donateOAuthConnectionsHtml()}<div class="ps62-bridge-actions">${canCreatePairing ? `<button id="ps62CreatePairing" class="ps51-primary" type="button" data-replaces-connection="${visibleDevices.length ? 'true' : 'false'}">${pairingButton}</button>` : ''}<button id="ps62RefreshDevices" class="ps51-secondary" type="button">Durumu yenile</button></div>${pairingHtml}${deviceHtml}<p id="ps62BridgeStatus" class="ps51-account-status" aria-live="polite"></p></article>`;
   }
   function accountDeviceDate(value) {
     const time = Date.parse(value || '');

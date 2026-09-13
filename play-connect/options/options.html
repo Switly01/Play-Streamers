@@ -14,6 +14,7 @@
         <i><img src="../assets/play-connect-pc-logo.svg" alt="Play Connect PC logosu"></i><span><b>Play Connect</b><small>Play Streamers bağlantı paneli</small></span>
       </a>
       <div class="header-tools">
+        <button id="updateNotesButton" class="update-notes-button" type="button">Güncelleme notları</button>
         <div class="locale-picker">
           <button id="localeButton" class="locale-button" type="button" aria-label="Dil seçimi" aria-expanded="false">
             <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M3 12h18M12 3a15 15 0 0 1 0 18M12 3a15 15 0 0 0 0 18"></path></svg>
@@ -57,6 +58,15 @@
       </section>
     </main>
     <footer class="app-meta"><span>Play Connect</span><small id="extensionVersion"></small></footer>
+  </div>
+  <div id="updateNotesModal" class="release-notes-layer" hidden>
+    <section class="release-notes-card" role="dialog" aria-modal="true" aria-labelledby="updateNotesTitle">
+      <button id="updateNotesClose" class="release-notes-close" type="button" aria-label="Güncelleme notlarını kapat">×</button>
+      <span class="eyebrow">PLAY CONNECT</span>
+      <h2 id="updateNotesTitle">Play Connect Güncelleme Notları</h2>
+      <p id="updateNotesIntro"></p>
+      <div id="updateNotesList" class="release-notes-list"></div>
+    </section>
   </div>
   <div id="disconnectModal" class="confirm-layer" hidden>
     <section class="confirm-card" role="dialog" aria-modal="true" aria-labelledby="disconnectTitle" aria-describedby="disconnectDescription">

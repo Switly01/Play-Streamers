@@ -1,9 +1,10 @@
 {
   "manifest_version": 3,
-  "name": "Play Connect",
-  "short_name": "Play Connect",
-  "version": "1.15.2",
-  "description": "Destek platformlarını güvenli yerel bağlantı ve sunucu teslimatıyla Play Streamers hesabına bağlar.",
+  "name": "__MSG_extensionName__",
+  "short_name": "__MSG_extensionShortName__",
+  "version": "1.15.4",
+  "description": "__MSG_extensionDescription__",
+  "default_locale": "tr",
   "minimum_chrome_version": "120",
   "permissions": [
     "alarms",
@@ -51,7 +52,7 @@
     "type": "module"
   },
   "action": {
-    "default_title": "Play Connect",
+    "default_title": "__MSG_extensionActionTitle__",
     "default_popup": "popup/popup.html"
   },
   "options_ui": {

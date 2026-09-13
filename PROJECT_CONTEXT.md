@@ -1,5 +1,21 @@
 # Play Streamers — Kalıcı Proje Bağlamı
 
+## Ürün ailesi güncelleme notları · 13 Eylül 2026
+
+- Kullanıcının birleştirilmiş kaynağındaki 88 sürüm kaydı; Play Streamers Web,
+  Play Streamers App, Play Connect, SW Identity ve SW Create ürünlerine ayrıldı.
+- Play Streamers sitesi Web, App ve Play Connect için üç ayrı güncelleme sekmesi
+  gösterir. Play Connect 1.15.4 ayarlarında kendi 17 kayıtlık arşivi bulunur.
+- Türkçe, İngilizce, Almanca, İspanyolca, Fransızca, Rusça, Arapça ve Japonca
+  arşivler çevrimdışı paketlenir. Marka adları korunur; beta sürümleri amber
+  yüzeyle kararlı sürümlerden ayrılır.
+- Web 10.36.1 ve Play Connect 1.15.4 yayın kapsamındadır. Masaüstü kaynakları
+  aynı üç ürün başlığıyla derlenip test edildi; uygulama ve Microsoft Store paketi
+  kullanıcı isteği gereği yayımlanmadı.
+- Doğrulama: 26 site testi, 2.569/2.569 arayüz metni, gerçek tarayıcıda üç ürün
+  sekmesi, Play Connect'in 17 kaydı, beta rengi, İngilizce ve Arapça RTL; ayrıca
+  Chromium/Firefox paket eşitliği ve iki üretim derlemesi geçti.
+
 ## Play Connect 1.15.2 Chrome ve Firefox yayını · 4 Eylül 2026
 
 Çeviri önbelleği ikinci revizyonu: bütün dil sözlükleri sürümlü yerel önbellekte,

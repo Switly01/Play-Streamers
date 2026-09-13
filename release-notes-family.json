@@ -1,0 +1,1116 @@
+{
+  "schemaVersion": 1,
+  "ui": {
+    "eyebrow": "ÜRÜN GÜNCELLEME ARŞİVİ",
+    "title": "Güncelleme Notları",
+    "intro": "Ürünlere göre tüm yenilikleri ve düzeltmeleri en yeni sürümden başlayarak incele.",
+    "latest": "SON SÜRÜM",
+    "beta": "BETA",
+    "fullRelease": "TAM SÜRÜM",
+    "close": "Kapat",
+    "done": "Tamam",
+    "expand": "ayrıntılarını büyüt",
+    "collapse": "ayrıntılarını daralt",
+    "language": "Dil seçimi",
+    "memberHome": "Kullanıcı ana sayfası",
+    "currentVersion": "GÜNCEL SÜRÜM",
+    "loading": "GÜNCELLEME AĞI HAZIRLANIYOR…"
+  },
+  "productOrder": [
+    "swcreate",
+    "identity",
+    "web",
+    "app",
+    "connect"
+  ],
+  "products": {
+    "web": {
+      "name": "Play Streamers Web",
+      "tabTitle": "Play Streamers Web Güncelleme Notları",
+      "summary": "Yayın verilerini, topluluk hareketlerini, bağlantıları ve hesap işlemlerini tarayıcıdan yönetmek için hazırlanan yayıncı merkezi.",
+      "current": "1.8",
+      "entries": [
+        {
+          "version": "1.8",
+          "title": "Doğru Veri, Açık Program",
+          "beta": false,
+          "items": [
+            "Kick ölçümlerinin açık tarayıcıdan bağımsız toplanması daha kararlı hâle getirildi.",
+            "Son 90 günlük hesap geçmişi tarih kutularıyla düzenlendi.",
+            "Ölçülmeyen günler **—**, gerçekten sıfır ölçülen günler **0** olarak ayrıldı.",
+            "Panel temizleme ve istatistik sıfırlama birbirinden ayrıldı; Top Donate toplamının panel temizliğinden etkilenmesi önlendi.",
+            "Bağış istatistikleri para birimlerine göre tutulmaya başlandı.",
+            "Not, hedef, yayın metni, içerik düzenleme ve okunabilir rapor araçları geliştirildi.",
+            "İçerik şablonlarına kısa paylaşım, yayın duyurusu ve topluluk sorusu seçenekleri eklendi.",
+            "Raporların başlıkları, sayıları ve tarihleri seçili dile uyarlandı.",
+            "Kişisel yayın programına haftalık plan, özel tarihli yayınlar ve geri sayım eklendi.",
+            "Kick durumuna bağlı gecikme, canlı süre ve yayın sonrası göstergeleri hazırlandı."
+          ]
+        },
+        {
+          "version": "1.7",
+          "title": "Rahat Ekran",
+          "beta": false,
+          "items": [
+            "Telefonlarda yükleme ekranında takılı kalma sorunlarına karşı kurtarma davranışı eklendi.",
+            "Yükleme logosunun sıçrama ve yer değiştirme hareketleri kaldırıldı.",
+            "Mobil menü, destek düğmesi, kartlar ve indirme alanları yeniden düzenlendi.",
+            "Geçici bağlantı hatalarının kullanıcıyı gereksiz yere oturumdan çıkarması önlendi.",
+            "SW profil ve güvenlik işlemleri Play Streamers Hesap Merkezi içine alındı.",
+            "Profil fotoğrafı yükleme, iki aşamalı doğrulama yönetimi ve destek önizlemeleri geliştirildi.",
+            "Kur paneline elle yenileme ve son güncelleme zamanı eklendi.",
+            "Ürünler sayfası sekmelere ayrıldı; Windows kurulum bağlantıları Microsoft Store akışına yönlendirildi."
+          ]
+        },
+        {
+          "version": "1.6",
+          "title": "Ortak Dil",
+          "beta": false,
+          "items": [
+            "Türkçe, İngilizce, Almanca, İspanyolca, Fransızca, Rusça, Arapça ve Japonca kapsamı genişletildi.",
+            "Canlı çeviri bekleyen önceki yaklaşım, hazır dil paketleriyle değiştirildi.",
+            "Dil değişiminde açık ekranın ve kullanıcı tercihinin korunması geliştirildi.",
+            "Form ipuçları, düğme açıklamaları ve erişilebilirlik etiketleri çeviri kapsamına alındı.",
+            "Tarih, sayı, saat ve süre gösterimleri seçili dile uyarlandı.",
+            "Marka adlarının yanlış çevrilmesi önlendi; dil seçenekleri kendi adlarıyla korundu.",
+            "Arapça yerleşimi ve gerekli rapor alanlarında sağdan sola gösterim düzenlendi."
+          ]
+        },
+        {
+          "version": "1.5",
+          "title": "Beyaz Yörünge",
+          "beta": false,
+          "items": [
+            "Saf beyaz, beşgen çerçeveli ve birleşik P/S harflerinden oluşan logo yenilendi.",
+            "Siyah-beyaz tasarım ve sıvı cam görünümü site genelinde ortaklaştırıldı.",
+            "Yıldız sahnesi, fare ışığı ve astronot etkileşimi geliştirildi.",
+            "Canlı site sayaçlarındaki titreme ve yerleşim çakışmaları giderildi.",
+            "Destek penceresindeki taşma düzeltildi; dosya ekleme alanı sadeleştirildi.",
+            "Şifre düğmeleri, uzun çeviriler ve giriş simgeleri düzenlendi.",
+            "SW hızlı giriş dönüşü, site içindeki doğrulama kodu ekranı ve bot doğrulaması iyileştirildi.",
+            "Play Bot’un kullanıcıya görünen adı SW Bot olarak yenilendi."
+          ]
+        },
+        {
+          "version": "1.4",
+          "title": "Topluluk Nabzı",
+          "beta": false,
+          "items": [
+            "Takipçi ve abone özetleri ile günlük ve saatlik inceleme alanları geliştirildi.",
+            "Günlük kayıttan 24 saatlik ayrıntıya geçiş eklendi.",
+            "Kick hesabı değiştiğinde önceki kanal verilerinin yeni hesaba karışması önlendi.",
+            "Cihaz geçmişi ve seçilen cihazdan uzaktan çıkış desteği sunuldu.",
+            "Destek taleplerine konuşmalar, ekler ve durum filtreleri eklendi.",
+            "Destek yanıtları ve sürüm yenilikleri ortak bildirim merkezine bağlandı."
+          ]
+        },
+        {
+          "version": "1.3",
+          "title": "Bağlantı Köprüsü",
+          "beta": false,
+          "items": [
+            "Play Connect’i hesaba bağlamak için eşleştirme kodu sistemi eklendi.",
+            "Streamlabs, DonationAlerts ve TipeeeStream hesap bağlantıları oluşturuldu.",
+            "Uygun servisler için Sekmesiz Sunucu Bağlantısı — SSB desteği hazırlandı.",
+            "Doğrudan platform bağlantıları DAB başlığı altında toplandı.",
+            "Bağışlarda platform, gönderen, tutar, para birimi, mesaj ve zaman bilgileri gösterildi.",
+            "Eski bağışların yeni olay gibi görünmesi ve aynı bağışın tekrar sayılması azaltıldı."
+          ]
+        },
+        {
+          "version": "1.2",
+          "title": "Güvenli Hesap",
+          "beta": false,
+          "items": [
+            "E-posta doğrulama, şifre sıfırlama ve hesap değiştirme işlemleri geliştirildi.",
+            "E-posta değiştirme ve hesap silme işlemlerine kodla onay adımları eklendi.",
+            "Bot doğrulaması giriş ve kayıt akışlarına dahil edildi.",
+            "Çok sık yapılan giriş ve kod taleplerine karşı geçici bekleme koruması eklendi.",
+            "Bekleme ve bağlantı sorunlarını açıklayan bildirimler düzenlendi.",
+            "Site ve hesap bağlantıları Play Streamers’ın kendi alan adlarına taşındı."
+          ]
+        },
+        {
+          "version": "1.1",
+          "title": "Kişisel Kontrol",
+          "beta": false,
+          "items": [
+            "Kullanıcı ana sayfasına “Neler Yeni?” ve ürün açıklamaları eklendi.",
+            "Bağlı hesapların durumları daha görünür hâle getirildi.",
+            "Dashboard, Yayıncı Paneli ve Yayıncı İstatistikleri olarak düzenlendi.",
+            "Takipçi, abonelik, hediye abonelik, Kicks ve Donate kartları geliştirildi.",
+            "Kartları büyütme ve ayrıntılı inceleme desteği eklendi.",
+            "Ana sayfa ve Dashboard menülerinin davranışları ortaklaştırıldı."
+          ]
+        },
+        {
+          "version": "1.0",
+          "title": "Tam Sürüm: Yayıncı Merkezi",
+          "beta": false,
+          "items": [
+            "Kullanıcı adı ve şifreyle kayıt ve giriş deneyimi oluşturuldu.",
+            "Google ve Kick ile giriş seçenekleri eklendi.",
+            "“Beni hatırla” desteği ve kayıt sırasında yaş kontrolü sunuldu.",
+            "Hakkımızda, Ürünlerimiz ve Nasıl Çalışır alanları hazırlandı.",
+            "Kişisel ana sayfa, Dashboard ve hesap ekranları ortak bir deneyimde toplandı.",
+            "Play Streamers markası ve PS logosu temel sayfalarda ortaklaştırıldı."
+          ]
+        },
+        {
+          "version": "Beta 0.9",
+          "title": "Açılışa Hazırlık",
+          "beta": true,
+          "items": [
+            "Giriş, hesap tamamlama ve Dashboard geçişleri bir araya getirildi.",
+            "Yükleme, başarı ve hata bildirimleri ortaklaştırıldı.",
+            "Boş ekran ve takılı kalan geçişleri azaltan kurtarma davranışları geliştirildi."
+          ]
+        },
+        {
+          "version": "Beta 0.8",
+          "title": "Her Ekrana Uyum",
+          "beta": true,
+          "items": [
+            "Küçük ekranlarda kart, menü ve form yerleşimleri iyileştirildi.",
+            "Türkçe varsayılan dil olarak kullanıldı ve çoklu dil çalışmaları genişletildi.",
+            "Uzun metinler ve taşan içerikler için düzenlemeler yapıldı."
+          ]
+        },
+        {
+          "version": "Beta 0.7",
+          "title": "Akıcı Geçişler",
+          "beta": true,
+          "items": [
+            "Sayfalar ve pencereler arasındaki geçişler düzenlendi.",
+            "Şifre gösterme ve gizleme düğmeleri geliştirildi.",
+            "Üst üste açılan menüler ve yinelenen ekranlar için düzeltmeler yapıldı."
+          ]
+        },
+        {
+          "version": "Beta 0.6",
+          "title": "Güvenli Adımlar",
+          "beta": true,
+          "items": [
+            "E-posta doğrulama ve şifre yenileme akışları geliştirildi.",
+            "Hesap işlemlerinde doğrulama kodu kullanımı hazırlandı.",
+            "Tekrarlayan kayıtları ve uygunsuz kullanıcı adlarını engelleyen kontroller eklendi."
+          ]
+        },
+        {
+          "version": "Beta 0.5",
+          "title": "Sana Özel Alan",
+          "beta": true,
+          "items": [
+            "Giriş yapan kullanıcılar için kişisel karşılama sayfası hazırlandı.",
+            "Dashboard’a geçiş ve hesap menüsü eklendi.",
+            "Ürün bilgileri ve yenilikler için ilk içerik alanları oluşturuldu."
+          ]
+        },
+        {
+          "version": "Beta 0.4",
+          "title": "Panelin Ritmi",
+          "beta": true,
+          "items": [
+            "Yayıncı Paneli ve istatistik alanları üzerinde çalışıldı.",
+            "Abonelik, hediye abonelik, Kicks ve bağış kartları düzenlendi.",
+            "Yayının açık veya kapalı olduğunu gösteren durum alanı eklendi."
+          ]
+        },
+        {
+          "version": "Beta 0.3",
+          "title": "Bağlı Başlangıç",
+          "beta": true,
+          "items": [
+            "Google ve Kick ile giriş seçenekleri geliştirildi.",
+            "Sosyal hesapla girişten sonra eksik bilgileri tamamlama ekranı hazırlandı.",
+            "Bağlı hesap durumlarını göstermeye yönelik ilk alanlar oluşturuldu."
+          ]
+        },
+        {
+          "version": "Beta 0.2",
+          "title": "Hesaba İlk Adım",
+          "beta": true,
+          "items": [
+            "Kayıt ve giriş ekranlarının ilk sürümleri oluşturuldu.",
+            "Kullanıcı adı ve şifreyle giriş akışı hazırlandı.",
+            "Eksik bilgi ve işlem sonuçları için temel bildirimler eklendi."
+          ]
+        },
+        {
+          "version": "Beta 0.1",
+          "title": "İlk Yayıncı Masası",
+          "beta": true,
+          "items": [
+            "Yayıncıların topluluk ve destek hareketlerini tek alanda takip edebilmesi için ilk panel hazırlandı.",
+            "Abonelik, Kicks ve bağış bilgilerine yönelik temel kartlar oluşturuldu.",
+            "Koyu renkli, yayıncılık odaklı arayüzün temelleri atıldı."
+          ]
+        }
+      ]
+    },
+    "app": {
+      "name": "Play Streamers App",
+      "tabTitle": "Play Streamers App Güncelleme Notları",
+      "summary": "Yayın hazırlığı, analiz, içerik, marka, gelir ve hesap işlerini Windows üzerinden yöneten masaüstü çalışma alanı.",
+      "current": "1.9",
+      "entries": [
+        {
+          "version": "1.9",
+          "title": "Dengeli Final",
+          "beta": false,
+          "items": [
+            "Free, Pro ve Product Pro özellik dağılımı yeniden düzenlendi.",
+            "Temel Dashboard, Play Connect, program, hedef, rapor, güvenlik ve destek Free kapsamında korundu.",
+            "Tüm temalar Free kullanıcılarına açıldı.",
+            "CSV dışa aktarma, analiz, yedekleme ve sponsorluk araçlarının plan dağılımı güncellendi.",
+            "Gerçek sonuç kartları daha görünür hâle getirildi; gereksiz iç kutular temizlendi.",
+            "Küçük ve büyük pencerelerde form, menü ve başlık hizaları düzeltildi.",
+            "Uzun çeviriler ve sonradan değişen açıklamalar için dil davranışı geliştirildi.",
+            "HTML ve PNG çıktıları seçili dile uyarlandı.",
+            "Finans dosyalarında açıklamalar, ondalık biçimleri ve kısmi ödemelerin aktarımı iyileştirildi.",
+            "Klavye kullanımı, iptal ve destek hatasından sonra yeniden deneme düzenlendi."
+          ]
+        },
+        {
+          "version": "1.8",
+          "title": "Yayın Takvimi",
+          "beta": false,
+          "items": [
+            "Kapsamlı kişisel sayfa denemesi sade yayın programına dönüştürüldü.",
+            "Haftalık saatler, içerik notları ve özel tarihli yayınlar eklendi.",
+            "Hazır arka planlar ve bağımsız sayfa dili seçimi sunuldu.",
+            "Geri sayım, gecikme, canlı süre ve yayın sonrası göstergeleri hazırlandı.",
+            "Programdan Kick kanalına geçiş ve PNG kaydı geliştirildi.",
+            "Yayın bitiminde otomatik rapor hazırlama desteği eklendi.",
+            "Son beş raporu yeniden açma ve olay anlarını inceleme sağlandı.",
+            "Profil ve e-posta doğrulama bilgilerinin eşitlenmesi iyileştirildi."
+          ]
+        },
+        {
+          "version": "1.7",
+          "title": "Tema Sahnesi",
+          "beta": false,
+          "items": [
+            "Beş renk teması uygulama genelinde ortaklaştırıldı.",
+            "Sıvı cam görünümüne ışık yansımaları ve derinlik eklendi.",
+            "Pencerelerde arka yazıların öndeki içerikle karışması azaltıldı.",
+            "Düz yüzey ve hareket azaltma tercihleri korundu.",
+            "Platform renkleri ve logoları daha tutarlı kullanıldı.",
+            "Düğmelerin ve büyütülen kartların yer değiştirmesi düzeltildi.",
+            "Okunan destek yanıtları ve sürüm bildirimleri için kalıcı okunma davranışı geliştirildi.",
+            "Store sürümüne uygun güncelleme denetimi ve yönlendirme hazırlandı."
+          ]
+        },
+        {
+          "version": "1.6",
+          "title": "Birleşik Merkezler",
+          "beta": false,
+          "items": [
+            "Çok sayıdaki ayrı araç, ortak çalışma merkezlerinde toplandı.",
+            "İçerik Masası’nda fikirler, yayın akışı, konu kartları ve notlar birleştirildi.",
+            "Performans alanında hedefler, sonuçlar ve deneyler toplandı.",
+            "Finans Defteri ve Sponsor Anlaşma Merkezi oluşturuldu.",
+            "Marka, portföy, ekipman ve kullanım hakları kayıtları düzenlendi.",
+            "Eski kayıtlar taşınırken kaynak veriler korundu.",
+            "Olay zaman çizgisi Yayıncı Paneli ile birleştirildi.",
+            "Hesap, güvenlik, plan, destek ve yedekleme akışları sadeleştirildi."
+          ]
+        },
+        {
+          "version": "1.5",
+          "title": "Otomatik Ritim",
+          "beta": false,
+          "items": [
+            "Normal giriş ve iki aşamalı doğrulama uygulamanın ana ekranına alındı.",
+            "Google ve Kick girişlerinden uygulamaya dönüş geliştirildi.",
+            "SW hesabı için şifre saklamayan hızlı hesap seçimi eklendi.",
+            "Dashboard olay kartları web ile uyumlu hâle getirildi.",
+            "Eski ve tarihi belirsiz olayların yeni gibi görünmesi engellendi.",
+            "Panel ve istatistik temizleme işlemleri ayrıldı.",
+            "Play Connect’in girişten sonra otomatik hazırlanması sağlandı.",
+            "Pencere kapatıldığında arka plan takibinin sürmesi düzenlendi.",
+            "Otomatik yayın sayacı, son beş yayın arşivi ve hedef ilerlemesi geliştirildi.",
+            "OBS’de kullanılabilen teleprompter bağlantısı eklendi."
+          ]
+        },
+        {
+          "version": "1.4",
+          "title": "Yayıncı Atölyesi",
+          "beta": false,
+          "items": [
+            "Yayın karşılaştırma, kişisel rekor ve büyüme deneyi araçları eklendi.",
+            "Hedefler ve farklı büyüme koşulları için senaryo araçları hazırlandı.",
+            "Sponsorluk, teklif, pazarlık ve teslimat takibi geliştirildi.",
+            "Gelir, gider, ödeme ve kayıt karşılaştırma araçları eklendi.",
+            "Ekipman, kullanım hakları ve teknik sorun takibi genişletildi.",
+            "Portföy ve profesyonel sunum araçları geliştirildi.",
+            "Gerçek yayın sonuçları ile elle girilen gelir beklentileri ayrıştırıldı."
+          ]
+        },
+        {
+          "version": "1.3",
+          "title": "Kişisel Düzen",
+          "beta": false,
+          "items": [
+            "Kurucuya sekiz dilde kurulum seçeneği eklendi.",
+            "Kurulumda seçilen dilin ilk açılışta kullanılması sağlandı.",
+            "SW kullanıcı adı ve profil fotoğrafı uygulamayla eşitlenmeye başladı.",
+            "Büyük monitörlerde yazı, kart ve menü ölçüleri düzenlendi.",
+            "Bildirim alanından uygulamayı açma ve tamamen kapatma seçenekleri eklendi.",
+            "Kur paneli ve ortak çalışma alanları geliştirildi.",
+            "Eski notlar ve araç kayıtları yeni alanlara aktarılırken korundu."
+          ]
+        },
+        {
+          "version": "1.2",
+          "title": "İçerideki Bağlantı",
+          "beta": false,
+          "items": [
+            "Play Connect masaüstü uygulamasına entegre edildi.",
+            "Uygulamada bağlantı kurmak için ayrı eklenti yükleme gereksinimi kaldırıldı.",
+            "Platform kataloğu ve hesap, API, sunucu bildirimi, OBS yöntemleri eklendi.",
+            "Bekleyen olayları koruma ve tekrarları ayıklama geliştirildi.",
+            "Kick bağlantısı Play Connect çalışma alanına alındı.",
+            "Yayın geçmişi, süre ve izleyici özetleri masaüstüne özgü istatistik ekranında sunuldu."
+          ]
+        },
+        {
+          "version": "1.1",
+          "title": "Kontrol Masası",
+          "beta": false,
+          "items": [
+            "Dashboard, yayın istatistikleri, hesap, bağlantılar, destek ve plan ekranları eklendi.",
+            "Oturum yokken giriş, oturum varken kişisel ana sayfa açılması düzenlendi.",
+            "Yayıncı Paneli masaüstüne uygun kontrol alanına dönüştürüldü.",
+            "Windows pencere düğmeleri ve görev çubuğu simgesi yenilendi.",
+            "Sıvı cam ve daha sade yüzey seçenekleri eklendi.",
+            "Not, tablo ve zaman çizgisi araçları içeriklerine uygun görünümler kazandı."
+          ]
+        },
+        {
+          "version": "1.0",
+          "title": "Tam Sürüm: Yayıncı Çalışma Alanı",
+          "beta": false,
+          "items": [
+            "Uygulama; içerik, analiz, marka, gelir ve hesap yönetimine odaklandı.",
+            "Studio ve doğrudan yayın/kayıt araçları dağıtım kapsamından çıkarıldı.",
+            "Windows 10 ve Windows 11 için ortak uygulama yapısı oluşturuldu.",
+            "Siteyle uyumlu koyu görünüm ve PS marka kimliği kullanıldı.",
+            "Hesap ve yayın sonuçları için ortak veri kullanımı geliştirildi.",
+            "Gereksiz kamera ve mikrofon izinleri kaldırıldı."
+          ]
+        },
+        {
+          "version": "Beta 0.9",
+          "title": "Yeni Rotaya Hazırlık",
+          "beta": true,
+          "items": [
+            "Yeni sürümü algılama ve uygulama içinden güncelleme akışı geliştirildi.",
+            "Çalışma alanı yedekleri ve yerel araçlar genişletildi.",
+            "Ürün odağının yayıncı hazırlığı ve yönetimine dönüşmesini sağlayan çalışmalar yapıldı."
+          ]
+        },
+        {
+          "version": "Beta 0.8",
+          "title": "Windows Uyumu",
+          "beta": true,
+          "items": [
+            "Windows 10 ve Windows 11 uyumluluğu düzenlendi.",
+            "Windows 11 için sanal kamera çalışmaları yapıldı.",
+            "Windows kurucusu ve Microsoft Store paketleri hazırlandı."
+          ]
+        },
+        {
+          "version": "Beta 0.7",
+          "title": "Çift Hedef",
+          "beta": true,
+          "items": [
+            "Aynı yayını iki hedefe gönderme denemeleri yapıldı.",
+            "Daha fazla sahne ve kaynakla çalışma desteği genişletildi.",
+            "Yayın motorunun sistem kullanımını gösteren alanlar eklendi."
+          ]
+        },
+        {
+          "version": "Beta 0.6",
+          "title": "Canlı Düzen",
+          "beta": true,
+          "items": [
+            "Yayın sırasında kaynak görünürlüğünü değiştirme denemeleri yapıldı.",
+            "Kaynak değişikliklerinin yayını yeniden başlatmadan uygulanması geliştirildi.",
+            "Önizlemede sürükleyerek konumlandırma desteği hazırlandı."
+          ]
+        },
+        {
+          "version": "Beta 0.5",
+          "title": "Önizleme Sahnesi",
+          "beta": true,
+          "items": [
+            "Hazırlanan sahne ile izleyiciye gönderilen görüntü ayrı durumlara ayrıldı.",
+            "Sahneyi önizleyip tek işlemle yayına alma desteği geliştirildi.",
+            "Kesme, kararma ve yumuşak geçiş seçenekleri eklendi."
+          ]
+        },
+        {
+          "version": "Beta 0.4",
+          "title": "Anı Sakla",
+          "beta": true,
+          "items": [
+            "Yayının son bölümünü ayrı kaydetmeye yönelik tekrar tamponu denemeleri yapıldı.",
+            "Kayıtları farklı dosya biçimlerine aktarma akışı hazırlandı.",
+            "Önemli anları işaretleme ve klavye kısayolları geliştirildi."
+          ]
+        },
+        {
+          "version": "Beta 0.3",
+          "title": "Kaynak Atölyesi",
+          "beta": true,
+          "items": [
+            "Yazı, görsel, video ve renk kaynakları için yönetim seçenekleri genişletildi.",
+            "Kaynakları sıralama, gizleme ve konumlandırma desteği eklendi.",
+            "Görüntü kırpma ve saydamlık ayarları geliştirildi."
+          ]
+        },
+        {
+          "version": "Beta 0.2",
+          "title": "Studio Denemesi",
+          "beta": true,
+          "items": [
+            "Ekran, uygulama penceresi ve kamera kaynaklarıyla yayın ve kayıt denemeleri yapıldı.",
+            "Görüntü üzerine yazı ve görsel ekleme desteği hazırlandı.",
+            "Masaüstü ve mikrofon seslerini ayrı ayarlama geliştirildi."
+          ]
+        },
+        {
+          "version": "Beta 0.1",
+          "title": "Masaüstüne İlk Adım",
+          "beta": true,
+          "items": [
+            "İlk Windows önizlemesi hazırlandı.",
+            "Yayıncı notları ve temel hazırlık araçları oluşturuldu.",
+            "Masaüstüne uygun gezinme ve çalışma alanı geliştirildi."
+          ]
+        }
+      ]
+    },
+    "connect": {
+      "name": "Play Connect",
+      "tabTitle": "Play Connect Güncelleme Notları",
+      "summary": "Uygun destek ve bağış platformlarından gelen olayları Play Streamers hesabına ileten ücretsiz Chrome/Chromium ve Firefox eklentisi.",
+      "current": "1.7",
+      "entries": [
+        {
+          "version": "1.7",
+          "title": "Birleşik Bağlantı",
+          "beta": false,
+          "items": [
+            "Uygun DAB/API ve SSB platformlarında OBS / Alert Box kullanımı genişletildi.",
+            "Merkezi bağlantı etkin olduğunda yerel kaynağın aynı bağışı tekrar göndermesi önlendi.",
+            "Mevcut platform ve API ayarları korundu.",
+            "Chrome ve Firefox paketleri ortak kaynaklarla eşitlendi.",
+            "Yerleşik dil bilgileri ve mağaza açıklamaları sekiz dil için genişletildi.",
+            "Mağaza ekran görüntüleri ve tanıtım görselleri yenilendi.",
+            "Eşleştirme, OBS, dil, para birimi ve teslimat kontrolleri tamamlandı.",
+            "Son paketler mağaza incelemelerine iletildi."
+          ]
+        },
+        {
+          "version": "1.6",
+          "title": "Dilinle Açılır",
+          "beta": false,
+          "items": [
+            "Platform değiştirirken bütün panelin yeniden çevrilmesi önlendi.",
+            "Yeni içeriklerin ilk görünümde seçili dilde açılması geliştirildi.",
+            "Panel yeniden açıldığında hazır çevirilerin kullanılması sağlandı.",
+            "Önceki tercih yoksa desteklenen tarayıcı veya sistem dili algılandı.",
+            "Elle seçilen dilin korunması ve sade dil adlarıyla seçim sağlandı.",
+            "Otomatik mod için dile bağlı varsayılan para birimi eklendi.",
+            "Elle seçilen para birimi ve gerçek bağışın kendi para birimi korundu."
+          ]
+        },
+        {
+          "version": "1.5",
+          "title": "Cam Yüzey",
+          "beta": false,
+          "items": [
+            "Açılır panel ve ayarlar koyu sıvı cam görünümüne geçirildi.",
+            "Kart, sekme, düğme ve form alanları aynı tasarımda birleştirildi.",
+            "Uzun platform adları ve açıklamalar için metin sarma geliştirildi.",
+            "Dar ekranlarda kartların dışarı taşması önlendi.",
+            "Sekiz dilde hazır arayüz metinleri eklentinin içinde sunuldu.",
+            "Canlı çeviri hizmetine bağımlılık kaldırıldı.",
+            "Arapça için sağdan sola yerleşim desteği korundu."
+          ]
+        },
+        {
+          "version": "1.4",
+          "title": "Temiz Panel",
+          "beta": false,
+          "items": [
+            "Boş alanlar, ikinci arka planlar ve yarım kalmış bağlantı bölümleri kaldırıldı.",
+            "Logo ile metin yedeğinin üst üste görünmesi engellendi.",
+            "TipeeeStream logosu ve panel yüksekliği düzeltildi.",
+            "Chrome ve Firefox paketleri ortak özelliklerle eşitlendi.",
+            "Kullanılmayan geniş sekme izni Chrome paketinden kaldırıldı.",
+            "Play Connect adı, PC amblemi ve siyah-beyaz görünüm ortaklaştırıldı.",
+            "Açılır panelin yalnız simgelere veya kaydırma çubuğuna dönüşmesi giderildi."
+          ]
+        },
+        {
+          "version": "1.3",
+          "title": "Olayın Ayrıntısı",
+          "beta": false,
+          "items": [
+            "Platform, gönderen, tutar, mesaj ve zamanla olay ayırt etme güçlendirildi.",
+            "İlk gerçek bildirimin kaçırılmasına neden olabilecek durumlar düzeltildi.",
+            "Gönderen ve mesaj bilgilerinin doğru okunması geliştirildi.",
+            "Aynı içerikle farklı zamanda gelen olayların ayrımı sağlandı.",
+            "SSB ve DAB bağlantı ekranları düzenlendi.",
+            "Platform seçiminin yenilemelerde korunması sağlandı.",
+            "Test olayının Dashboard’a aktarılması ve Kick özetinin yenilenmesi geliştirildi."
+          ]
+        },
+        {
+          "version": "1.2",
+          "title": "Sessiz Bağlantı",
+          "beta": false,
+          "items": [
+            "Uygun platformlara OBS / Alert Box bağlantısı desteği eklendi.",
+            "Bağlantının bir kez eklenerek kullanılabilmesi sağlandı.",
+            "Arka plan takibi etkin çalışacak şekilde düzenlendi.",
+            "Doğrulanan bağlantı adresi kaldırılana kadar sabit tutuldu.",
+            "Bağlantı kaldırma için özel onay penceresi eklendi.",
+            "Bildirim seslerinin OBS sesine ek olarak tekrar çalması engellendi.",
+            "Ortak destek bileşeni ve hesap bağlıyken otomatik e-posta bilgisi eklendi."
+          ]
+        },
+        {
+          "version": "1.1",
+          "title": "Gerçek Destek",
+          "beta": false,
+          "items": [
+            "Genel sayfalardaki örnek bağış kartlarının gerçek olay sayılması önlendi.",
+            "İptal, iade ve başarısız işlemler için kontroller genişletildi.",
+            "Ayrıntılı sayfa ayarı isteyen kurulum alanları sadeleştirildi.",
+            "ByNoGame ve diğer uygun servislerin olay algılama akışları geliştirildi.",
+            "Türkiye ve global yayıncı servisleri ortak katalogda toplandı.",
+            "Arama, platform açıklamaları ve bağlantı mesajları düzenlendi."
+          ]
+        },
+        {
+          "version": "1.0",
+          "title": "Tam Sürüm: Bağlantı Merkezi",
+          "beta": false,
+          "items": [
+            "Hesap eşleştirme ve bağış iletme deneyimi oluşturuldu.",
+            "“Yakalandı” ve “Sunucu onayladı” durumları ayrı gösterildi.",
+            "Bağlantı hatalarında bekleyen olayların korunması geliştirildi.",
+            "Site ve eklenti arasındaki bağlantı durumu eşitlendi.",
+            "Yenilenen kodun eski bağlantıyı geçersiz kılması düzenlendi.",
+            "Kalıcı yönetilen sekme zorunluluğu kaldırılarak uygun platformlarda daha az sekmeyle kullanım sağlandı."
+          ]
+        },
+        {
+          "version": "Beta 0.9",
+          "title": "Play Connect Rotası",
+          "beta": true,
+          "items": [
+            "Ayrı Donate Bridge denemesi birincil çözüm olmaktan çıkarıldı.",
+            "Hesap, sunucu bildirimi ve OBS bağlantıları temel yöntemler olarak düzenlendi.",
+            "Eşleştirme, tekrar koruması ve teslimat akışı bir araya getirildi."
+          ]
+        },
+        {
+          "version": "Beta 0.8",
+          "title": "Arka Plan Denemesi",
+          "beta": true,
+          "items": [
+            "Yönetilen sekmeler ve görünmeyen pencerelerle çalışma denemeleri yapıldı.",
+            "Sekme gereksinimini azaltan yöntemler değerlendirildi.",
+            "Her platform için aynı arka plan yaklaşımının uygun olmadığı belirlendi."
+          ]
+        },
+        {
+          "version": "Beta 0.7",
+          "title": "Kaynak Arayışı",
+          "beta": true,
+          "items": [
+            "Platform sayfaları ve bildirim kaynaklarından olay algılama genişletildi.",
+            "Örnek kartları gerçek olaylardan ayıran kontroller geliştirildi.",
+            "Farklı platformlar için farklı bağlantı yöntemleri üzerinde çalışıldı."
+          ]
+        },
+        {
+          "version": "Beta 0.6",
+          "title": "Ortak Kod",
+          "beta": true,
+          "items": [
+            "Eşleştirme kodu dört gruplu, 16 karakterlik biçime geçirildi.",
+            "Kod kullanımından sonra bağlı durumun korunması düzenlendi.",
+            "Bağlantı kaldırma ve yeniden eşleştirme geliştirildi."
+          ]
+        },
+        {
+          "version": "Beta 0.5",
+          "title": "Temiz Başlangıç",
+          "beta": true,
+          "items": [
+            "İlk bağlantıda görülen geçmiş olaylar yeni bağışlardan ayrıldı.",
+            "Başlangıç kayıtlarının topluca Dashboard’a gönderilmesi önlendi.",
+            "Olayların zaman ve geçerlilik kontrolleri geliştirildi."
+          ]
+        },
+        {
+          "version": "Beta 0.4",
+          "title": "Tek Olay",
+          "beta": true,
+          "items": [
+            "Aynı bağışın tekrar sayılmasını önleyen kontroller geliştirildi.",
+            "Daha önce teslim edilen olaylar için kayıt tutulmaya başlandı.",
+            "Tekrarlayan platform taramalarının çift olay oluşturması azaltıldı."
+          ]
+        },
+        {
+          "version": "Beta 0.3",
+          "title": "Bekleyen Sıra",
+          "beta": true,
+          "items": [
+            "Geçici bağlantı hatalarında olayları bekletme desteği hazırlandı.",
+            "Algılanan olay ve tamamlanan teslimat ayrı durumlara ayrıldı.",
+            "Bağlantı sorunları için kullanıcı mesajları eklendi."
+          ]
+        },
+        {
+          "version": "Beta 0.2",
+          "title": "Hesap Eşleştirmesi",
+          "beta": true,
+          "items": [
+            "Kodla hesap eşleştirme geliştirildi.",
+            "Bağlı ve bağlantısız durum göstergeleri eklendi.",
+            "Olayların doğru kullanıcı hesabına gönderilmesi sağlandı."
+          ]
+        },
+        {
+          "version": "Beta 0.1",
+          "title": "İlk Köprü",
+          "beta": true,
+          "items": [
+            "Eklentinin ilk bağlantı ekranı hazırlandı.",
+            "Platform olaylarını Play Streamers’a aktarmaya yönelik temel akış oluşturuldu.",
+            "İlk platform seçenekleri eklendi."
+          ]
+        }
+      ]
+    },
+    "identity": {
+      "name": "SW Identity",
+      "tabTitle": "SW Identity Güncelleme Notları",
+      "summary": "SW Create ve Play Streamers ürünlerinde kullanılan ortak hesap, güvenli giriş ve ürün erişimi sistemi.",
+      "current": "1.5",
+      "entries": [
+        {
+          "version": "1.5",
+          "title": "Hatırlanan Hesap",
+          "beta": false,
+          "items": [
+            "Masaüstünde kayıtlı SW hesaplarından hızlı seçim desteği geliştirildi.",
+            "Şifre saklamayan, cihaza bağlı güvenli hatırlama kullanıldı.",
+            "Hızlı giriş kaydının her kullanımda yenilenmesi sağlandı.",
+            "Süresi dolan kayıtlarda normal girişe dönme düzenlendi.",
+            "Kayıtlı hesabı cihazdan kaldırma seçeneği eklendi.",
+            "Oturumdan çıkma ile hızlı giriş kaydını kaldırma ayrıştırıldı.",
+            "Sosyal girişteki doğrulama isteğinin doğru kod ekranına ulaşması sağlandı.",
+            "Aynı giriş dönüşünün iki kez işlenmesi önlendi.",
+            "Profil, ad ve e-posta doğrulama bilgileri App ile daha tutarlı eşitlendi."
+          ]
+        },
+        {
+          "version": "1.4",
+          "title": "Ürün İçinde Hesap",
+          "beta": false,
+          "items": [
+            "Play Streamers’ın giriş ve kayıt ekranları merkezi hesapla daha doğrudan çalıştı.",
+            "SW girişinden Play Streamers’a dönüş akışı düzeltildi.",
+            "İki aşamalı doğrulama kodunun ürün içinde girilmesi desteklendi.",
+            "Profil ve güvenlik işlemleri Play Streamers Hesap Merkezi içinde sunuldu.",
+            "Google ve Kick dönüşlerinde doğru ürün ve ekranın açılması geliştirildi.",
+            "Bazı genel bağlantı hataları giderildi.",
+            "Merkezi SW hesabı ile ürün hesabının silme kapsamı daha açık anlatıldı."
+          ]
+        },
+        {
+          "version": "1.3",
+          "title": "Profil ve Cihazlar",
+          "beta": false,
+          "items": [
+            "Kullanıcı adı, görünen ad, doğum tarihi ve avatar yönetimi geliştirildi.",
+            "Hazır avatarlar ve özel profil fotoğrafı desteği eklendi.",
+            "Cihaz, tarayıcı, sistem ve yaklaşık konumla oturum geçmişi sunuldu.",
+            "Seçilen cihazdan uzaktan çıkış desteği eklendi.",
+            "Numaralı destek talepleri, konuşmalar ve dosya ekleri geliştirildi.",
+            "E-posta yanıtları konuşmalara bağlandı; eski alıntı zincirleri temizlendi.",
+            "Okunan bildirimlerin tekrar gösterilmesi azaltıldı."
+          ]
+        },
+        {
+          "version": "1.2",
+          "title": "Hesabın Kontrolü",
+          "beta": false,
+          "items": [
+            "E-posta koduyla doğrulama ve şifre sıfırlama geliştirildi.",
+            "Yeni kod istendiğinde önceki kodun geçersiz kalması sağlandı.",
+            "E-posta değiştirme ve hesap silme kodla onaya bağlandı.",
+            "Önemli değişikliklerden sonra oturumların güvenli yenilenmesi düzenlendi.",
+            "Çok sık giriş ve kod taleplerine karşı bekleme koruması geliştirildi.",
+            "Bot doğrulaması ve hesap e-postalarının görünümü ortaklaştırıldı."
+          ]
+        },
+        {
+          "version": "1.1",
+          "title": "Güvenli İkinci Adım",
+          "beta": false,
+          "items": [
+            "Authenticator uygulamalarıyla iki aşamalı doğrulama eklendi.",
+            "QR kod ve elle girilebilen kurulum anahtarı sunuldu.",
+            "Uyumlu Apple, Google ve Microsoft doğrulama uygulamaları desteklendi.",
+            "Sekiz tek kullanımlık kurtarma kodu oluşturma sağlandı.",
+            "Kod yenilemede eski kurtarma kodlarının geçersiz kalması düzenlendi.",
+            "Kullanılmış doğrulama kodlarının tekrar kabul edilmesi önlendi.",
+            "Güvenilen cihazı hatırlama desteği geliştirildi."
+          ]
+        },
+        {
+          "version": "1.0",
+          "title": "Tam Sürüm: Tek Hesap",
+          "beta": false,
+          "items": [
+            "SW Create ve Play Streamers için ortak hesap sistemi oluşturuldu.",
+            "Kullanıcı adı veya e-posta ve şifreyle giriş desteklendi.",
+            "Google ve Kick ile giriş seçenekleri eklendi.",
+            "Kayıt, hesap tamamlama ve “Beni hatırla” akışları hazırlandı.",
+            "Ürün bağlantıları ve erişim bilgileri merkezi hesapta toplandı.",
+            "Son kullanılabilir giriş yöntemini kaldırmayı engelleyen koruma eklendi."
+          ]
+        },
+        {
+          "version": "Beta 0.9",
+          "title": "Ürünler Arası Güven",
+          "beta": true,
+          "items": [
+            "Ortak hesapla ürünlere geçiş akışları birleştirildi.",
+            "Hızlı hesap seçimi ve güvenli hatırlama geliştirildi.",
+            "Profil ve erişim bilgilerinin ürünlerde tutarlı görünmesi düzenlendi."
+          ]
+        },
+        {
+          "version": "Beta 0.8",
+          "title": "Hesaba Bağlı Destek",
+          "beta": true,
+          "items": [
+            "Destek talepleri ve mesajlar kullanıcı hesabına bağlandı.",
+            "Dosya ekleri ve bildirimler geliştirildi.",
+            "Destek yanıtlarını hesap üzerinden takip etme sağlandı."
+          ]
+        },
+        {
+          "version": "Beta 0.7",
+          "title": "Cihaz Hafızası",
+          "beta": true,
+          "items": [
+            "Cihaz geçmişi ve oturum bilgileri geliştirildi.",
+            "Hesabı ve güvenilen cihazı hatırlama üzerinde çalışıldı.",
+            "Uzaktan oturum kapatma desteği hazırlandı."
+          ]
+        },
+        {
+          "version": "Beta 0.6",
+          "title": "E-posta Onayı",
+          "beta": true,
+          "items": [
+            "E-posta koduyla doğrulama geliştirildi.",
+            "Şifre yenileme ve e-posta değiştirme adımları hazırlandı.",
+            "Önemli hesap işlemleri için ek onaylar oluşturuldu."
+          ]
+        },
+        {
+          "version": "Beta 0.5",
+          "title": "İkinci Adım",
+          "beta": true,
+          "items": [
+            "Authenticator ile iki aşamalı doğrulama çalışmaları yapıldı.",
+            "Kurulum ve kod giriş ekranları hazırlandı.",
+            "Kurtarma kodlarına yönelik temel destek eklendi."
+          ]
+        },
+        {
+          "version": "Beta 0.4",
+          "title": "Profil Temeli",
+          "beta": true,
+          "items": [
+            "Kullanıcı adı ve doğum tarihi alanları eklendi.",
+            "Eksik hesap bilgilerini tamamlama akışı hazırlandı.",
+            "Profil ve ürün bağlantısı ekranları geliştirildi."
+          ]
+        },
+        {
+          "version": "Beta 0.3",
+          "title": "Sosyal Kapı",
+          "beta": true,
+          "items": [
+            "Google ve Kick hesaplarıyla giriş çalışmaları yapıldı.",
+            "Sosyal hesabın merkezi SW hesabına bağlanması geliştirildi.",
+            "Giriş sonrası doğru ürüne dönüş üzerinde çalışıldı."
+          ]
+        },
+        {
+          "version": "Beta 0.2",
+          "title": "Güvenli Oturum",
+          "beta": true,
+          "items": [
+            "Kullanıcı oturumu ve güvenli çıkış geliştirildi.",
+            "Hesap bilgilerinin yalnız ilgili kullanıcıya gösterilmesi düzenlendi.",
+            "Ürün erişimi için temel kontroller oluşturuldu."
+          ]
+        },
+        {
+          "version": "Beta 0.1",
+          "title": "Ortak Kimlik",
+          "beta": true,
+          "items": [
+            "SW ürünleri için merkezi hesap temeli oluşturuldu.",
+            "Kullanıcı ve ürün bağlantıları hazırlandı.",
+            "Her hesabın kendi bilgileriyle çalışması sağlandı."
+          ]
+        }
+      ]
+    },
+    "swcreate": {
+      "name": "SW Create",
+      "tabTitle": "SW Create Güncelleme Notları",
+      "summary": "Ürünleri keşfetmek, ortak SW hesabını yönetmek, ürün erişimlerini görmek ve destek almak için kullanılan marka ve kullanıcı merkezi.",
+      "current": "1.9",
+      "entries": [
+        {
+          "version": "1.9",
+          "title": "Birleşik SW Deneyimi",
+          "beta": false,
+          "items": [
+            "Ürünler, SW Yönetimi, SW Üyeliği ve Sinyali Takip Et bölümleri düzenlendi.",
+            "Marka vitrini ve kişisel hesap alanı aynı ürün deneyimine bağlandı.",
+            "Profil, güvenlik, cihaz, destek ve erişim bilgileri ortak hesapla sunuldu.",
+            "Ürün güncelleme geçmişlerine ortak arşivden erişim sağlandı.",
+            "Kayıtlı hesap, ürün ve aktif kullanım özetleri için alanlar hazırlandı.",
+            "SW logosunun karakteristik görünümü ortaklaştırıldı.",
+            "Ürün kartları, mağaza bağlantıları ve kullanıcı merkezi arasındaki gezinme geliştirildi.",
+            "Profil fotoğrafı, ad ve e-posta doğrulama bilgilerinin Play Streamers ile eşitlenmesi iyileştirildi.",
+            "Ortak hesapla hızlı giriş ve ürünlere dönüş deneyimi SW Identity ile birlikte düzenlendi."
+          ]
+        },
+        {
+          "version": "1.8",
+          "title": "Daha Akıcı Sinyal",
+          "beta": false,
+          "items": [
+            "Sekiz dil için marka ve kullanıcı ekranlarının kapsamı genişletildi.",
+            "Mobil ve masaüstünde taşan yazılar ve çakışan öğeler düzeltildi.",
+            "Koyu tasarımla uyumsuz alanlar düzenlendi.",
+            "Ağır tam sayfa geçişleri azaltıldı.",
+            "Gizlilik, kullanım koşulları ve destek bağlantıları daha rahat kullanılabilir hâle getirildi.",
+            "Alt bilgi alanı marka görünümüyle bütünleştirildi."
+          ]
+        },
+        {
+          "version": "1.7",
+          "title": "Ortak Erişim",
+          "beta": false,
+          "items": [
+            "Free, Pro ve Product Pro planları için tanıtım alanları hazırlandı.",
+            "SW Create Edition plan başlıkları oluşturuldu.",
+            "Hesabın ürün erişimleri ve plan bilgileri Dashboard’da sunuldu.",
+            "Birden fazla ürünün erişimlerini aynı hesaptan yönetme yaklaşımı geliştirildi.",
+            "Plan açıklamaları ve bağlantılar düzenlendi.",
+            "Etkin olmayan ücretli erişimlerin aktifmiş gibi gösterilmemesi sağlandı."
+          ]
+        },
+        {
+          "version": "1.6",
+          "title": "Ürünler Bir Arada",
+          "beta": false,
+          "items": [
+            "SW Create ve Play Streamers ortak ürün ağı altında sunuldu.",
+            "Play Connect ve masaüstü uygulamasına erişim bağlantıları düzenlendi.",
+            "Ürünler anlaşılır gruplarda gösterildi.",
+            "Google, Kick ve Play Streamers bağlantıları hesap merkezinde toplandı.",
+            "Aynı SW hesabıyla ürünler arasında kullanım geliştirildi.",
+            "Play Connect için tarayıcıya uygun mağaza yönlendirmesi oluşturuldu.",
+            "Play Connect’in ücretsiz ürün olarak kalması korundu."
+          ]
+        },
+        {
+          "version": "1.5",
+          "title": "Destek Hattı",
+          "beta": false,
+          "items": [
+            "Hesaba bağlı destek talebi oluşturma eklendi.",
+            "Talepler, konuşmalar ve yanıtlar aynı merkezden takip edildi.",
+            "Okunabilir talep numaraları ve durumlar sunuldu.",
+            "Dosya ekleme ve ilgili ekleri güvenli görüntüleme geliştirildi.",
+            "E-posta yanıtları konuşmalara eklendi.",
+            "Okunma durumları ve eski alıntıların temizlenmesi düzenlendi."
+          ]
+        },
+        {
+          "version": "1.4",
+          "title": "Güvenlik Çemberi",
+          "beta": false,
+          "items": [
+            "Authenticator ve kurtarma kodlarının yönetimi sunuldu.",
+            "Güvenilen cihaz ve hesap hatırlama seçenekleri geliştirildi.",
+            "Açık oturumlar ve cihaz geçmişi gösterildi.",
+            "Seçilen cihazdan uzaktan çıkış desteği sağlandı.",
+            "Önemli hesap işlemlerinin doğrulama adımları daha anlaşılır hâle getirildi.",
+            "Son giriş yöntemini yanlışlıkla kaldırmaya karşı koruma uygulandı."
+          ]
+        },
+        {
+          "version": "1.3",
+          "title": "Profil Kimliği",
+          "beta": false,
+          "items": [
+            "Profil ve hesap işlemleri ortak merkezde toplandı.",
+            "Kullanıcı adı, profil fotoğrafı ve hesap bilgileri yönetimi geliştirildi.",
+            "Hazır avatarlar ve özel fotoğraflar desteklendi.",
+            "E-posta ve şifre değiştirme işlemleri sunuldu.",
+            "Profil, güvenlik, cihazlar, bağlantılar ve destek bölümleri düzenlendi."
+          ]
+        },
+        {
+          "version": "1.2",
+          "title": "Sana Ait Merkez",
+          "beta": false,
+          "items": [
+            "Giriş yapan kullanıcılar için bağımsız kişisel ana sayfa oluşturuldu.",
+            "Hesap durumu ve ürün alanlarına erişim kolaylaştırıldı.",
+            "Bildirim, sistem durumu ve destek seçenekleri eklendi.",
+            "Güncelleme arşivine doğrudan erişim sağlandı.",
+            "Kullanıcı ana sayfası ile hesap merkezi arasındaki geçişler düzenlendi."
+          ]
+        },
+        {
+          "version": "1.1",
+          "title": "Hesabın Kapısı",
+          "beta": false,
+          "items": [
+            "Kullanıcı adı veya e-posta ve şifreyle giriş eklendi.",
+            "Google ve Kick ile giriş ve kayıt sunuldu.",
+            "Kayıt ekranına doğum tarihi ve şifre tekrarı eklendi.",
+            "“Beni hatırla” desteği sağlandı.",
+            "Giriş ekranının yanlışlıkla yeni hesap oluşturması önlendi.",
+            "Şifre yenileme ve hesap tamamlama düzenlendi."
+          ]
+        },
+        {
+          "version": "1.0",
+          "title": "Tam Sürüm: SW Create Merkezi",
+          "beta": false,
+          "items": [
+            "SW Create bağımsız marka ve ürün sitesi olarak düzenlendi.",
+            "Ürünler ve üretim yaklaşımı ortak vitrinde sunuldu.",
+            "SW logosu ve koyu marka dili ortaklaştırıldı.",
+            "Ana sayfa, hesap, ürün ve bilgi alanları ayrıldı.",
+            "Play Streamers ve ürün ağına geçişler görünür hâle getirildi."
+          ]
+        },
+        {
+          "version": "Beta 0.9",
+          "title": "Birleşik Açılış",
+          "beta": true,
+          "items": [
+            "Marka, hesap ve ürün ekranları ortak deneyimde birleştirildi.",
+            "Dil seçenekleri ve küçük ekran düzenlemeleri genişletildi.",
+            "Gezinme, alt bilgi ve destek bağlantıları gözden geçirildi."
+          ]
+        },
+        {
+          "version": "Beta 0.8",
+          "title": "Ortak Ürün Ağı",
+          "beta": true,
+          "items": [
+            "Ürün bağlantıları ve erişim bilgileri aynı merkezde toplandı.",
+            "Plan tanıtımları ve ürün grupları hazırlandı.",
+            "Play Connect için uygun tarayıcı mağazasına yönlendirme geliştirildi."
+          ]
+        },
+        {
+          "version": "Beta 0.7",
+          "title": "Destek Sinyali",
+          "beta": true,
+          "items": [
+            "Hesaba bağlı destek ve bildirim alanları oluşturuldu.",
+            "Talep, yanıt ve durum takibi geliştirildi.",
+            "Güncelleme arşivine erişim eklendi."
+          ]
+        },
+        {
+          "version": "Beta 0.6",
+          "title": "Güvenlik Merkezi",
+          "beta": true,
+          "items": [
+            "SW Identity güvenlik seçenekleri kullanıcı ekranlarına bağlandı.",
+            "İki aşamalı doğrulama ve cihaz yönetimi alanları hazırlandı.",
+            "Önemli hesap işlemleri için onay adımları düzenlendi."
+          ]
+        },
+        {
+          "version": "Beta 0.5",
+          "title": "Profil Alanı",
+          "beta": true,
+          "items": [
+            "Kullanıcı profili ve hesap ayarları geliştirildi.",
+            "Profil fotoğrafı ve kullanıcı bilgileri için yönetim alanları hazırlandı.",
+            "Hesap merkezi bölümleri oluşturuldu."
+          ]
+        },
+        {
+          "version": "Beta 0.4",
+          "title": "Kişisel Karşılama",
+          "beta": true,
+          "items": [
+            "Giriş yapan kullanıcılar için ayrı ana sayfa hazırlandı.",
+            "Tanıtım ve kullanıcı ekranları birbirinden ayrıldı.",
+            "Hesap ve ürün alanlarına geçişler eklendi."
+          ]
+        },
+        {
+          "version": "Beta 0.3",
+          "title": "SW Hesabına Giriş",
+          "beta": true,
+          "items": [
+            "Giriş ve kayıt ekranlarının ilk sürümleri oluşturuldu.",
+            "Ortak SW hesabına erişim hazırlandı.",
+            "Hesap işlemleri için ayrı alan geliştirildi."
+          ]
+        },
+        {
+          "version": "Beta 0.2",
+          "title": "Ürün Vitrini",
+          "beta": true,
+          "items": [
+            "Play Streamers ve diğer ürünleri tanıtan alanlar eklendi.",
+            "Ürünlere geçiş bağlantıları hazırlandı.",
+            "Site içindeki temel gezinme düzenlendi."
+          ]
+        },
+        {
+          "version": "Beta 0.1",
+          "title": "Marka Kıvılcımı",
+          "beta": true,
+          "items": [
+            "SW Create’in ilk marka vitrini hazırlandı.",
+            "Markanın üretim yaklaşımını anlatan içerikler oluşturuldu.",
+            "Koyu, teknoloji odaklı görünüm benimsendi."
+          ]
+        }
+      ]
+    }
+  }
+}

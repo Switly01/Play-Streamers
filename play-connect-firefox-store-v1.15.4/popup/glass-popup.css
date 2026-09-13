@@ -1,0 +1,14 @@
+/* Keep the explicit Chrome action width; do not use viewport-relative sizing. */
+header{grid-template-columns:minmax(0,1fr) auto 9px;gap:8px;background:rgba(5,5,7,.91);backdrop-filter:blur(22px)}
+.header-brand{grid-template-columns:34px minmax(0,1fr);gap:8px}.brand-mark{width:34px;height:34px}
+header b{font-size:14px}header small{font-size:10px}
+.pair-card,.catalog,.delivery{border-radius:18px}
+.featured-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+.provider-card{grid-template-columns:28px minmax(0,1fr);gap:7px;padding:10px 16px 10px 9px!important;min-height:72px!important}
+.provider-card img{width:28px;height:28px}.provider-card b{font-size:11px;white-space:normal;overflow-wrap:anywhere;line-height:1.35}.provider-card small{font-size:9px}
+.provider-card i,.provider-row i{right:auto;left:auto;inset-inline-end:7px;top:8px;width:5px;height:5px}
+.provider-row b{white-space:normal;overflow-wrap:anywhere}.provider-row small{display:block;margin:3px 0 0}
+.section-title>span{min-width:0}.section-title .scan-button{max-width:112px;white-space:normal;line-height:1.4}
+.others-toggle{border-radius:11px!important}.status{color:#ddd}
+footer{background:linear-gradient(transparent,#050505 32%)}
+.locale-menu{inset-inline-end:-18px}.locale-menu button{font-size:12px}

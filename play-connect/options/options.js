@@ -9,6 +9,7 @@ let providerQuery = "";
 let activeAlertUrl = "";
 let sidebarResizeObserver = null;
 let supportAttachments = [];
+let releaseNotesPromise = null;
 const CENTRAL_DAB_PROVIDER_IDS = new Set(["streamlabs", "donationalerts", "tipeeestream"]);
 
 async function send(message) {
@@ -30,6 +31,41 @@ function esc(value) {
   return String(value ?? "").replace(/[&<>"']/g, char => ({
     "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
   })[char]);
+}
+
+async function releaseNotesArchive() {
+  releaseNotesPromise ||= fetch(new URL('../release-notes-family.localized.json', import.meta.url))
+    .then(response => {
+      if (!response.ok) throw new Error('Güncelleme notları yüklenemedi.');
+      return response.json();
+    });
+  const data = await releaseNotesPromise;
+  return data.locales?.[currentLocale()] || data.locales?.tr;
+}
+
+async function renderReleaseNotes() {
+  const archive = await releaseNotesArchive();
+  const product = archive.products.connect;
+  $('#updateNotesTitle').textContent = product.tabTitle;
+  $('#updateNotesIntro').textContent = product.summary;
+  $('#updateNotesClose').setAttribute('aria-label', archive.ui.close);
+  $('#updateNotesList').innerHTML = product.entries.map((note, index) => `
+    <article class="${note.beta ? 'beta-release' : 'stable-release'}">
+      <header><span>${esc(note.beta ? archive.ui.beta : archive.ui.fullRelease)}</span><b>${esc(note.version)}</b>${index === 0 ? `<i>${esc(archive.ui.latest)}</i>` : ''}</header>
+      <h3>${esc(note.title)}</h3>
+      <ul>${note.items.map(item => `<li>${esc(item)}</li>`).join('')}</ul>
+    </article>`).join('');
+}
+
+async function openReleaseNotes() {
+  await renderReleaseNotes();
+  $('#updateNotesModal').hidden = false;
+  $('#updateNotesClose').focus();
+}
+
+function closeReleaseNotes() {
+  $('#updateNotesModal').hidden = true;
+  $('#updateNotesButton').focus();
 }
 
 function replaceSafeMarkup(element, markup) {
@@ -813,7 +849,17 @@ window.addEventListener("focus", () => {
 
 initialize();
 
+$('#updateNotesButton').addEventListener('click', () => void openReleaseNotes());
+$('#updateNotesClose').addEventListener('click', closeReleaseNotes);
+$('#updateNotesModal').addEventListener('click', event => {
+  if (event.target === $('#updateNotesModal')) closeReleaseNotes();
+});
+document.addEventListener('keydown', event => {
+  if (event.key === 'Escape' && !$('#updateNotesModal').hidden) closeReleaseNotes();
+});
+
 window.addEventListener('pc-locale-change', () => {
+  if (!$('#updateNotesModal').hidden) void renderReleaseNotes();
   const field = document.querySelector('[name="defaultCurrency"]');
   if (field) {
     const option = field.querySelector('[value="auto"]');

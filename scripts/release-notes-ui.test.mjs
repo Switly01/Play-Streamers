@@ -68,7 +68,7 @@ try {
     globalThis.chrome = {
       i18n: { getUILanguage: () => 'tr-TR' },
       runtime: {
-        getManifest: () => ({ version: '2.0', version_name: '2.0' }),
+        getManifest: () => ({ version: '2.1', version_name: '2.1' }),
         sendMessage: async message => message?.type === 'GET_STATE'
           ? { ok: true, result: {
               connection: { paired: false, serverConnectedProviderIds: [] },
@@ -84,11 +84,11 @@ try {
     };
   });
   await connect.goto('http://127.0.0.1:8766/play-connect/options/options.html');
-  assert.equal(await connect.locator('#extensionVersion').textContent(), 'v2.0');
+  assert.equal(await connect.locator('#extensionVersion').textContent(), 'v2.1');
   await connect.locator('#updateNotesButton').click();
   await connect.locator('#updateNotesModal').waitFor({ state: 'visible' });
   assert.equal(await connect.locator('#updateNotesTitle').textContent(), 'Play Connect Güncelleme Notları');
-  assert.equal(await connect.locator('#updateNotesList article').count(), 20);
+  assert.equal(await connect.locator('#updateNotesList article').count(), 21);
   for (const version of ['1.7','1.8','1.9','2.0']) {
     assert.ok((await connect.locator('#updateNotesList').innerText()).includes(version), `${version} missing from Connect UI`);
   }
@@ -142,7 +142,7 @@ try {
   await sw.screenshot({ path: path.join(evidenceDir, 'sw-create-arabic.png'), fullPage: true });
 
   await browser.close();
-  console.log('Release notes UI QA passed: web=3 tabs, Play Connect=20 releases, SW Create=5 tabs, missing versions restored, beta styling and locale switches verified.');
+  console.log('Release notes UI QA passed: web=3 tabs, Play Connect=21 releases, SW Create=5 tabs, missing versions restored, beta styling and locale switches verified.');
 } finally {
   siteServer.kill();
   swServer.kill();

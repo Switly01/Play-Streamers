@@ -36,6 +36,12 @@
             "Sekiz dilde hazır arayüz metinleri eklentinin içinde sunuldu.",
             "Chrome ve Firefox paketleri ortak kaynaklarla eşitlendi."
           ]
+        },
+        {
+          "version": "2.1",
+          "title": "Güncelleme Notları",
+          "beta": false,
+          "items": ["Genel performans düzeltmeleri yapıldı."]
         }
       ]
     }

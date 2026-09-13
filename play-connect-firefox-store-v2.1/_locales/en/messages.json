@@ -1,0 +1,6 @@
+{
+  "extensionName": { "message": "Play Connect" },
+  "extensionShortName": { "message": "Play Connect" },
+  "extensionDescription": { "message": "Connect support platforms to your Play Streamers account with secure local links and server delivery." },
+  "extensionActionTitle": { "message": "Open Play Connect" }
+}

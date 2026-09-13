@@ -1,0 +1,226 @@
+{
+  "tr": {
+    "amoLocale": "tr",
+    "language": "Türkçe",
+    "summary": "Destek platformlarını Play Streamers hesabına bağlar ve doğrulanmış bağış olaylarını yayıncı paneline aktarır.",
+    "descriptionLines": [
+      "Play Connect, yayıncıların destek ve bağış platformlarını tek bir Play Streamers hesabında yönetmesini sağlayan ücretsiz bir tarayıcı eklentisidir.",
+      "",
+      "Desteklenen platformlarda API, sunucu bildirimi veya kullanıcının kendi OBS / Alert Box bağlantısı üzerinden yeni bağış olaylarını takip eder. Doğrulanan olaylar; gönderen adı, tutar, para birimi, mesaj, tarih ve platform bilgileriyle kullanıcının kişisel Play Streamers paneline aktarılır.",
+      "",
+      "Öne çıkan özellikler:",
+      "• Birden fazla destek platformunu tek sıvı cam panelden yönetme",
+      "• DAB/API ve SSB platformlarında OBS / Alert Box bağlantısı kullanma",
+      "• Yeni bağış olaylarını otomatik kontrol etme ve tekrarları filtreleme",
+      "• Play Streamers hesabıyla güvenli cihaz eşleştirmesi",
+      "• Sekiz dil, otomatik sistem dili algılama ve elle dil seçimi",
+      "• Cihazda önbelleğe alınan hazır çevirilerle beklemeden platform geçişi",
+      "• Seçilen dile uygun otomatik para birimi ve gerçek olay para birimini koruma",
+      "• Dar ekranlarda taşmayan erişilebilir platform kartları",
+      "",
+      "Gizlilik:",
+      "Play Connect platform parolalarını Play Streamers sunucularına göndermez. OBS / Alert Box bağlantıları ve platform erişim anahtarları tarayıcı profilinde saklanır. Play Streamers'a yalnızca doğrulanmış bağış bilgileri ve bağlantının çalışması için gerekli sınırlı cihaz bilgileri gönderilir. Arayüz çevirileri eklentiyle birlikte gelir ve harici bir çeviri servisine gönderilmez."
+    ],
+    "screenshotCaptions": [
+      "Yeni sıvı cam Play Connect paneli ve platform bağlantıları",
+      "OBS / Alert Box bağlantısı ve canlı durum takibi",
+      "Çoklu dil, otomatik para birimi ve SSB bağlantı desteği"
+    ]
+  },
+  "en": {
+    "amoLocale": "en-us",
+    "language": "English (US)",
+    "summary": "Connect support platforms to Play Streamers and send verified donation events to your creator dashboard.",
+    "descriptionLines": [
+      "Play Connect is a free browser extension that lets streamers manage support and donation platforms through one Play Streamers account.",
+      "",
+      "On supported platforms, it tracks new donation events through an API, server notifications, or your own OBS / Alert Box link. Verified events are delivered to your personal Play Streamers dashboard with the sender, amount, currency, message, date, and platform.",
+      "",
+      "Highlights:",
+      "• Manage multiple support platforms from one liquid-glass dashboard",
+      "• Use OBS / Alert Box links with supported DAB/API and SSB platforms",
+      "• Check new donation events automatically and filter duplicates",
+      "• Pair devices securely with your Play Streamers account",
+      "• Eight interface languages with automatic system-language detection and manual selection",
+      "• Instant platform switching with translations cached on your device",
+      "• Automatic locale-based currency while preserving manual and event currencies",
+      "• Accessible platform cards that stay within narrow screens",
+      "",
+      "Privacy:",
+      "Play Connect does not send platform passwords to Play Streamers servers. OBS / Alert Box links and platform access keys stay in your browser profile. Only verified donation data and limited device information required for the connection are sent to Play Streamers. Interface translations ship with the extension and are never sent to an external translation service."
+    ],
+    "screenshotCaptions": [
+      "New liquid-glass Play Connect dashboard and platform connections",
+      "OBS / Alert Box connection and live status tracking",
+      "Multiple languages, automatic currency, and SSB link support"
+    ]
+  },
+  "de": {
+    "amoLocale": "de",
+    "language": "Deutsch",
+    "summary": "Verbindet Support-Plattformen mit Play Streamers und überträgt verifizierte Spenden an dein Creator-Dashboard.",
+    "descriptionLines": [
+      "Play Connect ist eine kostenlose Browser-Erweiterung, mit der Streamer Support- und Spendenplattformen über ein einziges Play Streamers-Konto verwalten können.",
+      "",
+      "Auf unterstützten Plattformen erfasst sie neue Spendenereignisse per API, Serverbenachrichtigung oder über deinen eigenen OBS-/Alert-Box-Link. Verifizierte Ereignisse werden mit Absender, Betrag, Währung, Nachricht, Datum und Plattform an dein persönliches Play Streamers-Dashboard übertragen.",
+      "",
+      "Highlights:",
+      "• Mehrere Support-Plattformen in einem Liquid-Glass-Dashboard verwalten",
+      "• OBS-/Alert-Box-Links mit unterstützten DAB/API- und SSB-Plattformen verwenden",
+      "• Neue Spenden automatisch prüfen und Duplikate filtern",
+      "• Geräte sicher mit deinem Play Streamers-Konto koppeln",
+      "• Acht Oberflächensprachen mit automatischer Systemerkennung und manueller Auswahl",
+      "• Sofortiger Plattformwechsel durch lokal zwischengespeicherte Übersetzungen",
+      "• Automatische Währung passend zur Sprache; manuelle und echte Ereigniswährungen bleiben erhalten",
+      "• Zugängliche Plattformkarten ohne Überlauf auf schmalen Bildschirmen",
+      "",
+      "Datenschutz:",
+      "Play Connect sendet keine Plattformpasswörter an Play Streamers-Server. OBS-/Alert-Box-Links und Plattformzugangsschlüssel bleiben im Browserprofil. An Play Streamers werden nur verifizierte Spendendaten und die für die Verbindung erforderlichen begrenzten Geräteinformationen gesendet. Die Übersetzungen sind in der Erweiterung enthalten und werden nicht an externe Übersetzungsdienste übertragen."
+    ],
+    "screenshotCaptions": [
+      "Neues Liquid-Glass-Dashboard und Plattformverbindungen",
+      "OBS-/Alert-Box-Verbindung und Live-Status",
+      "Mehrere Sprachen, automatische Währung und SSB-Link-Unterstützung"
+    ]
+  },
+  "es": {
+    "amoLocale": "es-es",
+    "language": "Español (España)",
+    "summary": "Conecta plataformas de apoyo con Play Streamers y envía donaciones verificadas al panel del creador.",
+    "descriptionLines": [
+      "Play Connect es una extensión de navegador gratuita que permite a los streamers gestionar plataformas de apoyo y donaciones desde una sola cuenta de Play Streamers.",
+      "",
+      "En las plataformas compatibles, detecta nuevas donaciones mediante API, notificaciones del servidor o tu propio enlace de OBS / Alert Box. Los eventos verificados se envían a tu panel personal de Play Streamers con remitente, importe, moneda, mensaje, fecha y plataforma.",
+      "",
+      "Funciones destacadas:",
+      "• Gestiona varias plataformas desde un único panel de cristal líquido",
+      "• Usa enlaces de OBS / Alert Box con plataformas DAB/API y SSB compatibles",
+      "• Comprueba nuevas donaciones automáticamente y filtra duplicados",
+      "• Vincula dispositivos de forma segura con tu cuenta de Play Streamers",
+      "• Ocho idiomas con detección automática del sistema y selección manual",
+      "• Cambio instantáneo de plataforma gracias a traducciones almacenadas en el dispositivo",
+      "• Moneda automática según el idioma sin alterar la moneda manual ni la del evento",
+      "• Tarjetas accesibles que no se desbordan en pantallas estrechas",
+      "",
+      "Privacidad:",
+      "Play Connect no envía contraseñas de plataformas a los servidores de Play Streamers. Los enlaces de OBS / Alert Box y las claves de acceso permanecen en el perfil del navegador. Solo se envían datos de donaciones verificadas y la información limitada del dispositivo necesaria para la conexión. Las traducciones se incluyen en la extensión y nunca se envían a un servicio de traducción externo."
+    ],
+    "screenshotCaptions": [
+      "Nuevo panel de cristal líquido y conexiones de plataformas",
+      "Conexión de OBS / Alert Box y seguimiento en directo",
+      "Varios idiomas, moneda automática y compatibilidad con enlaces SSB"
+    ]
+  },
+  "fr": {
+    "amoLocale": "fr",
+    "language": "Français",
+    "summary": "Connecte les plateformes de soutien à Play Streamers et transmet les dons vérifiés au tableau de bord du créateur.",
+    "descriptionLines": [
+      "Play Connect est une extension de navigateur gratuite qui permet aux streamers de gérer leurs plateformes de soutien et de dons depuis un seul compte Play Streamers.",
+      "",
+      "Sur les plateformes compatibles, elle détecte les nouveaux dons via une API, des notifications serveur ou votre propre lien OBS / Alert Box. Les événements vérifiés sont transmis à votre tableau de bord personnel avec l'expéditeur, le montant, la devise, le message, la date et la plateforme.",
+      "",
+      "Fonctionnalités principales :",
+      "• Gérez plusieurs plateformes depuis un tableau de bord unique en verre liquide",
+      "• Utilisez des liens OBS / Alert Box avec les plateformes DAB/API et SSB compatibles",
+      "• Vérifiez automatiquement les nouveaux dons et filtrez les doublons",
+      "• Associez vos appareils à votre compte Play Streamers en toute sécurité",
+      "• Huit langues avec détection automatique du système et sélection manuelle",
+      "• Changez de plateforme instantanément grâce aux traductions mises en cache sur l'appareil",
+      "• Devise automatique selon la langue, sans modifier les devises manuelles ou réelles",
+      "• Cartes de plateforme accessibles, sans débordement sur les écrans étroits",
+      "",
+      "Confidentialité :",
+      "Play Connect n'envoie aucun mot de passe de plateforme aux serveurs Play Streamers. Les liens OBS / Alert Box et les clés d'accès restent dans le profil du navigateur. Seules les données de dons vérifiées et les informations limitées nécessaires à la connexion sont envoyées. Les traductions sont incluses dans l'extension et ne sont jamais transmises à un service de traduction externe."
+    ],
+    "screenshotCaptions": [
+      "Nouveau tableau de bord en verre liquide et connexions aux plateformes",
+      "Connexion OBS / Alert Box et suivi de l'état en direct",
+      "Plusieurs langues, devise automatique et prise en charge des liens SSB"
+    ]
+  },
+  "ru": {
+    "amoLocale": "ru",
+    "language": "Русский",
+    "summary": "Подключает платформы поддержки к Play Streamers и передаёт проверенные пожертвования в панель автора.",
+    "descriptionLines": [
+      "Play Connect — бесплатное расширение для браузера, которое помогает стримерам управлять платформами поддержки и пожертвований через одну учётную запись Play Streamers.",
+      "",
+      "На поддерживаемых платформах расширение отслеживает новые пожертвования через API, серверные уведомления или вашу ссылку OBS / Alert Box. Проверенные события передаются в личную панель Play Streamers вместе с именем отправителя, суммой, валютой, сообщением, датой и названием платформы.",
+      "",
+      "Основные возможности:",
+      "• Управление несколькими платформами в единой панели с эффектом жидкого стекла",
+      "• Поддержка ссылок OBS / Alert Box для совместимых платформ DAB/API и SSB",
+      "• Автоматическая проверка новых пожертвований и фильтрация дубликатов",
+      "• Безопасное подключение устройства к учётной записи Play Streamers",
+      "• Восемь языков интерфейса с автоопределением и ручным выбором",
+      "• Мгновенное переключение платформ благодаря локальному кэшу переводов",
+      "• Автовыбор валюты по языку с сохранением ручной и фактической валюты события",
+      "• Доступные карточки платформ без выхода за границы узких экранов",
+      "",
+      "Конфиденциальность:",
+      "Play Connect не отправляет пароли платформ на серверы Play Streamers. Ссылки OBS / Alert Box и ключи доступа хранятся в профиле браузера. Передаются только проверенные данные о пожертвованиях и ограниченные сведения об устройстве, необходимые для соединения. Переводы встроены в расширение и не отправляются во внешние сервисы перевода."
+    ],
+    "screenshotCaptions": [
+      "Новая панель с эффектом жидкого стекла и подключения платформ",
+      "Подключение OBS / Alert Box и отслеживание состояния",
+      "Несколько языков, автоматическая валюта и поддержка ссылок SSB"
+    ]
+  },
+  "ja": {
+    "amoLocale": "ja",
+    "language": "日本語",
+    "summary": "支援プラットフォームをPlay Streamersに接続し、確認済みの寄付イベントをクリエイターダッシュボードへ送信します。",
+    "descriptionLines": [
+      "Play Connectは、ストリーマーが複数の支援・寄付プラットフォームを1つのPlay Streamersアカウントで管理できる無料のブラウザー拡張機能です。",
+      "",
+      "対応プラットフォームでは、API、サーバー通知、またはご自身のOBS / Alert Boxリンクを使って新しい寄付イベントを検出します。確認済みイベントは、送信者名、金額、通貨、メッセージ、日時、プラットフォーム情報とともに個人のPlay Streamersダッシュボードへ送信されます。",
+      "",
+      "主な機能：",
+      "• 複数の支援プラットフォームを1つのリキッドグラス・ダッシュボードで管理",
+      "• 対応するDAB/APIおよびSSBプラットフォームでOBS / Alert Boxリンクを使用",
+      "• 新しい寄付を自動確認し、重複イベントを除外",
+      "• Play Streamersアカウントとの安全なデバイス連携",
+      "• 8言語対応、システム言語の自動検出、手動選択",
+      "• 端末にキャッシュされた翻訳による待ち時間のないプラットフォーム切り替え",
+      "• 言語に応じた自動通貨設定と、手動設定・実際のイベント通貨の保持",
+      "• 狭い画面でもはみ出さないアクセシブルなプラットフォームカード",
+      "",
+      "プライバシー：",
+      "Play ConnectはプラットフォームのパスワードをPlay Streamersサーバーへ送信しません。OBS / Alert Boxリンクとアクセスキーはブラウザープロファイル内に保存されます。Play Streamersへ送信されるのは、確認済みの寄付データと接続に必要な最小限のデバイス情報のみです。UI翻訳は拡張機能に同梱され、外部翻訳サービスへ送信されません。"
+    ],
+    "screenshotCaptions": [
+      "新しいリキッドグラス・ダッシュボードとプラットフォーム接続",
+      "OBS / Alert Box接続とライブ状態の確認",
+      "多言語、自動通貨、SSBリンク対応"
+    ]
+  },
+  "ar": {
+    "amoLocale": "ar",
+    "language": "العربية",
+    "summary": "يربط منصات الدعم بـ Play Streamers ويرسل أحداث التبرع الموثقة إلى لوحة تحكم منشئ المحتوى.",
+    "descriptionLines": [
+      "Play Connect إضافة متصفح مجانية تتيح لصنّاع البث إدارة منصات الدعم والتبرعات من خلال حساب Play Streamers واحد.",
+      "",
+      "على المنصات المدعومة، تتابع الإضافة أحداث التبرع الجديدة عبر API أو إشعارات الخادم أو رابط OBS / Alert Box الخاص بك. وتُنقل الأحداث الموثقة إلى لوحة Play Streamers الشخصية مع اسم المرسل والمبلغ والعملة والرسالة والتاريخ والمنصة.",
+      "",
+      "أبرز الميزات:",
+      "• إدارة عدة منصات دعم من لوحة واحدة بتصميم الزجاج السائل",
+      "• استخدام روابط OBS / Alert Box مع منصات DAB/API وSSB المدعومة",
+      "• التحقق التلقائي من التبرعات الجديدة وتصفية الأحداث المكررة",
+      "• ربط الجهاز بحساب Play Streamers بصورة آمنة",
+      "• ثماني لغات مع اكتشاف لغة النظام تلقائياً وإمكانية الاختيار اليدوي",
+      "• انتقال فوري بين المنصات بفضل الترجمات المخزنة مؤقتاً على الجهاز",
+      "• اختيار العملة تلقائياً حسب اللغة مع الحفاظ على العملة اليدوية وعملة الحدث الأصلية",
+      "• بطاقات منصات سهلة الاستخدام ولا تتجاوز حدود الشاشات الضيقة",
+      "",
+      "الخصوصية:",
+      "لا يرسل Play Connect كلمات مرور المنصات إلى خوادم Play Streamers. تبقى روابط OBS / Alert Box ومفاتيح الوصول داخل ملف المتصفح. لا تُرسل سوى بيانات التبرعات الموثقة ومعلومات الجهاز المحدودة اللازمة للاتصال. تأتي ترجمات الواجهة مع الإضافة ولا تُرسل إلى أي خدمة ترجمة خارجية."
+    ],
+    "screenshotCaptions": [
+      "لوحة Play Connect الجديدة بتصميم الزجاج السائل واتصالات المنصات",
+      "اتصال OBS / Alert Box ومتابعة الحالة المباشرة",
+      "لغات متعددة وعملة تلقائية ودعم روابط SSB"
+    ]
+  }
+}

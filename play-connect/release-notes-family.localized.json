@@ -499,8 +499,16 @@
           "name": "Play Connect",
           "tabTitle": "Play Connect Güncelleme Notları",
           "summary": "Uygun destek ve bağış platformlarından gelen olayları Play Streamers hesabına ileten ücretsiz Chrome/Chromium ve Firefox eklentisi.",
-          "current": "2.0",
+          "current": "2.1",
           "entries": [
+            {
+              "version": "2.1",
+              "title": "Güncelleme Notları",
+              "beta": false,
+              "items": [
+                "Genel performans düzeltmeleri yapıldı."
+              ]
+            },
             {
               "version": "2.0",
               "title": "Güncelleme Notları",
@@ -1648,8 +1656,16 @@
           "name": "Play Connect",
           "tabTitle": "Play Connect Update Notes",
           "summary": "A free Chrome/Chromium and Firefox extension that sends events from supported support and donation platforms to your Play Streamers account.",
-          "current": "2.0",
+          "current": "2.1",
           "entries": [
+            {
+              "version": "2.1",
+              "title": "Update Notes",
+              "beta": false,
+              "items": [
+                "General performance fixes were made."
+              ]
+            },
             {
               "version": "2.0",
               "title": "Update Notes",
@@ -2797,8 +2813,16 @@
           "name": "Play Connect",
           "tabTitle": "Play Connect Aktualisierungshinweise",
           "summary": "Kostenlose Chrome/Chromium- und Firefox-Erweiterung, die Ereignisse unterstützter Support- und Spendenplattformen an das Play Streamers-Konto übermittelt.",
-          "current": "2.0",
+          "current": "2.1",
           "entries": [
+            {
+              "version": "2.1",
+              "title": "Aktualisierungshinweise",
+              "beta": false,
+              "items": [
+                "Allgemeine Leistungskorrekturen wurden vorgenommen."
+              ]
+            },
             {
               "version": "2.0",
               "title": "Aktualisierungshinweise",
@@ -3946,8 +3970,16 @@
           "name": "Play Connect",
           "tabTitle": "Play Connect Notas de actualización",
           "summary": "Extensión gratuita para Chrome/Chromium y Firefox que envía a tu cuenta de Play Streamers los eventos de las plataformas de apoyo y donaciones compatibles.",
-          "current": "2.0",
+          "current": "2.1",
           "entries": [
+            {
+              "version": "2.1",
+              "title": "Notas de actualización",
+              "beta": false,
+              "items": [
+                "Se realizaron correcciones generales de rendimiento."
+              ]
+            },
             {
               "version": "2.0",
               "title": "Notas de actualización",
@@ -5095,8 +5127,16 @@
           "name": "Play Connect",
           "tabTitle": "Play Connect Notes de mise à jour",
           "summary": "Extension gratuite pour Chrome/Chromium et Firefox qui transmet à votre compte Play Streamers les événements des plateformes de soutien et de dons compatibles.",
-          "current": "2.0",
+          "current": "2.1",
           "entries": [
+            {
+              "version": "2.1",
+              "title": "Mise à jour des notes",
+              "beta": false,
+              "items": [
+                "Des corrections générales de performances ont été apportées."
+              ]
+            },
             {
               "version": "2.0",
               "title": "Mise à jour des notes",
@@ -6244,8 +6284,16 @@
           "name": "Play Connect",
           "tabTitle": "Play Connect Примечания к обновлению",
           "summary": "Бесплатное расширение для Chrome/Chromium и Firefox, которое передаёт события поддерживаемых платформ поддержки и пожертвований в аккаунт Play Streamers.",
-          "current": "2.0",
+          "current": "2.1",
           "entries": [
+            {
+              "version": "2.1",
+              "title": "Обновление Notes",
+              "beta": false,
+              "items": [
+                "Внесены общие исправления производительности."
+              ]
+            },
             {
               "version": "2.0",
               "title": "Обновление Notes",
@@ -7393,8 +7441,16 @@
           "name": "Play Connect",
           "tabTitle": "Play Connect ملاحظات التحديث",
           "summary": "إضافة مجانية لمتصفحي Chrome/Chromium وFirefox تنقل أحداث منصات الدعم والتبرعات المتوافقة إلى حساب Play Streamers.",
-          "current": "2.0",
+          "current": "2.1",
           "entries": [
+            {
+              "version": "2.1",
+              "title": "آخر الحواشي",
+              "beta": false,
+              "items": [
+                "تم إجراء إصلاحات عامة للأداء."
+              ]
+            },
             {
               "version": "2.0",
               "title": "آخر الحواشي",
@@ -8542,8 +8598,16 @@
           "name": "Play Connect",
           "tabTitle": "Play Connect 更新情報",
           "summary": "対応する支援・寄付プラットフォームのイベントをPlay Streamersアカウントへ送信する、Chrome/ChromiumおよびFirefox向けの無料拡張機能です。",
-          "current": "2.0",
+          "current": "2.1",
           "entries": [
+            {
+              "version": "2.1",
+              "title": "更新情報",
+              "beta": false,
+              "items": [
+                "全般的なパフォーマンスの修正を行いました。"
+              ]
+            },
             {
               "version": "2.0",
               "title": "更新情報",

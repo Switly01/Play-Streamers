@@ -1,0 +1,6 @@
+{
+  "extensionName": { "message": "Play Connect" },
+  "extensionShortName": { "message": "Play Connect" },
+  "extensionDescription": { "message": "يربط منصات الدعم بحساب Play Streamers عبر روابط محلية آمنة وتسليم من الخادم." },
+  "extensionActionTitle": { "message": "فتح Play Connect" }
+}

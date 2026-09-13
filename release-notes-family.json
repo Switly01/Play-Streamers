@@ -496,8 +496,16 @@
       "name": "Play Connect",
       "tabTitle": "Play Connect Güncelleme Notları",
       "summary": "Uygun destek ve bağış platformlarından gelen olayları Play Streamers hesabına ileten ücretsiz Chrome/Chromium ve Firefox eklentisi.",
-      "current": "2.0",
+      "current": "2.1",
       "entries": [
+        {
+          "version": "2.1",
+          "title": "Güncelleme Notları",
+          "beta": false,
+          "items": [
+            "Genel performans düzeltmeleri yapıldı."
+          ]
+        },
         {
           "version": "2.0",
           "title": "Güncelleme Notları",

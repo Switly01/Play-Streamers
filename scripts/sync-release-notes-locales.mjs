@@ -12,6 +12,17 @@ const catalogs = Object.fromEntries(await Promise.all(languages.slice(1).map(asy
   return [language, value.translations || {}];
 })));
 const passthrough = new Set(['Play Streamers Web', 'Play Streamers App', 'Play Connect', 'SW Identity', 'SW Create']);
+const reviewedReleaseCopy = {
+  'Genel performans düzeltmeleri yapıldı.': {
+    en:'General performance fixes were made.',
+    de:'Allgemeine Leistungskorrekturen wurden vorgenommen.',
+    es:'Se realizaron correcciones generales de rendimiento.',
+    fr:'Des corrections générales de performances ont été apportées.',
+    ru:'Внесены общие исправления производительности.',
+    ar:'تم إجراء إصلاحات عامة للأداء.',
+    ja:'全般的なパフォーマンスの修正を行いました。',
+  },
+};
 const updateNotesLabels = {
   tr:'Güncelleme Notları', en:'Update Notes', de:'Aktualisierungshinweise', es:'Notas de actualización',
   fr:'Notes de mise à jour', ru:'Примечания к обновлению', ar:'ملاحظات التحديث', ja:'更新情報',
@@ -82,7 +93,7 @@ function localize(value, language, field = '') {
   if (!value || typeof value !== 'object') {
     if (language === 'tr' || typeof value !== 'string') return value;
     if (field !== 'items' && !translatableFields.has(field)) return value;
-    const translated = catalogs[language][value];
+    const translated = reviewedReleaseCopy[value]?.[language] || catalogs[language][value];
     if (!translated || (translated === value && !passthrough.has(value))) throw new Error(`[${language}] eksik güncelleme çevirisi: ${value}`);
     return translated;
   }

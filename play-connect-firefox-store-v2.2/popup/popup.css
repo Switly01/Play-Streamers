@@ -1,0 +1,216 @@
+:root{color-scheme:dark;--lime:#53fc18;--cyan:#5de4ff;--ink:#06101d;--panel:#0d1d31;--line:rgba(178,211,242,.17);font-family:Inter,"Segoe UI",sans-serif}
+*{box-sizing:border-box}
+body{width:390px;min-height:520px;margin:0;color:#edf6ff;background:radial-gradient(circle at 9% 0,rgba(83,252,24,.12),transparent 30%),radial-gradient(circle at 100% 0,rgba(93,228,255,.11),transparent 28%),#050b14}
+button,input{font:inherit}
+button{cursor:pointer}
+main{padding:17px}
+header{display:grid;grid-template-columns:42px minmax(0,1fr) 12px;align-items:center;gap:11px;margin-bottom:14px}
+.brand-mark{display:grid;place-items:center;width:42px;height:42px;color:var(--lime);font-weight:900;letter-spacing:-.05em}
+.brand-mark img{display:block;width:100%;height:100%;object-fit:contain}
+header b,header small{display:block}header b{font-size:14px;letter-spacing:.02em}header small{margin-top:3px;color:#8fa8bf;font-size:10px}
+#connectionDot{width:9px;height:9px;border-radius:50%;background:#7d8997;box-shadow:0 0 0 4px rgba(125,137,151,.1)}
+#connectionDot.connected{background:var(--lime);box-shadow:0 0 0 4px rgba(83,252,24,.1),0 0 12px rgba(83,252,24,.6)}
+.pair-card,.catalog,.delivery{border:1px solid var(--line);border-radius:17px;background:linear-gradient(145deg,rgba(16,35,58,.92),rgba(7,17,30,.94));box-shadow:inset 0 1px rgba(255,255,255,.04)}
+.pair-card{padding:15px}.pair-card.connected{border-color:rgba(83,252,24,.32);background:linear-gradient(145deg,rgba(15,48,40,.82),rgba(7,23,29,.94))}
+.label{color:var(--lime);font-size:8px;font-weight:900;letter-spacing:.14em}
+h1{margin:7px 0 4px;font-size:17px;letter-spacing:-.035em}p{margin:0;color:#9fb4c7;font-size:10px;line-height:1.55}
+#pairForm{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;margin-top:12px}
+#pairForm[hidden]{display:none}
+input{min-width:0;border:1px solid rgba(178,211,242,.22);border-radius:10px;padding:10px 11px;color:#eef8ff;background:#071320;outline:none;font:800 12px ui-monospace,Consolas,monospace;letter-spacing:.08em;text-transform:uppercase}
+input:focus{border-color:var(--lime);box-shadow:0 0 0 3px rgba(83,252,24,.09)}
+input[readonly]{border-color:rgba(83,252,24,.32);color:#dfffd5;background:rgba(83,252,24,.055);cursor:default}
+#pairForm button,.catalog button,footer button{border:1px solid rgba(83,252,24,.35);border-radius:10px;color:#102007;background:var(--lime);font-size:10px;font-weight:900}
+#pairForm button{padding:0 13px}
+.pair-submit{position:relative;min-width:70px;overflow:hidden}.pair-submit span,.pair-submit i{display:block}.pair-submit i{position:absolute;inset:50% auto auto 50%;font-style:normal;font-size:19px;transform:translate(-50%,-50%) scale(.3) rotate(-18deg);opacity:0}.pair-submit.is-paired{cursor:default}.pair-submit.is-paired span{animation:popupPairTextAway .24s ease both}.pair-submit.is-paired i{animation:popupPairTickIn .48s cubic-bezier(.2,1.5,.3,1) .12s both}@keyframes popupPairTextAway{to{transform:translateY(-135%);opacity:0}}@keyframes popupPairTickIn{70%{opacity:1;transform:translate(-50%,-50%) scale(1.18) rotate(4deg)}to{opacity:1;transform:translate(-50%,-50%) scale(1) rotate(0)}}
+.status{min-height:0;margin-top:7px;color:#9ff0ff}.status:empty{display:none}.status.error{color:#ff9ca7}
+.catalog{margin-top:11px;padding:14px}
+.section-title{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:11px}.section-title span b,.section-title span small{display:block}.section-title span b{font-size:13px}.section-title span small{margin-top:3px;color:#829bb2;font-size:9px}
+.scan-button{display:flex!important;align-items:center;justify-content:center;gap:6px;min-height:31px;padding:7px 9px!important;color:#c8eff6!important;background:rgba(93,228,255,.07)!important;border-color:rgba(93,228,255,.22)!important;font-size:9px!important}.scan-button i{font-style:normal;font-size:14px}.scan-button.busy i{animation:spin .8s linear infinite}@keyframes spin{to{transform:rotate(360deg)}}
+.featured-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.provider-card,.provider-row{position:relative;border:1px solid rgba(178,211,242,.14)!important;color:#eaf5ff!important;background:rgba(3,11,21,.62)!important;text-align:left}
+.provider-card{display:grid;grid-template-columns:35px minmax(0,1fr);align-items:center;gap:9px;min-height:76px;padding:12px!important}.provider-card:hover,.provider-row:hover{border-color:rgba(83,252,24,.5)!important;transform:translateY(-1px)}
+.provider-card img,.provider-row img{display:block;width:35px;height:35px;border-radius:9px;object-fit:contain;padding:4px;background:#07111d}.provider-card b,.provider-card small{display:block}.provider-card b{font-size:11px}.provider-card small{margin-top:5px;color:#8199ad;font-size:8px}.provider-card i,.provider-row i{position:absolute;top:10px;right:10px;width:7px;height:7px;border-radius:50%;background:#758294}.provider-card i.connected,.provider-row i.connected{background:var(--lime);box-shadow:0 0 9px rgba(83,252,24,.6)}.provider-card i.error,.provider-row i.error{background:#ff586b}
+.others-toggle{display:grid;grid-template-columns:1fr auto 18px;align-items:center;width:100%;margin-top:9px;padding:10px 12px!important;color:#dfeef9!important;background:rgba(93,228,255,.04)!important;border-color:rgba(178,211,242,.14)!important;text-align:left}.others-toggle b{display:grid;place-items:center;min-width:22px;height:18px;border-radius:8px;color:#bdefff;background:rgba(93,228,255,.1);font-size:8px}.others-toggle i{font-style:normal;text-align:right;transition:transform .2s}.others-toggle[aria-expanded=true] i{transform:rotate(180deg)}
+.others-grid{display:grid;gap:6px;margin-top:7px}.others-grid[hidden]{display:none}.provider-row{display:grid;grid-template-columns:28px minmax(0,1fr);align-items:center;gap:9px;width:100%;padding:8px 12px!important}.provider-row img{width:28px;height:28px;border-radius:8px}.provider-row b{font-size:10px}.provider-row small{margin-left:6px;color:#7f96aa;font-size:8px}
+.delivery{margin-top:11px;padding:11px 13px}.delivery span{display:flex;align-items:center;gap:7px}.delivery span i{width:7px;height:7px;border-radius:50%;background:#7c8893}.delivery b{font-size:10px}.delivery small{display:block;margin:4px 0 0 14px;color:#7f96a9;font-size:8px;line-height:1.5}
+footer{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:13px 3px 0}footer button{padding:9px 11px}footer a{color:#8ea7bd;font-size:9px;font-weight:800;text-decoration:none}footer a:hover{color:var(--lime)}
+
+/* 0.3: clearer type, platform search and a clickable member-home brand. */
+body{width:410px;min-height:540px;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+header{grid-template-columns:minmax(0,1fr) 12px}
+.header-brand{display:grid;grid-template-columns:42px minmax(0,1fr);align-items:center;gap:11px;color:inherit;text-decoration:none;transition:filter .18s ease,transform .18s ease}
+.header-brand:hover,.header-brand:focus-visible{filter:brightness(1.22);transform:translateY(-1px);outline:none}
+header b{font-size:15px}header small{color:#a7bdd0;font-size:11px}
+.label{font-size:10px}h1{font-size:19px}p{color:#aec2d3;font-size:12px}
+#pairForm button,.catalog button,footer button{font-size:12px}
+.section-title span b{font-size:15px}.section-title span small{color:#9eb4c8;font-size:11px}
+.provider-search{display:block;margin:0 0 10px}.provider-search input{width:100%;text-transform:none;letter-spacing:0;font:700 12px Inter,"Segoe UI",sans-serif}
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.search-empty{padding:15px 4px;text-align:center}.search-empty[hidden]{display:none}
+.provider-card b{font-size:13px}.provider-card small{color:#9bb1c4;font-size:10px}.provider-row b{font-size:12px}.provider-row small{color:#96adbf;font-size:10px}
+.delivery b{font-size:12px}.delivery small{color:#96adbf;font-size:10px}footer a{color:#9db5c9;font-size:11px}
+
+/* 0.4: Play Connect's popup keeps the main action visible and reduces visual noise. */
+body{width:min(410px,100vw);min-height:0}
+main{padding:15px}
+header{margin-bottom:11px}
+.pair-card{padding:14px}
+.panel-button{display:flex;align-items:center;justify-content:space-between;width:100%;margin-top:10px;border:1px solid rgba(83,252,24,.55);border-radius:13px;padding:12px 14px;color:#071307;background:linear-gradient(135deg,#53fc18,#8dff68);font-size:12px;font-weight:950;box-shadow:0 10px 26px rgba(83,252,24,.12);transition:transform .18s ease,filter .18s ease}
+.panel-button:hover,.panel-button:focus-visible{filter:brightness(1.08);transform:translateY(-1px);outline:none}
+.panel-button i{font-style:normal;font-size:17px}
+.catalog{padding:13px}
+.provider-card{min-height:68px;padding:10px!important}
+.provider-card img,.provider-row img{image-rendering:auto}
+.provider-card>span,.provider-row>b{min-width:0}
+.provider-card b,.provider-card small,.provider-row b,.provider-row small{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.others-grid{max-height:238px;overflow:auto;overscroll-behavior:contain;padding-right:2px}
+footer{justify-content:space-between;padding-top:10px}footer small{border:1px solid var(--line);border-radius:999px;padding:4px 7px;color:#7f96aa;font-size:9px}
+@media(max-width:360px){
+  main{padding:11px}
+  .featured-grid{grid-template-columns:1fr}
+  #pairForm{grid-template-columns:1fr}
+  #pairForm button{min-height:38px}
+  .scan-button span{display:none}
+}
+.provider-card i.disconnected,.provider-row i.disconnected{background:#ff586b;box-shadow:0 0 8px rgba(255,88,107,.35)}
+
+/* 1.11: the popup is deliberately shorter, keeps the account state visible
+   while scrolling and prevents long provider labels from shifting actions. */
+body{width:min(392px,100vw);max-height:600px;overflow:auto;scrollbar-color:rgba(83,252,24,.34) transparent}
+.narrow-notice{display:none}
+main{padding:14px}
+header{position:sticky;z-index:5;top:0;margin:-14px -14px 10px;padding:13px 14px 10px;background:linear-gradient(#050b14 78%,rgba(5,11,20,0));backdrop-filter:blur(9px)}
+.pair-card,.catalog,.delivery{border-radius:14px}
+.pair-card{padding:13px}
+.panel-button{min-height:42px;padding:10px 13px}
+.catalog{margin-top:9px;padding:12px}
+.section-title{align-items:flex-start;margin-bottom:9px}
+.scan-button{flex:0 0 auto;max-width:144px}
+.featured-grid{gap:7px}
+.provider-card{grid-template-columns:31px minmax(0,1fr);min-height:59px!important;padding:9px!important;border-radius:11px!important}
+.provider-card img{width:31px;height:31px}
+.provider-card small{margin-top:3px}
+.others-grid{max-height:188px}
+.delivery{margin-top:9px}
+footer{position:sticky;bottom:0;margin:0 -14px -14px;padding:10px 17px 12px;background:linear-gradient(rgba(5,11,20,0),#050b14 34%)}
+button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid rgba(83,252,24,.72);outline-offset:2px}
+@media(max-height:520px){.catalog{padding-bottom:9px}.featured-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.provider-card{min-height:54px!important}.delivery{padding:9px 11px}}
+
+/* 1.12: browser windows and Firefox panels can constrain an extension popup
+   far below its preferred width. Every mode owns its overflow explicitly so
+   the UI never collapses into a scrollbar-only strip. */
+html{max-width:100%;overflow-x:hidden;background:#050b14}
+body{max-width:100%;overflow-x:hidden;scrollbar-width:thin}
+body::-webkit-scrollbar,.others-grid::-webkit-scrollbar{width:7px;height:7px}
+body::-webkit-scrollbar-track,.others-grid::-webkit-scrollbar-track{background:rgba(255,255,255,.035)}
+body::-webkit-scrollbar-thumb,.others-grid::-webkit-scrollbar-thumb{border-radius:999px;background:rgba(83,252,24,.38)}
+@media(max-width:319px){
+  body{width:100vw}
+  main{padding:10px}
+  header{position:relative;margin:-10px -10px 8px;padding:10px 10px 8px;grid-template-columns:minmax(0,1fr) 9px;gap:7px}
+  .header-brand{grid-template-columns:34px minmax(0,1fr);gap:8px}
+  .brand-mark{width:34px;height:34px}
+  header b{font-size:13px}header small{font-size:9px}
+  #connectionDot{width:7px;height:7px}
+  .pair-card,.catalog,.delivery{border-radius:12px}
+  .pair-card,.catalog{padding:10px}
+  .label{font-size:8px}
+  h1{font-size:16px;line-height:1.18}
+  p{font-size:10px}
+  #pairForm{grid-template-columns:1fr;margin-top:9px}
+  #pairForm input{width:100%;padding:9px;font-size:10px;letter-spacing:.04em}
+  #pairForm button{min-height:36px}
+  .panel-button{min-height:39px;margin-top:8px;padding:9px 11px;font-size:11px}
+  .catalog{margin-top:8px}
+  .section-title{align-items:center;gap:7px}
+  .section-title span b{font-size:13px}.section-title span small{font-size:9px}
+  .scan-button{width:32px;min-width:32px;max-width:32px;padding:5px!important}
+  .scan-button span{display:none}
+  .provider-search{margin-bottom:8px}.provider-search input{padding:9px;font-size:10px}
+  .featured-grid{grid-template-columns:1fr;gap:6px}
+  .provider-card{grid-template-columns:28px minmax(0,1fr);min-height:50px!important;padding:8px!important}
+  .provider-card img{width:28px;height:28px}
+  .provider-card b{font-size:11px}.provider-card small{font-size:9px}
+  .others-toggle{margin-top:7px;padding:8px 9px!important;font-size:10px!important}
+  .delivery{margin-top:8px;padding:9px 10px}.delivery b{font-size:10px}.delivery small{font-size:8px}
+  footer{position:relative;margin:0 -10px -10px;padding:10px 12px;font-size:9px}
+  footer a{font-size:9px}
+}
+@media(max-width:219px){
+  main{padding:8px}
+  header{margin:-8px -8px 7px;padding:8px}
+  .header-brand{grid-template-columns:30px minmax(0,1fr);gap:6px}
+  .brand-mark{width:30px;height:30px}
+  header b{font-size:12px}header small{font-size:8px}
+  .pair-card,.catalog{padding:9px}
+  .pair-card>p{display:none}
+  h1{font-size:14px}
+  .panel-button{padding:8px 9px}
+  .section-title span small{display:none}
+  .provider-card small{display:none}
+  .delivery small{margin-left:0}
+  footer{margin:0 -8px -8px;padding:9px 10px}
+}
+@media(max-width:139px){
+  body{min-height:100vh;overflow:hidden;background:linear-gradient(180deg,rgba(83,252,24,.12),transparent 40%),#050b14}
+  main{display:none}
+  .narrow-notice{display:grid;min-height:100vh;place-items:center;align-content:center;gap:8px;overflow:hidden;padding:6px;color:#edf6ff;text-align:center}
+  .narrow-notice img{display:block;width:min(42px,calc(100vw - 8px));height:min(42px,calc(100vw - 8px));object-fit:contain}
+  .narrow-notice b{max-width:118px;font-size:11px;line-height:1.15;overflow-wrap:anywhere}
+  .narrow-notice small{max-width:118px;color:#9fb4c7;font-size:8px;line-height:1.35;overflow-wrap:anywhere}
+}
+@media(max-width:48px){
+  .narrow-notice{padding:2px}
+  .narrow-notice img{width:max(8px,calc(100vw - 4px));height:max(8px,calc(100vw - 4px))}
+  .narrow-notice b,.narrow-notice small{display:none}
+}
+
+/* 1.13 — Play Streamers Site 9 ile ortak, keskin siyah/beyaz kontrol yüzeyi. */
+:root{--lime:#f4f4f2;--cyan:#b8b8bc;--ink:#030303;--panel:#0b0b0c;--line:rgba(255,255,255,.13);color-scheme:dark}
+html{background:#030303}
+body{color:#f5f5f3;scrollbar-color:rgba(255,255,255,.3) transparent;background:
+  radial-gradient(circle at 18% -4%,rgba(255,255,255,.13),transparent 24%),
+  radial-gradient(circle at 82% 14%,rgba(255,255,255,.055) 0 1px,transparent 1.6px) 0 0/18px 18px,
+  linear-gradient(145deg,#080808,#020202 66%)}
+body::before{position:fixed;z-index:-1;inset:0;content:"";pointer-events:none;background:linear-gradient(115deg,transparent 0 46%,rgba(255,255,255,.025) 46.2% 46.5%,transparent 46.7%)}
+header{background:linear-gradient(#050505 76%,rgba(5,5,5,0));backdrop-filter:blur(16px) saturate(.65)}
+.header-brand{gap:12px}
+.brand-mark{filter:drop-shadow(0 7px 17px rgba(255,255,255,.08))}
+header b{color:#fff;font-weight:900;letter-spacing:-.025em}header small{color:#8c8c91}
+#connectionDot{border:1px solid #56565a;background:#171719;box-shadow:none}
+#connectionDot.connected{border-color:#fff;background:#fff;box-shadow:0 0 0 4px rgba(255,255,255,.08),0 0 14px rgba(255,255,255,.34)}
+.pair-card,.catalog,.delivery{border-color:var(--line);border-radius:11px;background:linear-gradient(145deg,rgba(18,18,20,.95),rgba(7,7,8,.96));box-shadow:inset 0 1px rgba(255,255,255,.055),0 16px 38px rgba(0,0,0,.22)}
+.pair-card.connected{border-color:rgba(255,255,255,.28);background:linear-gradient(145deg,rgba(28,28,30,.94),rgba(8,8,9,.96))}
+.label{color:#fff;letter-spacing:.17em}
+h1{color:#fff;letter-spacing:-.045em}p{color:#aaaab0}
+input{border-color:rgba(255,255,255,.16);border-radius:7px;color:#fff;background:#050506}
+input:focus{border-color:#fff;box-shadow:0 0 0 3px rgba(255,255,255,.08)}
+input[readonly]{border-color:rgba(255,255,255,.28);color:#fff;background:rgba(255,255,255,.055)}
+#pairForm button,.catalog button,footer button{border-color:#fff;border-radius:7px;color:#050505;background:#f5f5f3}
+.panel-button{border-color:rgba(255,255,255,.9);border-radius:9px;color:#050505;background:linear-gradient(110deg,#fff,#d5d5d7);box-shadow:0 12px 30px rgba(0,0,0,.32);letter-spacing:-.01em}
+.panel-button:hover,.panel-button:focus-visible{filter:brightness(.94);box-shadow:0 15px 36px rgba(0,0,0,.42)}
+.section-title span b{color:#fff}.section-title span small,.provider-card small,.provider-row small{color:#8b8b92}
+.scan-button{border-color:rgba(255,255,255,.17)!important;color:#e7e7e8!important;background:rgba(255,255,255,.045)!important}
+.scan-button:hover{border-color:rgba(255,255,255,.36)!important;background:rgba(255,255,255,.085)!important}
+.provider-card,.provider-row{border-color:rgba(255,255,255,.105)!important;border-radius:8px!important;color:#f3f3f2!important;background:#080809!important;transition:border-color .18s ease,background .18s ease,transform .18s ease}
+.provider-card:hover,.provider-row:hover{border-color:rgba(255,255,255,.34)!important;background:#111113!important}
+.provider-card img,.provider-row img{border:1px solid rgba(255,255,255,.08);border-radius:6px;background:#040405}
+.provider-card i.connected,.provider-row i.connected{background:#fff;box-shadow:0 0 9px rgba(255,255,255,.44)}
+.others-toggle{border-color:rgba(255,255,255,.12)!important;border-radius:7px!important;color:#e9e9e8!important;background:rgba(255,255,255,.025)!important}
+.others-toggle b{border-radius:4px;color:#fff;background:rgba(255,255,255,.09)}
+.delivery span i{border:1px solid #555;background:#151517}.delivery b{color:#e8e8e8}.delivery small{color:#88888f}
+footer{background:linear-gradient(rgba(3,3,3,0),#030303 34%)}footer a{color:#aaaab0}footer a:hover{color:#fff}footer small{border-color:rgba(255,255,255,.12);border-radius:5px;color:#77777e}
+body::-webkit-scrollbar-thumb,.others-grid::-webkit-scrollbar-thumb{border-radius:2px;background:rgba(255,255,255,.3)}
+button:focus-visible,a:focus-visible,input:focus-visible{outline-color:#fff}
+@media(max-width:139px){body{background:linear-gradient(180deg,rgba(255,255,255,.1),transparent 42%),#030303}.narrow-notice{color:#fff}.narrow-notice small{color:#9c9ca1}}
+@media(prefers-reduced-motion:no-preference){body::before{animation:pcAmbient 12s ease-in-out infinite alternate}.brand-mark{animation:pcLogoFloat 5.5s ease-in-out infinite}}
+@keyframes pcAmbient{to{opacity:.42;transform:translate3d(8px,-5px,0)}}
+@keyframes pcLogoFloat{50%{transform:translateY(-1.5px)}}
+
+/* 1.15.1: Extension action popups are shrink-to-fit documents. Using 100vw
+   while Chrome is calculating that preferred width creates a circular layout
+   and can collapse the panel to the 48px toolbar icon width. */
+html,body{width:392px!important;min-width:392px!important;max-width:392px!important}
+body{min-height:520px}
+.narrow-notice{display:none!important}
+main{display:block!important}

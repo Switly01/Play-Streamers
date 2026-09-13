@@ -42,6 +42,12 @@
           "title": "Güncelleme Notları",
           "beta": false,
           "items": ["Genel performans düzeltmeleri yapıldı."]
+        },
+        {
+          "version": "2.2",
+          "title": "Güncelleme Notları",
+          "beta": false,
+          "items": ["Kararlılık ve sistem düzenlemesi yapıldı."]
         }
       ]
     }

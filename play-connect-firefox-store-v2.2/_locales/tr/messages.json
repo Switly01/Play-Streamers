@@ -1,0 +1,6 @@
+{
+  "extensionName": { "message": "Play Connect" },
+  "extensionShortName": { "message": "Play Connect" },
+  "extensionDescription": { "message": "Destek platformlarını güvenli yerel bağlantı ve sunucu teslimatıyla Play Streamers hesabına bağlar." },
+  "extensionActionTitle": { "message": "Play Connect'i aç" }
+}

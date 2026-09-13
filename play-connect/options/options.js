@@ -591,7 +591,8 @@ function bindProviderForm(provider) {
 async function initialize() {
   try {
     await installLocaleMenu();
-    $("#extensionVersion").textContent = `v${chrome.runtime.getManifest().version}`;
+    const extensionManifest = chrome.runtime.getManifest();
+    $("#extensionVersion").textContent = `v${extensionManifest.version_name || extensionManifest.version}`;
     state = await send({ type: "GET_STATE" });
     const sessionRequest = await chrome.storage.session?.get?.("openProviderId").catch(() => ({}));
     const requested = new URLSearchParams(location.search).get("provider")

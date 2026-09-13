@@ -32,6 +32,7 @@ test("Firefox paketi Chrome surumu ve ortak kaynaklarla senkron kalir", async ()
   const firefoxManifest = await readJson(join(firefoxRoot, "manifest.json"));
 
   assert.equal(firefoxManifest.version, chromeManifest.version);
+  assert.equal(firefoxManifest.version_name, chromeManifest.version_name);
   assert.equal(firefoxManifest.manifest_version, 2);
   assert.equal(firefoxManifest.background.page, "firefox/background.html");
   assert.equal(firefoxManifest.browser_specific_settings.gecko.id, "play-connect@pstreamers.com");

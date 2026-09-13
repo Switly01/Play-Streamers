@@ -11,6 +11,7 @@ const productKeys = new Map([
   ['SW Identity', 'identity'],
   ['SW Create', 'swcreate'],
 ]);
+const productVersionOverrides = { connect: '2.0' };
 
 const lines = (await readFile(resolve(input), 'utf8')).replace(/^\uFEFF/, '').split(/\r?\n/);
 const products = {};
@@ -67,13 +68,18 @@ const output = {
     loading: 'GÜNCELLEME AĞI HAZIRLANIYOR…',
   },
   productOrder: ['swcreate', 'identity', 'web', 'app', 'connect'],
-  products: Object.fromEntries(Object.entries(products).map(([key, value]) => [key, {
-    name: value.name,
-    tabTitle: `${value.name} Güncelleme Notları`,
-    summary: value.description.join(' '),
-    current: value.entries.at(-1).version,
-    entries: [...value.entries].reverse(),
-  }])),
+  products: Object.fromEntries(Object.entries(products).map(([key, value]) => {
+    const entries = [...value.entries].reverse();
+    const current = productVersionOverrides[key] || entries[0].version;
+    if (productVersionOverrides[key]) entries[0] = { ...entries[0], version: current };
+    return [key, {
+      name: value.name,
+      tabTitle: `${value.name} Güncelleme Notları`,
+      summary: value.description.join(' '),
+      current,
+      entries,
+    }];
+  })),
 };
 
 await writeFile(resolve('release-notes-family.json'), `${JSON.stringify(output, null, 2)}\n`, 'utf8');

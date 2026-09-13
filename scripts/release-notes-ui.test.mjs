@@ -64,7 +64,7 @@ try {
     globalThis.chrome = {
       i18n: { getUILanguage: () => 'tr-TR' },
       runtime: {
-        getManifest: () => ({ version: '1.7' }),
+        getManifest: () => ({ version: '2.0', version_name: '2.0' }),
         sendMessage: async message => message?.type === 'GET_STATE'
           ? { ok: true, result: {
               connection: { paired: false, serverConnectedProviderIds: [] },
@@ -80,6 +80,7 @@ try {
     };
   });
   await connect.goto('http://127.0.0.1:8766/play-connect/options/options.html');
+  assert.equal(await connect.locator('#extensionVersion').textContent(), 'v2.0');
   await connect.locator('#updateNotesButton').click();
   await connect.locator('#updateNotesModal').waitFor({ state: 'visible' });
   assert.equal(await connect.locator('#updateNotesTitle').textContent(), 'Play Connect Güncelleme Notları');

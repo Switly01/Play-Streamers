@@ -56,7 +56,7 @@ kontrol edildi. 10 DAB/API/SSB platformunda gerçek arka plan modülüne gönder
 sahte mesajlarla link kaydı, URL doğrulama, kaldırma, canlı olay adayı ve merkezi
 bağlantıda çift okuma engeli doğrulandı. Sözdizimi ve ilgili bağlantı testleri geçti.
 
-Firefox 1.7 paketi Chrome ortak kaynaklarıyla eşitlendi. Firefox senkronizasyonu,
+Firefox 2.0 paketi Chrome ortak kaynaklarıyla eşitlendi. Firefox senkronizasyonu,
 arka plan eşleştirme/teslimat akışı, dil/para birimi ve sekiz mağaza dili için yedi
 ilgili test geçti. Tam eski test kümesindeki sitede artık bulunmayan Kick grafik
 başlığı beklentisi bu eklenti çalışmasının kapsamı dışındadır.
@@ -70,7 +70,7 @@ testinde ayrıca değerlendirilebilir.
 Görseller: `output/play-connect-local-test/`. Kaynak: `play-connect/`.
 Yayın/mağaza paketlerini ancak test sonrası açık talebinle güncelle.
 
-## Güncelleme notları · 1.7
+## Güncelleme notları · 2.0
 
 Ayarlar başlığındaki `Güncelleme notları` düğmesi Play Connect'in tam sürüm
 geçmişini seçili arayüz dilinde açar. Beta sürümleri sıcak amber yüzeyle tam

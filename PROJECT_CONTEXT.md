@@ -5,14 +5,16 @@
 - Kullanıcının birleştirilmiş kaynağındaki 88 sürüm kaydı; Play Streamers Web,
   Play Streamers App, Play Connect, SW Identity ve SW Create ürünlerine ayrıldı.
 - Play Streamers sitesi Web, App ve Play Connect için üç ayrı güncelleme sekmesi
-  gösterir. Play Connect 1.7 ayarlarında kendi 17 kayıtlık arşivi bulunur.
+  gösterir. Play Connect 2.0 ayarlarında kendi 17 kayıtlık arşivi bulunur.
 - Belgedeki son sürümler arayüzlerde birebir kullanılır: Web 1.8, App 1.9,
-  Play Connect 1.7, SW Identity 1.5 ve SW Create 1.9. Dahili dağıtım numaraları
+  Play Connect 2.0, SW Identity 1.5 ve SW Create 1.9. Dahili dağıtım numaraları
   kullanıcıya görünen ürün notu sürümlerinden ayrı tutulur.
+- Play Connect mağazalarında 1.15.3 zaten yayımlandığı için yeni manifestin
+  teknik ve kullanıcıya gösterilen sürümü 2.0'dır.
 - Türkçe, İngilizce, Almanca, İspanyolca, Fransızca, Rusça, Arapça ve Japonca
   arşivler çevrimdışı paketlenir. Marka adları korunur; beta sürümleri amber
   yüzeyle kararlı sürümlerden ayrılır.
-- Web 10.36.2 ve Play Connect 1.7 yayın kapsamındadır. Masaüstü kaynakları
+- Web 10.36.3 ve Play Connect 2.0 yayın kapsamındadır. Masaüstü kaynakları
   aynı üç ürün başlığıyla derlenip test edildi; uygulama ve Microsoft Store paketi
   kullanıcı isteği gereği yayımlanmadı.
 - Doğrulama: 26 site testi, 2.569/2.569 arayüz metni, gerçek tarayıcıda üç ürün

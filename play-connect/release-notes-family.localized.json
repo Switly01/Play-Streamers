@@ -499,10 +499,10 @@
           "name": "Play Connect",
           "tabTitle": "Play Connect Güncelleme Notları",
           "summary": "Uygun destek ve bağış platformlarından gelen olayları Play Streamers hesabına ileten ücretsiz Chrome/Chromium ve Firefox eklentisi.",
-          "current": "1.7",
+          "current": "2.0",
           "entries": [
             {
-              "version": "1.7",
+              "version": "2.0",
               "title": "Birleşik Bağlantı",
               "beta": false,
               "items": [
@@ -1615,10 +1615,10 @@
           "name": "Play Connect",
           "tabTitle": "Play Connect Update Notes",
           "summary": "A free Chrome/Chromium and Firefox extension that sends events from supported support and donation platforms to your Play Streamers account.",
-          "current": "1.7",
+          "current": "2.0",
           "entries": [
             {
-              "version": "1.7",
+              "version": "2.0",
               "title": "United Connection",
               "beta": false,
               "items": [
@@ -2731,10 +2731,10 @@
           "name": "Play Connect",
           "tabTitle": "Play Connect Aktualisierungshinweise",
           "summary": "Kostenlose Chrome/Chromium- und Firefox-Erweiterung, die Ereignisse unterstützter Support- und Spendenplattformen an das Play Streamers-Konto übermittelt.",
-          "current": "1.7",
+          "current": "2.0",
           "entries": [
             {
-              "version": "1.7",
+              "version": "2.0",
               "title": "United Connection",
               "beta": false,
               "items": [
@@ -3847,10 +3847,10 @@
           "name": "Play Connect",
           "tabTitle": "Play Connect Notas de actualización",
           "summary": "Extensión gratuita para Chrome/Chromium y Firefox que envía a tu cuenta de Play Streamers los eventos de las plataformas de apoyo y donaciones compatibles.",
-          "current": "1.7",
+          "current": "2.0",
           "entries": [
             {
-              "version": "1.7",
+              "version": "2.0",
               "title": "United Connection",
               "beta": false,
               "items": [
@@ -4963,10 +4963,10 @@
           "name": "Play Connect",
           "tabTitle": "Play Connect Notes de mise à jour",
           "summary": "Extension gratuite pour Chrome/Chromium et Firefox qui transmet à votre compte Play Streamers les événements des plateformes de soutien et de dons compatibles.",
-          "current": "1.7",
+          "current": "2.0",
           "entries": [
             {
-              "version": "1.7",
+              "version": "2.0",
               "title": "Connexion unie",
               "beta": false,
               "items": [
@@ -6079,10 +6079,10 @@
           "name": "Play Connect",
           "tabTitle": "Play Connect Примечания к обновлению",
           "summary": "Бесплатное расширение для Chrome/Chromium и Firefox, которое передаёт события поддерживаемых платформ поддержки и пожертвований в аккаунт Play Streamers.",
-          "current": "1.7",
+          "current": "2.0",
           "entries": [
             {
-              "version": "1.7",
+              "version": "2.0",
               "title": "Объединенная связь",
               "beta": false,
               "items": [
@@ -7195,10 +7195,10 @@
           "name": "Play Connect",
           "tabTitle": "Play Connect ملاحظات التحديث",
           "summary": "إضافة مجانية لمتصفحي Chrome/Chromium وFirefox تنقل أحداث منصات الدعم والتبرعات المتوافقة إلى حساب Play Streamers.",
-          "current": "1.7",
+          "current": "2.0",
           "entries": [
             {
-              "version": "1.7",
+              "version": "2.0",
               "title": "يونايتد لينك",
               "beta": false,
               "items": [
@@ -8311,10 +8311,10 @@
           "name": "Play Connect",
           "tabTitle": "Play Connect 更新情報",
           "summary": "対応する支援・寄付プラットフォームのイベントをPlay Streamersアカウントへ送信する、Chrome/ChromiumおよびFirefox向けの無料拡張機能です。",
-          "current": "1.7",
+          "current": "2.0",
           "entries": [
             {
-              "version": "1.7",
+              "version": "2.0",
               "title": "ユナイテッド・コネクション",
               "beta": false,
               "items": [

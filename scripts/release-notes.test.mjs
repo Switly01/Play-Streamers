@@ -6,7 +6,7 @@ const root = new URL('../', import.meta.url);
 const source = JSON.parse(await readFile(new URL('release-notes-family.json', root), 'utf8'));
 const localized = JSON.parse(await readFile(new URL('release-notes-family.localized.json', root), 'utf8'));
 const expectedCounts = { web:18, app:19, connect:17, identity:15, swcreate:19 };
-const expectedVersions = { web:'1.8', app:'1.9', connect:'1.7', identity:'1.5', swcreate:'1.9' };
+const expectedVersions = { web:'1.8', app:'1.9', connect:'2.0', identity:'1.5', swcreate:'1.9' };
 const languages = ['tr','en','de','es','fr','ru','ar','ja'];
 
 test('supplied family history is complete and beta releases are explicitly marked', () => {

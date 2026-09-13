@@ -3,9 +3,11 @@ import path from 'node:path';
 
 const root = path.resolve(import.meta.dirname, '..');
 const source = path.join(root, 'play-connect');
-const version = JSON.parse(await readFile(path.join(source, 'manifest.json'), 'utf8')).version;
-const chromeTarget = path.join(root, `play-connect-chrome-store-v${version}`);
-const firefoxTarget = path.join(root, `play-connect-firefox-store-v${version}`);
+const sourceManifest = JSON.parse(await readFile(path.join(source, 'manifest.json'), 'utf8'));
+const technicalVersion = sourceManifest.version;
+const productVersion = sourceManifest.version_name || technicalVersion;
+const chromeTarget = path.join(root, `play-connect-chrome-store-v${technicalVersion}`);
+const firefoxTarget = path.join(root, `play-connect-firefox-store-v${technicalVersion}`);
 const firefoxTemplate = path.join(root, 'play-connect-firefox-store-v1.15.3');
 
 for (const target of [chromeTarget, firefoxTarget]) {
@@ -65,7 +67,8 @@ for (const relativePath of ['options/options.html', 'options/options.js', 'popup
 }
 
 const firefoxManifest = JSON.parse(await readFile(path.join(firefoxTemplate, 'manifest.json'), 'utf8'));
-firefoxManifest.version = version;
+firefoxManifest.version = technicalVersion;
+firefoxManifest.version_name = productVersion;
 await writeFile(path.join(firefoxTarget, 'manifest.json'), `${JSON.stringify(firefoxManifest, null, 2)}\n`, 'utf8');
 
-console.log(`Play Connect ${version} mağaza klasörleri hazırlandı.`);
+console.log(`Play Connect ${productVersion} mağaza klasörleri hazırlandı (teknik sıra ${technicalVersion}).`);

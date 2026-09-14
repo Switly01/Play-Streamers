@@ -133,11 +133,12 @@ test('email form precedes two-factor management without nested forms', () => {
   assert.ok(markup.indexOf('class="ps132-two-factor-card"') > markup.indexOf('id="ps121SwPasswordForm"'));
   assert.equal((markup.match(/id="ps56TwoFactorToggle"/g) || []).length, 1);
 });
-test('a saved product photo takes precedence over a central preset', () => {
+test('the central SW Identity avatar takes precedence over a legacy product photo', () => {
   const photo = 'data:image/png;base64,aGVsbG8=';
-  const c = vm.createContext({ state: () => ({ settings: {} }), esc: String, swIdentityAccount: { user: { avatar: { type: 'preset', value: 'orbit-cyan' } } }, identityAvatarObjectUrl: '' });
+  const c = vm.createContext({ state: () => ({ settings: {} }), esc: String, swIdentityAccountOwner: 'qa', swIdentityAccount: { user: { avatar: { type: 'preset', value: 'orbit-cyan' } } }, identityAvatarObjectUrl: '' });
   vm.runInContext(['accountAvatars','swProfileAvatars'].map(name => `const ${declaration(final,name)};`).join('\n') + '\n' + declaration(final, 'accountAvatar'), c);
-  assert.match(c.accountAvatar({ id: 'qa', picture: photo }), /<img src="data:image\/png/);
+  assert.doesNotMatch(c.accountAvatar({ id: 'qa', picture: photo }), /<img src="data:image\/png/);
+  assert.match(c.accountAvatar({ id: 'qa', picture: photo }), /<svg/);
   assert.match(c.accountAvatar({ id: 'qa', picture: 'avatar:orbit-cyan' }), /<svg/);
 });
 test('tab surfaces and hidden provider fallback icons cannot inherit legacy backgrounds', async () => {

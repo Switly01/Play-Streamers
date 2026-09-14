@@ -5734,6 +5734,12 @@ body.ps-v9 :is(#panelGrid,#ps13CardCopy) li[data-kind="donations"] .event-top:no
 body.ps-v9 :is(#panelGrid,#ps13CardCopy) li[data-kind="donations"] .meta { grid-column:1/-1!important;margin:0!important;white-space:normal!important;overflow-wrap:anywhere!important;font-size:11px!important;line-height:1.5!important; }
 body.ps-v9 :is(#panelGrid,#ps13CardCopy) li[data-kind="donations"] .message { margin:10px 0 0!important;overflow-wrap:anywhere!important;line-height:1.6!important; }
 body.ps-v9 :is(#panelGrid,#ps13CardCopy) .entries:has(li[data-kind="donations"]) { padding:5px!important;gap:12px!important; }
+#ps44UpdatesDialog .ps50-version-heading { display:flex;align-items:center;flex-wrap:wrap;gap:12px;min-width:0; }
+#ps44UpdatesDialog .ps50-latest-badge { display:inline-flex;align-items:center;flex:none;min-height:24px;padding:3px 10px;border:1px solid rgba(141,255,104,.36);border-radius:999px;background:rgba(83,252,24,.09);color:#dfffd5;font-size:9px;font-weight:850;line-height:1.4;letter-spacing:.06em; }
+#ps44UpdatesDialog .ps-release-channel { margin-left:0; }
+#ps51AccountCenter .ps135-central-account { display:flex;flex-wrap:wrap;align-items:center;gap:14px;padding:24px;border:1px solid rgba(255,255,255,.14);border-radius:18px;background:rgba(255,255,255,.035); }
+#ps51AccountCenter .ps135-central-account a { display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:12px 16px;text-decoration:none;line-height:1.5; }
+#ps51AccountCenter .ps135-central-account a:focus-visible { outline:2px solid #8de9ff;outline-offset:4px; }
 #ps59AccountDataDialog .ps133-calendar-note { color:rgba(255,255,255,.65);font-size:12px;line-height:1.6; }
 #ps59AccountDataDialog .ps133-day-calendar { display:grid;grid-template-columns:repeat(10,minmax(0,1fr));gap:9px; }
 #ps59AccountDataDialog .ps133-calendar-day { display:grid;gap:6px;min-width:0;border:1px solid rgba(255,255,255,.22);border-radius:8px;padding:9px 2px;background:rgba(255,255,255,.045);color:#fff;cursor:pointer; }
@@ -5746,6 +5752,7 @@ body.ps-v9 :is(#panelGrid,#ps13CardCopy) .entries:has(li[data-kind="donations"])
   body.ps-v9 #ps51AccountCenter .ps66-create { grid-template-columns:1fr!important; }
   body.ps-v9 #ps51AccountCenter #ps66CreateWebhook { max-width:none!important;width:100%!important; }
 }
+/* First-account Play Connect setup: scoped to the existing account dialog system. */
 .ps-connect-welcome{z-index:2147483000!important;padding:20px;overflow:auto}
 .ps-connect-welcome .auth-dialog{width:min(460px,100%);max-height:calc(100dvh - 40px);overflow:auto;box-sizing:border-box;padding:30px;border:1px solid #ffffff30;border-radius:24px;background:#101014;color:#f7f7f4;box-shadow:0 24px 90px #000c}
 .ps-connect-welcome-logo{display:block;width:54px;height:54px;margin-bottom:18px}

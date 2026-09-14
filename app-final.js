@@ -863,17 +863,11 @@
   }
   function saveAccountState(next) { localStorage.setItem(STORE, JSON.stringify(next)); }
   function accountAvatar(user) {
-    const current = state(), local = current.settings?.localAvatarUserId === user.id ? current.settings?.localAvatar : '';
-    if (local) return `<img src="${esc(local)}" alt="Profil fotoğrafı">`;
-    // An uploaded product logo takes precedence over the central preset.
-    if (/^(?:https:\/\/|data:image\/(?:png|jpeg|webp);base64,)/i.test(String(user.picture || ''))) return `<img src="${esc(user.picture)}" alt="Profil fotoğrafı">`;
-    const choice = accountAvatars.find(item => item[0] === user.picture);
-    if (choice) return choice[1];
-    const identityAvatar = swIdentityAccount?.user?.avatar || {};
+    const identityAvatar = swIdentityAccountOwner === String(user.id || '') ? swIdentityAccount?.user?.avatar || {} : {};
     if (identityAvatar.type === 'custom' && identityAvatar.value) {
       return identityAvatarObjectUrl ? `<img src="${esc(identityAvatarObjectUrl)}" alt="SW Identity profil fotoğrafı">` : swProfileAvatars[0][2];
     }
-    const identityPreset = String(swIdentityAccount?.user?.avatar?.value || user.swAvatarPreset || '');
+    const identityPreset = String(identityAvatar.type === 'preset' ? identityAvatar.value : user.swAvatarPreset || '');
     const picturePreset = String(user.picture || '').replace(/^avatar:/, '');
     const swChoice = swProfileAvatars.find(item => item[0] === (identityPreset || picturePreset));
     if (swChoice) return swChoice[2];
@@ -884,6 +878,10 @@
     const user = state().settings?.user || {};
     const host = $('.ps129-account-avatar', layer);
     if (host) host.innerHTML = accountAvatar(user);
+    const identity = swIdentityAccountOwner === String(user.id || '') ? swIdentityAccount?.user : null;
+    const name = $('.ps119-account-user > span > b', layer), email = $('.ps119-account-user > span > small', layer);
+    if (identity && name) name.textContent = identity.username || identity.displayName || user.username || user.name || 'SW Identity';
+    if (identity && email) email.textContent = identity.email || 'SW Identity';
     const profile = $('.ps121-profile-head .ps51-profile-avatar', layer);
     if (profile) profile.innerHTML = accountAvatar(user);
   }
@@ -916,7 +914,7 @@
     return date.getTime();
   }
   function kickAccountSummary(current, connected) {
-    const account = current.settings?.kickAccount || {}; const username = account.username ? `@${account.username}` : 'Kick hesabı'; const picture = safeKickPicture(account.profilePicture);
+    const account = current.settings?.kickAccount || {}; const username = account.username ? `@${account.username}` : 'Kick hesabı'; const picture = safeKickPicture(account.profilePicture || account.profile_picture);
     const savedInsights = current.settings?.kickInsights || {}; const insights = String(savedInsights.broadcasterId || '') === String(account.id || '') ? savedInsights : {};
     const followers = Array.isArray(current.events?.followers) ? current.events.followers : [];
     const subscriptions = current.events?.subs && typeof current.events.subs === 'object' ? Object.values(current.events.subs) : [];
@@ -927,18 +925,19 @@
     const officialFollowerCount = officialFollowerRaw === null || officialFollowerRaw === undefined || officialFollowerRaw === ''
       ? Number.NaN
       : Number(officialFollowerRaw);
-    const activeFollowerCount = Number.isFinite(officialFollowerCount) && officialFollowerCount >= 0
+    const activeFollowerCount = Number.isFinite(officialFollowerCount) && officialFollowerCount >= 0 && insights.followersSource !== 'unavailable'
       ? officialFollowerCount
-      : followerCount;
+      : '—';
     const profile = `<article class="ps54-kick-profile"><i class="ps54-kick-avatar">${picture ? `<img src="${esc(picture)}" alt="${esc(username)} Kick profil fotoğrafı" referrerpolicy="no-referrer">` : 'K'}</i><span><b>${connected ? esc(username) : 'Kick hesabı bağlı değil'}</b><small>${connected ? 'Bağlı yayıncı profili ve işlenen kanal olayları' : 'İstatistikleri görmek için Bağlantılar bölümünden Kick hesabını bağla.'}</small></span><strong class="ps54-kick-badge">${connected ? 'BAĞLI' : 'BAĞLI DEĞİL'}</strong></article>`;
     const officialSubscriberRaw = insights.activeSubscribers;
     const officialSubscriberCount = officialSubscriberRaw === null || officialSubscriberRaw === undefined || officialSubscriberRaw === ''
       ? Number.NaN
       : Number(officialSubscriberRaw);
-    const activeSubscribers = Number.isFinite(officialSubscriberCount) && officialSubscriberCount >= 0
-      ? Math.max(subscriptions.length, officialSubscriberCount)
-      : subscriptions.length;
-    return { profile, followerCount, activeFollowerCount, activeSubscribers, followedThisMonth: Number.isFinite(Number(insights.followedThisMonth)) ? Number(insights.followedThisMonth) : followedThisMonth };
+    const activeSubscribers = Number.isFinite(officialSubscriberCount) && officialSubscriberCount >= 0 && insights.subscribersSource !== 'recorded-events'
+      ? officialSubscriberCount
+      : '—';
+    const monthRaw = insights.followedThisMonth;
+    return { profile, followerCount, activeFollowerCount, activeSubscribers, followedThisMonth: monthRaw !== null && monthRaw !== undefined && Number.isFinite(Number(monthRaw)) ? Number(monthRaw) : '—' };
   }
   function accountDataCard(metric, label, value) {
     const localized = ui(label);
@@ -947,7 +946,7 @@
   function normalizeAccountMetricZeroes() {
     $$('[data-ps59-card="subscribers"]').forEach(card => {
       const value = $('b', card);
-      if (value && !String(value.textContent || '').trim().match(/^\d+(?:[.,]\d+)?$/)) value.textContent = '0';
+      if (value && !String(value.textContent || '').trim()) value.textContent = '—';
     });
   }
   function accountMetricDateKey(date) {
@@ -1279,6 +1278,7 @@
   let swIdentityAccount = null;
   let swIdentityAccountLoaded = false;
   let swIdentityAccountRequest = null;
+  let swIdentityAccountOwner = '';
   let identityAvatarObjectUrl = '';
   let identityAvatarCacheKey = '';
   async function loadIdentityAvatar(result) {
@@ -1302,18 +1302,34 @@
   async function accountGet(path) {
     const current = state(), token = String(current.settings?.userSession || current.userSession || '');
     const headers = token ? { Authorization: `Bearer ${token}` } : {};
-    const response = await fetch(`https://api.pstreamers.com${path}`, { credentials: 'include', cache: 'no-store', headers });
-    const result = await response.json().catch(() => ({}));
-    if (!response.ok) throw new Error(result.error || 'Bağlantı bilgisi alınamadı.');
-    return result;
+    const controller = new AbortController();
+    const timeout = window.setTimeout(() => controller.abort(), 12000);
+    try {
+      const response = await fetch(`https://api.pstreamers.com${path}`, { credentials: 'include', cache: 'no-store', headers, signal: controller.signal });
+      const result = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(result.error || 'Bağlantı bilgisi alınamadı.');
+      if (state().settings?.user?.id !== current.settings?.user?.id) throw new Error('Oturum değişti.');
+      return result;
+    } finally { window.clearTimeout(timeout); }
   }
   async function refreshSwIdentityAccount(force = false) {
+    const owner = String(state().settings?.user?.id || '');
+    if (owner !== swIdentityAccountOwner) {
+      swIdentityAccount = null; swIdentityAccountLoaded = false; swIdentityAccountRequest = null;
+      swIdentityAccountOwner = owner;
+      identityAvatarCacheKey = ''; if (identityAvatarObjectUrl) URL.revokeObjectURL(identityAvatarObjectUrl); identityAvatarObjectUrl = '';
+    }
     if (swIdentityAccountRequest) return swIdentityAccountRequest;
     if (swIdentityAccountLoaded && !force) return swIdentityAccount;
     swIdentityAccountRequest = accountGet('/api/sw-identity/account')
       .then(result => {
         swIdentityAccount = result;
         swIdentityAccountLoaded = true;
+        const next = state(); next.settings ||= {}; next.settings.user ||= {};
+        if (result?.user?.username) next.settings.user.username = result.user.username;
+        if (result?.user?.displayName) next.settings.user.name = result.user.displayName;
+        next.settings.user.email = result?.user?.email || null;
+        saveAccountState(next);
         const preset = String(result?.user?.avatar?.value || '');
         if (swProfileAvatars.some(item => item[0] === preset)) {
           const current = state();
@@ -1327,7 +1343,7 @@
         void loadIdentityAvatar(result);
         return result;
       })
-      .finally(() => { swIdentityAccountRequest = null; });
+      .finally(() => { if (owner === swIdentityAccountOwner) swIdentityAccountRequest = null; });
     return swIdentityAccountRequest;
   }
   async function refreshDonateBridgeDevices() {
@@ -1535,21 +1551,21 @@
   window.ps67StartKickConnection = startKickConnection;
   async function refreshAccountUser() {
     const current = state(), token = String(current.settings?.userSession || current.userSession || ''); if (!token) return null;
-    const response = await fetch('https://api.pstreamers.com/api/auth/session', { credentials: 'include', headers: { Authorization: `Bearer ${token}` }, cache: 'no-store' });
-    const result = await response.json().catch(() => ({}));
-    if (!response.ok || !result.user) return null;
+    const result = await accountGet('/api/auth/session');
+    if (!result.user) return null;
     const next = state(); next.settings ||= {}; next.settings.user = result.user; saveAccountState(next); return result.user;
   }
   async function refreshAccountKick() {
-    const current = state(), token = String(current.settings?.kickSession || current.settings?.userSession || current.userSession || ''); if (!token) return null;
+    const current = state(), token = String(current.settings?.userSession || current.userSession || ''); if (!token) return null;
     let account = current.settings?.kickAccount || null;
-    const response = await fetch('https://api.pstreamers.com/api/kick/session', { headers: { Authorization: `Bearer ${token}` }, cache: 'no-store' });
-    const result = await response.json().catch(() => ({})); if (response.ok && result.connected) account = result.account || account;
+    const result = await accountGet('/api/kick/session');
+    if (!result.connected) return null;
+    account = result.account || account;
     let insights = null;
     let officialTopKicks = null;
-    const eventsResponse = await fetch('https://api.pstreamers.com/api/kick/events?history=1&insights=1', { headers: { Authorization: `Bearer ${token}` }, cache: 'no-store' });
-    if (eventsResponse.ok) {
-      const result = await eventsResponse.json().catch(() => ({})); const events = Array.isArray(result.events) ? result.events : [];
+    const eventsResult = await accountGet('/api/kick/events?history=1&insights=1').catch(() => null);
+    if (eventsResult) {
+      const result = eventsResult; const events = Array.isArray(result.events) ? result.events : [];
       const monthStart = rollingMonthStart(); const subscribers = new Map(); const seenSubscribers = new Set();
       const follows = events.filter(event => event?.type === 'channel.followed');
       events.filter(event => event?.type === 'channel.subscription.new' || event?.type === 'channel.subscription.renewal').forEach(event => { const subscriber = event.payload?.subscriber || {}; const key = String(subscriber.user_id || subscriber.username || event.id || ''); if (!key || seenSubscribers.has(key)) return; seenSubscribers.add(key); const expiresAt = Date.parse(event.payload?.expires_at || ''); if (!Number.isFinite(expiresAt) || expiresAt >= Date.now()) subscribers.set(key, true); });
@@ -1560,8 +1576,9 @@
       const officialFollowers = Number(officialFollowersRaw);
       const hasOfficialFollowers = officialFollowersRaw !== null && officialFollowersRaw !== undefined && Number.isFinite(officialFollowers);
       officialTopKicks = result.insights?.topKicks || null;
-      const serverMonthFollowers = Number(result.insights?.followedThisMonth);
-      insights = { broadcasterId: String(result.broadcasterId || account?.id || ''), followers: follows.length, activeFollowers: hasOfficialFollowers ? Math.max(0, officialFollowers) : null, activeSubscribers: hasOfficialActiveSubscribers ? Math.max(0, officialActiveSubscribers) : subscribers.size, followedThisMonth: Number.isFinite(serverMonthFollowers) ? Math.max(0, serverMonthFollowers) : follows.filter(event => Date.parse(event.occurredAt || event.receivedAt || '') >= monthStart).length, dailyMetrics: Array.isArray(result.insights?.dailyMetrics) ? result.insights.dailyMetrics : [], hourlyMetrics: Array.isArray(result.insights?.hourlyMetrics) ? result.insights.hourlyMetrics : [], checkedAt: Date.now(), source: hasOfficialActiveSubscribers || hasOfficialFollowers ? 'kick-api+play-connect+webhooks' : 'webhooks' };
+      const monthRaw = result.insights?.followedThisMonth;
+      const serverMonthFollowers = monthRaw === null || monthRaw === undefined ? NaN : Number(monthRaw);
+      insights = { broadcasterId: String(result.broadcasterId || account?.id || ''), followers: follows.length, activeFollowers: hasOfficialFollowers ? Math.max(0, officialFollowers) : null, activeSubscribers: hasOfficialActiveSubscribers ? Math.max(0, officialActiveSubscribers) : null, followersSource: result.insights?.followersSource || 'unavailable', subscribersSource: result.insights?.subscribersSource || 'recorded-events', followedThisMonth: Number.isFinite(serverMonthFollowers) ? Math.max(0, serverMonthFollowers) : null, dailyMetrics: Array.isArray(result.insights?.dailyMetrics) ? result.insights.dailyMetrics : [], hourlyMetrics: Array.isArray(result.insights?.hourlyMetrics) ? result.insights.hourlyMetrics : [], checkedAt: Date.now(), source: hasOfficialActiveSubscribers || hasOfficialFollowers ? 'kick-api+play-connect+webhooks' : 'webhooks' };
     }
     const next = state(); next.settings ||= {}; if (account) next.settings.kickAccount = account; if (insights) next.settings.kickInsights = insights;
     if (!Number(next.settings.statsResetAt || 0) && officialTopKicks) {
@@ -1969,7 +1986,7 @@
     $$('[data-ps51-tab]', layer).forEach(button => button.onclick = () => {
       const nextTab = button.dataset.ps51Tab;
       accountCenterViewVersion += 1;
-      showAccountCenter(nextTab, ['profile', 'account', 'devices', 'connections', 'support'].includes(nextTab));
+      showAccountCenter(nextTab, true);
     });
     $('.ps51-account-close', layer).onclick = closeAccountCenter;
     layer.onclick = event => {
@@ -2614,6 +2631,24 @@
     const twoFactorActions = `<button id="ps56TwoFactorToggle" class="${twoFactor ? 'ps51-danger' : 'ps51-primary'}" type="button" data-enabled="${twoFactor}">${esc(twoFactor ? disableTwoFactorLabel : enableTwoFactorLabel)}</button>${twoFactor ? `<button id="ps60RecoveryCodes" class="ps51-secondary" type="button">${esc(renewRecoveryLabel)}</button>` : ''}`;
     return `<span class="ps51-account-kicker">SW IDENTITY · GÜVENLİK</span><h2>E-posta, şifre ve güvenlik</h2><p class="ps51-account-lead">Güvenlik değişikliklerini Play Streamers içinden yap. İşlemler merkezi SW Identity hesabına uygulanır ve diğer SW ürünleriyle eşitlenir.</p><section class="ps121-security-summary"><article><span>E-posta</span><b>${esc(email || 'Doğrulanmış adres yok')}</b></article><article><span>İki aşamalı doğrulama</span><b class="${twoFactor ? 'active' : ''}">${twoFactor ? 'Açık' : 'Kapalı'}</b></article><article><span>Veri akışı</span><b>Doğrulanmış</b></article></section><div class="ps121-security-grid"><div class="ps133-email-security"><form id="ps121SwEmailForm" class="ps121-identity-form"><h3>E-posta adresini değiştir</h3><p>Yeni adrese gönderilen kodla değişikliği doğrula.</p><label>Yeni e-posta<input name="newEmail" type="email" autocomplete="email" required></label><label>Mevcut şifre<input name="currentPassword" type="password" autocomplete="current-password" required></label><div class="ps121-code-row"><label>Doğrulama kodu<input name="code" inputmode="numeric" autocomplete="one-time-code" maxlength="9" required></label><button type="button" class="ps51-secondary" data-ps121-challenge="email_change">Kodu gönder</button></div><button class="ps51-primary" type="submit">E-postayı güncelle</button><p class="ps51-account-status" aria-live="polite"></p></form></div><form id="ps121SwPasswordForm" class="ps121-identity-form"><h3>Şifreni değiştir</h3><p>${twoFactor ? 'İşlemi Authenticator kodunla doğrula.' : 'E-postana gönderilen kodla işlemi doğrula.'}</p><label>Mevcut şifre<input name="currentPassword" type="password" autocomplete="current-password" required></label><label>Yeni şifre<input name="newPassword" type="password" minlength="10" maxlength="200" autocomplete="new-password" required></label><label>Yeni şifre tekrar<input name="newPasswordRepeat" type="password" minlength="10" maxlength="200" autocomplete="new-password" required></label><div class="ps121-code-row"><label>Doğrulama kodu<input name="code" inputmode="numeric" autocomplete="one-time-code" maxlength="9" required></label><button type="button" class="ps51-secondary" data-ps121-challenge="password_change">Kodu gönder</button></div><button class="ps51-primary" type="submit">Şifreyi güncelle</button><p class="ps51-account-status" aria-live="polite"></p></form><section class="ps132-two-factor-card"><span><b>Authenticator koruması</b><small>${twoFactor ? 'Yeni girişlerde Authenticator veya kurtarma kodun istenir. Kodlarını buradan güvenle yenileyebilir ya da korumayı kapatabilirsin.' : 'Google Authenticator, Microsoft Authenticator veya iPhone Parolalar ile hesabına ikinci bir güvenlik adımı ekle.'}</small></span><div class="ps132-two-factor-actions">${twoFactorActions}</div><p id="ps56TwoFactorStatus" class="ps51-account-status" aria-live="polite"></p></section></div><section class="ps126-danger-zone"><span><b>SW Identity hesabını sil</b><small>Bu işlem merkezi kimliğini ve bağlı tüm SW ürünlerindeki hesap, oturum, plan, bağlantı ve ürün verilerini kalıcı olarak kaldırır.</small></span><button id="ps55DeleteAccount" class="ps51-danger" type="button">SW Identity hesabımı sil</button></section><p class="ps121-security-note">İki aşamalı doğrulama ayarın SW Identity’den okunur. Açık olduğunda e-posta kodu yerine Authenticator kodun kullanılır.</p>`;
   }
+  function accountCenterText(key) {
+    const copy = {
+      tr: ['Hesabını SW Create’ta yönet', 'Kullanıcı adı, profil fotoğrafı, e-posta, şifre, iki aşamalı doğrulama ve hesap silme işlemleri yalnız SW Create hesap merkezinde yapılır.', 'SW Create hesap merkezini aç', '* — işareti doğrulanmış toplamın alınamadığını belirtir; sıfır değildir. Son bir ay kartı yalnız Play Streamers’a ulaşan takip olaylarını sayar. Takipçi toplamı son kaydedilen Kick ölçümü olabilir; gün kutuları son 90 günlük kayıtları gösterir.'],
+      en: ['Manage your account on SW Create', 'Username, profile photo, email, password, two-factor authentication and account deletion are managed only in the SW Create account center.', 'Open the SW Create account center', '* — means a verified total is unavailable, not zero. The last-month card counts only follow events received by Play Streamers. The follower total may be the last saved Kick measurement; daily boxes show 90 days of records.'],
+      de: ['Konto bei SW Create verwalten', 'Benutzername, Profilfoto, E-Mail, Passwort, Zwei-Faktor-Authentifizierung und Kontolöschung werden ausschließlich im SW Create-Kontocenter verwaltet.', 'SW Create-Kontocenter öffnen', '* — bedeutet, dass kein bestätigter Gesamtwert verfügbar ist, nicht null. Die Monatskarte zählt nur empfangene Folgeereignisse. Die Followerzahl kann die letzte gespeicherte Kick-Messung sein; Tagesfelder zeigen 90 Tage.'],
+      es: ['Gestiona tu cuenta en SW Create', 'El nombre de usuario, la foto, el correo, la contraseña, la autenticación de dos factores y la eliminación se gestionan solo en SW Create.', 'Abrir el centro de cuentas de SW Create', '* — indica que el total verificado no está disponible, no cero. La tarjeta mensual cuenta solo los eventos recibidos. El total de seguidores puede ser la última medición guardada de Kick; las casillas muestran 90 días.'],
+      fr: ['Gérez votre compte sur SW Create', 'Le nom, la photo, l’adresse e-mail, le mot de passe, la double authentification et la suppression du compte se gèrent uniquement sur SW Create.', 'Ouvrir le centre de compte SW Create', '* — indique un total vérifié indisponible, pas zéro. La carte mensuelle compte uniquement les événements reçus. Le total des abonnés peut être la dernière mesure Kick enregistrée ; les cases couvrent 90 jours.'],
+      ru: ['Управляйте аккаунтом в SW Create', 'Имя пользователя, фото, почта, пароль, двухфакторная защита и удаление аккаунта доступны только в центре аккаунта SW Create.', 'Открыть центр аккаунта SW Create', '* — означает отсутствие подтверждённого итога, а не ноль. Месячная карточка считает только полученные события. Число подписчиков может быть последним сохранённым измерением Kick; дневные ячейки охватывают 90 дней.'],
+      ar: ['إدارة حسابك على SW Create', 'تتم إدارة اسم المستخدم والصورة والبريد وكلمة المرور والتحقق بخطوتين وحذف الحساب فقط في مركز حساب SW Create.', 'فتح مركز حساب SW Create', '* — تعني أن الإجمالي الموثق غير متاح، وليس صفراً. تحسب البطاقة الشهرية الأحداث المستلمة فقط. قد يكون إجمالي المتابعين آخر قياس محفوظ من Kick؛ تعرض الخانات 90 يوماً.'],
+      ja: ['SW Createでアカウントを管理', 'ユーザー名、写真、メール、パスワード、二要素認証、アカウント削除はSW Createのアカウントセンターでのみ管理します。', 'SW Createアカウントセンターを開く', '* — は確認済みの合計が取得できないことを示し、ゼロではありません。月間カードは受信したイベントのみ集計します。フォロワー合計は最後に保存したKickの測定値の場合があり、日別欄は90日間を表示します。']
+    };
+    const index = { title: 0, lead: 1, open: 2, metrics: 3 }[key];
+    return (copy[currentInterfaceLanguage()] || copy.en)[index];
+  }
+  function centralAccountMarkup(view) {
+    const safeView = ['profile','security','devices'].includes(view) ? view : 'profile';
+    return `<span class="ps51-account-kicker">SW CREATE · SW IDENTITY</span><h2>${esc(accountCenterText('title'))}</h2><p class="ps51-account-lead">${esc(accountCenterText('lead'))}</p><section class="ps135-central-account"><a class="ps51-primary" href="https://swcreate.com/center/?view=${safeView}" target="_blank" rel="noopener noreferrer">${esc(accountCenterText('open'))} ↗</a><a class="ps51-secondary" href="https://swcreate.com/center/?view=devices" target="_blank" rel="noopener noreferrer">${esc(ui('Cihazlar'))} ↗</a><a class="ps51-secondary" href="https://swcreate.com/center/?view=connections" target="_blank" rel="noopener noreferrer">${esc(ui('Bağlantılar'))} ↗</a></section>`;
+  }
   function showAccountCenter(tab = 'data', refresh = true, flash = '', quiet = false) {
     window.ps119CloseRatePanel?.();
     const current = state(), settings = current.settings || {}, user = settings.user || {}; if (!settings.userSession || !settings.user) return;
@@ -2621,15 +2656,15 @@
     const kickSummary = kickAccountSummary(current, kickConnected);
     const dataCards = [
       accountDataCard('followers', 'AKTİF TAKİPÇİ*', kickConnected ? kickSummary.activeFollowerCount : '—'),
-      accountDataCard('subscribers', 'AKTİF ABONE*', Math.max(0, Number(kickSummary.activeSubscribers) || 0)),
+      accountDataCard('subscribers', 'AKTİF ABONE*', kickConnected ? kickSummary.activeSubscribers : '—'),
       accountDataCard('monthFollowers', 'SON BİR AYDA TAKİP EDEN', kickConnected ? kickSummary.followedThisMonth : '—')
     ];
-    const dataNote = '* Kick Public API toplam takipçi ve aktif abone sayılarını her hesapta doğrudan sunmadığı için kartlar, erişilebildiğinde Kick kanal özetini; aksi halde Play Streamers’a ulaşan doğrulanmış takip ve abonelik olaylarından bilinen en güvenli değeri gösterir. Gün kutuları son 90 günlük ölçümleri gösterir.';
+    const dataNote = accountCenterText('metrics');
     const paneSources = {
       data: `<span class="ps51-account-kicker">HESAP MERKEZİ · VERİLER</span><h2>Hesap özeti</h2><p class="ps51-account-lead">Bağlı Kick profilini ve işlenen kanal hareketlerini tek bakışta gör.</p><div class="ps121-kick-overview">${kickSummary.profile}<div class="ps51-data-grid ps121-kick-metrics">${dataCards.join('')}</div></div><p class="ps54-data-note">${esc(dataNote)}</p>`,
-      profile: swIdentityProfileMarkup(user),
-      account: swIdentitySecurityMarkup(user),
-      devices: `<span class="ps51-account-kicker">HESAP MERKEZİ · CİHAZLAR</span><h2>Oturum açılan cihazlar</h2><p class="ps51-account-lead">Hesabına giriş yapılan cihazları, açık oturumları, son aktiflik saatini ve Cloudflare tarafından sağlanan yaklaşık konumu buradan kontrol et. Cihaz geçmişi bu özellik etkinleştirildikten sonraki oturumları kapsar.</p>${accountDevicesPaneHtml()}<p class="ps51-account-status${flash ? ' success' : ''}" aria-live="polite">${esc(flash)}</p>`,
+      profile: centralAccountMarkup('profile'),
+      account: centralAccountMarkup('security'),
+      devices: centralAccountMarkup('devices'),
       connections: `<span class="ps51-account-kicker">HESAP MERKEZİ · BAĞLANTILAR</span><h2>Yayın bağlantıları</h2><p class="ps51-account-lead">Kick kanalını ve Play Connect cihazlarını tek merkezden yönet. Donate platformlarında doğrudan API veya sunucu bildirimi varsa bu yöntem; yoksa bir defalık girişten sonra sekme gerektirmeyen arka plan bağlantısı kullanılır. Platform oturumları ve erişim anahtarları cihazda kalır; sunucuda yalnızca cihaz anahtarının özeti ile doğrulanmış olaylar tutulur.</p><article class="ps51-kick-card"><i class="ps51-kick-mark"><img src="./assets/kick-logo.svg?v=10.14" alt=""></i><span><b>Kick</b><small>${kickConnected ? `${esc(kickName)} bağlı` : 'Henüz yayın hesabı bağlı değil'}</small></span>${kickConnected ? '<button id="ps51KickDisconnect" class="ps51-danger" type="button">Bağlantıyı kes</button>' : '<button id="ps51KickConnect" class="ps51-primary" type="button">Kick bağla</button>'}</article>${donateBridgeConnectionsHtml()}<p class="ps51-account-status${flash ? ' success' : ''}" aria-live="polite">${esc(flash)}</p>`,
       support: `<span class="ps51-account-kicker">HESAP MERKEZİ · DESTEK TALEPLERİ</span><h2>Destek konuşmaların</h2><p class="ps51-account-lead">Gönderdiğin talepler ve destek ekibinden gelen cevaplar burada aynı konuşma içinde görünür.</p>${supportPaneHtml()}`
     };
@@ -2670,7 +2705,7 @@
       updatePane();
       if (refresh) {
         if (safeTab === 'support') refreshSupportTickets(true).catch(() => {});
-        else if (safeTab === 'devices') refreshAccountDevices().then(() => { if (existing.isConnected && existing.dataset.currentTab === safeTab && requestVersion === accountCenterViewVersion) showAccountCenter(safeTab, false, flash, true); }).catch(error => { if (existing.isConnected && existing.dataset.currentTab === safeTab && requestVersion === accountCenterViewVersion) showAccountCenter(safeTab, false, error.message, true); });
+        else if (safeTab === 'devices') refreshSwIdentityAccount(true).then(() => { if (existing.isConnected && existing.dataset.currentTab === safeTab && requestVersion === accountCenterViewVersion) syncAccountSidebarAvatar(existing); }).catch(() => {});
         else if (safeTab === 'connections') Promise.allSettled([refreshAccountData(), refreshDonateBridgeDevices()]).then(() => { if (existing.isConnected && existing.dataset.currentTab === safeTab && requestVersion === accountCenterViewVersion) showAccountCenter(safeTab, false, flash, true); });
         else if (safeTab === 'profile' || safeTab === 'account') refreshSwIdentityAccount(true).then(() => { if (existing.isConnected && existing.dataset.currentTab === safeTab && requestVersion === accountCenterViewVersion) showAccountCenter(safeTab, false, flash, true); }).catch(error => { if (existing.isConnected && existing.dataset.currentTab === safeTab && requestVersion === accountCenterViewVersion) { const status = $('.ps51-account-status', existing); if (status) { status.className = 'ps51-account-status error'; status.textContent = error.message; } } });
         else refreshAccountData().then(updated => { if (updated && existing.isConnected && existing.dataset.currentTab === safeTab && requestVersion === accountCenterViewVersion) showAccountCenter(safeTab, false, flash, true); }).catch(() => {});
@@ -2679,7 +2714,8 @@
     }
     const layer = document.createElement('section'); layer.id = 'ps51AccountCenter'; layer.dataset.currentTab = safeTab;
     const initialViewVersion = accountCenterViewVersion;
-    const accountName = String(user.username || user.name || user.email || 'SW Identity').trim();
+    const identity = swIdentityAccountOwner === String(user.id || '') ? swIdentityAccount?.user : null;
+    const accountName = String(identity?.username || identity?.displayName || user.username || user.name || user.email || 'SW Identity').trim();
     const accountInitial = accountName.slice(0, 1).toLocaleUpperCase(document.documentElement.lang || 'tr') || 'P';
     const accountMark = accountAvatar(user) || esc(accountInitial);
     const planName = String(settings.plan?.name || settings.plan?.label || user.planName || user.plan || 'Free').trim();
@@ -2694,7 +2730,7 @@
     const accountMain = $('.ps51-account-main', layer); if (accountMain) accountMain.addEventListener('wheel', event => event.stopPropagation(), { passive: true });
     if (refresh) {
       if (safeTab === 'support') refreshSupportTickets(true).catch(() => {});
-      else if (safeTab === 'devices') refreshAccountDevices().then(() => { if (layer.isConnected && layer.dataset.currentTab === safeTab && initialViewVersion === accountCenterViewVersion) showAccountCenter(safeTab, false, flash, true); }).catch(error => { if (layer.isConnected && layer.dataset.currentTab === safeTab && initialViewVersion === accountCenterViewVersion) showAccountCenter(safeTab, false, error.message, true); });
+      else if (safeTab === 'devices') refreshSwIdentityAccount(true).then(() => { if (layer.isConnected && layer.dataset.currentTab === safeTab && initialViewVersion === accountCenterViewVersion) syncAccountSidebarAvatar(layer); }).catch(() => {});
       else if (safeTab === 'connections') Promise.allSettled([refreshAccountData(), refreshDonateBridgeDevices()]).then(() => { if (layer.isConnected && layer.dataset.currentTab === safeTab && initialViewVersion === accountCenterViewVersion) showAccountCenter(safeTab, false, flash, true); });
       else if (safeTab === 'profile' || safeTab === 'account') refreshSwIdentityAccount(true).then(() => { if (layer.isConnected && layer.dataset.currentTab === safeTab && initialViewVersion === accountCenterViewVersion) showAccountCenter(safeTab, false, flash, true); }).catch(error => { const status = $('.ps51-account-status', layer); if (status) { status.className = 'ps51-account-status error'; status.textContent = error.message; } });
       else refreshAccountData().then(updated => { if (updated && layer.isConnected && layer.dataset.currentTab === safeTab && initialViewVersion === accountCenterViewVersion) showAccountCenter(safeTab, false, flash, true); }).catch(() => {});
@@ -4625,8 +4661,19 @@
   const esc = value => { const node = document.createElement('span'); node.textContent = String(value ?? ''); return node.innerHTML; };
   const ui = source => typeof window.psTranslateInterface === 'function' ? window.psTranslateInterface(source) : source;
   const loaderOpenedAt = new WeakMap();
+  let rootLoadingSince = 0;
   function dismissStaleLoaders(force = false) {
-    if (force) document.documentElement.classList.remove('ps-i18n-booting', 'ps-locale-switching');
+    const root = document.documentElement;
+    const rootPending = ['ps-i18n-booting','ps-locale-switching','ps15-session-pending','ps42-initial-loading'].some(name => root.classList.contains(name));
+    if (!rootPending) rootLoadingSince = 0;
+    else if (!rootLoadingSince) rootLoadingSince = Date.now();
+    // Root pseudo-element loaders may remain without any loader DOM node.
+    // Release their visual lock without settling or bypassing an OAuth challenge.
+    if ((force || (rootLoadingSince && Date.now() - rootLoadingSince >= 8000)) && !window.psIdentityCallbackPending) {
+      root.classList.remove('ps-i18n-booting','ps-locale-switching','ps15-session-pending','ps42-initial-loading');
+      rootLoadingSince = 0;
+      window.psRescueVisibleSurface?.();
+    }
     $$('#ps14Loader,#ps20Loader,.ps14-loader').forEach(loader => {
       loader.hidden = true; loader.classList.remove('show', 'is-open'); loader.setAttribute('aria-hidden', 'true');
     });

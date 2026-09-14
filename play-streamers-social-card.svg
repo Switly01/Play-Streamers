@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-labelledby="title desc">
+  <title id="title">Play Streamers yayıncı merkezi</title>
+  <desc id="desc">Play Streamers logosu, yayın verisi ve üretim araçlarını anlatan koyu paylaşım görseli</desc>
+  <defs>
+    <radialGradient id="light" cx="0" cy="0" r="1" gradientTransform="translate(878 185) rotate(138) scale(510 420)" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#374151" stop-opacity=".78"/>
+      <stop offset="1" stop-color="#050505" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="panel" x1="714" y1="108" x2="1094" y2="544" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#20242b"/>
+      <stop offset="1" stop-color="#0b0c0f"/>
+    </linearGradient>
+    <filter id="shadow" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="28" stdDeviation="28" flood-color="#000" flood-opacity=".55"/>
+    </filter>
+  </defs>
+  <rect width="1200" height="630" fill="#050505"/>
+  <rect width="1200" height="630" fill="url(#light)"/>
+  <path d="M0 1h1200v628H0z" fill="none" stroke="#fff" stroke-opacity=".08" stroke-width="2"/>
+  <g font-family="Arial, 'Segoe UI', sans-serif">
+    <g transform="translate(72 66)">
+      <image href="play-streamers-ps-logo.svg" width="58" height="58"/>
+      <text x="78" y="38" fill="#f7f7f4" font-size="24" font-weight="800" letter-spacing="4">PLAY STREAMERS</text>
+    </g>
+    <text x="72" y="225" fill="#9ca3af" font-size="16" font-weight="700" letter-spacing="5">YAYINCI MERKEZİ</text>
+    <text x="72" y="302" fill="#ffffff" font-size="57" font-weight="800">Yayın biter.</text>
+    <text x="72" y="368" fill="#ffffff" font-size="57" font-weight="800">Verin kaybolmaz.</text>
+    <text x="72" y="427" fill="#b8bcc5" font-size="22">Yayın geçmişi, canlı veriler ve üretim araçları</text>
+    <text x="72" y="460" fill="#b8bcc5" font-size="22">tek güvenli çalışma alanında.</text>
+    <rect x="72" y="510" width="230" height="48" rx="24" fill="#f7f7f4"/>
+    <text x="187" y="541" fill="#08090b" font-size="16" font-weight="800" text-anchor="middle" letter-spacing="1">PSTREAMERS.COM</text>
+  </g>
+  <g filter="url(#shadow)">
+    <rect x="728" y="98" width="398" height="450" rx="34" fill="url(#panel)" stroke="#fff" stroke-opacity=".16"/>
+    <path d="M758 170h338" stroke="#fff" stroke-opacity=".12"/>
+    <circle cx="770" cy="137" r="5" fill="#f7f7f4"/>
+    <circle cx="790" cy="137" r="5" fill="#6b7280"/>
+    <circle cx="810" cy="137" r="5" fill="#374151"/>
+    <g font-family="Arial, 'Segoe UI', sans-serif">
+      <text x="758" y="210" fill="#9ca3af" font-size="13" font-weight="700" letter-spacing="3">SUNUCU VERİ HATTI</text>
+      <circle cx="1060" cy="205" r="6" fill="#78f0a4"/>
+      <text x="758" y="268" fill="#fff" font-size="28" font-weight="800">Yayın geçmişin hazır.</text>
+      <text x="758" y="302" fill="#aeb4bf" font-size="17">Site kapalıyken de ölçüm sürer.</text>
+      <rect x="758" y="340" width="154" height="124" rx="20" fill="#ffffff" fill-opacity=".06" stroke="#fff" stroke-opacity=".08"/>
+      <text x="780" y="374" fill="#9ca3af" font-size="12" font-weight="700" letter-spacing="2">ARAÇLAR</text>
+      <text x="780" y="430" fill="#fff" font-size="39" font-weight="800">45</text>
+      <rect x="928" y="340" width="168" height="124" rx="20" fill="#ffffff" fill-opacity=".06" stroke="#fff" stroke-opacity=".08"/>
+      <text x="950" y="374" fill="#9ca3af" font-size="12" font-weight="700" letter-spacing="2">PLAY CONNECT</text>
+      <text x="950" y="426" fill="#fff" font-size="20" font-weight="800">Chrome</text>
+      <text x="950" y="450" fill="#fff" font-size="20" font-weight="800">+ Firefox</text>
+      <path d="M758 500h338" stroke="#fff" stroke-opacity=".1"/>
+      <text x="758" y="527" fill="#9ca3af" font-size="13">SW Identity ile güvenli hesap</text>
+    </g>
+  </g>
+</svg>

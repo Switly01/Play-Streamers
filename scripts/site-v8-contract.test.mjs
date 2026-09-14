@@ -15,9 +15,9 @@ test('site 10 assets are cache-busted and use fluid monochrome glass', async () 
   assert.ok(buildVersion,'dated site build version must be present');
   assert.ok(html.includes(`site-v7.css?v=${buildVersion}`));
   assert.match(html, /app\.js\?v=5\.12\.2/);
-  assert.match(html, /site-router\.js\?v=1\.4/);
+  assert.match(html, /site-router\.js\?v=1\.5/);
   assert.ok(html.includes(`site-v7.js?v=${buildVersion}`));
-  assert.match(html, /app-final\.js\?v=5\.33\.\d+/);
+  assert.match(html, /app-final\.js\?v=5\.34\.\d+/);
   assert.match(html, /window\.ps125ReleaseFirstPaint = releaseFirstPaint/);
   assert.match(html, /window\.setTimeout\(releaseFirstPaint, 4800\)/);
   assert.match(html, /live-i18n\.js\?v=10\.12\.\d+/);
@@ -132,6 +132,9 @@ test('SW Bot audits deterministically and translation generation is release-only
   assert.doesNotMatch(app, /playBotSurface\.append\(googleProbe\)/);
   assert.match(app, /window\.psSwBotOwnsStatus = true/);
   assert.match(app, /button\.dataset\.ps69IssueCount = String\(issues\.length\)/);
+  assert.match(worker, /https:\/\/pstreamers\.com\/app-final\.js\", \"script\"/);
+  assert.doesNotMatch(worker, /https:\/\/pstreamers\.com\/app-final\.js\?v=/);
+  assert.match(worker, /\^\\d\{4\}-\\d\{2\}-\\d\{2\}\\\.\\d\+\$/);
   assert.match(app, /getComputedStyle\(node\)\.position === 'fixed'/);
   assert.match(legacyApp, /window\.psSwBotOwnsStatus === true && issue/);
   assert.match(app, /\/api\/sw-bot\/status/);
@@ -154,13 +157,14 @@ test('SW Bot audits deterministically and translation generation is release-only
   assert.match(app, /ps119-account-shell/);
   assert.match(app, /ps119-account-user/);
   assert.match(app, /localizeAccountNavigation/);
-  assert.match(worker, /sw-bot:global-status:v15/);
+  assert.match(worker, /sw-bot:global-status:v16/);
   assert.doesNotMatch(worker, /explainSwBotIssuesWithAi/);
   assert.match(worker, /swBotDeterministicReport/);
   assert.match(worker, /resolveSwBotReports/);
   assert.match(worker, /sw_bot_issue_reports/);
-  assert.match(worker, /site-v7\.css\?v=10\.36\.0/);
-  assert.match(worker, /site-v7\.js\?v=10\.36\.0/);
+  assert.match(worker, /https:\/\/pstreamers\.com\/site-v7\.css\", \"style\"/);
+  assert.match(worker, /https:\/\/pstreamers\.com\/site-v7\.js\", \"script\"/);
+  assert.doesNotMatch(worker, /https:\/\/pstreamers\.com\/site-v7\.(?:css|js)\?v=/);
   assert.match(worker, /\/api\/i18n\/translate/);
   assert.match(worker, /i18n:v9/);
   assert.match(worker, /translationProvider: "local-static-build"/);
@@ -172,7 +176,7 @@ test('SW Bot audits deterministically and translation generation is release-only
   assert.match(worker, /EXCHANGE_CACHE_SECONDS/);
   assert.doesNotMatch(worker, /EXCHANGE.*KV/);
   assert.match(worker, /Fransızca dil paketi/);
-  assert.match(worker, /locales\/fr\.json\?v=2026-09-04\.2/);
+  assert.match(worker, /https:\/\/pstreamers\.com\/locales\/fr\.json\", \"json\"/);
   assert.match(worker, /content-security-policy/);
   assert.match(worker, /frame-ancestors 'none'/);
   assert.match(worker, /strict-transport-security/);

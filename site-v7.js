@@ -604,6 +604,10 @@
     if (!path) return;
     event.preventDefault();
     event.stopImmediatePropagation();
+    if (button.closest('#ps49InfoPage') && typeof window.psCleanRouteApi?.publicInfo === 'function') {
+      window.psCleanRouteApi.publicInfo(key);
+      return;
+    }
     navigatePublicHome(key);
   }, true);
   document.addEventListener('keydown', (event) => {

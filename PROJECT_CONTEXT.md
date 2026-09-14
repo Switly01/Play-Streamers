@@ -1,5 +1,21 @@
 # Play Streamers — Kalıcı Proje Bağlamı
 
+## Site SEO yayını · 14 Eylül 2026
+
+- Kullanıcının açık yayın talebiyle site 10.37.0 paketi hazırlandı. Dört fiziksel
+  public giriş sayfası, canonical/meta/paylaşım bilgileri, yapılandırılmış veri,
+  sosyal paylaşım kartı, robots.txt ve sitemap.xml eklendi.
+- Play Connect açıklama/kurulum sayfası ve gezinme düzeltmeleri yayın kapsamındadır.
+  Güncelleme penceresindeki beyaz taşma giderildi; SW Bot sürüm denetimleri
+  güncel dosyalara ve sürüm biçimlerine göre düzenlendi.
+- Search Console sahipliği SW Create Google hesabında alan adı sağlayıcısı
+  üzerinden doğrulandı. Site haritası ancak canlı dosya kontrolünden sonra gönderilir.
+- Herkese açık güncelleme notlarına yeni kayıt eklenmedi. Ayrı SW Create ve
+  masaüstü geliştirme dosyaları bu site yayınına dahil edilmedi.
+- Yayın paketi SEO tarayıcı denetiminden geçti; ana çalışma klasöründe ilgili
+  kimlik doğrulama, hesap, yükleme ve regresyon testleri 87/87 geçti.
+  Gerçek hesapla OAuth ve bağış verisi bu kontrolde doğrulanmadı.
+
 ## Sosyal giriş ve ilk Play Connect kurulumu yayını · 14 Eylül 2026
 
 - Google/Kick düğmeleri artık mevcut SW Identity hesabını açar, ilk kullanımda

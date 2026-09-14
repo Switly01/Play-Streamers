@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+Disallow: /account
+Disallow: /home
+Disallow: /dashboard
+Disallow: /updates
+Disallow: /identity/
+
+Sitemap: https://pstreamers.com/sitemap.xml

@@ -787,7 +787,7 @@ export default {
       }
 
       if (url.pathname === "/api/kick/session" && request.method === "GET") {
-        const current = await readSession(request, env);
+        const current = await readLinkedKickSession(request, env);
         if (!current) {
           return apiResponse(request, { connected: false }, 401);
         }
@@ -802,7 +802,7 @@ export default {
 
         const account = current.session.account || null;
         const profileCheckedAt = Number(account?.profileCheckedAt || 0);
-        const shouldRefreshProfile = !profileCheckedAt || !account?.username || (!account?.profilePicture && Date.now() - profileCheckedAt > 24 * 60 * 60 * 1000);
+        const shouldRefreshProfile = !profileCheckedAt || !account?.username || Date.now() - profileCheckedAt > (account?.profilePicture ? 15 : 5) * 60 * 1000;
         if (account?.id && shouldRefreshProfile) {
           const refreshedAccount = await getKickAccount(current.session.accessToken);
           current.session.account = refreshedAccount
@@ -882,7 +882,7 @@ export default {
   },
 };
 
-const PLAY_BOT_GLOBAL_STATUS_KEY = "sw-bot:global-status:v15";
+const PLAY_BOT_GLOBAL_STATUS_KEY = "sw-bot:global-status:v16";
 
 async function ensurePlayBotMetadataStorage(env) {
   if (!env.DB) throw new Error("Worker is missing the DB binding");
@@ -920,20 +920,23 @@ async function runScheduledPlayBotAudit(env) {
   await ensurePlayBotMetadataStorage(env);
   const resources = [
     ["Ana sayfa", "https://pstreamers.com/", "document"],
-    ["Ana uygulama betiği", "https://pstreamers.com/app.js?v=5.12.0", "script"],
-    ["Uygulama betiği", "https://pstreamers.com/app-final.js?v=5.33.0", "script"],
-    ["Site davranış betiği", "https://pstreamers.com/site-v7.js?v=10.36.0", "script"],
-    ["Sabit çeviri betiği", "https://pstreamers.com/live-i18n.js?v=10.12.0", "script"],
-    ["İngilizce dil paketi", "https://pstreamers.com/locales/en.json?v=2026-09-04.2", "json"],
-    ["Almanca dil paketi", "https://pstreamers.com/locales/de.json?v=2026-09-04.2", "json"],
-    ["İspanyolca dil paketi", "https://pstreamers.com/locales/es.json?v=2026-09-04.2", "json"],
-    ["Fransızca dil paketi", "https://pstreamers.com/locales/fr.json?v=2026-09-04.2", "json"],
-    ["Rusça dil paketi", "https://pstreamers.com/locales/ru.json?v=2026-09-04.2", "json"],
-    ["Arapça dil paketi", "https://pstreamers.com/locales/ar.json?v=2026-09-04.2", "json"],
-    ["Japonca dil paketi", "https://pstreamers.com/locales/ja.json?v=2026-09-04.2", "json"],
-    ["Premium stil dosyası", "https://pstreamers.com/site-v7.css?v=10.36.0", "style"],
-    ["Oturum başlangıç betiği", "https://pstreamers.com/session-bootstrap.js?v=1.2", "script"],
-    ["Site yönlendiricisi", "https://pstreamers.com/site-router.js?v=1.1", "script"],
+    // Sürüm sorguları tarayıcı önbelleği içindir. Sunucu denetimi dosyanın
+    // kendisini ölçer; yeni bir yayın yapıldığında eski sorguya sabitlenip
+    // çalışan dosyaları hatalı göstermemelidir.
+    ["Ana uygulama betiği", "https://pstreamers.com/app.js", "script"],
+    ["Uygulama betiği", "https://pstreamers.com/app-final.js", "script"],
+    ["Site davranış betiği", "https://pstreamers.com/site-v7.js", "script"],
+    ["Sabit çeviri betiği", "https://pstreamers.com/live-i18n.js", "script"],
+    ["İngilizce dil paketi", "https://pstreamers.com/locales/en.json", "json"],
+    ["Almanca dil paketi", "https://pstreamers.com/locales/de.json", "json"],
+    ["İspanyolca dil paketi", "https://pstreamers.com/locales/es.json", "json"],
+    ["Fransızca dil paketi", "https://pstreamers.com/locales/fr.json", "json"],
+    ["Rusça dil paketi", "https://pstreamers.com/locales/ru.json", "json"],
+    ["Arapça dil paketi", "https://pstreamers.com/locales/ar.json", "json"],
+    ["Japonca dil paketi", "https://pstreamers.com/locales/ja.json", "json"],
+    ["Premium stil dosyası", "https://pstreamers.com/site-v7.css", "style"],
+    ["Oturum başlangıç betiği", "https://pstreamers.com/session-bootstrap.js", "script"],
+    ["Site yönlendiricisi", "https://pstreamers.com/site-router.js", "script"],
     ["Sunucu analiz betiği", "https://pstreamers.com/server-analytics.js?v=6.1", "script"],
     ["Gizlilik sayfası", "https://pstreamers.com/privacy.html", "document"],
     ["Kullanım koşulları", "https://pstreamers.com/terms.html", "document"],
@@ -1008,7 +1011,7 @@ async function runScheduledPlayBotAudit(env) {
       const validPayload = result.label === "Windows güncelleme bildirimi"
         ? Boolean(payload?.version && hasUpdaterPlatforms)
         : localeCatalog
-        ? Boolean(payload?.version === "2026-09-04.2" && payload?.sourceLanguage === "tr" && payload?.language && Object.keys(payload?.translations || {}).length >= 1220)
+        ? Boolean(/^\d{4}-\d{2}-\d{2}\.\d+$/.test(String(payload?.version || "")) && payload?.sourceLanguage === "tr" && payload?.language && Object.keys(payload?.translations || {}).length >= 1220)
           : Boolean(payload?.ok);
       if (!validPayload) issues.push(`${result.label} geçerli bir JSON yanıtı döndürmüyor.`);
     }
@@ -1016,15 +1019,15 @@ async function runScheduledPlayBotAudit(env) {
   const homeDocument = results.find(result => result.type === "document");
   if (homeDocument?.ok) {
     const documentContracts = [
-      ["site-v7.css?v=10.36.0", "Güncel premium stil dosyası"],
-      ["app.js?v=5.12.0", "Güncel ana uygulama betiği"],
-      ["app-final.js?v=5.33.0", "Güncel onarım betiği"],
-      ["site-v7.js?v=10.36.0", "Güncel site davranış betiği"],
-      ["live-i18n.js?v=10.12.0", "Güncel sabit paket çeviri betiği"],
-      ["play-streamers-build\" content=\"2026-09-04-site-10.36.0", "Site 10.36.0 sürüm işareti"],
+      [/site-v7\.css\?v=\d+\.\d+(?:\.\d+)?/i, "Güncel premium stil dosyası"],
+      [/app\.js\?v=\d+\.\d+(?:\.\d+)?/i, "Güncel ana uygulama betiği"],
+      [/app-final\.js\?v=\d+\.\d+(?:\.\d+)?/i, "Güncel onarım betiği"],
+      [/site-v7\.js\?v=\d+\.\d+(?:\.\d+)?/i, "Güncel site davranış betiği"],
+      [/live-i18n\.js\?v=\d+\.\d+(?:\.\d+)?/i, "Güncel sabit paket çeviri betiği"],
+      [/play-streamers-build\"\s+content=\"\d{4}-\d{2}-\d{2}-site-\d+\.\d+(?:\.\d+)?/i, "Site sürüm işareti"],
     ];
-    for (const [token, label] of documentContracts) {
-      if (!homeDocument.body.includes(token)) issues.push(`${label} canlı ana sayfaya bağlanmamış.`);
+    for (const [pattern, label] of documentContracts) {
+      if (!pattern.test(homeDocument.body)) issues.push(`${label} canlı ana sayfaya bağlanmamış.`);
     }
   }
   const appScript = results.find(result => result.label === "Uygulama betiği");
@@ -1939,6 +1942,23 @@ async function readSession(request, env) {
     return refreshKickSessionSafely(sessionId, env);
   }
 
+  return { sessionId, session };
+}
+
+// A website login token is not a Kick OAuth token. Resolve only the Kick
+// connection owned by that authenticated product user, including refreshed tokens.
+async function readLinkedKickSession(request, env) {
+  const direct = await readSession(request, env);
+  if (direct?.session?.account?.id) return direct;
+  const userSession = await readUserSession(request, env);
+  const userId = String(userSession?.session?.user?.id || '');
+  if (!userId) return null;
+  const row = await env.DB.prepare(`SELECT id FROM kick_sessions
+    WHERE user_id = ?1 ORDER BY created_at DESC, expires_at DESC LIMIT 1`).bind(userId).first();
+  if (!row?.id) return null;
+  const sessionId = String(row.id), session = await getKickSession(sessionId, env);
+  if (!session?.account?.id || String(session.userId || '') !== userId) return null;
+  if (Date.now() >= Number(session.expiresAt) - 60_000) return refreshKickSessionSafely(sessionId, env);
   return { sessionId, session };
 }
 
@@ -8056,7 +8076,7 @@ async function getKickAccount(accessToken) {
     return {
       id: user.user_id || user.id || null,
       username: user.username || user.slug || user.name || null,
-      profilePicture: user.profile_picture || null,
+      profilePicture: creatorPageUrl(user.profile_picture || user.profilePicture || user.profile_picture_url || '' ) || null,
       profileCheckedAt: Date.now(),
     };
   } catch {
@@ -8429,6 +8449,8 @@ async function getKickChannelInsights(session, env, { hourlyDate = "", collectOn
   }));
   return {
     activeFollowers: directFollowerCount ?? storedFollowerCount,
+    followersSource: directFollowerCount !== null ? 'kick-api' : storedFollowerCount !== null ? 'snapshot' : 'unavailable',
+    subscribersSource: officialSubscriberRaw !== null && officialSubscriberRaw !== undefined && Number.isFinite(officialSubscriberCount) ? 'kick-api' : 'recorded-events',
     activeSubscribers: officialSubscriberRaw !== null && officialSubscriberRaw !== undefined && Number.isFinite(officialSubscriberCount)
       ? Math.max(0, officialSubscriberCount)
       : Math.max(webhookSubscriberCount, Number(storedSubscriberCount || 0)),
@@ -8561,19 +8583,7 @@ async function receiveKickWebhook(request, env) {
 }
 
 async function listKickEvents(request, env) {
-  let current = await readSession(request, env);
-  if (!current?.session?.account?.id) {
-    const userSession = await readUserSession(request, env);
-    if (userSession?.session?.user?.id) {
-      const row = await env.DB.prepare(`SELECT id FROM kick_sessions
-        WHERE user_id = ?1 ORDER BY created_at DESC LIMIT 1`)
-        .bind(String(userSession.session.user.id)).first();
-      if (row?.id) {
-        const linked = await getKickSession(String(row.id), env);
-        if (linked) current = { sessionId: String(row.id), session: linked };
-      }
-    }
-  }
+  const current = await readLinkedKickSession(request, env);
   if (!current?.session?.account?.id) {
     return apiResponse(request, { connected: false, events: [] }, 401);
   }

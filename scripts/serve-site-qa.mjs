@@ -38,7 +38,9 @@ http.createServer(async (request, response) => {
   try {
     const pathname = new URL(request.url, 'http://localhost').pathname;
     if (pathname === '/qa') { response.writeHead(200, {'content-type':'text/html; charset=utf-8','cache-control':'no-store'}); response.end(markup); return; }
-    const target = path.resolve(root, '.' + decodeURIComponent(pathname));
+    const publicEntryRoutes = new Set(['/', '/about', '/about/', '/products', '/products/', '/how-it-works', '/how-it-works/', '/play-connect', '/play-connect/']);
+    const localPath = publicEntryRoutes.has(pathname) ? `${pathname.replace(/\/$/, '')}/index.html` : decodeURIComponent(pathname);
+    const target = path.resolve(root, '.' + localPath);
     if (!target.startsWith(root) || /(?:^|[\\/])\./.test(path.relative(root,target))) { response.writeHead(403); response.end(); return; }
     let bytes = await readFile(target);
     if (pathname === '/app-final.js') bytes = Buffer.from(bytes.toString().replace('\n})();', '\nwindow.psQa={showAccountCenter,openAccountMetricGraph,openDashboardCardCopy};\n})();'));

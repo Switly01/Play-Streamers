@@ -50,7 +50,9 @@ test("Firefox paketi Chrome surumu ve ortak kaynaklarla senkron kalir", async ()
     "src/background.js",
     "src/content-scanner.js"
   ]);
-  const excluded = new Set([".gitignore", "manifest.json", "package.json", "pnpm-lock.yaml", "README.md"]);
+  // /play-connect is also the public site's clean URL entry. It is not an
+  // extension resource and must not be mirrored into either store package.
+  const excluded = new Set([".gitignore", "index.html", "manifest.json", "package.json", "pnpm-lock.yaml", "README.md"]);
   const chromeFiles = (await walk(chromeRoot))
     .filter(path => !path.startsWith("node_modules/"))
     .filter(path => !path.startsWith("tests/"))
@@ -200,7 +202,7 @@ test("Firefox arka planinda eslestirme, OBS kaynagi ve sunucu teslimati calisir"
     await import(`${backgroundUrl.href}?firefox-sync=${Date.now()}`);
     assert.equal(typeof messageListener, "function");
 
-    const send = (message, sender = {}) => new Promise((resolveMessage, reject) => {
+    const send = (message, sender = { id:browser.runtime.id, url:browser.runtime.getURL("options/options.html") }) => new Promise((resolveMessage, reject) => {
       const timeout = setTimeout(() => reject(new Error("Firefox mesaji zaman asimina ugradi.")), 2500);
       messageListener(message, sender, response => {
         clearTimeout(timeout);
@@ -209,6 +211,12 @@ test("Firefox arka planinda eslestirme, OBS kaynagi ve sunucu teslimati calisir"
     });
 
     const alertUrl = "https://streamlabs.com/widgets/alertbox/v1/firefox-test";
+    for (const type of ["PAIR_ACCOUNT", "DISCONNECT_ACCOUNT", "SAVE_PROVIDER", "GET_STATE", "SEND_SUPPORT", "ALERT_FRAME_STATUS"]) {
+      const rejected = await send({type, providerId:"bynogame", code:"123456", config:{enabled:false}}, {
+        id:browser.runtime.id, url:"https://donate.bynogame.com/history", tab:{id:10}
+      });
+      assert.equal(rejected.ok, false, `${type} must reject provider-page senders`);
+    }
     const saved = await send({
       type: "SAVE_PROVIDER",
       providerId: "klasgame",

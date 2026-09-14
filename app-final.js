@@ -31,10 +31,11 @@
     return template.innerHTML;
   }
   const state = () => { try { return JSON.parse(localStorage.getItem(STORE) || '{}'); } catch (_) { return {}; } };
-  const INFO_ROUTE_PATHS = Object.freeze({ about: '/about', products: '/products', how: '/how-it-works' });
+  const INFO_ROUTE_PATHS = Object.freeze({ about: '/about', products: '/products', how: '/how-it-works', connect: '/play-connect' });
   const ACCOUNT_ROUTE_PATHS = Object.freeze({ data: '/account/data', profile: '/account/profile', account: '/account/security', devices: '/account/devices', connections: '/account/connections', support: '/account/support' });
   function syncCleanRoute(path, replace = false) {
     window.psNavigatePath?.(path, { replace, apply: false });
+    window.psSetRouteMetadata?.(path);
   }
   function visibleMemberRoute() {
     const app = $('.app');
@@ -509,8 +510,44 @@
   const infoContent = {
     about: { title: 'Hakkımızda', lead: 'SW CREATE; dijital dünyada güçlü kimlikler, net deneyimler ve uzun ömürlü ürünler tasarlayan bağımsız bir yaratıcı teknoloji markasıdır.', cards: [['Kimlik', 'Her projeyi kendine ait bir sesi, karakteri ve amacı olan bütünlüklü bir marka olarak ele alırız. Görsel güç ile kullanım kolaylığını aynı çizgide buluştururuz.'], ['Üretim kültürü', 'Fikirden çalışan ürüne kadar her ayrıntıyı araştırma, tasarım ve teknoloji birlikteliğiyle geliştiririz. Sade görünen ama özenle kurulmuş deneyimler üretiriz.'], ['Gelecek', 'Tek bir ürüne bağlı kalmadan; toplulukları, yaratıcıları ve dijital markaları güçlendiren yeni araçlar inşa etmeyi sürdürüyoruz.']] },
     products: { title: 'Yayınını yönet. Üretimini büyüt.', lead: 'Site hesabın, planın ve güvenli bağlantıların için sade bir merkezdir. Play Streamers Desktop ise canlı veriler ve 45 yayıncı aracını tek akışta birleştirir.', productLayout: true },
-    how: { title: 'Nasıl çalışır?', lead: 'Play Streamers, tarayıcıdaki arayüz ile güvenli sunucu katmanını ayırır; hesap ve bağlantı işlemleri yalnızca doğrulanmış isteklerle yürütülür.', security: true, cards: [['1 · Güvenli giriş', 'Şifreler düz metin olarak tutulmaz. Oturum ve e-posta doğrulaması sunucu tarafında yönetilir; gizli anahtarlar tarayıcıya gönderilmez.'], ['2 · Otomatik istek koruması', 'Turnstile doğrulaması ve hız sınırları, otomatik giriş ve kayıt denemelerinin sisteme gereksiz yük bindirmesini engeller.'], ['3 · İzinli bağlantılar', 'Google ve Kick bağlantıları OAuth ile kurulur. Play Streamers yalnızca kullanıcının onayladığı kapsamları kullanır; platform parolalarını görmez.'], ['4 · Kişisel veri alanı', 'Hesaplar ve yayın olayları birbirinden ayrılarak saklanır. Dashboard yalnızca doğrulanmış kullanıcıya ait bağlantı ve olay kayıtlarını gösterir.']] }
+    how: { title: 'Nasıl çalışır?', lead: 'Play Streamers, tarayıcıdaki arayüz ile güvenli sunucu katmanını ayırır; hesap ve bağlantı işlemleri yalnızca doğrulanmış isteklerle yürütülür.', security: true, cards: [['1 · Güvenli giriş', 'Şifreler düz metin olarak tutulmaz. Oturum ve e-posta doğrulaması sunucu tarafında yönetilir; gizli anahtarlar tarayıcıya gönderilmez.'], ['2 · Otomatik istek koruması', 'Turnstile doğrulaması ve hız sınırları, otomatik giriş ve kayıt denemelerinin sisteme gereksiz yük bindirmesini engeller.'], ['3 · İzinli bağlantılar', 'Google ve Kick bağlantıları OAuth ile kurulur. Play Streamers yalnızca kullanıcının onayladığı kapsamları kullanır; platform parolalarını görmez.'], ['4 · Kişisel veri alanı', 'Hesaplar ve yayın olayları birbirinden ayrılarak saklanır. Dashboard yalnızca doğrulanmış kullanıcıya ait bağlantı ve olay kayıtlarını gösterir.']] },
+    connect: { title: 'Play Connect', lead: 'Bağış ve yayın platformlarını Play Streamers hesabına bağlayan ücretsiz tarayıcı eklentisi.', connectLayout: true, cards: [['1 · Eklentiyi kur', 'Chrome, Microsoft Edge veya Firefox mağazasından Play Connect’i tarayıcına ekle.'], ['2 · Hesabını eşleştir', 'Eklentiyi açıp Play Streamers hesabınla güvenli eşleştirmeyi tamamla.'], ['3 · Platformlarını bağla', 'Kullandığın yayın ve bağış platformlarını seç; bağlantı izinlerini yalnızca ilgili sağlayıcı ekranında onayla.'], ['4 · Verini kullan', 'Doğrulanmış olaylar Play Streamers Dashboard ve masaüstü uygulamasındaki ilgili araçlara aktarılır.']] }
   };
+  const PUBLIC_INFO_LINKS = Object.freeze([
+    ['about', '/about', 'Hakkımızda'],
+    ['products', '/products', 'Ürünlerimiz'],
+    ['how', '/how-it-works', 'Nasıl çalışır?'],
+    ['connect', '/play-connect', 'Play Connect']
+  ]);
+  function ensurePublicSeoLinks(root = document) {
+    const footers = root.matches?.('.landing-footer') ? [root] : $$('.landing-footer', root);
+    footers.forEach(footer => {
+      let nav = $('.ps-public-seo-links', footer);
+      if (!nav) {
+        nav = document.createElement('nav');
+        nav.className = 'ps-public-seo-links';
+        nav.setAttribute('aria-label', 'Site bağlantıları');
+        footer.prepend(nav);
+      }
+      const locale = String(document.documentElement.lang || 'tr').split('-')[0];
+      if (nav.dataset.psPublicLinksLocale !== locale) {
+        nav.dataset.psPublicLinksLocale = locale;
+        nav.innerHTML = `${PUBLIC_INFO_LINKS.map(([key, href, label]) => `<a href="${href}" data-ps-public-info="${key}">${esc(ui(label))}</a>`).join('')}<a href="/privacy.html">${esc(ui('Gizlilik'))}</a><a href="/terms.html">${esc(ui('Koşullar'))}</a>`;
+      }
+      $$('[data-ps-public-info]', nav).forEach(link => {
+        if (typeof window.psDesktopNavigate !== 'function') {
+          link.onclick = null;
+          return;
+        }
+        link.onclick = event => {
+          event.preventDefault();
+          event.stopPropagation();
+          restorePublicLandingSurface();
+          showPublicInfo(link.dataset.psPublicInfo);
+        };
+      });
+    });
+  }
   function refreshCreatorLanding() {
     const overlay = $('#authOverlay');
     if (!overlay) return;
@@ -519,6 +556,7 @@
     const update = $('.landing-update-card', overlay);
     if (!hero || !product || !update) return;
     overlay.classList.add('ps-creator-landing');
+    ensurePublicSeoLinks(overlay);
     product.setAttribute('aria-label', 'Play Streamers masaüstü ve sunucu veri merkezi ön izlemesi');
     const renderedLocale = () => String(document.documentElement.lang || localStorage.getItem('ps15-locale') || 'tr').split('-')[0];
     const setText = (node, value) => {
@@ -631,7 +669,9 @@
     const data = infoContent[key] || infoContent.about;
     const content = $('.ps49-info-content', layer);
     if (!content) return;
-    if (data.productLayout) {
+    if (data.connectLayout) {
+      content.innerHTML = `<section class="ps-connect-info-hero"><img src="./play-connect-pc-logo.svg?v=2.1" alt="Play Connect logosu"><div><span class="ps49-info-kicker">PLAY STREAMERS · TARAYICI BAĞLANTISI</span><h1>${esc(data.title)}</h1><p class="ps49-info-lead">${esc(data.lead)}</p><div class="ps-connect-store-actions"><a href="${PLAY_CONNECT_STORES.chromium}" target="_blank" rel="noopener noreferrer">Chrome / Edge için ekle</a><a href="${PLAY_CONNECT_STORES.firefox}" target="_blank" rel="noopener noreferrer">Firefox için ekle</a></div><small>Kurulum ücretsizdir. Platform parolan Play Streamers ile paylaşılmaz.</small></div></section><div class="ps49-info-grid ps-connect-info-grid">${data.cards.map((card, index) => `<article class="ps49-info-card"><span>0${index + 1}</span><h2>${esc(card[0])}</h2><p>${esc(card[1])}</p></article>`).join('')}</div>`;
+    } else if (data.productLayout) {
       const playConnect = playConnectStore();
       content.innerHTML = `<section class="ps130-products-hero"><div><span class="ps49-info-kicker">PLAY STREAMERS · CREATOR OPERATING SYSTEM</span><h1>${esc(data.title)}</h1><p class="ps49-info-lead">${esc(data.lead)}</p><div class="ps130-hero-facts"><span>45 hazır araç</span><span>Tek SW Identity hesabı</span><span>Windows 10/11</span></div></div></section>
         <div class="ps131-product-tabs" role="tablist" aria-label="Ürünlerimiz bölümleri"><button type="button" role="tab" data-ps131-product-tab="subscriptions">Abonelikler</button><button type="button" role="tab" data-ps131-product-tab="desktop">Masaüstü uygulaması</button><button type="button" role="tab" data-ps131-product-tab="ecosystem">Ürünler</button></div>
@@ -718,6 +758,7 @@
       footer.className = 'landing-footer';
       footer.innerHTML = '<span>Güvenli bağlantılar · Kişisel panel · Ücretsiz başlangıç</span><span>Developed by <a href="https://swcreate.com" target="_blank" rel="noopener noreferrer">SW CREATE</a></span>';
     }
+    ensurePublicSeoLinks(footer);
     const shell = document.createElement('article'); shell.className = 'landing-shell ps52-info-shell';
     const main = document.createElement('main'); main.className = 'ps52-info-main'; main.innerHTML = '<section class="ps49-info-content"></section>';
     shell.append(nav, main, footer); layer.replaceChildren(shell);
@@ -4575,7 +4616,7 @@
   window.psCleanRouteApi = Object.freeze({
     hasSession: hasStoredUserSession,
     publicHome: showPublicHomeRoute,
-    publicInfo: key => { restorePublicLandingSurface(); openPublicHomeSection(key); },
+    publicInfo: key => { restorePublicLandingSurface(); showPublicInfo(key); },
     auth: mode => {
       restorePublicLandingSurface();
       const trigger = document.getElementById(mode === 'register' ? 'landingSignup' : 'landingLogin');

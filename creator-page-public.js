@@ -72,12 +72,21 @@
     const link=linkButton(block); if(link)article.append(link); return article;
   }
   function setMeta(page) {
-    document.title=String(page.seo?.title||page.title||'Yayıncı sayfası');
+    const title=String(page.seo?.title||page.title||'Yayıncı sayfası').slice(0,80),description=String(page.seo?.description||page.bio||'').slice(0,220),image=safeLink(page.seo?.imageUrl),slug=String(page.slug||activeSlug||'').toLowerCase(),publicUrl=`https://pstreamers.com/@${encodeURIComponent(slug)}`;
+    document.title=title;
     const set=(selector,attribute,value)=>{if(!value)return;let item=document.head.querySelector(selector);if(!item){item=document.createElement('meta');document.head.append(item)}item.setAttribute(attribute,value)};
-    set('meta[name="description"]','content',String(page.seo?.description||page.bio||'').slice(0,220));
-    set('meta[property="og:title"]','content',String(page.seo?.title||page.title||'').slice(0,80));
-    set('meta[property="og:description"]','content',String(page.seo?.description||page.bio||'').slice(0,220));
-    set('meta[property="og:image"]','content',safeLink(page.seo?.imageUrl));
+    set('meta[name="robots"]','content','index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1');
+    set('meta[name="description"]','content',description);
+    set('meta[property="og:type"]','content','profile');
+    set('meta[property="og:title"]','content',title);
+    set('meta[property="og:description"]','content',description);
+    set('meta[property="og:url"]','content',publicUrl);
+    set('meta[property="og:image"]','content',image);
+    set('meta[name="twitter:card"]','content',image?'summary_large_image':'summary');
+    set('meta[name="twitter:title"]','content',title);
+    set('meta[name="twitter:description"]','content',description);
+    set('meta[name="twitter:image"]','content',image);
+    const canonical=document.head.querySelector('link[rel="canonical"]');if(canonical)canonical.href=publicUrl;
     const favicon=safeAsset(page.seo?.faviconUrl);if(favicon){let link=document.head.querySelector('link[rel="icon"]');if(!link){link=document.createElement('link');link.rel='icon';document.head.append(link)}link.href=favicon}
   }
   function track(slug,event,key='') {

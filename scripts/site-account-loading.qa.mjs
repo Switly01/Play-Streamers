@@ -33,13 +33,17 @@ try {
   await page.screenshot({path:new URL('account-settings.png',output).pathname.replace(/^\/([A-Za-z]:)/,'$1')});
   await page.evaluate(()=>window.psCleanRouteApi.updates());
   await page.locator('#ps44UpdatesDialog').waitFor();
+  await page.locator('#qaControls').evaluate(node=>{node.hidden=true});
   const heading = page.locator('#ps44UpdatesDialog .ps50-version-heading').first();
   assert.equal(await heading.evaluate(node=>getComputedStyle(node).display),'flex');
   assert.equal(await heading.evaluate(node=>getComputedStyle(node).gap),'12px');
   await page.screenshot({path:new URL('updates-desktop.png',output).pathname.replace(/^\/([A-Za-z]:)/,'$1')});
   await page.setViewportSize({width:390,height:844});
   const badge = await heading.locator('.ps50-latest-badge').boundingBox();
+  const mobileDialog = await page.locator('#ps44UpdatesDialog .ps44-dialog').boundingBox();
+  const mobileDone = await page.locator('#ps44UpdatesDialog .ps44-confirm').boundingBox();
   assert.ok(badge && badge.x>=0 && badge.x+badge.width<=390);
+  assert.ok(mobileDialog && mobileDone && mobileDone.y>=mobileDialog.y && mobileDone.y+mobileDone.height<=mobileDialog.y+mobileDialog.height+1);
   await page.screenshot({path:new URL('updates-mobile.png',output).pathname.replace(/^\/([A-Za-z]:)/,'$1')});
   assert.deepEqual(errors,[]);
   console.log('PASS: server-owned Kick photo, 27/2/9 official fixtures, SW-only settings, desktop/mobile release badge spacing; no runtime errors.');

@@ -1,5 +1,16 @@
 # Play Streamers — Kalıcı Proje Bağlamı
 
+## Çok dilli özel 404 ekranı · 15 Eylül 2026
+
+- Play Streamers tasarım dilinde bağımsız `404.html` hazırlandı. Türkçe,
+  İngilizce, Almanca, İspanyolca, Fransızca, Rusça, Arapça ve Japonca desteklenir;
+  kayıtlı site dili korunur ve kullanıcı sayfadan dil değiştirebilir.
+- Arapça sağdan sola yerleşim, mobil taşma, `noindex,nofollow`, erişilebilir
+  etiketler ve azaltılmış hareket tercihi doğrulandı. Dinamik `/@kullanici`
+  üretici sayfası kurtarma yönlendirmesi korunur; diğer bilinmeyen adresler
+  gerçek 404 ekranını gösterir.
+- Bu çalışma genel güncelleme notlarına eklenmedi.
+
 ## Microsoft Store 10.1.5 uyumluluk düzeltmesi · 15 Eylül 2026
 
 - Microsoft Submission 3, paket veya uygulama çökmesi nedeniyle değil, içerik

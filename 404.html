@@ -3,14 +3,110 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="robots" content="noindex">
-  <title>Play Streamers</title>
-</head>
-<body>
+  <meta name="robots" content="noindex,nofollow">
+  <meta name="theme-color" content="#050506">
+  <meta name="referrer" content="no-referrer">
+  <title>Sayfa bulunamadı · Play Streamers</title>
+  <link rel="icon" type="image/svg+xml" href="/play-streamers-ps-logo.svg?v=10.14">
   <script>
     (() => {
-      const route = location.pathname + location.search + location.hash;
-      location.replace('/?ps_route=' + encodeURIComponent(route));
+      const route = `${location.pathname}${location.search}${location.hash}`;
+      if (/^\/@[a-z0-9_-]{2,40}\/?$/i.test(location.pathname)) {
+        location.replace(`/?ps_route=${encodeURIComponent(route)}`);
+      }
+    })();
+  </script>
+  <style>
+    :root{color-scheme:dark;--bg:#050506;--panel:#0d0e10;--line:rgba(255,255,255,.12);--muted:rgba(255,255,255,.61);--cyan:#8de9ff;--green:#a7ff83}
+    *{box-sizing:border-box}
+    html,body{min-height:100%;margin:0}
+    body{display:grid;min-height:100dvh;overflow-x:hidden;background:radial-gradient(circle at 78% 5%,rgba(141,233,255,.1),transparent 28%),radial-gradient(circle at 12% 92%,rgba(167,255,131,.065),transparent 30%),var(--bg);color:#fff;font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif}
+    body::before{position:fixed;inset:0;pointer-events:none;background-image:linear-gradient(rgba(255,255,255,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.025) 1px,transparent 1px);background-size:54px 54px;content:"";mask-image:linear-gradient(to bottom,black,transparent 82%)}
+    .shell{position:relative;z-index:1;display:flex;min-height:100dvh;flex-direction:column}
+    header{display:flex;width:min(1240px,calc(100% - 40px));min-height:78px;align-items:center;margin:0 auto;border-bottom:1px solid var(--line)}
+    .brand{display:inline-flex;align-items:center;gap:12px;color:#fff;font-size:12px;font-weight:900;letter-spacing:.12em;text-decoration:none}
+    .brand img{width:34px;height:34px}
+    .header-actions{display:flex;align-items:center;gap:12px;margin-inline-start:auto}
+    .language{min-height:36px;border:1px solid var(--line);border-radius:10px;padding:0 30px 0 10px;color:#fff;background:#0b0c0e;font:750 10px Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;letter-spacing:.04em}
+    .status{display:flex;align-items:center;gap:8px;color:var(--muted);font-size:10px;font-weight:750;letter-spacing:.08em;text-transform:uppercase}
+    .status i{width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 14px rgba(167,255,131,.45)}
+    main{display:grid;width:min(1240px,calc(100% - 40px));flex:1;grid-template-columns:minmax(0,1.12fr) minmax(310px,.88fr);align-items:center;gap:clamp(36px,8vw,112px);margin:0 auto;padding:72px 0}
+    .kicker{display:inline-flex;align-items:center;gap:10px;color:var(--cyan);font-size:11px;font-weight:900;letter-spacing:.15em;text-transform:uppercase}
+    .kicker::before{width:34px;height:1px;background:currentColor;content:""}
+    h1{max-width:790px;margin:24px 0 22px;font-size:clamp(58px,9vw,124px);font-weight:650;line-height:.84;letter-spacing:-.075em;text-wrap:balance}
+    .lead{max-width:650px;margin:0;color:var(--muted);font-size:clamp(15px,1.6vw,19px);line-height:1.72}
+    .actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:34px}
+    .actions a{display:inline-flex;min-height:50px;align-items:center;justify-content:center;border:1px solid var(--line);border-radius:13px;padding:0 20px;color:#fff;background:rgba(255,255,255,.035);font-size:12px;font-weight:850;text-decoration:none;transition:.18s ease}
+    .actions a:first-child{border-color:#fff;background:#fff;color:#070708}
+    .actions a:hover{transform:translateY(-2px);border-color:rgba(255,255,255,.4)}
+    .signal{position:relative;display:grid;aspect-ratio:1;place-items:center;border:1px solid var(--line);border-radius:38px;background:linear-gradient(145deg,rgba(255,255,255,.075),rgba(255,255,255,.012));box-shadow:0 30px 90px rgba(0,0,0,.45);overflow:hidden}
+    .signal::before,.signal::after{position:absolute;border:1px solid rgba(255,255,255,.09);border-radius:50%;content:""}
+    .signal::before{width:72%;height:72%}.signal::after{width:46%;height:46%;border-color:rgba(141,233,255,.2)}
+    .code{position:relative;z-index:1;font-size:clamp(80px,12vw,160px);font-weight:750;line-height:1;letter-spacing:-.09em}
+    .code span{color:transparent;-webkit-text-stroke:1px rgba(255,255,255,.48)}
+    .orbit{position:absolute;width:13px;height:13px;border-radius:50%;background:var(--cyan);box-shadow:0 0 24px rgba(141,233,255,.75);animation:orbit 8s linear infinite}
+    @keyframes orbit{from{transform:rotate(0deg) translateX(clamp(105px,14vw,170px)) rotate(0deg)}to{transform:rotate(360deg) translateX(clamp(105px,14vw,170px)) rotate(-360deg)}}
+    footer{display:flex;width:min(1240px,calc(100% - 40px));align-items:center;justify-content:space-between;gap:18px;margin:0 auto;border-top:1px solid var(--line);padding:24px 0 30px;color:rgba(255,255,255,.42);font-size:10px}
+    footer a{color:rgba(255,255,255,.72);text-decoration:none}
+    html[dir="rtl"] :is(.status,.kicker){letter-spacing:0}
+    @media(max-width:760px){header{min-height:66px}.status{display:none}.language{max-width:116px}main{grid-template-columns:1fr;padding:48px 0 58px}.signal{width:min(100%,420px);order:-1;margin:auto;border-radius:28px}h1{font-size:clamp(56px,18vw,82px)}footer{align-items:flex-start;flex-direction:column}.actions{display:grid;grid-template-columns:1fr;width:100%}}
+    @media(prefers-reduced-motion:reduce){.orbit{animation:none;transform:translateX(clamp(105px,14vw,170px))}}
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <header>
+      <a class="brand" href="/" data-i18n-aria="brandLabel" aria-label="Play Streamers ana sayfası"><img src="/play-streamers-ps-logo.svg?v=10.14" alt=""><span>PLAY STREAMERS</span></a>
+      <div class="header-actions">
+        <select class="language" id="pageLanguage" data-i18n-aria="languageLabel" aria-label="Dil seçimi">
+          <option value="tr">Türkçe</option><option value="en">English</option><option value="de">Deutsch</option><option value="es">Español</option><option value="fr">Français</option><option value="ru">Русский</option><option value="ar">العربية</option><option value="ja">日本語</option>
+        </select>
+        <div class="status"><i></i><span data-i18n="status">Sistem çalışıyor</span></div>
+      </div>
+    </header>
+    <main>
+      <section>
+        <span class="kicker" data-i18n="kicker">Sinyal bulunamadı</span>
+        <h1 data-i18n="heading">Bu yayın burada değil.</h1>
+        <p class="lead" data-i18n="lead">Aradığın sayfa taşınmış, adresi değişmiş veya artık mevcut olmayabilir. Kontrol merkezine dönerek kaldığın yerden devam edebilirsin.</p>
+        <nav class="actions" data-i18n-aria="navLabel" aria-label="404 sayfası seçenekleri"><a href="/" data-i18n="home">Ana sayfaya dön</a><a href="/products" data-i18n="products">Ürünleri incele</a></nav>
+      </section>
+      <div class="signal" data-i18n-aria="signalLabel" aria-label="404 hata kodu"><span class="orbit" aria-hidden="true"></span><div class="code">4<span>0</span>4</div></div>
+    </main>
+    <footer><span data-i18n="footer">404 · İstenen kaynak bulunamadı</span><span>Developed by <a href="https://swcreate.com" rel="noopener noreferrer">SW CREATE</a></span></footer>
+  </div>
+  <script>
+    (() => {
+      const translations = Object.freeze({
+        tr:{title:'Sayfa bulunamadı · Play Streamers',brandLabel:'Play Streamers ana sayfası',languageLabel:'Dil seçimi',status:'Sistem çalışıyor',kicker:'Sinyal bulunamadı',heading:'Bu yayın burada değil.',lead:'Aradığın sayfa taşınmış, adresi değişmiş veya artık mevcut olmayabilir. Kontrol merkezine dönerek kaldığın yerden devam edebilirsin.',home:'Ana sayfaya dön',products:'Ürünleri incele',navLabel:'404 sayfası seçenekleri',signalLabel:'404 hata kodu',footer:'404 · İstenen kaynak bulunamadı'},
+        en:{title:'Page not found · Play Streamers',brandLabel:'Play Streamers home page',languageLabel:'Language selection',status:'System operational',kicker:'Signal not found',heading:"This stream isn't here.",lead:"The page you're looking for may have moved, its address may have changed, or it may no longer exist. Return to the control center to continue where you left off.",home:'Back to home',products:'Explore products',navLabel:'404 page options',signalLabel:'404 error code',footer:'404 · Requested resource not found'},
+        de:{title:'Seite nicht gefunden · Play Streamers',brandLabel:'Play Streamers Startseite',languageLabel:'Sprachauswahl',status:'System betriebsbereit',kicker:'Signal nicht gefunden',heading:'Dieser Stream ist nicht hier.',lead:'Die gesuchte Seite wurde möglicherweise verschoben, ihre Adresse hat sich geändert oder sie ist nicht mehr verfügbar. Kehre zum Kontrollzentrum zurück und fahre dort fort.',home:'Zur Startseite',products:'Produkte ansehen',navLabel:'Optionen der 404-Seite',signalLabel:'404-Fehlercode',footer:'404 · Angeforderte Ressource nicht gefunden'},
+        es:{title:'Página no encontrada · Play Streamers',brandLabel:'Página de inicio de Play Streamers',languageLabel:'Selección de idioma',status:'Sistema operativo',kicker:'Señal no encontrada',heading:'Esta transmisión no está aquí.',lead:'La página que buscas puede haberse movido, cambiado de dirección o dejado de existir. Vuelve al centro de control para continuar donde lo dejaste.',home:'Volver al inicio',products:'Ver productos',navLabel:'Opciones de la página 404',signalLabel:'Código de error 404',footer:'404 · No se encontró el recurso solicitado'},
+        fr:{title:'Page introuvable · Play Streamers',brandLabel:"Page d’accueil Play Streamers",languageLabel:'Sélection de la langue',status:'Système opérationnel',kicker:'Signal introuvable',heading:"Ce stream n’est pas ici.",lead:"La page que vous cherchez a peut-être été déplacée, son adresse a changé ou elle n’existe plus. Revenez au centre de contrôle pour reprendre là où vous en étiez.",home:"Retour à l’accueil",products:'Découvrir les produits',navLabel:'Options de la page 404',signalLabel:"Code d’erreur 404",footer:'404 · Ressource demandée introuvable'},
+        ru:{title:'Страница не найдена · Play Streamers',brandLabel:'Главная страница Play Streamers',languageLabel:'Выбор языка',status:'Система работает',kicker:'Сигнал не найден',heading:'Этой трансляции здесь нет.',lead:'Возможно, страница была перемещена, её адрес изменился или она больше недоступна. Вернитесь в центр управления, чтобы продолжить.',home:'На главную',products:'Посмотреть продукты',navLabel:'Действия на странице 404',signalLabel:'Код ошибки 404',footer:'404 · Запрошенный ресурс не найден'},
+        ar:{title:'الصفحة غير موجودة · Play Streamers',brandLabel:'الصفحة الرئيسية لـ Play Streamers',languageLabel:'اختيار اللغة',status:'النظام يعمل',kicker:'لم يتم العثور على الإشارة',heading:'هذا البث غير موجود هنا.',lead:'قد تكون الصفحة التي تبحث عنها قد نُقلت أو تغيّر عنوانها أو لم تعد متاحة. عُد إلى مركز التحكم للمتابعة من حيث توقفت.',home:'العودة إلى الرئيسية',products:'استعراض المنتجات',navLabel:'خيارات صفحة 404',signalLabel:'رمز الخطأ 404',footer:'404 · لم يتم العثور على المورد المطلوب'},
+        ja:{title:'ページが見つかりません · Play Streamers',brandLabel:'Play Streamers ホームページ',languageLabel:'言語を選択',status:'システム稼働中',kicker:'信号が見つかりません',heading:'この配信はここにはありません。',lead:'お探しのページは移動したか、アドレスが変更されたか、現在は利用できない可能性があります。コントロールセンターに戻って続けてください。',home:'ホームに戻る',products:'製品を見る',navLabel:'404ページの操作',signalLabel:'404エラーコード',footer:'404 · 指定されたリソースが見つかりません'}
+      });
+      const supported = Object.keys(translations);
+      const stored = String(localStorage.getItem('ps15-locale') || '').toLowerCase().split('-')[0];
+      const browserLocale = (navigator.languages || [navigator.language || '']).map(value => String(value).toLowerCase().split('-')[0]).find(value => supported.includes(value));
+      const select = document.getElementById('pageLanguage');
+      const apply = locale => {
+        const language = supported.includes(locale) ? locale : 'tr';
+        const copy = translations[language];
+        document.documentElement.lang = language;
+        document.documentElement.dir = language === 'ar' ? 'rtl' : 'ltr';
+        document.title = copy.title;
+        document.querySelectorAll('[data-i18n]').forEach(node => { node.textContent = copy[node.dataset.i18n]; });
+        document.querySelectorAll('[data-i18n-aria]').forEach(node => { node.setAttribute('aria-label', copy[node.dataset.i18nAria]); });
+        select.value = language;
+      };
+      apply(supported.includes(stored) ? stored : browserLocale || 'tr');
+      select.addEventListener('change', () => {
+        localStorage.setItem('ps15-locale', select.value);
+        localStorage.setItem('ps-locale-source', 'user');
+        apply(select.value);
+      });
     })();
   </script>
 </body>

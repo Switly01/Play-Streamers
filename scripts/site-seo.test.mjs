@@ -16,6 +16,7 @@ const routes = [
 ];
 
 const index = await read('index.html');
+const notFound = await read('404.html');
 const robots = await read('robots.txt');
 const sitemap = await read('sitemap.xml');
 assert.match(index, /rel="canonical" href="https:\/\/pstreamers\.com\/"/);
@@ -23,6 +24,11 @@ assert.match(index, /property="og:image" content="https:\/\/pstreamers\.com\/pla
 assert.match(index, /name="twitter:card" content="summary_large_image"/);
 assert.match(index, /"@type": "Organization"/);
 assert.match(index, /"@type": "SoftwareApplication"/);
+assert.match(notFound, /<meta name="robots" content="noindex,nofollow">/);
+assert.match(notFound, /<title>Sayfa bulunamadı · Play Streamers<\/title>/);
+assert.match(notFound, /<h1[^>]*>Bu yayın burada değil\.<\/h1>/);
+assert.match(notFound, /href="\/"[^>]*>Ana sayfaya dön<\/a>/);
+assert.match(notFound, /\^\\\/@\[a-z0-9_-\]\{2,40\}/);
 assert.match(robots, /Sitemap: https:\/\/pstreamers\.com\/sitemap\.xml/);
 assert.doesNotMatch(robots, /Disallow: \/$/m);
 for (const [, route] of routes) assert.match(sitemap, new RegExp(`<loc>https://pstreamers\\.com${route}<\\/loc>`));
@@ -55,6 +61,36 @@ try {
     localStorage.setItem('ps15-locale', 'tr');
     localStorage.setItem('ps-locale-source', 'user');
   });
+  const notFoundResponse = await page.goto('http://127.0.0.1:8766/404.html');
+  assert.equal(notFoundResponse.status(), 200);
+  assert.equal(await page.title(), 'Sayfa bulunamadı · Play Streamers');
+  assert.equal(await page.locator('h1').innerText(), 'Bu yayın burada değil.');
+  assert.equal(await page.locator('meta[name="robots"]').getAttribute('content'), 'noindex,nofollow');
+  assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth + 1), true);
+  const notFoundHeadings = {
+    tr: 'Bu yayın burada değil.',
+    en: "This stream isn't here.",
+    de: 'Dieser Stream ist nicht hier.',
+    es: 'Esta transmisión no está aquí.',
+    fr: 'Ce stream n’est pas ici.',
+    ru: 'Этой трансляции здесь нет.',
+    ar: 'هذا البث غير موجود هنا.',
+    ja: 'この配信はここにはありません。'
+  };
+  for (const [language, heading] of Object.entries(notFoundHeadings)) {
+    await page.locator('#pageLanguage').selectOption(language);
+    assert.equal(await page.locator('h1').innerText(), heading);
+    assert.equal(await page.locator('html').getAttribute('lang'), language);
+    assert.equal(await page.locator('html').getAttribute('dir'), language === 'ar' ? 'rtl' : 'ltr');
+    assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth + 1), true);
+  }
+  await page.setViewportSize({ width: 390, height: 844 });
+  for (const language of ['de', 'ru', 'ar', 'ja']) {
+    await page.locator('#pageLanguage').selectOption(language);
+    assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth + 1), true);
+  }
+  await page.setViewportSize({ width: 1280, height: 900 });
+  await page.locator('#pageLanguage').selectOption('tr');
   await page.route(/^https:\/\/(?!127\.0\.0\.1).*/, route => {
     const type = route.request().resourceType();
     if (type === 'stylesheet') return route.fulfill({ contentType: 'text/css', body: '' });

@@ -65,7 +65,9 @@ try {
   await page.locator('#ps49InfoPage h1').filter({ hasText: 'Play Connect' }).waitFor({ timeout: 12000 });
   assert.equal(await page.title(), 'Play Connect · Play Streamers');
   assert.equal(await page.locator('link[rel="canonical"]').getAttribute('href'), 'https://pstreamers.com/play-connect');
-  assert.equal(await page.locator('.ps-connect-store-actions a').count(), 2);
+  assert.equal(await page.locator('.ps-connect-store-actions a').count(), 1);
+  assert.equal(await page.locator('.ps-connect-store-actions a').getAttribute('href'), '/');
+  assert.equal(await page.locator('a[href*="chromewebstore.google.com"],a[href*="addons.mozilla.org"]').count(), 0);
   assert.ok(await page.locator('.ps-public-seo-links a[href="/about"]').count());
   await page.locator('#ps49InfoPage .ps-public-seo-links a[href="/about"]').click();
   await page.locator('#ps49InfoPage h1').filter({ hasText: 'Hakkımızda' }).waitFor();
@@ -78,7 +80,7 @@ try {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto('http://127.0.0.1:8766/play-connect');
   await page.locator('.ps-connect-store-actions a').first().waitFor({ state: 'visible' });
-  assert.equal(await page.locator('.ps-connect-store-actions a').count(), 2);
+  assert.equal(await page.locator('.ps-connect-store-actions a').count(), 1);
   assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth + 1), true);
   await page.goto('http://127.0.0.1:8766/?ps_route=%2Fhow-it-works');
   await page.locator('#ps49InfoPage h1').filter({ hasText: 'Nasıl çalışır?' }).waitFor();

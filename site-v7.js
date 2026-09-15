@@ -1,6 +1,6 @@
 (() => {
   'use strict';
-  const WINDOWS_STORE_INSTALLER_URL = 'https://get.microsoft.com/installer/download/9NWZ0TF5K999?referrer=appbadge&cid=pstreamers_web';
+  const WINDOWS_STORE_PRODUCT_URL = 'https://apps.microsoft.com/detail/9NWZ0TF5K999';
 
   function visible(selector) {
     return [...document.querySelectorAll(selector)].some((node) => !node.hidden && node.getAttribute('aria-hidden') !== 'true');
@@ -342,9 +342,9 @@
     if (navActions && !navActions.querySelector('.ps81-nav-download')) {
       const navDownload = document.createElement('a');
       navDownload.className = 'ps81-nav-download';
-      navDownload.href = WINDOWS_STORE_INSTALLER_URL;
+      navDownload.href = WINDOWS_STORE_PRODUCT_URL;
       navDownload.dataset.psStoreInstaller = 'nav';
-      navDownload.innerHTML = '<span>Windows için indir</span><i>↓</i>';
+      navDownload.innerHTML = '<span>Microsoft Store</span><i>↗</i>';
       navActions.prepend(navDownload);
     }
     if (current.classList.contains('ps8-home')) {
@@ -363,9 +363,6 @@
       const drift = (-24 + (index * 17) % 49).toFixed(0);
       return `<i style="--ps10-x:${x}%;--ps10-y:${y}%;--ps10-delay:${delay}s;--ps10-duration:${duration}s;--ps10-size:${size}px;--ps10-drift:${drift}px"></i>`;
     }).join('');
-    const playConnectStoreUrl = /Firefox\//i.test(navigator.userAgent || '')
-      ? 'https://addons.mozilla.org/en-US/firefox/addon/play-connect/'
-      : 'https://chromewebstore.google.com/detail/play-connect/mpebmfjcdkflgiloecjonopfknojdaip';
     const home = document.createElement('section');
     home.className = 'landing-main ps8-home';
     home.innerHTML = `
@@ -383,9 +380,9 @@
           <h2>Profesyonel Yayıncı Kontrol Platformu</h2>
           <p>Canlı analiz · İçerik planlama · Topluluk · Marka · Play Connect</p>
           <div class="ps8-hero-actions">
-            <a class="ps8-download" href="${WINDOWS_STORE_INSTALLER_URL}" data-ps-store-installer="hero">
+            <a class="ps8-download" href="${WINDOWS_STORE_PRODUCT_URL}" data-ps-store-installer="hero">
               <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4.5 10.5 3v8.2H3V4.5Zm8.5-1.7L21 1v10.2h-9.5V2.8ZM3 12.2h7.5V21L3 19.5v-7.3Zm8.5 0H21V23l-9.5-1.8v-9Z"/></svg>
-              <span><b>Windows için indir</b><small>APP v1.9 · Windows 10/11 · 64 bit</small></span>
+              <span><b>Microsoft Store'da görüntüle</b><small>APP v1.9 · Windows 10/11 · 64 bit</small></span>
               <i>↓</i>
             </a>
           </div>
@@ -455,7 +452,7 @@
         </div>
         <nav class="ps92-brand-directory" aria-label="Play Streamers ürün bağlantıları">
           <a class="ps92-swcreate-link" href="https://swcreate.com" target="_blank" rel="noopener noreferrer"><span>GELİŞTİREN EKOSİSTEM</span><b>SW CREATE</b><i>↗</i></a>
-          <div><a href="https://pstreamers.com">Play Streamers Web <i>↗</i></a><a href="${playConnectStoreUrl}" target="_blank" rel="noopener noreferrer">Play Connect <i>↗</i></a><a href="${WINDOWS_STORE_INSTALLER_URL}" data-ps-store-installer="directory">Play Streamers App <i>↓</i></a></div>
+          <div><a href="https://pstreamers.com">Play Streamers Web <i>↗</i></a><a href="/play-connect">Play Connect <i>→</i></a><a href="${WINDOWS_STORE_PRODUCT_URL}" data-ps-store-installer="directory">Play Streamers App <i>↗</i></a></div>
         </nav>
       </section>
 
@@ -473,16 +470,16 @@
 
       <section class="ps8-steps" id="ps8-how" aria-labelledby="ps8-steps-title">
         <div><span>BAŞLANGIÇ</span><h2 id="ps8-steps-title">Üç adım.<br>Sonrası otomatik.</h2></div>
-        <ol><li><i>01</i><span><b>Hesabını oluştur</b><small>SW Identity ile güvenli merkezini aç.</small></span></li><li><i>02</i><span><b>Platformunu bağla</b><small>Kick ve Play Connect bağlantılarını tamamla.</small></span></li><li><i>03</i><span><b>Uygulamayı indir</b><small>Tüm araçlarına masaüstünden eriş.</small></span></li></ol>
+        <ol><li><i>01</i><span><b>Hesabını oluştur</b><small>SW Identity ile güvenli merkezini aç.</small></span></li><li><i>02</i><span><b>Platformunu bağla</b><small>Kick ve Play Connect bağlantılarını tamamla.</small></span></li><li><i>03</i><span><b>Microsoft Store'u aç</b><small>Resmî ürün sayfasından devam et.</small></span></li></ol>
       </section>
 
       <section class="ps8-final-cta" aria-labelledby="ps8-final-title">
         <img src="./play-streamers-ps-logo.svg?v=10.14" alt="Play Streamers PS logosu">
         <span>WINDOWS 10/11 · SÜRÜM 1.9</span>
         <h2 id="ps8-final-title">Yayınını değil,<br>sistemini büyüt.</h2>
-        <p>Hesabını ücretsiz oluştur. Play Streamers Desktop'ı indir ve üretim araçlarını tek sade merkezde kullanmaya başla.</p>
-        <div><a href="${WINDOWS_STORE_INSTALLER_URL}" data-ps-store-installer="final">Uygulamayı ücretsiz indir <i>↓</i></a><button type="button" data-ps8-action="register">Hesap oluştur</button></div>
-        <small>Microsoft Store Web Installer · Windows 10/11</small>
+        <p>Hesabını ücretsiz oluştur. Play Streamers Desktop'ın resmî Microsoft Store sayfasını incele ve üretim araçlarını tek sade merkezde kullanmaya başla.</p>
+        <div><a href="${WINDOWS_STORE_PRODUCT_URL}" data-ps-store-installer="final">Microsoft Store'da görüntüle <i>↗</i></a><button type="button" data-ps8-action="register">Hesap oluştur</button></div>
+        <small>Resmî Microsoft Store ürün sayfası · Windows 10/11</small>
       </section>`;
     current.replaceWith(home);
     activatePublicMotion(home);

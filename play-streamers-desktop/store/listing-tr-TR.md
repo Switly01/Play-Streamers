@@ -13,13 +13,13 @@ Play Streamers; yayın analizini, içerik planlamasını, topluluk yönetimini, 
 - SW Identity ile güvenli hesap ve plan eşitleme
 - Windows Credential Manager ile cihazda korunan oturum
 
-Uygulamayı indirmek ve Play Streamers Free ile temel çalışma alanını kullanmak ücretsizdir. Play Streamers Pro ve Product Pro, Microsoft Store dışında yönetilen isteğe bağlı ücretli aboneliklerdir ve ek araçların kilidini açar. Kilitli özellikler uygulamada açıkça etiketlenir. Bu, süreli bir deneme değildir; kullanıcı satın alma yapmadan Free planı kullanmaya devam edebilir.
+Play Streamers Free ve temel çalışma alanı süre sınırı olmadan kullanılabilir. İsteğe bağlı Pro planları ek araçların kilidini açar ve kilitli özellikler uygulamada açıkça etiketlenir. Kullanıcı satın alma yapmadan Free çalışma alanını kullanmaya devam edebilir.
 
-Play Streamers 0.14.5 kamera, mikrofon veya medya yakalamaz; yayın açma, yerel video kaydı, sanal kamera ya da Studio içermez. Ham medya dosyaları sunucuya gönderilmez. Canlı kanal olayları ve yayın geçmişi yalnız bağlı hesaptan doğrulanan verilerle gösterilir.
+Play Streamers 1.9 kamera, mikrofon veya medya yakalamaz; yayın açma, yerel video kaydı, sanal kamera ya da Studio içermez. Ham medya dosyaları sunucuya gönderilmez. Canlı kanal olayları ve yayın geçmişi yalnız bağlı hesaptan doğrulanan verilerle gösterilir.
 
 ## Bu sürümdeki yenilikler
 
-0.14.5; uygulama ve Store karolarında güncel dengeli PS logosunu kullanır, giriş bağlantısının güvenilirliğini korur ve canlı site verileri ile çok dilli deneyimi iyileştirir.
+Genel performans düzeltmeleri yapıldı. 1.9; Play Connect 2.1 uyumluluğunu, bağlantı kurtarmayı ve güvenlik doğrulamasını güçlendirir; güncel PS logosunu, Store üzerinden güvenli güncelleme akışını ve sekiz dilde daha tutarlı bir deneyimi sunar.
 
 ## Kısa açıklama
 

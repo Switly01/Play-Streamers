@@ -1,5 +1,29 @@
 # Play Streamers — Kalıcı Proje Bağlamı
 
+## Microsoft Store 10.1.5 uyumluluk düzeltmesi · 15 Eylül 2026
+
+- Microsoft Submission 3, paket veya uygulama çökmesi nedeniyle değil, içerik
+  politikası `10.1.5 Software Distribution` nedeniyle `Attention needed`
+  sonucunu aldı. Rapor, ürün metadata'sındaki `https://pstreamers.com`
+  adresinin Store dışında yazılım edinimini teşvik ettiğini belirtti.
+- Site içindeki doğrudan Microsoft Web Installer hedefleri kaldırıldı.
+  Halka açık masaüstü eylemleri yalnız resmi
+  `https://apps.microsoft.com/detail/9NWZ0TF5K999` ürün sayfasına gider.
+  Halka açık Play Connect sayfası bilgi verir fakat tarayıcı eklentisi
+  edinme bağlantısı sunmaz; bu bağlantılar yalnız oturum açmış kullanıcının
+  açık onaylı kurulum/bağlantı akışında korunur.
+- Sekiz Store açıklamasındaki Store dışı plan edinimi ifadeleri
+  kaldırıldı. Free çalışma alanının süresiz kullanılabildiği ve
+  isteğe bağlı Pro araçlarının uygulamada etiketlendiği söylenir.
+- Kullanıcıya görünen Microsoft Store sürümü `1.9` olarak korunur.
+  Uygulama sürümü `1.9.0`; Store'un dört haneli şema zorunluluğu ve
+  önceden yüklenmiş daha yüksek revizyon nedeniyle MSIX `1.9.1.0`'dır.
+  Paket SHA-256:
+  `102318FF282F3F57E6C4762C54A58D1FC147E2FB9D7C036E2A8F8D089501EC2B`.
+- Genel güncelleme notları değiştirilmedi. Site yayını ve Partner Center
+  metadata kaydı/yeniden sertifikasyon sonucu ayrıca doğrulanmadan tamamlandı
+  sayılmaz.
+
 ## Site SEO yayını · 14 Eylül 2026
 
 - Kullanıcının açık yayın talebiyle site 10.37.0 paketi hazırlandı. Dört fiziksel

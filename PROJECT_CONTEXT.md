@@ -20,9 +20,17 @@
   önceden yüklenmiş daha yüksek revizyon nedeniyle MSIX `1.9.1.0`'dır.
   Paket SHA-256:
   `102318FF282F3F57E6C4762C54A58D1FC147E2FB9D7C036E2A8F8D089501EC2B`.
-- Genel güncelleme notları değiştirilmedi. Site yayını ve Partner Center
-  metadata kaydı/yeniden sertifikasyon sonucu ayrıca doğrulanmadan tamamlandı
-  sayılmaz.
+- Genel güncelleme notları değiştirilmedi. Site düzeltmesi `9a53093` ile ana
+  dala gönderildi; GitHub Pages `34918102940` başarıyla tamamlandı. Canlı ana
+  sayfa, Ürünler ve Play Connect sayfaları 200 ve `10.37.1` döndürür;
+  canlı kaynakta doğrudan Web Installer veya halka açık eklenti mağazası
+  edinme bağlantısı yoktur.
+- Partner Center'da sekiz dilin uzun açıklaması ve 10.1.5 giderimini anlatan
+  sertifikasyon notu kaydedildi; özel inceleme kimlik bilgileri değiştirilmedi.
+  Submission 3 yeniden sertifikasyona gönderildi. Son doğrulanan durum
+  `Update in certification` / `Product update: In certification`, adım 2/4 ve
+  `Pre-processing: In progress`; başarılı sertifikasyon sonrası otomatik yayın
+  açıktır. Microsoft onayı henüz tamamlanmamıştır.
 
 ## Site SEO yayını · 14 Eylül 2026
 

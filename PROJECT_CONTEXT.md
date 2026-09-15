@@ -10,6 +10,9 @@
   üretici sayfası kurtarma yönlendirmesi korunur; diğer bilinmeyen adresler
   gerçek 404 ekranını gösterir.
 - Bu çalışma genel güncelleme notlarına eklenmedi.
+- Değişiklik `7483b88` ile ana dala gönderildi; GitHub Pages çalışması
+  `34919914475` başarıyla tamamlandı. Canlı bilinmeyen adres 404 durum kodu,
+  sekiz dil, Arapça RTL ve yatay taşmasız görünümle doğrulandı.
 
 ## Microsoft Store 10.1.5 uyumluluk düzeltmesi · 15 Eylül 2026
 
